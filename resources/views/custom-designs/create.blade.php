@@ -42,25 +42,140 @@
         text-align: center;
     }
     
-    .tshirt-template {
-        width: 200px;
-        height: 250px;
-        background: #e5e7eb;
-        border-radius: 20px;
-        margin: 0 auto;
+    .jersey-preview {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 400px;
+    }
+
+    .human-figure {
         position: relative;
-        border: 3px solid #9ca3af;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .head {
+        width: 40px;
+        height: 40px;
+        background: #f3c2a1;
+        border-radius: 50%;
+        margin-bottom: 10px;
+        border: 2px solid #d69e2e;
+    }
+
+    .body {
+        position: relative;
+        z-index: 2;
+    }
+
+    .tshirt-template {
+        width: 180px;
+        height: 220px;
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        border-radius: 15px 15px 5px 5px;
+        position: relative;
+        border: 2px solid #1e40af;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     
     .design-text {
         position: absolute;
-        top: 50%;
+        top: 30%;
         left: 50%;
         transform: translate(-50%, -50%);
         font-weight: bold;
         text-align: center;
         word-wrap: break-word;
         max-width: 150px;
+        color: white;
+        font-size: 16px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .player-number {
+        position: absolute;
+        top: 70%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: bold;
+        font-size: 48px;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .arms {
+        position: absolute;
+        top: 60px;
+        width: 220px;
+        height: 120px;
+        z-index: 1;
+    }
+
+    .arm {
+        width: 25px;
+        height: 120px;
+        background: #f3c2a1;
+        border-radius: 12px;
+        position: absolute;
+        border: 2px solid #d69e2e;
+    }
+
+    .left-arm {
+        left: -30px;
+        transform: rotate(-10deg);
+    }
+
+    .right-arm {
+        right: -30px;
+        transform: rotate(10deg);
+    }
+
+    .legs {
+        display: flex;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .leg {
+        width: 30px;
+        height: 100px;
+        background: #1e3a8a;
+        border-radius: 15px;
+        border: 2px solid #1e40af;
+    }
+
+    .template-option {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        padding: 8px;
+    }
+
+    .template-option:hover,
+    .template-option.active {
+        border-color: var(--primary-color);
+        background: rgba(30, 58, 138, 0.1);
+    }
+
+    .template-preview {
+        text-align: center;
+    }
+
+    .template-shirt {
+        width: 60px;
+        height: 70px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 8px;
+        font-weight: bold;
+        margin: 0 auto;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
 </style>
 @endsection
@@ -80,10 +195,62 @@
             <div class="design-tools">
                 <h4 class="mb-4">أدوات التصميم</h4>
                 
+                <!-- اختيار نوع التصميم -->
+                <div class="mb-4">
+                    <label class="form-label">نوع التصميم</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="designType" id="customDesign" value="custom" checked>
+                        <label class="btn btn-outline-primary" for="customDesign">تصميم مخصص</label>
+                        
+                        <input type="radio" class="btn-check" name="designType" id="templateDesign" value="template">
+                        <label class="btn btn-outline-primary" for="templateDesign">قوالب جاهزة</label>
+                    </div>
+                </div>
+
+                <!-- القوالب الجاهزة -->
+                <div class="mb-4" id="templatesSection" style="display: none;">
+                    <label class="form-label">اختر قالب جاهز</label>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <div class="template-option" data-template="team1">
+                                <div class="template-preview">
+                                    <div class="template-shirt" style="background: linear-gradient(45deg, #1e40af, #3b82f6);">
+                                        <span>فريق النصر</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="template-option" data-template="team2">
+                                <div class="template-preview">
+                                    <div class="template-shirt" style="background: linear-gradient(45deg, #dc2626, #ef4444);">
+                                        <span>فريق الأهلي</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="template-option" data-template="team3">
+                                <div class="template-preview">
+                                    <div class="template-shirt" style="background: linear-gradient(45deg, #059669, #10b981);">
+                                        <span>فريق الاتحاد</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- إدخال النص -->
                 <div class="mb-4">
                     <label class="form-label">النص المطلوب</label>
-                    <input type="text" id="designText" class="text-input" placeholder="أدخل النص هنا...">
+                    <input type="text" id="designText" class="text-input" placeholder="أدخل اسم الفريق أو النص...">
+                </div>
+
+                <!-- رقم اللاعب -->
+                <div class="mb-4">
+                    <label class="form-label">رقم اللاعب (اختياري)</label>
+                    <input type="number" id="playerNumber" class="text-input" placeholder="رقم اللاعب" min="1" max="99">
                 </div>
                 
                 <!-- اختيار اللون -->
@@ -126,9 +293,9 @@
                 <!-- حجم الخط -->
                 <div class="mb-4">
                     <label class="form-label">حجم الخط</label>
-                    <input type="range" class="form-range" min="12" max="48" value="24" id="fontSize">
+                    <input type="range" class="form-range" min="12" max="32" value="16" id="fontSize">
                     <div class="text-center">
-                        <span id="fontSizeValue">24</span> px
+                        <span id="fontSizeValue">16</span> px
                     </div>
                 </div>
                 
@@ -154,9 +321,28 @@
         <div class="col-lg-8">
             <div class="design-preview">
                 <h4 class="mb-4">معاينة التصميم</h4>
-                <div class="tshirt-template" id="tshirtTemplate">
-                    <div class="design-text" id="designTextPreview">
-                        النص هنا
+                <div class="jersey-preview">
+                    <!-- مجسم الإنسان -->
+                    <div class="human-figure">
+                        <div class="head"></div>
+                        <div class="body">
+                            <div class="tshirt-template" id="tshirtTemplate">
+                                <div class="design-text" id="designTextPreview">
+                                    اسم الفريق
+                                </div>
+                                <div class="player-number" id="playerNumberPreview">
+                                    10
+                                </div>
+                            </div>
+                        </div>
+                        <div class="arms">
+                            <div class="arm left-arm"></div>
+                            <div class="arm right-arm"></div>
+                        </div>
+                        <div class="legs">
+                            <div class="leg left-leg"></div>
+                            <div class="leg right-leg"></div>
+                        </div>
                     </div>
                 </div>
                 
@@ -164,14 +350,15 @@
                 <div class="mt-4">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6>معلومات التصميم</h6>
-                                    <p class="mb-1"><strong>النص:</strong> <span id="textInfo">النص هنا</span></p>
-                                    <p class="mb-1"><strong>اللون:</strong> <span id="colorInfo">#1e3a8a</span></p>
-                                    <p class="mb-0"><strong>الخط:</strong> <span id="fontInfo">Cairo</span></p>
+                                                            <div class="card">
+                                    <div class="card-body">
+                                        <h6>معلومات التصميم</h6>
+                                        <p class="mb-1"><strong>اسم الفريق:</strong> <span id="textInfo">اسم الفريق</span></p>
+                                        <p class="mb-1"><strong>رقم اللاعب:</strong> <span id="numberInfo">10</span></p>
+                                        <p class="mb-1"><strong>لون النص:</strong> <span id="colorInfo">#ffffff</span></p>
+                                        <p class="mb-0"><strong>الخط:</strong> <span id="fontInfo">Cairo</span></p>
+                                    </div>
                                 </div>
-                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="card">
@@ -224,33 +411,97 @@
 @section('scripts')
 <script>
     // متغيرات التصميم
-    let currentText = 'النص هنا';
-    let currentTextColor = '#1e3a8a';
-    let currentShirtColor = '#ffffff';
+    let currentText = 'اسم الفريق';
+    let currentPlayerNumber = '10';
+    let currentTextColor = '#ffffff';
+    let currentShirtColor = 'linear-gradient(135deg, #1e3a8a, #3b82f6)';
     let currentFontFamily = 'Cairo';
-    let currentFontSize = 24;
+    let currentFontSize = 16;
+    let currentTemplate = null;
     
     // تحديث التصميم
     function updateDesign() {
         const textElement = document.getElementById('designTextPreview');
+        const numberElement = document.getElementById('playerNumberPreview');
         const shirtElement = document.getElementById('tshirtTemplate');
         
         textElement.textContent = currentText;
         textElement.style.color = currentTextColor;
         textElement.style.fontFamily = currentFontFamily;
         textElement.style.fontSize = currentFontSize + 'px';
-        shirtElement.style.backgroundColor = currentShirtColor;
+        
+        numberElement.textContent = currentPlayerNumber;
+        numberElement.style.color = currentTextColor;
+        numberElement.style.fontFamily = currentFontFamily;
+        numberElement.style.display = currentPlayerNumber ? 'block' : 'none';
+        
+        if (currentShirtColor.includes('gradient')) {
+            shirtElement.style.background = currentShirtColor;
+        } else {
+            shirtElement.style.backgroundColor = currentShirtColor;
+        }
         
         // تحديث المعلومات
         document.getElementById('textInfo').textContent = currentText;
+        document.getElementById('numberInfo').textContent = currentPlayerNumber || 'بدون رقم';
         document.getElementById('colorInfo').textContent = currentTextColor;
         document.getElementById('fontInfo').textContent = currentFontFamily;
     }
     
     // إضافة مستمعي الأحداث
     document.getElementById('designText').addEventListener('input', function() {
-        currentText = this.value || 'النص هنا';
+        currentText = this.value || 'اسم الفريق';
         updateDesign();
+    });
+
+    document.getElementById('playerNumber').addEventListener('input', function() {
+        currentPlayerNumber = this.value;
+        updateDesign();
+    });
+
+    // مستمع تغيير نوع التصميم
+    document.querySelectorAll('input[name="designType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const templatesSection = document.getElementById('templatesSection');
+            if (this.value === 'template') {
+                templatesSection.style.display = 'block';
+            } else {
+                templatesSection.style.display = 'none';
+                currentTemplate = null;
+                document.querySelectorAll('.template-option').forEach(opt => opt.classList.remove('active'));
+            }
+        });
+    });
+
+    // مستمع اختيار القوالب
+    document.querySelectorAll('.template-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.template-option').forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            
+            const template = this.dataset.template;
+            currentTemplate = template;
+            
+            // تطبيق إعدادات القالب
+            switch(template) {
+                case 'team1':
+                    currentShirtColor = 'linear-gradient(45deg, #1e40af, #3b82f6)';
+                    currentText = 'فريق النصر';
+                    break;
+                case 'team2':
+                    currentShirtColor = 'linear-gradient(45deg, #dc2626, #ef4444)';
+                    currentText = 'فريق الأهلي';
+                    break;
+                case 'team3':
+                    currentShirtColor = 'linear-gradient(45deg, #059669, #10b981)';
+                    currentText = 'فريق الاتحاد';
+                    break;
+            }
+            
+            // تحديث الحقول
+            document.getElementById('designText').value = currentText;
+            updateDesign();
+        });
     });
     
     // مستمعي الألوان
@@ -282,10 +533,12 @@
     function saveDesign() {
         const designData = {
             text: currentText,
+            playerNumber: currentPlayerNumber,
             textColor: currentTextColor,
             shirtColor: currentShirtColor,
             fontFamily: currentFontFamily,
-            fontSize: currentFontSize
+            fontSize: currentFontSize,
+            template: currentTemplate
         };
         
         document.getElementById('designData').value = JSON.stringify(designData);
@@ -296,15 +549,21 @@
     
     // إعادة تعيين التصميم
     function resetDesign() {
-        currentText = 'النص هنا';
-        currentTextColor = '#1e3a8a';
-        currentShirtColor = '#ffffff';
+        currentText = 'اسم الفريق';
+        currentPlayerNumber = '10';
+        currentTextColor = '#ffffff';
+        currentShirtColor = 'linear-gradient(135deg, #1e3a8a, #3b82f6)';
         currentFontFamily = 'Cairo';
-        currentFontSize = 24;
+        currentFontSize = 16;
+        currentTemplate = null;
         
         document.getElementById('designText').value = '';
-        document.getElementById('fontSize').value = 24;
-        document.getElementById('fontSizeValue').textContent = '24';
+        document.getElementById('playerNumber').value = '';
+        document.getElementById('fontSize').value = 16;
+        document.getElementById('fontSizeValue').textContent = '16';
+        document.getElementById('customDesign').checked = true;
+        document.getElementById('templatesSection').style.display = 'none';
+        document.querySelectorAll('.template-option').forEach(opt => opt.classList.remove('active'));
         
         updateDesign();
     }

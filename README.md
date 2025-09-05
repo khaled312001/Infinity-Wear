@@ -1,61 +1,274 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+﻿# Infinity Wear - مؤسسة اللباس اللامحدود
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+موقع إلكتروني متكامل لمؤسسة سعودية متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية.
 
-## About Laravel
+## 🎯 نظرة عامة
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Infinity Wear** هو نظام إدارة محتوى متكامل مصمم خصيصاً لشركات الملابس الرياضية والزي الموحد. يوفر النظام:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **موقع إلكتروني احترافي** بالهوية البصرية السعودية
+- **نظام تصميم مخصص** للزي الموحد
+- **لوحة تحكم إدارية** شاملة
+- **نظام إدارة المنتجات والفئات**
+- **نظام الطلبات والمبيعات**
+- **تقارير مالية متقدمة**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🏢 قيمنا ومبادئنا
 
-## Learning Laravel
+- **ثقة** - نثق في جودة منتجاتنا ونضمن رضا عملائنا
+- **سرعة** - نوفر خدمات سريعة وفعالة
+- **مصداقية** - نلتزم بالشفافية في جميع تعاملاتنا
+- **جودة** - نستخدم أفضل المواد والتقنيات
+- **تصميم** - نقدم تصاميم عصرية ومبتكرة
+- **احترافية** - فريق عمل محترف ومتخصص
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🚀 المميزات الرئيسية
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 🎨 أداة التصميم المخصص
+- تصميم زي موحد تفاعلي
+- إضافة النصوص والشعارات
+- اختيار الألوان والخطوط
+- معاينة فورية للتصميم
+- تحميل التصميم النهائي
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 📊 لوحة التحكم الإدارية
+- إحصائيات شاملة للمبيعات
+- إدارة المنتجات والفئات
+- نظام الطلبات المتقدم
+- تقارير مالية تفصيلية
+- إدارة العملاء
 
-## Laravel Sponsors
+### 🛍️ نظام المنتجات
+- فئات متنوعة (رياضي، مدرسي، شركات)
+- صور متعددة لكل منتج
+- نظام المخزون الذكي
+- العروض والخصومات
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 📱 تصميم متجاوب
+- متوافق مع جميع الأجهزة
+- تجربة مستخدم محسنة
+- سرعة تحميل عالية
 
-### Premium Partners
+## 🛠️ التقنيات المستخدمة
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **Backend**: Laravel 10 (PHP)
+- **Frontend**: Bootstrap 5 RTL + Custom CSS
+- **Database**: MySQL/SQLite
+- **Icons**: Font Awesome 6
+- **Fonts**: Cairo (Google Fonts)
 
-## Contributing
+## 📋 متطلبات النظام
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- PHP >= 8.1
+- Composer
+- MySQL >= 5.7 أو SQLite
+- Node.js & NPM (اختياري)
 
-## Code of Conduct
+## ⚡ التثبيت والتشغيل
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 1. استنساخ المشروع
+```bash
+git clone [repository-url] infinity-wear
+cd infinity-wear
+```
 
-## Security Vulnerabilities
+### 2. تثبيت المتطلبات
+```bash
+composer install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. إعداد البيئة
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## License
+### 4. إعداد قاعدة البيانات
+```bash
+# في ملف .env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=infinity_wear
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 5. تشغيل الـ Migrations والـ Seeders
+```bash
+php artisan migrate
+php artisan db:seed --class=CategorySeeder
+php artisan db:seed --class=ProductSeeder
+```
+
+### 6. إنشاء مجلدات الصور
+```bash
+mkdir -p public/images/products
+mkdir -p public/images/categories
+```
+
+### 7. تشغيل السيرفر
+```bash
+php artisan serve
+```
+
+الموقع سيكون متاحاً على: `http://localhost:8000`
+
+## 📁 هيكل المشروع
+
+```
+infinity-wear/
+├── app/
+│   ├── Http/Controllers/
+│   │   ├── HomeController.php
+│   │   ├── ProductController.php
+│   │   ├── CategoryController.php
+│   │   ├── CustomDesignController.php
+│   │   ├── AdminController.php
+│   │   └── AuthController.php
+│   └── Models/
+│       ├── Product.php
+│       ├── Category.php
+│       ├── Order.php
+│       ├── CustomDesign.php
+│       └── User.php
+├── resources/views/
+│   ├── layouts/app.blade.php
+│   ├── home.blade.php
+│   ├── products/
+│   ├── admin/
+│   └── custom-designs/
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── public/
+│   └── images/
+└── routes/web.php
+```
+
+## 🎨 الهوية البصرية
+
+### الألوان الأساسية
+- **الأزرق الأساسي**: `#1e3a8a`
+- **الأزرق الثانوي**: `#3b82f6`
+- **الأزرق الفاتح**: `#60a5fa`
+- **الأزرق الداكن**: `#1e40af`
+
+### الخطوط
+- **الخط الأساسي**: Cairo (Google Fonts)
+- **خط احتياطي**: Arial, sans-serif
+
+### الشعار
+- رمز اللانهاية (∞) بدرجات الأزرق المتدرج
+
+## 📄 الصفحات الرئيسية
+
+- **الصفحة الرئيسية** (`/`) - عرض المنتجات المميزة والفئات
+- **المنتجات** (`/products`) - عرض جميع المنتجات مع البحث والفلترة
+- **الفئات** (`/categories`) - عرض فئات المنتجات
+- **التصميم المخصص** (`/custom-designs/create`) - أداة التصميم التفاعلية
+- **من نحن** (`/about`) - معلومات عن الشركة
+- **خدماتنا** (`/services`) - الخدمات المقدمة
+- **اتصل بنا** (`/contact`) - نموذج التواصل
+
+## 👥 لوحة التحكم الإدارية
+
+### الوصول للوحة التحكم
+- الرابط: `/admin`
+- البيانات الافتراضية:
+  - البريد: `admin@infinitywear.sa`
+  - كلمة المرور: `admin123`
+
+### المميزات الإدارية
+- إحصائيات المبيعات والإيرادات
+- إدارة المنتجات (إضافة، تعديل، حذف)
+- إدارة الفئات
+- عرض وإدارة الطلبات
+- التصاميم المخصصة للعملاء
+- تقارير مفصلة
+- إدارة العملاء
+
+## 🔧 التخصيص والتطوير
+
+### إضافة منتج جديد
+```php
+Product::create([
+    'name_ar' => 'اسم المنتج بالعربية',
+    'name_en' => 'Product Name in English',
+    'description_ar' => 'وصف المنتج',
+    'category_id' => 1,
+    'price' => 100.00,
+    'sku' => 'PRD-001',
+    'stock_quantity' => 50,
+    'is_active' => true,
+    'is_featured' => false,
+]);
+```
+
+### إضافة فئة جديدة
+```php
+Category::create([
+    'name_ar' => 'اسم الفئة',
+    'name_en' => 'Category Name',
+    'description_ar' => 'وصف الفئة',
+    'slug' => 'category-slug',
+    'is_active' => true,
+    'sort_order' => 1,
+]);
+```
+
+## 📊 قاعدة البيانات
+
+### الجداول الرئيسية
+- `users` - المستخدمون والعملاء
+- `admins` - المدراء
+- `categories` - فئات المنتجات
+- `products` - المنتجات
+- `orders` - الطلبات
+- `order_items` - عناصر الطلبات
+- `custom_designs` - التصاميم المخصصة
+- `settings` - إعدادات النظام
+
+## 🌐 SEO والأداء
+
+- عناوين صفحات محسنة لمحركات البحث
+- وصف meta tags باللغة العربية
+- هيكل URL صديق لمحركات البحث
+- تحسين سرعة التحميل
+- تصميم متجاوب لجميع الأجهزة
+
+## 🚀 النشر والاستضافة
+
+### متطلبات الاستضافة
+- PHP 8.1+
+- MySQL 5.7+
+- مساحة تخزين كافية للصور
+- HTTPS مطلوب للإنتاج
+
+### خطوات النشر
+1. رفع الملفات للخادم
+2. إعداد قاعدة البيانات
+3. تشغيل `composer install --optimize-autoloader --no-dev`
+4. إعداد متغيرات البيئة
+5. تشغيل `php artisan migrate`
+6. إعداد صلاحيات المجلدات
+7. إعداد Virtual Host
+
+## 📞 الدعم والتواصل
+
+- **الموقع**: infinitywear.sa
+- **البريد الإلكتروني**: info@infinitywear.sa
+- **الهاتف**: +966 50 123 4567
+- **العنوان**: الرياض، المملكة العربية السعودية
+
+## 📝 الترخيص
+
+هذا المشروع مطور خصيصاً لمؤسسة Infinity Wear. جميع الحقوق محفوظة © 2025.
+
+## 🤝 المساهمة
+
+نرحب بالمساهمات لتطوير هذا المشروع. يرجى اتباع معايير الكود المعتمدة وإجراء الاختبارات اللازمة.
+
+---
+
+**تم التطوير بـ ❤️ في المملكة العربية السعودية**

@@ -104,6 +104,37 @@
             color: white;
             font-weight: bold;
             margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .infinity-logo::before {
+            content: "∞";
+            font-size: 1.5em;
+        }
+        
+        .hero-infinity-logo {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, var(--accent-color), white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 6rem;
+            font-weight: bold;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .hero-infinity-logo::before {
+            content: "∞";
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
     </style>
     
@@ -134,6 +165,11 @@
                         <a class="nav-link" href="{{ route('categories.index') }}">الفئات</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('custom-designs.create') }}">
+                            <i class="fas fa-palette me-1"></i>صمم زيك
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('services') }}">خدماتنا</a>
                     </li>
                     <li class="nav-item">
@@ -151,10 +187,22 @@
                                 <i class="fas fa-palette"></i> تصميمي
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user"></i> {{ Auth::user()->name }}
                             </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('custom-designs.index') }}">تصاميمي</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
                         </li>
                     @else
                         <li class="nav-item">
