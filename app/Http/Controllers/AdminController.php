@@ -395,9 +395,8 @@ class AdminController extends Controller
      */
     public function admins()
     {
-        $admins = User::where('role', '!=', 'customer')
-            ->latest()
-            ->paginate(20);
+        // استخدام جدول الأدمن بدلاً من المستخدمين
+        $admins = \App\Models\Admin::latest()->paginate(20);
 
         return view('admin.admins.index', compact('admins'));
     }

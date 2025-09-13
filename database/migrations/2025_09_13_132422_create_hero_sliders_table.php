@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('hero_sliders', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('subtitle')->nullable();
+            $table->string('subtitle', 500)->nullable();
             $table->text('description')->nullable();
             $table->string('image');
-            $table->string('button_text')->nullable();
-            $table->string('button_url')->nullable();
-            $table->string('button_color')->default('#3b82f6');
-            $table->integer('order')->default(0);
+            $table->string('button_text', 100)->nullable();
+            $table->string('button_link', 500)->nullable();
+            $table->string('text_color', 7)->default('#ffffff');
+            $table->decimal('overlay_opacity', 3, 2)->default(0.5);
+            $table->enum('animation_type', ['fade', 'slide', 'zoom'])->default('fade');
+            $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

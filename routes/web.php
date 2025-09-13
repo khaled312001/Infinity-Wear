@@ -101,6 +101,27 @@ Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(functi
     Route::resource('orders', OrderController::class);
     Route::resource('custom-designs', CustomDesignController::class);
     
+    // إدارة المحتوى
+    Route::resource('hero-slider', App\Http\Controllers\Admin\HeroSliderController::class);
+    Route::post('hero-slider/update-order', [App\Http\Controllers\Admin\HeroSliderController::class, 'updateOrder'])->name('hero-slider.update-order');
+    Route::patch('hero-slider/{heroSlider}/toggle-active', [App\Http\Controllers\Admin\HeroSliderController::class, 'toggleActive'])->name('hero-slider.toggle-active');
+    
+    Route::resource('home-sections', App\Http\Controllers\Admin\HomeSectionController::class);
+    Route::post('home-sections/update-order', [App\Http\Controllers\Admin\HomeSectionController::class, 'updateOrder'])->name('home-sections.update-order');
+    Route::patch('home-sections/{homeSection}/toggle-active', [App\Http\Controllers\Admin\HomeSectionController::class, 'toggleActive'])->name('home-sections.toggle-active');
+    
+    Route::resource('home-sections.section-contents', App\Http\Controllers\Admin\SectionContentController::class)->shallow();
+    Route::post('home-sections/{homeSection}/section-contents/update-order', [App\Http\Controllers\Admin\SectionContentController::class, 'updateOrder'])->name('section-contents.update-order');
+    Route::patch('section-contents/{sectionContent}/toggle-active', [App\Http\Controllers\Admin\SectionContentController::class, 'toggleActive'])->name('section-contents.toggle-active');
+    
+    // إدارة المشرفين
+    Route::get('/admins', [AdminController::class, 'admins'])->name('admins.index');
+    Route::get('/admins/create', [AdminController::class, 'createAdmin'])->name('admins.create');
+    Route::post('/admins', [AdminController::class, 'storeAdmin'])->name('admins.store');
+    Route::get('/admins/{admin}/edit', [AdminController::class, 'editAdmin'])->name('admins.edit');
+    Route::put('/admins/{admin}', [AdminController::class, 'updateAdmin'])->name('admins.update');
+    Route::delete('/admins/{admin}', [AdminController::class, 'destroyAdmin'])->name('admins.destroy');
+    
     // المستوردين
     Route::get('/importers', [AdminController::class, 'importersIndex'])->name('importers.index');
     Route::get('/importers/{id}', [AdminController::class, 'importersShow'])->name('importers.show');

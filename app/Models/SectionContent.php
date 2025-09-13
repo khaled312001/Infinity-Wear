@@ -11,36 +11,97 @@ class SectionContent extends Model
 
     protected $fillable = [
         'home_section_id',
-        'type',
         'title',
+        'subtitle',
         'description',
+        'content_type',
         'image',
-        'icon',
-        'icon_color',
+        'video_url',
+        'icon_class',
         'button_text',
-        'button_url',
-        'extra_data',
-        'order',
+        'button_link',
+        'button_style',
+        'custom_data',
+        'sort_order',
         'is_active',
     ];
 
     protected $casts = [
-        'extra_data' => 'array',
         'is_active' => 'boolean',
+        'sort_order' => 'integer',
+        'custom_data' => 'array',
     ];
 
+    /**
+     * علاقة القسم الرئيسي
+     */
     public function homeSection()
     {
         return $this->belongsTo(HomeSection::class);
     }
 
+    /**
+     * Scope للحصول على المحتويات النشطة فقط
+     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
+    /**
+     * Scope للحصول على المحتويات مرتبة
+     */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order', 'asc');
+        return $query->orderBy('sort_order');
+    }
+
+    /**
+     * الحصول على رابط الصورة
+     */
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
+    }
+
+    /**
+     * الحصول على نوع المحتوى المترجم
+     */
+    public function getContentTypeTranslatedAttribute()
+    {
+        $types = [
+            'text' => 'نص',
+            'image' => 'صورة',
+            'video' => 'فيديو',
+            'icon' => 'أيقونة',
+            'button' => 'زر',
+            'card' => 'بطاقة',
+            'testimonial' => 'شهادة',
+        ];
+
+        return $types[$this->content_type] ?? 'غير محدد';
+    }
+
+    /**
+     * الحصول على نمط الزر المترجم
+     */
+    public function getButtonStyleTranslatedAttribute()
+    {
+        $styles = [
+            'primary' => 'أساسي',
+            'secondary' => 'ثانوي',
+            'outline' => 'مفرغ',
+            'link' => 'رابط',
+        ];
+
+        return $styles[$this->button_style] ?? 'أساسي';
+    }
+
+    /**
+     * الحصول على كلاس الأيقونة الكامل
+     */
+    public function getFullIconClassAttribute()
+    {
+        return $this->icon_class ? 'fas ' . $this->icon_class : 'fas fa-star';
     }
 }

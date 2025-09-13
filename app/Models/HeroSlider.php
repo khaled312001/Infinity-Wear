@@ -15,23 +15,55 @@ class HeroSlider extends Model
         'description',
         'image',
         'button_text',
-        'button_url',
-        'button_color',
-        'order',
+        'button_link',
+        'text_color',
+        'overlay_opacity',
+        'animation_type',
+        'sort_order',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'overlay_opacity' => 'decimal:2',
+        'sort_order' => 'integer',
     ];
 
+    /**
+     * Scope للحصول على الشرائح النشطة فقط
+     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
+    /**
+     * Scope للحصول على الشرائح مرتبة
+     */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order', 'asc');
+        return $query->orderBy('sort_order');
+    }
+
+    /**
+     * الحصول على رابط الصورة
+     */
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? asset('storage/' . $this->image) : asset('images/default-slider.jpg');
+    }
+
+    /**
+     * الحصول على نوع الحركة المترجم
+     */
+    public function getAnimationTypeTranslatedAttribute()
+    {
+        $animations = [
+            'fade' => 'تلاشي',
+            'slide' => 'انزلاق',
+            'zoom' => 'تكبير',
+        ];
+
+        return $animations[$this->animation_type] ?? 'تلاشي';
     }
 }

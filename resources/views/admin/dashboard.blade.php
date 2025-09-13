@@ -35,6 +35,14 @@
             <i class="fas fa-palette me-2"></i>
             التصاميم المخصصة
         </a>
+        <a href="{{ route('admin.hero-slider.index') }}" class="nav-link">
+            <i class="fas fa-images me-2"></i>
+            السلايدر الرئيسي
+        </a>
+        <a href="{{ route('admin.home-sections.index') }}" class="nav-link">
+            <i class="fas fa-th-large me-2"></i>
+            أقسام الصفحة الرئيسية
+        </a>
         <a href="{{ route('admin.portfolio.index') }}" class="nav-link">
             <i class="fas fa-image me-2"></i>
             معرض الأعمال
