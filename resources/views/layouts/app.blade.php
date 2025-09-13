@@ -48,288 +48,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <!-- Enhanced Hero Section CSS -->
-    <link href="{{ asset('css/hero-enhanced.css') }}" rel="stylesheet" onerror="this.onerror=null;this.href='';">
-    <!-- Enhanced Footer CSS -->
-    <link href="{{ asset('css/footer-enhanced.css') }}" rel="stylesheet" onerror="this.onerror=null;this.href='';">
-    <!-- Enhanced Pages CSS -->
-    <link href="{{ asset('css/enhanced-pages.css') }}" rel="stylesheet" onerror="this.onerror=null;this.href='';">
-    
-    <style>
-        :root {
-            --primary-color: #1e3a8a;
-            --secondary-color: #3b82f6;
-            --accent-color: #60a5fa;
-            --dark-blue: #1e40af;
-            --light-blue: #dbeafe;
-            --header-glow: 0 0 20px 2px #60a5fa55;
-        }
-        
-        body {
-            font-family: 'Cairo', sans-serif;
-            padding-top: 0 !important;
-            margin-top: 0 !important;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        main {
-            flex: 1 0 auto;
-        }
-        
-        /* Enhanced Header Styles */
-        .navbar {
-            background: linear-gradient(120deg, var(--primary-color) 60%, var(--secondary-color) 100%);
-            box-shadow: 0 4px 24px 0 rgba(30,58,138,0.15), 0 1.5px 0 0 var(--accent-color);
-            height: auto;
-            min-height: 80px;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-            position: relative;
-            z-index: 1030;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0;
-        }
-        
-        .navbar.scrolled {
-            box-shadow: 0 8px 32px 0 rgba(30,58,138,0.25), 0 1.5px 0 0 var(--accent-color);
-            padding: 0.3rem 0;
-        }
-        
-        .navbar-brand {
-            font-weight: 900;
-            font-size: 2rem;
-            color: var(--primary-color) !important;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            text-shadow: 0 2px 8px #dbeafe99;
-            filter: drop-shadow(0 0 8px #60a5fa33);
-            transition: transform 0.3s ease;
-        }
-        
-        .navbar-brand:hover {
-            transform: scale(1.05);
-        }
-        
-        .navbar-brand .brand-text {
-            margin-right: 8px;
-            display:none;
-        }
-        
-        .infinity-logo {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            margin-right: 10px;
-            font-size: 2rem;
-            box-shadow: var(--header-glow);
-            border: 2.5px solid #fff;
-            position: relative;
-            z-index: 2;
-            transition: all 0.3s ease;
-        }
-        
-        .infinity-logo::before {
-            content: "∞";
-            font-size: 1.5em;
-            text-shadow: 0 0 8px #60a5fa99;
-        }
-        
-        .navbar-nav .nav-link {
-            color: #fff !important;
-            font-weight: 600;
-            font-size: 1.08rem;
-            padding: 0.7rem 1.1rem;
-            border-radius: 22px;
-            margin: 0 0.2rem;
-            transition: 
-                background 0.25s,
-                color 0.25s,
-                box-shadow 0.25s,
-                transform 0.2s;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-        }
-        
-        .navbar-nav .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 0%;
-            background: linear-gradient(90deg, var(--accent-color) 60%, var(--light-blue) 100%);
-            transition: height 0.25s ease;
-            z-index: -1;
-            border-radius: 22px;
-        }
-        
-        .navbar-nav .nav-link:hover::after, .navbar-nav .nav-link.active::after {
-            height: 100%;
-        }
-        
-        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
-            color: var(--primary-color) !important;
-            box-shadow: 0 2px 12px 0 #60a5fa33;
-            transform: translateY(-2px);
-        }
-        
-        .navbar-toggler {
-            border: none;
-            background: var(--accent-color);
-            border-radius: 50%;
-            padding: 8px 12px;
-            box-shadow: 0 2px 8px #60a5fa33;
-            transition: transform 0.2s ease;
-        }
-        
-        .navbar-toggler:hover {
-            transform: rotate(10deg);
-        }
-        
-        .navbar-toggler:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px var(--accent-color);
-        }
-        
-        .dropdown-menu {
-            border-radius: 18px;
-            box-shadow: 0 8px 32px 0 #1e3a8a22;
-            border: none;
-            background: linear-gradient(120deg, #f8fafc 80%, #e0e7ef 100%);
-            overflow: hidden;
-            padding: 0.5rem;
-        }
-        
-        .dropdown-item {
-            font-weight: 500;
-            color: var(--primary-color);
-            border-radius: 12px;
-            transition: all 0.2s ease;
-            padding: 0.6rem 1rem;
-            margin-bottom: 0.2rem;
-        }
-        
-        .dropdown-item:hover {
-            background: var(--accent-color);
-            color: #fff;
-            transform: translateX(-5px);
-        }
-        
-        /* Enhanced Footer */
-        .footer {
-            background: linear-gradient(135deg, var(--primary-color), var(--dark-blue));
-            color: white;
-            padding: 40px 0 20px;
-            margin-top: auto;
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.1);
-        }
-        
-        .footer h5 {
-            position: relative;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-        
-        .footer h5::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: var(--accent-color);
-            border-radius: 3px;
-        }
-        
-        .footer a.text-light {
-            transition: all 0.2s ease;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-        
-        .footer a.text-light:hover {
-            color: var(--accent-color) !important;
-            transform: translateX(-5px);
-        }
-        
-        .footer .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-            margin-right: 10px;
-        }
-        
-        .footer .social-links a:hover {
-            background: var(--accent-color);
-            transform: translateY(-3px);
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 991.98px) {
-            .navbar {
-                border-radius: 0 0 20px 20px;
-            }
-            
-            .navbar-brand {
-                font-size: 1.5rem;
-            }
-            
-            .infinity-logo {
-                width: 40px;
-                height: 40px;
-                font-size: 1.5rem;
-            }
-            
-            .navbar-collapse {
-                background: rgba(30, 58, 138, 0.95);
-                border-radius: 15px;
-                padding: 1rem;
-                margin-top: 0.5rem;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-            }
-            
-            .navbar-nav .nav-link {
-                padding: 0.8rem 1rem;
-                margin-bottom: 0.3rem;
-            }
-        }
-        
-        @media (max-width: 767.98px) {
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            .footer {
-                text-align: center;
-            }
-            
-            .footer h5::after {
-                left: 50%;
-                transform: translateX(-50%);
-            }
-        }
-    </style>
+    <!-- Main CSS -->
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet">
     
     @yield('styles')
 </head>
@@ -386,7 +106,6 @@
                             <i class="fas fa-star me-1"></i>عملاؤنا السابقين
                         </a>
                     </li>
-                  
                     <li class="nav-item">
                         <a class="nav-link{{ request()->routeIs('about') ? ' active' : '' }}" href="{{ route('about') }}">
                             <i class="fas fa-info-circle me-1"></i>من نحن
@@ -455,76 +174,35 @@
                         Infinity Wear
                     </h5>
                     <p>مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية</p>
-                    <div class="mt-3">
-                        <h6>قيمنا:</h6>
-                        <div class="row">
-                            <div class="col-6">
-                                <p class="mb-1"><i class="fas fa-check-circle text-success me-2"></i> ثقة</p>
-                                <p class="mb-1"><i class="fas fa-check-circle text-success me-2"></i> سرعة</p>
-                                <p class="mb-1"><i class="fas fa-check-circle text-success me-2"></i> مصداقية</p>
-                            </div>
-                            <div class="col-6">
-                                <p class="mb-1"><i class="fas fa-check-circle text-success me-2"></i> جودة</p>
-                                <p class="mb-1"><i class="fas fa-check-circle text-success me-2"></i> تصميم</p>
-                                <p class="mb-1"><i class="fas fa-check-circle text-success me-2"></i> احترافية</p>
-                            </div>
-                        </div>
-                    </div>
-                   
                 </div>
                 
                 <div class="col-lg-3 col-md-6">
                     <h5>روابط سريعة</h5>
-                    <div class="row">
-                        <div class="col-12">
-                            <ul class="list-unstyled">
-                                <li><a href="{{ route('home') }}" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>الرئيسية</a></li>
-                                <li><a href="{{ route('services') }}" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>خدماتنا</a></li>
-                                <li><a href="{{ route('portfolio.index') }}" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>معرض أعمالنا</a></li>
-                                <li><a href="{{ route('testimonials.index') }}" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>عملاؤنا السابقين</a></li>
-                                <li><a href="{{ route('about') }}" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>من نحن</a></li>
-                                <li><a href="{{ route('contact') }}" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>اتصل بنا</a></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ route('home') }}" class="text-light text-decoration-none">الرئيسية</a></li>
+                        <li><a href="{{ route('services') }}" class="text-light text-decoration-none">خدماتنا</a></li>
+                        <li><a href="{{ route('portfolio.index') }}" class="text-light text-decoration-none">معرض أعمالنا</a></li>
+                        <li><a href="{{ route('about') }}" class="text-light text-decoration-none">من نحن</a></li>
+                        <li><a href="{{ route('contact') }}" class="text-light text-decoration-none">اتصل بنا</a></li>
+                    </ul>
                 </div>
                 
                 <div class="col-lg-3 col-md-6">
                     <h5>خدماتنا</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>تصميم الأزياء مكةية</a></li>
-                        <li><a href="#" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>الزي الموحد للأكاديميات</a></li>
-                        <li><a href="#" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>ملابس الفرق مكةية</a></li>
-                        <li><a href="#" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>الطباعة على الملابس</a></li>
-                        <li><a href="#" class="text-light text-decoration-none"><i class="fas fa-angle-left me-2"></i>التوريد للمؤسسات</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">تصميم الأزياء</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">الزي الموحد للأكاديميات</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">ملابس الفرق الرياضية</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">الطباعة على الملابس</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-2 col-md-6">
                     <h5>تواصل معنا</h5>
                     <div class="contact-info">
-                        <div>
-                            <i class="fas fa-phone-alt"></i>
-                            <span>+966 50 123 4567</span>
-                        </div>
-                        <div>
-                            <i class="fas fa-envelope"></i>
-                            <span>info@infinitywear.sa</span>
-                        </div>
-                        <div>
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>مكة، المملكة العربية السعودية</span>
-                        </div>
-                        <div>
-                            <i class="fas fa-clock"></i>
-                            <span>الأحد - الخميس: 9 ص - 5 م</span>
-                        </div>
-                    </div>
-                    <div class="mt-4 social-links">
-                        <a href="#" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" aria-label="تويتر"><i class="fab fa-twitter"></i></a>
-                        <a href="#" aria-label="انستغرام"><i class="fab fa-instagram"></i></a>
-                        <a href="#" aria-label="لينكد إن"><i class="fab fa-linkedin-in"></i></a>
+                        <div><i class="fas fa-phone-alt"></i> +966 50 123 4567</div>
+                        <div><i class="fas fa-envelope"></i> info@infinitywear.sa</div>
+                        <div><i class="fas fa-map-marker-alt"></i> مكة، المملكة العربية السعودية</div>
                     </div>
                 </div>
             </div>
@@ -532,51 +210,16 @@
             <hr class="my-4">
             <div class="copyright">
                 <p>&copy; 2025 Infinity Wear. جميع الحقوق محفوظة.</p>
-                <div class="copyright-links">
-                    <a href="#">سياسة الخصوصية</a>
-                    <a href="#">الشروط والأحكام</a>
-                    <a href="#">سياسة الإرجاع</a>
-                </div>
             </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS Bundle with Popper -->
-    <!-- jQuery Library -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- AOS Animation Library -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <!-- Enhanced Hero Section JS -->
-    <script src="{{ asset('js/hero-enhanced.js') }}"></script>
-    
-    <script>
-        // Initialize AOS
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({
-                duration: 800,
-                easing: 'ease-in-out',
-                once: true
-            });
-            
-            // Navbar scroll effect
-            const navbar = document.querySelector('.navbar');
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 50) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-            });
-            
-            // Initialize any tooltips
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        });
-    </script>
+    <!-- Main JavaScript -->
+    <script src="{{ asset('js/main.js') }}"></script>
     
     @yield('scripts')
     
@@ -597,7 +240,7 @@
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        if(!f._fbq)f._fbq=n;n.push=n.loaded=!0;n.version='2.0';
         n.queue=[];t=b.createElement(e);t.async=!0;
         t.src=v;s=b.getElementsByTagName(e)[0];
         s.parentNode.insertBefore(t,s)}(window, document,'script',
@@ -612,32 +255,35 @@
     @endif
     
     <!-- Structured Data (JSON-LD) -->
+    @php
+        $structuredData = [
+            "@context" => "https://schema.org",
+            "@type" => "Organization",
+            "name" => "Infinity Wear",
+            "alternateName" => "مؤسسة اللباس اللامحدود",
+            "url" => url('/'),
+            "logo" => asset('images/infinity-wear-logo.png'),
+            "description" => app('seo')['site_description'] ?? 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية',
+            "address" => [
+                "@type" => "PostalAddress",
+                "addressCountry" => "SA",
+                "addressLocality" => "مكة المكرمة"
+            ],
+            "contactPoint" => [
+                "@type" => "ContactPoint",
+                "telephone" => "+966501234567",
+                "contactType" => "customer service",
+                "availableLanguage" => ["Arabic", "English"]
+            ],
+            "sameAs" => [
+                "https://facebook.com/infinitywear",
+                "https://twitter.com/infinitywear",
+                "https://instagram.com/infinitywear"
+            ]
+        ];
+    @endphp
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Infinity Wear",
-        "alternateName": "مؤسسة اللباس اللامحدود",
-        "url": "{{ url('/') }}",
-        "logo": "{{ asset('images/infinity-wear-logo.png') }}",
-        "description": "{{ app('seo')['site_description'] ?? 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية' }}",
-        "address": {
-            "@type": "PostalAddress",
-            "addressCountry": "SA",
-            "addressLocality": "مكة المكرمة"
-        },
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+966501234567",
-            "contactType": "customer service",
-            "availableLanguage": ["Arabic", "English"]
-        },
-        "sameAs": [
-            "https://facebook.com/infinitywear",
-            "https://twitter.com/infinitywear",
-            "https://instagram.com/infinitywear"
-        ]
-    }
+    {!! json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
     </script>
 </body>
 </html>

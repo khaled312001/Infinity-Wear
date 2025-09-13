@@ -23,7 +23,10 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            
+            // Redirect to appropriate dashboard based on user type
+            $user = Auth::user();
+            return redirect()->route($user->getDashboardRoute());
         }
 
         return back()->withErrors([
@@ -54,7 +57,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/')->with('success', 'تم إنشاء الحساب بنجاح!');
+        return redirect()->route($user->getDashboardRoute())->with('success', 'تم إنشاء الحساب بنجاح!');
     }
 
     public function logout(Request $request)

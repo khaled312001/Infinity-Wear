@@ -115,7 +115,7 @@ class ImporterController extends Controller
      */
     public function showImporterForm()
     {
-        return view('importers.form');
+        return view('importers.form')->withErrors([]);
     }
 
     /**

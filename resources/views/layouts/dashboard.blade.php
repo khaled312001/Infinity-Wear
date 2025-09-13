@@ -60,6 +60,27 @@
             transform: translateX(-5px);
         }
 
+        .nav-group {
+            margin: 20px 0;
+        }
+
+        .nav-group-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 20px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-group .nav-link {
+            padding: 10px 25px;
+            font-size: 0.9rem;
+            margin: 1px 0;
+        }
+
         .main-content {
             padding: 20px;
         }

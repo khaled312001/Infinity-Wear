@@ -19,6 +19,8 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/services', [HomeController::class, 'services'])->name('services');
 
+
+
 // المنتجات
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
@@ -59,11 +61,32 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// لوحات التحكم للعملاء
+Route::middleware(['auth', 'user.type:customer'])->prefix('customer')->name('customer.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\CustomerController::class, 'dashboard'])->name('dashboard');
+    Route::get('/orders', [App\Http\Controllers\CustomerController::class, 'orders'])->name('orders');
+    Route::get('/designs', [App\Http\Controllers\CustomerController::class, 'designs'])->name('designs');
+    Route::get('/profile', [App\Http\Controllers\CustomerController::class, 'profile'])->name('profile');
+    Route::put('/profile', [App\Http\Controllers\CustomerController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/settings', [App\Http\Controllers\CustomerController::class, 'settings'])->name('settings');
+    Route::put('/settings/notifications', [App\Http\Controllers\CustomerController::class, 'updateNotifications'])->name('settings.notifications');
+    Route::put('/settings/privacy', [App\Http\Controllers\CustomerController::class, 'updatePrivacy'])->name('settings.privacy');
+    Route::put('/password', [App\Http\Controllers\CustomerController::class, 'updatePassword'])->name('password.update');
+    Route::delete('/account', [App\Http\Controllers\CustomerController::class, 'deleteAccount'])->name('account.delete');
+});
+
 // المستوردين
 use App\Http\Controllers\ImporterController;
 Route::get('/importers/register', [ImporterController::class, 'showImporterForm'])->name('importers.form');
 Route::post('/importers/register', [ImporterController::class, 'submitImporterForm'])->name('importers.submit');
-Route::get('/importers/dashboard', [ImporterController::class, 'dashboard'])->name('importers.dashboard')->middleware('auth');
+
+// لوحة تحكم المستوردين
+Route::middleware(['auth', 'user.type:importer'])->prefix('importers')->name('importers.')->group(function () {
+    Route::get('/dashboard', [ImporterController::class, 'dashboard'])->name('dashboard');
+    Route::get('/orders', [ImporterController::class, 'orders'])->name('orders');
+    Route::get('/profile', [ImporterController::class, 'profile'])->name('profile');
+    Route::put('/profile', [ImporterController::class, 'updateProfile'])->name('profile.update');
+});
 
 // تسجيل دخول الإدارة
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
@@ -109,4 +132,70 @@ Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(functi
         Route::post('/clear-cache', [ContentController::class, 'clearCache'])->name('clear-cache');
         Route::post('/generate-sitemap', [ContentController::class, 'generateSitemap'])->name('generate-sitemap');
     });
+    
+    // إدارة المستخدمين
+    Route::get('/users', [AdminController::class, 'users'])->name('users.index');
+    Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+    Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+    Route::get('/users/{id}', [AdminController::class, 'showUser'])->name('users.show');
+    Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    
+    // إدارة المشرفين
+    Route::get('/admins', [AdminController::class, 'admins'])->name('admins.index');
+    Route::get('/admins/create', [AdminController::class, 'createAdmin'])->name('admins.create');
+    Route::post('/admins', [AdminController::class, 'storeAdmin'])->name('admins.store');
+    Route::get('/admins/{id}', [AdminController::class, 'showAdmin'])->name('admins.show');
+    Route::get('/admins/{id}/edit', [AdminController::class, 'editAdmin'])->name('admins.edit');
+    Route::put('/admins/{id}', [AdminController::class, 'updateAdmin'])->name('admins.update');
+    Route::delete('/admins/{id}', [AdminController::class, 'destroyAdmin'])->name('admins.destroy');
+    
+    // فريق التسويق
+    Route::get('/marketing', [AdminController::class, 'marketingTeam'])->name('marketing.index');
+    Route::get('/marketing/{id}', [AdminController::class, 'showMarketingMember'])->name('marketing.show');
+    Route::post('/marketing/{id}/assign-task', [AdminController::class, 'assignTaskToMarketing'])->name('marketing.assign-task');
+    Route::put('/marketing/{id}/disable', [AdminController::class, 'disableMarketingMember'])->name('marketing.disable');
+    
+    // فريق المبيعات
+    Route::get('/sales', [AdminController::class, 'salesTeam'])->name('sales.index');
+    Route::get('/sales/{id}', [AdminController::class, 'showSalesMember'])->name('sales.show');
+    Route::post('/sales/{id}/assign-task', [AdminController::class, 'assignTaskToSales'])->name('sales.assign-task');
+    Route::put('/sales/{id}/target', [AdminController::class, 'updateSalesTarget'])->name('sales.update-target');
+    Route::put('/sales/{id}/disable', [AdminController::class, 'disableSalesMember'])->name('sales.disable');
+    
+    // إدارة المهام
+    Route::prefix('tasks')->name('tasks.')->group(function () {
+        Route::get('/', [App\Http\Controllers\TaskController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\TaskController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\TaskController::class, 'store'])->name('store');
+        Route::get('/{task}', [App\Http\Controllers\TaskController::class, 'show'])->name('show');
+        Route::get('/{task}/edit', [App\Http\Controllers\TaskController::class, 'edit'])->name('edit');
+        Route::put('/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('update');
+        Route::delete('/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('destroy');
+        Route::put('/{task}/status', [App\Http\Controllers\TaskController::class, 'updateStatus'])->name('update-status');
+    });
+    
+    // معرض الأعمال
+    Route::get('/portfolio', [AdminController::class, 'portfolio'])->name('portfolio.index');
+    Route::get('/portfolio/create', [AdminController::class, 'createPortfolioItem'])->name('portfolio.create');
+    Route::post('/portfolio', [AdminController::class, 'storePortfolioItem'])->name('portfolio.store');
+    Route::get('/portfolio/{id}/edit', [AdminController::class, 'editPortfolioItem'])->name('portfolio.edit');
+    Route::put('/portfolio/{id}', [AdminController::class, 'updatePortfolioItem'])->name('portfolio.update');
+    Route::delete('/portfolio/{id}', [AdminController::class, 'destroyPortfolioItem'])->name('portfolio.destroy');
+    
+    // الشهادات والتقييمات
+    Route::get('/testimonials', [AdminController::class, 'testimonials'])->name('testimonials.index');
+    Route::get('/testimonials/create', [AdminController::class, 'createTestimonial'])->name('testimonials.create');
+    Route::post('/testimonials', [AdminController::class, 'storeTestimonial'])->name('testimonials.store');
+    Route::get('/testimonials/{id}/edit', [AdminController::class, 'editTestimonial'])->name('testimonials.edit');
+    Route::put('/testimonials/{id}', [AdminController::class, 'updateTestimonial'])->name('testimonials.update');
+    Route::delete('/testimonials/{id}', [AdminController::class, 'destroyTestimonial'])->name('testimonials.destroy');
+    
+    // التقارير
+    Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
+    
+    // الإعدادات
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+    Route::put('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
 });

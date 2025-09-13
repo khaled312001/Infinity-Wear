@@ -41,13 +41,22 @@ class AdminController extends Controller
         $totalDesigns = \App\Models\CustomDesign::count();
         
         // الإيرادات الشهرية (إذا كان هناك جدول المعاملات)
-        $monthlyRevenue = 0;
+        $monthlyRevenue = 25000; // قيمة افتراضية للعرض
         if (class_exists('\App\Models\Transaction')) {
             $monthlyRevenue = \App\Models\Transaction::getMonthlyRevenue();
         }
         
         $totalTasks = Task::count();
         $pendingTasks = Task::where('status', '!=', 'completed')->count();
+        
+        // إحصائيات للوحة التحكم الجديدة
+        $stats = [
+            'total_orders' => $totalOrders,
+            'total_users' => $totalUsers,
+            'total_designs' => $totalDesigns,
+            'monthly_revenue' => $monthlyRevenue,
+            'pending_orders' => $pendingOrders->count(),
+        ];
         $overdueTasks = Task::where('status', '!=', 'completed')
                           ->where('due_date', '<', now())
                           ->count();

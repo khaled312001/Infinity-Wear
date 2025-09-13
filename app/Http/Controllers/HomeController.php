@@ -11,22 +11,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $categories = Category::where('is_active', true)
-            ->orderBy('sort_order')
-            ->take(6)
-            ->get();
-
-        $featuredProducts = Product::where('is_active', true)
-            ->where('is_featured', true)
-            ->take(8)
-            ->get();
-
-        $latestProducts = Product::where('is_active', true)
-            ->latest()
-            ->take(8)
-            ->get();
-
-        return view('home', compact('categories', 'featuredProducts', 'latestProducts'));
+        $heroSliders = \App\Models\HeroSlider::active()->ordered()->get();
+        $homeSections = \App\Models\HomeSection::active()->ordered()->with('contents')->get();
+        
+        return view('home', compact('heroSliders', 'homeSections'));
     }
 
     public function about()
