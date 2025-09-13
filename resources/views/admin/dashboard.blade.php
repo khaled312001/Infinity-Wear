@@ -1,191 +1,495 @@
-﻿@extends('layouts.app')
+﻿@extends('layouts.dashboard')
 
-@section('title', 'لوحة التحكم - Infinity Wear')
+@section('title', 'لوحة التحكم الإدارية')
+@section('dashboard-title', 'لوحة الإدارة')
+@section('page-title', 'مرحبا بك في لوحة التحكم')
+@section('page-subtitle', 'إدارة شاملة لموقع Infinity Wear - مؤسسة اللباس اللامحدود')
+@section('profile-route', '#')
+@section('settings-route', '#')
+
+@section('sidebar-menu')
+    <a href="{{ route('admin.dashboard') }}" class="nav-link active">
+        <i class="fas fa-tachometer-alt me-2"></i>
+        الرئيسية
+    </a>
+    <a href="{{ route('admin.orders.index') }}" class="nav-link">
+        <i class="fas fa-shopping-cart me-2"></i>
+        الطلبات
+    </a>
+    <a href="{{ route('admin.products.index') }}" class="nav-link">
+        <i class="fas fa-tshirt me-2"></i>
+        المنتجات
+    </a>
+    <a href="{{ route('admin.categories.index') }}" class="nav-link">
+        <i class="fas fa-tags me-2"></i>
+        الفئات
+    </a>
+    <a href="{{ route('admin.custom-designs.index') }}" class="nav-link">
+        <i class="fas fa-palette me-2"></i>
+        التصاميم المخصصة
+    </a>
+    <a href="{{ route('admin.importers.index') }}" class="nav-link">
+        <i class="fas fa-truck me-2"></i>
+        المستوردين
+    </a>
+    <a href="#" class="nav-link">
+        <i class="fas fa-users me-2"></i>
+        العملاء
+    </a>
+    <a href="#" class="nav-link">
+        <i class="fas fa-chart-bar me-2"></i>
+        التقارير
+    </a>
+    <a href="#" class="nav-link">
+        <i class="fas fa-cog me-2"></i>
+        الإعدادات
+    </a>
+@endsection
+
+@section('page-actions')
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="fas fa-plus me-2"></i>
+            إضافة جديد
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ route('admin.products.create') }}"><i class="fas fa-tshirt me-2"></i>منتج جديد</a></li>
+            <li><a class="dropdown-item" href="{{ route('admin.categories.create') }}"><i class="fas fa-tags me-2"></i>فئة جديدة</a></li>
+            <li><a class="dropdown-item" href="{{ route('admin.orders.create') }}"><i class="fas fa-shopping-cart me-2"></i>طلب جديد</a></li>
+        </ul>
+    </div>
+@endsection
 
 @section('content')
-<div class="container-fluid py-4">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <span class="infinity-logo me-2"></span>
-                        لوحة التحكم
-                    </h5>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a href="{{ route('admin.dashboard') }}" class="list-group-item list-group-item-action active">
-                        <i class="fas fa-tachometer-alt me-2"></i>
-                        الرئيسية
-                    </a>
-                    <a href="{{ route('admin.products.index') }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-tshirt me-2"></i>
-                        المنتجات
-                    </a>
-                    <a href="{{ route('admin.categories.index') }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-tags me-2"></i>
-                        الفئات
-                    </a>
-                    <a href="{{ route('admin.orders.index') }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-shopping-cart me-2"></i>
-                        الطلبات
-                    </a>
-                    <a href="{{ route('admin.custom-designs.index') }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-palette me-2"></i>
-                        التصاميم المخصصة
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-users me-2"></i>
-                        العملاء
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-chart-bar me-2"></i>
-                        التقارير
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-cog me-2"></i>
-                        الإعدادات
-                    </a>
+    <!-- الإحصائيات السريعة -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon primary me-3">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">{{ $stats['total_orders'] ?? 156 }}</h3>
+                        <p class="text-muted mb-0">إجمالي الطلبات</p>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up me-1"></i>
+                            +12% من الشهر الماضي
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Main Content -->
-        <div class="col-md-9 col-lg-10">
-            <div class="row mb-4">
-                <div class="col-12">
-                    <h2 class="section-title">لوحة التحكم</h2>
-                    <p class="text-muted">مرحبا بك في لوحة تحكم Infinity Wear</p>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon success me-3">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">{{ $stats['total_users'] ?? 89 }}</h3>
+                        <p class="text-muted mb-0">العملاء المسجلين</p>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up me-1"></i>
+                            +8% من الشهر الماضي
+                        </small>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Statistics Cards -->
-            <div class="row g-4 mb-4">
-                <div class="col-md-3">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="mb-0">150</h4>
-                                    <p class="mb-0">إجمالي المنتجات</p>
-                                </div>
-                                <div class="infinity-logo" style="width: 50px; height: 50px;">
-                                    <i class="fas fa-tshirt"></i>
-                                </div>
-                            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon warning me-3">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">{{ $stats['total_designs'] ?? 43 }}</h3>
+                        <p class="text-muted mb-0">التصاميم المخصصة</p>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up me-1"></i>
+                            +25% من الشهر الماضي
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon danger me-3">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">{{ number_format($stats['monthly_revenue'] ?? 25000) }}</h3>
+                        <p class="text-muted mb-0">إيرادات الشهر (ر.س)</p>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up me-1"></i>
+                            +15% من الشهر الماضي
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- الإجراءات السريعة -->
+        <div class="col-lg-4">
+            <div class="dashboard-card">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2 text-warning"></i>
+                        إجراءات سريعة
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('admin.orders.create') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            طلب جديد
+                        </a>
+                        <a href="{{ route('admin.products.create') }}" class="btn btn-outline-success">
+                            <i class="fas fa-tshirt me-2"></i>
+                            منتج جديد
+                        </a>
+                        <a href="{{ route('admin.categories.create') }}" class="btn btn-outline-info">
+                            <i class="fas fa-tags me-2"></i>
+                            فئة جديدة
+                        </a>
+                        <a href="#" class="btn btn-outline-warning">
+                            <i class="fas fa-chart-pie me-2"></i>
+                            تقرير مالي
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="fas fa-cog me-2"></i>
+                            إعدادات النظام
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- حالة النظام -->
+            <div class="dashboard-card mt-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">
+                        <i class="fas fa-server me-2 text-success"></i>
+                        حالة النظام
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <span>الموقع الإلكتروني</span>
+                        </div>
+                        <span class="badge bg-success">متصل</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <span>قاعدة البيانات</span>
+                        </div>
+                        <span class="badge bg-success">متصلة</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <span>مساحة التخزين</span>
+                        </div>
+                        <span class="badge bg-warning">75%</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <span>النسخ الاحتياطي</span>
+                        </div>
+                        <span class="badge bg-success">محدث</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- الرسم البياني -->
+        <div class="col-lg-8">
+            <div class="dashboard-card">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-area me-2 text-primary"></i>
+                            نظرة عامة على الأداء
+                        </h5>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-sm btn-outline-primary active" onclick="updateChart('7days')">7 أيام</button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="updateChart('30days')">30 يوم</button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="updateChart('3months')">3 أشهر</button>
                         </div>
                     </div>
                 </div>
-                
-                <div class="col-md-3">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="mb-0">45</h4>
-                                    <p class="mb-0">الطلبات الجديدة</p>
-                                </div>
-                                <div class="infinity-logo" style="width: 50px; height: 50px;">
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- النشاط الأخير والطلبات المعلقة -->
+    <div class="row g-4 mt-4">
+        <div class="col-lg-6">
+            <div class="dashboard-card">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-history me-2 text-primary"></i>
+                            النشاط الأخير
+                        </h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">عرض الكل</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="recent-activity">
+                        <div class="activity-item">
+                            <div class="d-flex align-items-center">
+                                <div class="stats-icon success me-3" style="width: 40px; height: 40px; font-size: 16px;">
                                     <i class="fas fa-shopping-cart"></i>
                                 </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">طلب جديد #1234</h6>
+                                    <small class="text-muted">منذ 5 دقائق</small>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-3">
-                    <div class="card bg-warning text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="mb-0">25</h4>
-                                    <p class="mb-0">التصاميم المخصصة</p>
-                                </div>
-                                <div class="infinity-logo" style="width: 50px; height: 50px;">
+
+                        <div class="activity-item">
+                            <div class="d-flex align-items-center">
+                                <div class="stats-icon info me-3" style="width: 40px; height: 40px; font-size: 16px;">
                                     <i class="fas fa-palette"></i>
                                 </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">تصميم مخصص جديد</h6>
+                                    <small class="text-muted">منذ 15 دقيقة</small>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-3">
-                    <div class="card bg-info text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="mb-0">1,250</h4>
-                                    <p class="mb-0">إجمالي العملاء</p>
+
+                        <div class="activity-item">
+                            <div class="d-flex align-items-center">
+                                <div class="stats-icon warning me-3" style="width: 40px; height: 40px; font-size: 16px;">
+                                    <i class="fas fa-user-plus"></i>
                                 </div>
-                                <div class="infinity-logo" style="width: 50px; height: 50px;">
-                                    <i class="fas fa-users"></i>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">عميل جديد مسجل</h6>
+                                    <small class="text-muted">منذ ساعة</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="d-flex align-items-center">
+                                <div class="stats-icon danger me-3" style="width: 40px; height: 40px; font-size: 16px;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">تحديث مطلوب للنظام</h6>
+                                    <small class="text-muted">منذ 3 ساعات</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Recent Orders -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">الطلبات الأخيرة</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>رقم الطلب</th>
-                                            <th>العميل</th>
-                                            <th>المبلغ</th>
-                                            <th>الحالة</th>
-                                            <th>التاريخ</th>
-                                            <th>الإجراءات</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>#ORD-001</td>
-                                            <td>أحمد محمد</td>
-                                            <td>250 ريال</td>
-                                            <td><span class="badge bg-warning">في الانتظار</span></td>
-                                            <td>2025-09-05</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary">عرض</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#ORD-002</td>
-                                            <td>فاطمة علي</td>
-                                            <td>180 ريال</td>
-                                            <td><span class="badge bg-success">مكتمل</span></td>
-                                            <td>2025-09-04</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary">عرض</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#ORD-003</td>
-                                            <td>محمد السعد</td>
-                                            <td>320 ريال</td>
-                                            <td><span class="badge bg-info">قيد المعالجة</span></td>
-                                            <td>2025-09-03</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary">عرض</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="dashboard-card">
+                <div class="card-header bg-white border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clock me-2 text-warning"></i>
+                            الطلبات المعلقة
+                        </h5>
+                        <span class="badge bg-warning">{{ $stats['pending_orders'] ?? 5 }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if(isset($pendingOrders) && $pendingOrders->count() > 0)
+                        <div class="recent-activity">
+                            @foreach($pendingOrders as $order)
+                            <div class="activity-item">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <div class="stats-icon warning me-3" style="width: 40px; height: 40px; font-size: 16px;">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">طلب #{{ $order->id }} - {{ $order->customer_name }}</h6>
+                                            <small class="text-muted">{{ $order->created_at->diffForHumans() }}</small>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-outline-primary">
+                                        عرض
+                                    </a>
+                                </div>
                             </div>
+                            @endforeach
                         </div>
+                    @else
+                        <div class="text-center py-4">
+                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <h6 class="text-muted">لا توجد طلبات معلقة</h6>
+                            <p class="text-muted mb-0">جميع الطلبات تمت معالجتها</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- روابط سريعة للأقسام -->
+    <div class="row">
+        <div class="col-12">
+            <div class="chart-container" data-aos="fade-up">
+                <h5 class="mb-4">
+                    <i class="fas fa-th-large me-2 text-primary"></i>
+                    إدارة الأقسام
+                </h5>
+                
+                <div class="row">
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <a href="{{ route('admin.orders.index') }}" class="action-btn text-center">
+                            <i class="fas fa-shopping-cart"></i>
+                            <div>
+                                <div class="fw-bold">الطلبات</div>
+                                <small class="text-muted">إدارة الطلبات</small>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <a href="{{ route('admin.products.index') }}" class="action-btn text-center">
+                            <i class="fas fa-box"></i>
+                            <div>
+                                <div class="fw-bold">المنتجات</div>
+                                <small class="text-muted">إدارة المنتجات</small>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <a href="{{ route('admin.custom-designs.index') }}" class="action-btn text-center">
+                            <i class="fas fa-palette"></i>
+                            <div>
+                                <div class="fw-bold">التصاميم</div>
+                                <small class="text-muted">التصاميم المخصصة</small>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <a href="{{ route('admin.finance.dashboard') }}" class="action-btn text-center">
+                            <i class="fas fa-chart-line"></i>
+                            <div>
+                                <div class="fw-bold">المالية</div>
+                                <small class="text-muted">الإيرادات والمصروفات</small>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <a href="{{ route('admin.importers.index') }}" class="action-btn text-center">
+                            <i class="fas fa-truck"></i>
+                            <div>
+                                <div class="fw-bold">المستوردين</div>
+                                <small class="text-muted">إدارة المستوردين</small>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <a href="{{ route('admin.content.index') }}" class="action-btn text-center">
+                            <i class="fas fa-edit"></i>
+                            <div>
+                                <div class="fw-bold">المحتوى</div>
+                                <small class="text-muted">إدارة المحتوى والـ SEO</small>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // رسم بياني للأداء
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    const performanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'],
+            datasets: [
+                {
+                    label: 'الطلبات',
+                    data: [12, 19, 3, 5, 2, 3, 9],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'التصاميم',
+                    data: [2, 3, 20, 5, 1, 4, 6],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'العملاء الجدد',
+                    data: [3, 10, 13, 15, 22, 30, 25],
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            family: 'Cairo'
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // تحديث الإحصائيات كل دقيقة
+    setInterval(function() {
+        // يمكن إضافة AJAX لتحديث الإحصائيات
+        console.log('تحديث الإحصائيات...');
+    }, 60000);
+</script>
 @endsection

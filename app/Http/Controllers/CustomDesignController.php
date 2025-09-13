@@ -17,6 +17,11 @@ class CustomDesignController extends Controller
         return view('custom-designs.create');
     }
 
+    public function enhancedCreate()
+    {
+        return view('custom-designs.enhanced-create');
+    }
+
     /**
      * حفظ التصميم الجديد
      */
@@ -36,10 +41,13 @@ class CustomDesignController extends Controller
             return redirect()->route('custom-designs.index')
                 ->with('success', 'تم حفظ التصميم بنجاح!');
         } else {
-            // إذا لم يكن مسجل دخول، وجهه لتسجيل الدخول
-            session(['design_data' => $validatedData]);
-            return redirect()->route('login')
-                ->with('message', 'يرجى تسجيل الدخول لحفظ التصميم');
+            // إذا لم يكن مسجل دخول، احفظ التصميم بدون ربطه بمستخدم
+            $validatedData['user_id'] = null;
+            $design = CustomDesign::create($validatedData);
+            
+            return redirect()->route('custom-designs.create')
+                ->with('success', 'تم حفظ التصميم بنجاح! يمكنك تسجيل الدخول لاحقاً لإدارة تصاميمك المحفوظة.')
+                ->with('design_id', $design->id);
         }
     }
 
@@ -48,6 +56,11 @@ class CustomDesignController extends Controller
      */
     public function index()
     {
+        if (!Auth::check()) {
+            return redirect()->route('login')
+                ->with('message', 'يرجى تسجيل الدخول لعرض تصاميمك');
+        }
+
         $designs = CustomDesign::where('user_id', Auth::id())
             ->latest()
             ->paginate(12);

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Models;
 
@@ -48,4 +48,37 @@ class User extends Authenticatable
     {
         return $this->user_type === 'admin';
     }
-}
+
+    public function isCustomer(): bool
+    {
+        return $this->user_type === 'customer';
+    }
+
+    public function isImporter(): bool
+    {
+        return $this->user_type === 'importer';
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->user_type === $role;
+    }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        return in_array($this->user_type, $roles);
+    }
+
+    public function getDashboardRoute(): string
+    {
+        switch ($this->user_type) {
+            case 'admin':
+                return 'admin.dashboard';
+            case 'importer':
+                return 'importers.dashboard';
+            case 'customer':
+            default:
+                return 'customer.dashboard';
+        }
+    }
+} 

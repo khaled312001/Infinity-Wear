@@ -1,0 +1,124 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="contactBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:0.1" />
+    </linearGradient>
+    <radialGradient id="phoneGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.3" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#contactBg)"/>
+  
+  <!-- Mobile phone illustration -->
+  <g transform="translate(300, 150)">
+    <rect x="0" y="0" width="80" height="140" fill="#1f2937" rx="10"/>
+    <rect x="5" y="10" width="70" height="110" fill="#111827" rx="5"/>
+    <circle cx="40" cy="130" r="8" fill="#374151"/>
+    
+    <!-- Screen content -->
+    <rect x="10" y="15" width="60" height="8" fill="#60a5fa" rx="2"/>
+    <rect x="10" y="30" width="45" height="6" fill="#9ca3af" rx="2"/>
+    <rect x="10" y="40" width="50" height="6" fill="#9ca3af" rx="2"/>
+    <rect x="10" y="50" width="35" height="6" fill="#9ca3af" rx="2"/>
+    
+    <!-- Message bubbles -->
+    <rect x="15" y="65" width="30" height="12" fill="#3b82f6" rx="6"/>
+    <rect x="25" y="82" width="35" height="12" fill="#fbbf24" rx="6"/>
+    <rect x="20" y="99" width="25" height="12" fill="#3b82f6" rx="6"/>
+  </g>
+  
+  <!-- Email envelope -->
+  <g transform="translate(500, 250)">
+    <rect x="0" y="0" width="60" height="40" fill="#ffffff" stroke="#d1d5db" stroke-width="2" rx="3"/>
+    <path d="M0 0 L30 25 L60 0" stroke="#6b7280" stroke-width="2" fill="none"/>
+    <circle cx="50" cy="10" r="4" fill="#ef4444"/>
+  </g>
+  
+  <!-- Location pin -->
+  <g transform="translate(150, 300)">
+    <path d="M20 0 Q30 0 30 15 Q30 25 20 40 Q10 25 10 15 Q10 0 20 0 Z" fill="#ef4444"/>
+    <circle cx="20" cy="15" r="8" fill="#ffffff"/>
+    <circle cx="20" cy="15" r="4" fill="#ef4444"/>
+  </g>
+  
+  <!-- Clock for working hours -->
+  <g transform="translate(600, 400)">
+    <circle cx="0" cy="0" r="25" fill="#ffffff" stroke="#6b7280" stroke-width="2"/>
+    <circle cx="0" cy="0" r="2" fill="#374151"/>
+    <!-- Clock hands -->
+    <line x1="0" y1="0" x2="0" y2="-15" stroke="#374151" stroke-width="2" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="10" y2="0" stroke="#374151" stroke-width="2" stroke-linecap="round"/>
+    <!-- Clock numbers -->
+    <text x="0" y="-18" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#374151">12</text>
+    <text x="18" y="3" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#374151">3</text>
+    <text x="0" y="22" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#374151">6</text>
+    <text x="-18" y="3" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#374151">9</text>
+  </g>
+  
+  <!-- Customer service representative -->
+  <g transform="translate(200, 450)">
+    <!-- Head -->
+    <circle cx="0" cy="0" r="15" fill="#fbbf24"/>
+    <circle cx="0" cy="-3" r="8" fill="#1e3a8a"/>
+    
+    <!-- Body -->
+    <rect x="-12" y="8" width="24" height="30" fill="#3b82f6" rx="5"/>
+    
+    <!-- Headset -->
+    <path d="M-10 -8 Q0 -15 10 -8" stroke="#374151" stroke-width="2" fill="none"/>
+    <circle cx="12" cy="-5" r="3" fill="#374151"/>
+    <rect x="10" y="-2" width="6" height="2" fill="#374151" rx="1"/>
+  </g>
+  
+  <!-- Social media icons -->
+  <g transform="translate(100, 100)" opacity="0.6">
+    <!-- Facebook -->
+    <rect x="0" y="0" width="20" height="20" fill="#1877f2" rx="3"/>
+    <text x="10" y="14" font-family="Arial, sans-serif" font-size="12" font-weight="bold" 
+          text-anchor="middle" fill="#ffffff">f</text>
+  </g>
+  
+  <g transform="translate(650, 150)" opacity="0.6">
+    <!-- Instagram -->
+    <rect x="0" y="0" width="20" height="20" fill="#E4405F" rx="5"/>
+    <circle cx="10" cy="10" r="6" fill="none" stroke="#ffffff" stroke-width="2"/>
+    <circle cx="10" cy="10" r="2" fill="#ffffff"/>
+    <circle cx="15" cy="5" r="1.5" fill="#ffffff"/>
+  </g>
+  
+  <g transform="translate(550, 100)" opacity="0.6">
+    <!-- WhatsApp -->
+    <circle cx="10" cy="10" r="10" fill="#25D366"/>
+    <path d="M6 6 Q10 4 14 6 Q14 10 12 12 L10 14 L8 12 Q6 10 6 6 Z" 
+          fill="#ffffff"/>
+  </g>
+  
+  <!-- FAQ question marks -->
+  <g transform="translate(450, 450)" opacity="0.4">
+    <circle cx="0" cy="0" r="12" fill="#60a5fa"/>
+    <text x="0" y="4" font-family="Arial, sans-serif" font-size="14" font-weight="bold" 
+          text-anchor="middle" fill="#ffffff">?</text>
+  </g>
+  
+  <g transform="translate(700, 300)" opacity="0.4">
+    <circle cx="0" cy="0" r="10" fill="#fbbf24"/>
+    <text x="0" y="3" font-family="Arial, sans-serif" font-size="12" font-weight="bold" 
+          text-anchor="middle" fill="#1e3a8a">?</text>
+  </g>
+  
+  <!-- Communication waves -->
+  <g transform="translate(350, 200)" opacity="0.3">
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#60a5fa" stroke-width="2"/>
+    <circle cx="0" cy="0" r="35" fill="none" stroke="#60a5fa" stroke-width="1"/>
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#60a5fa" stroke-width="1" opacity="0.5"/>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="50" cy="200" r="3" fill="#fbbf24" opacity="0.5"/>
+  <circle cx="750" cy="450" r="4" fill="#60a5fa" opacity="0.5"/>
+  <circle cx="400" cy="50" r="2" fill="#1e3a8a" opacity="0.5"/>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa"/>
+  
+  <!-- Football kit illustration -->
+  <g transform="translate(400, 300)">
+    <!-- Jersey -->
+    <path d="M-120,-150 L120,-150 L150,-50 L150,150 L-150,150 L-150,-50 Z" fill="#0d6efd" stroke="#333" stroke-width="3"/>
+    
+    <!-- Collar -->
+    <path d="M-50,-150 L0,-190 L50,-150 L0,-130 Z" fill="#ffffff" stroke="#333" stroke-width="2"/>
+    
+    <!-- Team logo -->
+    <circle cx="-50" cy="-50" r="40" fill="#ffffff" stroke="#333" stroke-width="2"/>
+    <text x="-50" y="-40" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#333">الهلال</text>
+    
+    <!-- Sponsor -->
+    <rect x="-80" y="30" width="160" height="50" rx="10" fill="#ffffff"/>
+    <text x="0" y="65" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#333">الراعي</text>
+    
+    <!-- Number -->
+    <text x="70" y="-50" font-family="Arial, sans-serif" font-size="60" font-weight="bold" text-anchor="middle" fill="#ffffff">9</text>
+    
+    <!-- Stripes -->
+    <rect x="-150" y="-120" width="300" height="15" fill="#ffffff"/>
+    <rect x="-150" y="-90" width="300" height="15" fill="#ffffff"/>
+    
+    <!-- Sleeves -->
+    <path d="M-120,-150 L-220,-100 L-200,-50 L-150,-50" fill="#0d6efd" stroke="#333" stroke-width="3"/>
+    <path d="M120,-150 L220,-100 L200,-50 L150,-50" fill="#0d6efd" stroke="#333" stroke-width="3"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="400" y="550" font-family="Arial, sans-serif" font-size="30" font-weight="bold" text-anchor="middle" fill="#333">أطقم كرة القدم</text>
+</svg>

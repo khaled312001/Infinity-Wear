@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
             [
                 'name_ar' => 'قميص رياضي أزرق',
                 'name_en' => 'Blue Sports T-Shirt',
-                'description_ar' => 'قميص رياضي عالي الجودة باللون الأزرق مناسب للأكاديميات الرياضية',
+                'description_ar' => 'قميص رياضي عالي الجودة باللون الأزرق مناسب للأكاديميات مكةية',
                 'description_en' => 'High quality blue sports t-shirt suitable for sports academies',
                 'category_id' => $categories->where('slug', 'sports-wear')->first()->id ?? 1,
                 'price' => 85.00,
@@ -96,7 +96,7 @@ class ProductSeeder extends Seeder
             [
                 'name_ar' => 'قبعة رياضية',
                 'name_en' => 'Sports Cap',
-                'description_ar' => 'قبعة رياضية أنيقة مناسبة لجميع الأنشطة الرياضية',
+                'description_ar' => 'قبعة رياضية أنيقة مناسبة لجميع الأنشطة مكةية',
                 'description_en' => 'Elegant sports cap suitable for all sports activities',
                 'category_id' => $categories->where('slug', 'sports-accessories')->first()->id ?? 5,
                 'price' => 35.00,
@@ -109,7 +109,7 @@ class ProductSeeder extends Seeder
             [
                 'name_ar' => 'جوارب رياضية',
                 'name_en' => 'Sports Socks',
-                'description_ar' => 'جوارب رياضية مريحة ومتينة مناسبة لجميع الرياضات',
+                'description_ar' => 'جوارب رياضية مريحة ومتينة مناسبة لجميع مكةات',
                 'description_en' => 'Comfortable and durable sports socks suitable for all sports',
                 'category_id' => $categories->where('slug', 'sports-accessories')->first()->id ?? 5,
                 'price' => 25.00,

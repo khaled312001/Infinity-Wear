@@ -1,10 +1,10 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'من نحن - Infinity Wear')
 
 @section('content')
 <!-- Hero Section -->
-<section class="hero-section">
+<section class="hero-section about-hero">
     <div class="container">
         <div class="row text-center">
             <div class="col-12">
@@ -45,7 +45,7 @@
                                         <i class="fas fa-bullseye"></i>
                                     </div>
                                     <h5>رسالتنا</h5>
-                                    <p>توفير منتجات عالية الجودة مع خدمة عملاء متميزة وابتكار في التصميم، مع دعم الرياضة والتعليم في المملكة</p>
+                                    <p>توفير منتجات عالية الجودة مع خدمة عملاء متميزة وابتكار في التصميم، مع دعم مكةة والتعليم في المملكة</p>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +108,7 @@
                                         <i class="fas fa-user-tie"></i>
                                     </div>
                                     <h6>احترافية</h6>
-                                    <p>فريق عمل محترف ومتخصص في مجال الملابس الرياضية</p>
+                                    <p>فريق عمل محترف ومتخصص في مجال الملابس مكةية</p>
                                 </div>
                             </div>
                         </div>
@@ -136,8 +136,8 @@
                         <div class="infinity-logo mx-auto mb-3" style="width: 60px; height: 60px;">
                             <i class="fas fa-running"></i>
                         </div>
-                        <h5 class="card-title">دعم الرياضة</h5>
-                        <p class="card-text">نساهم في تطوير الرياضة السعودية من خلال توفير أفضل الملابس الرياضية للأكاديميات والفرق</p>
+                        <h5 class="card-title">دعم مكةة</h5>
+                        <p class="card-text">نساهم في تطوير مكةة السعودية من خلال توفير أفضل الملابس الرياضية للأكاديميات والفرق</p>
                     </div>
                 </div>
             </div>
@@ -161,7 +161,7 @@
                             <i class="fas fa-industry"></i>
                         </div>
                         <h5 class="card-title">التصنيع المحلي</h5>
-                        <p class="card-text">نساهم في التنويع الاقتصادي من خلال التصنيع المحلي للملابس الرياضية</p>
+                        <p class="card-text">نساهم في التنويع الاقتصادي من خلال التصنيع المحلي للملابس مكةية</p>
                     </div>
                 </div>
             </div>
@@ -187,7 +187,7 @@
                             <i class="fas fa-tshirt"></i>
                         </div>
                         <h5 class="card-title">ملابس رياضية</h5>
-                        <p class="card-text">أفضل الملابس الرياضية للأكاديميات والفرق الرياضية</p>
+                        <p class="card-text">أفضل الملابس الرياضية للأكاديميات والفرق مكةية</p>
                     </div>
                 </div>
             </div>
@@ -220,12 +220,13 @@
 </section>
 
 <!-- Team Section -->
-<section class="py-5 bg-light">
+<section class="py-5 bg-light section-with-bg">
     <div class="container">
         <div class="row text-center mb-5">
             <div class="col-12">
                 <h2 class="section-title">فريق العمل</h2>
                 <p class="lead">فريق محترف ومتخصص في خدمتكم</p>
+                <div style="height: 200px; background-image: url('/images/sections/team-collaboration.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; margin: 2rem 0;"></div>
             </div>
         </div>
         

@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="hero-section">
+<section class="hero-section contact-hero">
     <div class="container">
         <div class="row text-center">
             <div class="col-12">
@@ -109,7 +109,7 @@
                                     </div>
                                     <div>
                                         <h6 class="mb-1">العنوان</h6>
-                                        <p class="mb-0">الرياض المملكة العربية السعودية</p>
+                                        <p class="mb-0">مكة المملكة العربية السعودية</p>
                                         <p class="mb-0">شارع الملك فهد حي النخيل</p>
                                     </div>
                                 </div>

@@ -117,10 +117,7 @@
             <div class="col-12">
                 <h2 class="mb-4">هل تريد تصميم مخصص لـ {{ $category->name_ar }}؟</h2>
                 <p class="lead mb-4">استخدم أداة التصميم المتقدمة لإنشاء تصميم فريد يناسب احتياجاتك</p>
-                <a href="{{ route('custom-designs.create') }}" class="btn btn-warning btn-lg">
-                    <i class="fas fa-palette me-2"></i>
-                    ابدأ التصميم الآن
-                </a>
+            
             </div>
         </div>
     </div>

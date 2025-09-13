@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Models;
 
@@ -24,7 +24,7 @@ class CustomDesign extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withDefault();
     }
 
     public function getStatusLabelAttribute()
@@ -37,4 +37,4 @@ class CustomDesign extends Model
             default => $this->status
         };
     }
-}
+} 

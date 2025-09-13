@@ -1,15 +1,15 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'خدماتنا - Infinity Wear')
 
 @section('content')
 <!-- Hero Section -->
-<section class="hero-section">
+<section class="hero-section services-hero">
     <div class="container">
         <div class="row text-center">
             <div class="col-12">
                 <h1 class="display-4 fw-bold mb-4">خدماتنا</h1>
-                <p class="lead">نقدم مجموعة شاملة من الخدمات المتخصصة في مجال الملابس الرياضية</p>
+                <p class="lead">نقدم مجموعة شاملة من الخدمات المتخصصة في مجال الملابس مكةية</p>
             </div>
         </div>
     </div>
@@ -22,6 +22,7 @@
             <!-- خدمة الملابس الرياضية -->
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100 text-center">
+                    <div class="card-img-top" style="height: 200px; background-image: url('/images/sections/sports-equipment.svg'); background-size: cover; background-position: center;"></div>
                     <div class="card-body">
                         <div class="infinity-logo mx-auto mb-4" style="width: 80px; height: 80px;">
                             <i class="fas fa-tshirt"></i>
@@ -44,6 +45,7 @@
             <!-- خدمة الزي المدرسي -->
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100 text-center">
+                    <div class="card-img-top" style="height: 200px; background-image: url('/images/sections/uniform-design.svg'); background-size: cover; background-position: center;"></div>
                     <div class="card-body">
                         <div class="infinity-logo mx-auto mb-4" style="width: 80px; height: 80px;">
                             <i class="fas fa-user-graduate"></i>
@@ -66,6 +68,7 @@
             <!-- خدمة زي الشركات -->
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100 text-center">
+                    <div class="card-img-top" style="height: 200px; background-image: url('/images/sections/quality-manufacturing.svg'); background-size: cover; background-position: center;"></div>
                     <div class="card-body">
                         <div class="infinity-logo mx-auto mb-4" style="width: 80px; height: 80px;">
                             <i class="fas fa-building"></i>
@@ -88,6 +91,7 @@
             <!-- خدمة التصميم المخصص -->
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100 text-center">
+                    <div class="card-img-top" style="height: 200px; background-image: url('/images/sections/custom-design.svg'); background-size: cover; background-position: center;"></div>
                     <div class="card-body">
                         <div class="infinity-logo mx-auto mb-4" style="width: 80px; height: 80px;">
                             <i class="fas fa-palette"></i>
@@ -110,6 +114,7 @@
             <!-- خدمة الطباعة -->
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100 text-center">
+                    <div class="card-img-top" style="height: 200px; background-image: url('/images/sections/printing-service.svg'); background-size: cover; background-position: center;"></div>
                     <div class="card-body">
                         <div class="infinity-logo mx-auto mb-4" style="width: 80px; height: 80px;">
                             <i class="fas fa-print"></i>
@@ -132,6 +137,7 @@
             <!-- خدمة التوصيل -->
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100 text-center">
+                    <div class="card-img-top" style="height: 200px; background-image: url('/images/sections/customer-service.svg'); background-size: cover; background-position: center;"></div>
                     <div class="card-body">
                         <div class="infinity-logo mx-auto mb-4" style="width: 80px; height: 80px;">
                             <i class="fas fa-shipping-fast"></i>
@@ -219,10 +225,7 @@
                     <i class="fas fa-phone me-2"></i>
                     اتصل بنا
                 </a>
-                <a href="{{ route('custom-designs.create') }}" class="btn btn-outline-light btn-lg">
-                    <i class="fas fa-palette me-2"></i>
-                    ابدأ التصميم
-                </a>
+               
             </div>
         </div>
     </div>

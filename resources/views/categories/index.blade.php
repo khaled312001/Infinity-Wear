@@ -74,7 +74,7 @@
                             <i class="fas fa-running"></i>
                         </div>
                         <h5 class="card-title">ملابس رياضية</h5>
-                        <p class="card-text">أفضل الملابس الرياضية للأكاديميات والفرق الرياضية</p>
+                        <p class="card-text">أفضل الملابس الرياضية للأكاديميات والفرق مكةية</p>
                         <a href="{{ route('products.index', ['category' => 'sports']) }}" class="btn btn-outline-primary">
                             تصفح المنتجات
                         </a>

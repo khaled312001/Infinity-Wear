@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa"/>
+  
+  <!-- Medical uniform illustration -->
+  <g transform="translate(400, 300)">
+    <!-- Scrub top -->
+    <path d="M-130,-150 L130,-150 L160,-50 L160,150 L-160,150 L-160,-50 Z" fill="#0dcaf0" stroke="#333" stroke-width="3"/>
+    
+    <!-- V-neck -->
+    <path d="M-50,-150 L0,-200 L50,-150 L0,-100 Z" fill="#0dcaf0" stroke="#333" stroke-width="2"/>
+    
+    <!-- Hospital logo -->
+    <circle cx="-60" cy="-50" r="40" fill="#ffffff" stroke="#333" stroke-width="2"/>
+    <path d="M-60,-70 L-60,-30 M-80,-50 L-40,-50" stroke="#dc3545" stroke-width="8"/>
+    
+    <!-- Pocket -->
+    <rect x="40" y="-80" width="50" height="60" rx="5" fill="#ffffff" stroke="#333" stroke-width="2"/>
+    
+    <!-- Pen in pocket -->
+    <line x1="50" y1="-80" x2="50" y2="-30" stroke="#333" stroke-width="2"/>
+    <line x1="60" y1="-80" x2="60" y2="-30" stroke="#dc3545" stroke-width="2"/>
+    <line x1="70" y1="-80" x2="70" y2="-30" stroke="#0d6efd" stroke-width="2"/>
+    
+    <!-- Sleeves -->
+    <path d="M-130,-150 L-220,-80 L-200,-60 L-160,-50" fill="#0dcaf0" stroke="#333" stroke-width="3"/>
+    <path d="M130,-150 L220,-80 L200,-60 L160,-50" fill="#0dcaf0" stroke="#333" stroke-width="3"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="400" y="550" font-family="Arial, sans-serif" font-size="30" font-weight="bold" text-anchor="middle" fill="#333">الزي الطبي</text>
+</svg>

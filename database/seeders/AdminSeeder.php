@@ -14,8 +14,8 @@ class AdminSeeder extends Seeder
             'name' => 'مدير النظام',
             'email' => 'admin@infinitywear.sa',
             'password' => Hash::make('admin123'),
-            'phone' => '+966501234567',
+            'role' => 'super_admin',
             'is_active' => true,
         ]);
     }
-} 
+}

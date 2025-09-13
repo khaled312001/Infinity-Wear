@@ -13,7 +13,7 @@ class CategorySeeder extends Seeder
             [
                 'name_ar' => 'ملابس رياضية',
                 'name_en' => 'Sports Wear',
-                'description_ar' => 'ملابس رياضية عالية الجودة للأكاديميات والفرق الرياضية',
+                'description_ar' => 'ملابس رياضية عالية الجودة للأكاديميات والفرق مكةية',
                 'description_en' => 'High quality sports wear for academies and sports teams',
                 'slug' => 'sports-wear',
                 'is_active' => true,
