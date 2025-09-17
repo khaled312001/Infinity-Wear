@@ -7,152 +7,7 @@
 @section('profile-route', '#')
 @section('settings-route', '#')
 
-@section('sidebar-menu')
-    <a href="{{ route('admin.dashboard') }}" class="nav-link active">
-        <i class="fas fa-tachometer-alt me-2"></i>
-        الرئيسية
-    </a>
-    
-    <!-- إدارة المحتوى -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-store me-2"></i>
-            إدارة المحتوى
-        </div>
-        <a href="{{ route('admin.orders.index') }}" class="nav-link">
-            <i class="fas fa-shopping-cart me-2"></i>
-            الطلبات
-        </a>
-        <a href="{{ route('admin.products.index') }}" class="nav-link">
-            <i class="fas fa-tshirt me-2"></i>
-            المنتجات
-        </a>
-        <a href="{{ route('admin.categories.index') }}" class="nav-link">
-            <i class="fas fa-tags me-2"></i>
-            الفئات
-        </a>
-        <a href="{{ route('admin.custom-designs.index') }}" class="nav-link">
-            <i class="fas fa-palette me-2"></i>
-            التصاميم المخصصة
-        </a>
-        <a href="{{ route('admin.hero-slider.index') }}" class="nav-link">
-            <i class="fas fa-images me-2"></i>
-            السلايدر الرئيسي
-        </a>
-        <a href="{{ route('admin.home-sections.index') }}" class="nav-link">
-            <i class="fas fa-th-large me-2"></i>
-            أقسام الصفحة الرئيسية
-        </a>
-        <a href="{{ route('admin.portfolio.index') }}" class="nav-link">
-            <i class="fas fa-image me-2"></i>
-            معرض الأعمال
-        </a>
-        <a href="{{ route('admin.testimonials.index') }}" class="nav-link">
-            <i class="fas fa-star me-2"></i>
-            الشهادات والتقييمات
-        </a>
-    </div>
-    
-    <!-- إدارة المستخدمين -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-users me-2"></i>
-            إدارة المستخدمين
-        </div>
-        <a href="{{ route('admin.users.index') }}" class="nav-link">
-            <i class="fas fa-user me-2"></i>
-            العملاء
-        </a>
-        <a href="{{ route('admin.admins.index') }}" class="nav-link">
-            <i class="fas fa-user-shield me-2"></i>
-            المشرفين
-        </a>
-        <a href="{{ route('admin.importers.index') }}" class="nav-link">
-            <i class="fas fa-truck me-2"></i>
-            المستوردين
-        </a>
-    </div>
-    
-    <!-- إدارة الفرق -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-users-cog me-2"></i>
-            إدارة الفرق
-        </div>
-        <a href="{{ route('admin.marketing.index') }}" class="nav-link">
-            <i class="fas fa-bullhorn me-2"></i>
-            فريق التسويق
-        </a>
-        <a href="{{ route('admin.sales.index') }}" class="nav-link">
-            <i class="fas fa-chart-line me-2"></i>
-            فريق المبيعات
-        </a>
-        <a href="{{ route('admin.tasks.index') }}" class="nav-link">
-            <i class="fas fa-tasks me-2"></i>
-            إدارة المهام
-        </a>
-    </div>
-    
-    <!-- النظام المالي -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-money-bill-wave me-2"></i>
-            النظام المالي
-        </div>
-        <a href="{{ route('admin.finance.dashboard') }}" class="nav-link">
-            <i class="fas fa-chart-pie me-2"></i>
-            لوحة المالية
-        </a>
-        <a href="{{ route('admin.finance.transactions') }}" class="nav-link">
-            <i class="fas fa-exchange-alt me-2"></i>
-            المعاملات المالية
-        </a>
-        <a href="{{ route('admin.finance.reports') }}" class="nav-link">
-            <i class="fas fa-file-invoice-dollar me-2"></i>
-            التقارير المالية
-        </a>
-    </div>
-    
-    <!-- إدارة المحتوى والـ SEO -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-search me-2"></i>
-            المحتوى والـ SEO
-        </div>
-        <a href="{{ route('admin.content.index') }}" class="nav-link">
-            <i class="fas fa-file-alt me-2"></i>
-            إدارة المحتوى
-        </a>
-        <a href="{{ route('admin.content.seo') }}" class="nav-link">
-            <i class="fas fa-search-plus me-2"></i>
-            إعدادات SEO
-        </a>
-    </div>
-    
-    <!-- التقارير والإحصائيات -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-chart-bar me-2"></i>
-            التقارير والإحصائيات
-        </div>
-        <a href="{{ route('admin.reports') }}" class="nav-link">
-            <i class="fas fa-analytics me-2"></i>
-            تقارير شاملة
-        </a>
-    </div>
-    
-    <!-- الإعدادات -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-cog me-2"></i>
-            إعدادات النظام
-        </div>
-        <a href="{{ route('admin.settings') }}" class="nav-link">
-            <i class="fas fa-sliders-h me-2"></i>
-            الإعدادات العامة
-        </a>
-    </div>
-@endsection
+{{-- Sidebar menu is now handled by the unified admin-sidebar partial --}}
 
 @section('page-actions')
     <div class="dropdown">
@@ -161,8 +16,6 @@
             إضافة جديد
         </button>
         <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ route('admin.products.create') }}"><i class="fas fa-tshirt me-2"></i>منتج جديد</a></li>
-            <li><a class="dropdown-item" href="{{ route('admin.categories.create') }}"><i class="fas fa-tags me-2"></i>فئة جديدة</a></li>
             <li><a class="dropdown-item" href="{{ route('admin.orders.create') }}"><i class="fas fa-shopping-cart me-2"></i>طلب جديد</a></li>
         </ul>
     </div>
@@ -211,14 +64,14 @@
             <div class="stats-card">
                 <div class="d-flex align-items-center">
                     <div class="stats-icon warning me-3">
-                        <i class="fas fa-palette"></i>
+                        <i class="fas fa-truck"></i>
                     </div>
                     <div>
-                        <h3 class="mb-0">{{ $stats['total_designs'] ?? 43 }}</h3>
-                        <p class="text-muted mb-0">التصاميم المخصصة</p>
+                        <h3 class="mb-0">{{ $stats['total_importers'] ?? 0 }}</h3>
+                        <p class="text-muted mb-0">المستوردين</p>
                         <small class="text-success">
                             <i class="fas fa-arrow-up me-1"></i>
-                            +25% من الشهر الماضي
+                            +{{ $stats['new_importers'] ?? 0 }} جديد هذا الشهر
                         </small>
                     </div>
                 </div>
@@ -256,23 +109,15 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('admin.orders.create') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-shopping-cart me-2"></i>
-                            طلب جديد
+                        <a href="{{ route('admin.importers.index') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-truck me-2"></i>
+                            إدارة المستوردين
                         </a>
-                        <a href="{{ route('admin.products.create') }}" class="btn btn-outline-success">
-                            <i class="fas fa-tshirt me-2"></i>
-                            منتج جديد
-                        </a>
-                        <a href="{{ route('admin.categories.create') }}" class="btn btn-outline-info">
-                            <i class="fas fa-tags me-2"></i>
-                            فئة جديدة
-                        </a>
-                        <a href="#" class="btn btn-outline-warning">
+                        <a href="{{ route('admin.finance.dashboard') }}" class="btn btn-outline-warning">
                             <i class="fas fa-chart-pie me-2"></i>
                             تقرير مالي
                         </a>
-                        <a href="#" class="btn btn-outline-secondary">
+                        <a href="{{ route('admin.settings') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-cog me-2"></i>
                             إعدادات النظام
                         </a>
@@ -376,10 +221,10 @@
                         <div class="activity-item">
                             <div class="d-flex align-items-center">
                                 <div class="stats-icon info me-3" style="width: 40px; height: 40px; font-size: 16px;">
-                                    <i class="fas fa-palette"></i>
+                                    <i class="fas fa-truck"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-1">تصميم مخصص جديد</h6>
+                                    <h6 class="mb-1">مستورد جديد مسجل</h6>
                                     <small class="text-muted">منذ 15 دقيقة</small>
                                 </div>
                             </div>
@@ -400,10 +245,10 @@
                         <div class="activity-item">
                             <div class="d-flex align-items-center">
                                 <div class="stats-icon danger me-3" style="width: 40px; height: 40px; font-size: 16px;">
-                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <i class="fas fa-tasks"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-1">تحديث مطلوب للنظام</h6>
+                                    <h6 class="mb-1">مهام عاجلة تحتاج متابعة</h6>
                                     <small class="text-muted">منذ 3 ساعات</small>
                                 </div>
                             </div>
@@ -478,28 +323,14 @@
                             </a>
                         </div>
 
-                        <div class="col-lg-2 col-md-4 col-6">
-                            <a href="{{ route('admin.products.index') }}" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3">
-                                <i class="fas fa-tshirt fa-2x mb-2"></i>
-                                <div class="fw-bold">المنتجات</div>
-                                <small class="text-muted">إدارة المنتجات</small>
-                            </a>
-                        </div>
+
 
                         <div class="col-lg-2 col-md-4 col-6">
-                            <a href="{{ route('admin.custom-designs.index') }}" class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3">
-                                <i class="fas fa-palette fa-2x mb-2"></i>
-                                <div class="fw-bold">التصاميم</div>
-                                <small class="text-muted">التصاميم المخصصة</small>
-                            </a>
-                        </div>
-
-                        <div class="col-lg-2 col-md-4 col-6">
-                            <a href="#" class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3">
-                                <i class="fas fa-chart-line fa-2x mb-2"></i>
-                                <div class="fw-bold">المالية</div>
-                                <small class="text-muted">الإيرادات والمصروفات</small>
-                            </a>
+                        <a href="{{ route('admin.finance.dashboard') }}" class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3">
+                            <i class="fas fa-chart-line fa-2x mb-2"></i>
+                            <div class="fw-bold">المالية</div>
+                            <small class="text-muted">الإيرادات والمصروفات</small>
+                        </a>
                         </div>
 
                         <div class="col-lg-2 col-md-4 col-6">
@@ -511,11 +342,11 @@
                         </div>
 
                         <div class="col-lg-2 col-md-4 col-6">
-                            <a href="#" class="btn btn-outline-dark w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3">
-                                <i class="fas fa-cog fa-2x mb-2"></i>
-                                <div class="fw-bold">الإعدادات</div>
-                                <small class="text-muted">إعدادات النظام</small>
-                            </a>
+                        <a href="{{ route('admin.settings') }}" class="btn btn-outline-dark w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3">
+                            <i class="fas fa-cog fa-2x mb-2"></i>
+                            <div class="fw-bold">الإعدادات</div>
+                            <small class="text-muted">إعدادات النظام</small>
+                        </a>
                         </div>
                     </div>
                 </div>
@@ -543,7 +374,7 @@
                         tension: 0.4
                     },
                     {
-                        label: 'التصاميم',
+                        label: 'المستوردين',
                         data: [2, 3, 20, 5, 1, 4, 6],
                         borderColor: '#10b981',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',

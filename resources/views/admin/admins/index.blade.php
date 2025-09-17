@@ -1,15 +1,18 @@
 @extends('layouts.dashboard')
 
 @section('title', 'إدارة المشرفين')
+@section('dashboard-title', 'لوحة الإدارة')
+@section('page-title', 'إدارة المشرفين')
+@section('page-subtitle', 'إدارة وعرض جميع المشرفين في النظام')
+
+@section('page-actions')
+    <a href="{{ route('admin.admins.create') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>
+        إضافة مشرف جديد
+    </a>
+@endsection
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>إدارة المشرفين</h1>
-        <a href="{{ route('admin.admins.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> إضافة مشرف جديد
-        </a>
-    </div>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -35,26 +38,32 @@
                                 <td>{{ $admin->name }}</td>
                                 <td>{{ $admin->email }}</td>
                                 <td>
-                                    <span class="badge bg-info">{{ $admin->role ?? 'مشرف' }}</span>
+                                    <span class="badge bg-info">{{ $admin->role_label ?? 'مشرف' }}</span>
                                 </td>
                                 <td>{{ $admin->created_at->format('Y-m-d') }}</td>
                                 <td>
-                                    <a href="{{ route('admin.admins.edit', $admin) }}" 
-                                       class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    @if($admin->id !== auth('admin')->id())
-                                    <form method="POST" 
-                                          action="{{ route('admin.admins.destroy', $admin) }}" 
-                                          class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" 
-                                                onclick="return confirm('هل أنت متأكد؟')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                    @endif
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('admin.admins.show', $admin) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('admin.admins.edit', $admin) }}" 
+                                           class="btn btn-sm btn-outline-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        @if($admin->id !== auth('admin')->id())
+                                        <form method="POST" 
+                                              action="{{ route('admin.admins.destroy', $admin) }}" 
+                                              class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                    onclick="return confirm('هل أنت متأكد من حذف هذا المشرف؟')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach

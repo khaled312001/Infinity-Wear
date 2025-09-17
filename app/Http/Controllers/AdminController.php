@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Importer;
 use App\Models\ImporterOrder;
@@ -17,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -38,7 +38,6 @@ class AdminController extends Controller
         
         // إحصائيات المستخدمين والتصاميم
         $totalUsers = User::count();
-        $totalDesigns = \App\Models\CustomDesign::count();
         
         // الإيرادات الشهرية (إذا كان هناك جدول المعاملات)
         $monthlyRevenue = 25000; // قيمة افتراضية للعرض
@@ -53,7 +52,6 @@ class AdminController extends Controller
         $stats = [
             'total_orders' => $totalOrders,
             'total_users' => $totalUsers,
-            'total_designs' => $totalDesigns,
             'monthly_revenue' => $monthlyRevenue,
             'pending_orders' => $pendingOrders->count(),
         ];
@@ -71,7 +69,6 @@ class AdminController extends Controller
         $stats = [
             'total_orders' => $totalOrders,
             'total_users' => $totalUsers,
-            'total_designs' => $totalDesigns,
             'monthly_revenue' => $monthlyRevenue,
             'pending_orders' => $pendingOrders->count(),
             'total_importers' => $totalImporters,
@@ -138,6 +135,110 @@ class AdminController extends Controller
         $importer->save();
         
         return redirect()->back()->with('success', 'تم تحديث حالة المستورد بنجاح');
+    }
+
+    /**
+     * عرض نموذج إضافة مستورد جديد
+     */
+    public function importersCreate()
+    {
+        return view('admin.importers.create');
+    }
+
+    /**
+     * حفظ بيانات المستورد الجديد
+     */
+    public function importersStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:importers',
+            'phone' => 'nullable|string|max:20',
+            'company_name' => 'nullable|string|max:255',
+            'business_type' => 'required|in:academy,school,store,hospital,other',
+            'business_type_other' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:500',
+            'city' => 'nullable|string|max:100',
+            'country' => 'nullable|string|max:100',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $importer = Importer::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'company_name' => $request->company_name,
+            'business_type' => $request->business_type,
+            'business_type_other' => $request->business_type_other,
+            'address' => $request->address,
+            'city' => $request->city,
+            'country' => $request->country,
+            'notes' => $request->notes,
+            'status' => 'new',
+        ]);
+
+        return redirect()->route('admin.importers.index')
+            ->with('success', 'تم إضافة المستورد بنجاح');
+    }
+
+    /**
+     * عرض نموذج تعديل بيانات المستورد
+     */
+    public function importersEdit($id)
+    {
+        $importer = Importer::findOrFail($id);
+        return view('admin.importers.edit', compact('importer'));
+    }
+
+    /**
+     * تحديث بيانات المستورد
+     */
+    public function importersUpdate(Request $request, $id)
+    {
+        $importer = Importer::findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:importers,email,' . $id,
+            'phone' => 'nullable|string|max:20',
+            'company_name' => 'nullable|string|max:255',
+            'business_type' => 'required|in:academy,school,store,hospital,other',
+            'business_type_other' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:500',
+            'city' => 'nullable|string|max:100',
+            'country' => 'nullable|string|max:100',
+            'notes' => 'nullable|string|max:1000',
+            'status' => 'required|in:new,contacted,qualified,proposal,negotiation,closed_won,closed_lost',
+        ]);
+
+        $importer->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'company_name' => $request->company_name,
+            'business_type' => $request->business_type,
+            'business_type_other' => $request->business_type_other,
+            'address' => $request->address,
+            'city' => $request->city,
+            'country' => $request->country,
+            'notes' => $request->notes,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('admin.importers.index')
+            ->with('success', 'تم تحديث بيانات المستورد بنجاح');
+    }
+
+    /**
+     * حذف المستورد
+     */
+    public function importersDestroy($id)
+    {
+        $importer = Importer::findOrFail($id);
+        $importer->delete();
+
+        return redirect()->route('admin.importers.index')
+            ->with('success', 'تم حذف المستورد بنجاح');
     }
     
     /**
@@ -213,11 +314,11 @@ class AdminController extends Controller
         $salesPerformance = SalesTeam::with('admin')
             ->select(
                 'sales_team.admin_id',
-                DB::raw('COUNT(DISTINCT importers.id) as total_importers'),
-                DB::raw('SUM(CASE WHEN importers.status = "closed_won" THEN 1 ELSE 0 END) as won_deals'),
-                DB::raw('SUM(CASE WHEN importers.status = "closed_lost" THEN 1 ELSE 0 END) as lost_deals')
+                DB::raw('COUNT(DISTINCT importer_orders.id) as total_orders'),
+                DB::raw('SUM(CASE WHEN importer_orders.status = "completed" THEN 1 ELSE 0 END) as completed_orders'),
+                DB::raw('SUM(CASE WHEN importer_orders.status = "processing" THEN 1 ELSE 0 END) as processing_orders')
             )
-            ->leftJoin('importers', 'sales_team.admin_id', '=', 'importers.assigned_to')
+            ->leftJoin('importer_orders', 'sales_team.admin_id', '=', 'importer_orders.assigned_to')
             ->groupBy('sales_team.admin_id')
             ->get();
 
@@ -249,7 +350,7 @@ class AdminController extends Controller
      */
     public function users()
     {
-        $users = User::where('role', 'customer')
+        $users = User::where('user_type', 'customer')
             ->latest()
             ->paginate(20);
 
@@ -416,36 +517,18 @@ class AdminController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:admins',
             'password' => 'required|string|min:8|confirmed',
-            'phone' => 'nullable|string|max:20',
-            'role' => 'required|in:admin,marketing,sales',
+            'role' => 'required|in:super_admin,admin,manager',
         ]);
 
-        $admin = User::create([
+        $admin = \App\Models\Admin::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'phone' => $request->phone,
             'role' => $request->role,
+            'is_active' => true,
         ]);
-
-        // إذا كان المشرف من فريق التسويق، أضفه إلى جدول فريق التسويق
-        if ($request->role === 'marketing') {
-            MarketingTeam::create([
-                'admin_id' => $admin->id,
-                'is_active' => true,
-            ]);
-        }
-
-        // إذا كان المشرف من فريق المبيعات، أضفه إلى جدول فريق المبيعات
-        if ($request->role === 'sales') {
-            SalesTeam::create([
-                'admin_id' => $admin->id,
-                'is_active' => true,
-                'target' => $request->target ?? 0,
-            ]);
-        }
 
         return redirect()->route('admin.admins.index')
             ->with('success', 'تم إضافة المشرف بنجاح');
@@ -472,13 +555,7 @@ class AdminController extends Controller
      */
     public function editAdmin($id)
     {
-        $admin = User::findOrFail($id);
-        
-        // التحقق من أن المستخدم هو مشرف
-        if ($admin->role === 'customer') {
-            return redirect()->route('admin.admins.index')
-                ->with('error', 'هذا المستخدم ليس مشرفًا');
-        }
+        $admin = \App\Models\Admin::findOrFail($id);
         
         return view('admin.admins.edit', compact('admin'));
     }
@@ -488,30 +565,19 @@ class AdminController extends Controller
      */
     public function updateAdmin(Request $request, $id)
     {
-        $admin = User::findOrFail($id);
-        
-        // التحقق من أن المستخدم هو مشرف
-        if ($admin->role === 'customer') {
-            return redirect()->route('admin.admins.index')
-                ->with('error', 'هذا المستخدم ليس مشرفًا');
-        }
+        $admin = \App\Models\Admin::findOrFail($id);
         
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'email' => 'required|string|email|max:255|unique:admins,email,' . $id,
             'password' => 'nullable|string|min:8|confirmed',
-            'phone' => 'nullable|string|max:20',
-            'role' => 'required|in:admin,marketing,sales',
+            'role' => 'required|in:super_admin,admin,manager',
         ]);
-
-        $oldRole = $admin->role;
-        $newRole = $request->role;
 
         $adminData = [
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone,
-            'role' => $newRole,
+            'role' => $request->role,
         ];
 
         if ($request->filled('password')) {
@@ -519,38 +585,6 @@ class AdminController extends Controller
         }
 
         $admin->update($adminData);
-
-        // إذا تغير الدور، قم بتحديث الجداول ذات الصلة
-        if ($oldRole !== $newRole) {
-            // إذا كان الدور القديم هو التسويق، قم بإلغاء تنشيط السجل في جدول فريق التسويق
-            if ($oldRole === 'marketing') {
-                MarketingTeam::where('admin_id', $admin->id)->update(['is_active' => false]);
-            }
-            
-            // إذا كان الدور القديم هو المبيعات، قم بإلغاء تنشيط السجل في جدول فريق المبيعات
-            if ($oldRole === 'sales') {
-                SalesTeam::where('admin_id', $admin->id)->update(['is_active' => false]);
-            }
-            
-            // إذا كان الدور الجديد هو التسويق، قم بإضافة سجل جديد أو تنشيط السجل الموجود في جدول فريق التسويق
-            if ($newRole === 'marketing') {
-                MarketingTeam::updateOrCreate(
-                    ['admin_id' => $admin->id],
-                    ['is_active' => true]
-                );
-            }
-            
-            // إذا كان الدور الجديد هو المبيعات، قم بإضافة سجل جديد أو تنشيط السجل الموجود في جدول فريق المبيعات
-            if ($newRole === 'sales') {
-                SalesTeam::updateOrCreate(
-                    ['admin_id' => $admin->id],
-                    ['is_active' => true, 'target' => $request->target ?? 0]
-                );
-            }
-        } else if ($newRole === 'sales' && $request->has('target')) {
-            // إذا لم يتغير الدور ولكن تم تحديث الهدف لمندوب المبيعات
-            SalesTeam::where('admin_id', $admin->id)->update(['target' => $request->target]);
-        }
 
         return redirect()->route('admin.admins.index')
             ->with('success', 'تم تحديث بيانات المشرف بنجاح');
@@ -561,22 +595,12 @@ class AdminController extends Controller
      */
     public function destroyAdmin($id)
     {
-        $admin = User::findOrFail($id);
+        $admin = \App\Models\Admin::findOrFail($id);
         
-        // التحقق من أن المستخدم هو مشرف
-        if ($admin->role === 'customer') {
+        // منع حذف المشرف الحالي
+        if ($admin->id === auth('admin')->id()) {
             return redirect()->route('admin.admins.index')
-                ->with('error', 'هذا المستخدم ليس مشرفًا');
-        }
-        
-        // إذا كان المشرف من فريق التسويق، قم بإلغاء تنشيط السجل في جدول فريق التسويق
-        if ($admin->role === 'marketing') {
-            MarketingTeam::where('admin_id', $admin->id)->update(['is_active' => false]);
-        }
-        
-        // إذا كان المشرف من فريق المبيعات، قم بإلغاء تنشيط السجل في جدول فريق المبيعات
-        if ($admin->role === 'sales') {
-            SalesTeam::where('admin_id', $admin->id)->update(['is_active' => false]);
+                ->with('error', 'لا يمكنك حذف حسابك الخاص');
         }
         
         // حذف المشرف
@@ -669,10 +693,94 @@ class AdminController extends Controller
         $member->update(['is_active' => false]);
 
         // تحديث دور المستخدم إلى مشرف عادي
-        User::where('id', $member->admin_id)->update(['role' => 'admin']);
+        User::where('id', $member->admin_id)->update(['user_type' => 'admin']);
 
         return redirect()->route('admin.marketing.index')
             ->with('success', 'تم تعطيل عضو فريق التسويق بنجاح');
+    }
+
+    /**
+     * عرض نموذج إضافة عضو جديد لفريق التسويق
+     */
+    public function createMarketingMember()
+    {
+        $admins = \App\Models\Admin::where('role', 'admin')->get();
+        return view('admin.marketing_team.create', compact('admins'));
+    }
+
+    /**
+     * حفظ بيانات عضو فريق التسويق الجديد
+     */
+    public function storeMarketingMember(Request $request)
+    {
+        $request->validate([
+            'admin_id' => 'required|exists:admins,id',
+            'department' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'bio' => 'nullable|string|max:1000',
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        $member = MarketingTeam::create([
+            'admin_id' => $request->admin_id,
+            'department' => $request->department,
+            'position' => $request->position,
+            'bio' => $request->bio,
+            'phone' => $request->phone,
+            'is_active' => true,
+        ]);
+
+        return redirect()->route('admin.marketing.index')
+            ->with('success', 'تم إضافة عضو فريق التسويق بنجاح');
+    }
+
+    /**
+     * عرض نموذج تعديل بيانات عضو فريق التسويق
+     */
+    public function editMarketingMember($id)
+    {
+        $member = MarketingTeam::with('admin')->findOrFail($id);
+        $admins = \App\Models\Admin::where('role', 'admin')->get();
+        return view('admin.marketing_team.edit', compact('member', 'admins'));
+    }
+
+    /**
+     * تحديث بيانات عضو فريق التسويق
+     */
+    public function updateMarketingMember(Request $request, $id)
+    {
+        $member = MarketingTeam::findOrFail($id);
+        
+        $request->validate([
+            'admin_id' => 'required|exists:admins,id',
+            'department' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'bio' => 'nullable|string|max:1000',
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        $member->update([
+            'admin_id' => $request->admin_id,
+            'department' => $request->department,
+            'position' => $request->position,
+            'bio' => $request->bio,
+            'phone' => $request->phone,
+        ]);
+
+        return redirect()->route('admin.marketing.index')
+            ->with('success', 'تم تحديث بيانات عضو فريق التسويق بنجاح');
+    }
+
+    /**
+     * حذف عضو فريق التسويق
+     */
+    public function destroyMarketingMember($id)
+    {
+        $member = MarketingTeam::findOrFail($id);
+        $member->delete();
+
+        return redirect()->route('admin.marketing.index')
+            ->with('success', 'تم حذف عضو فريق التسويق بنجاح');
     }
     
     /**
@@ -818,7 +926,7 @@ class AdminController extends Controller
         $member->update(['is_active' => false]);
 
         // تحديث دور المستخدم إلى مشرف عادي
-        User::where('id', $member->admin_id)->update(['role' => 'admin']);
+        User::where('id', $member->admin_id)->update(['user_type' => 'admin']);
 
         return redirect()->route('admin.sales.index')
             ->with('success', 'تم تعطيل عضو فريق المبيعات بنجاح');
@@ -862,13 +970,13 @@ class AdminController extends Controller
         ]);
 
         // معالجة الصورة الرئيسية
-        $imagePath = $request->file('image')->store('portfolio', 'public');
+        $imagePath = $request->file('image')->store('images/portfolio', 'public');
 
         // معالجة معرض الصور
         $gallery = [];
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                $gallery[] = $image->store('portfolio/gallery', 'public');
+                $gallery[] = $image->store('images/portfolio/gallery', 'public');
             }
         }
 
@@ -903,18 +1011,69 @@ class AdminController extends Controller
     public function updatePortfolioItem(Request $request, $id)
     {
         $portfolioItem = PortfolioItem::findOrFail($id);
+        
+        // Debug: Log what's being received
+        \Log::info('Update Portfolio Request Data:', [
+            'has_image' => $request->hasFile('image'),
+            'image_file' => $request->file('image'),
+            'all_files' => $request->allFiles(),
+            'all_input' => $request->except(['_token', '_method'])
+        ]);
 
+        // Validate only non-file fields
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'client_name' => 'required|string|max:255',
             'completion_date' => 'required|date',
             'category' => 'required|string|max:100',
             'is_featured' => 'boolean',
             'sort_order' => 'nullable|integer',
         ]);
+
+        // Manual file validation
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            \Log::info('Image file details:', [
+                'isValid' => $image->isValid(),
+                'mimeType' => $image->getMimeType(),
+                'size' => $image->getSize(),
+                'originalName' => $image->getClientOriginalName(),
+                'extension' => $image->getClientOriginalExtension()
+            ]);
+            
+            if (!$image->isValid()) {
+                return back()->withErrors(['image' => 'The uploaded image is not valid.'])->withInput();
+            }
+            
+            $allowedMimes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/avif', 'image/webp'];
+            if (!in_array($image->getMimeType(), $allowedMimes)) {
+                return back()->withErrors(['image' => 'The image must be a file of type: jpeg, png, jpg, gif, avif, webp.'])->withInput();
+            }
+            
+            if ($image->getSize() > 2048 * 1024) { // 2MB
+                return back()->withErrors(['image' => 'The image may not be greater than 2MB.'])->withInput();
+            }
+        }
+
+        if ($request->hasFile('gallery')) {
+            $galleryFiles = $request->file('gallery');
+            $allowedMimes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/avif', 'image/webp'];
+            
+            foreach ($galleryFiles as $index => $file) {
+                if (!$file->isValid()) {
+                    return back()->withErrors(["gallery.{$index}" => 'The uploaded image is not valid.'])->withInput();
+                }
+                
+                if (!in_array($file->getMimeType(), $allowedMimes)) {
+                    return back()->withErrors(["gallery.{$index}" => 'The image must be a file of type: jpeg, png, jpg, gif, avif, webp.'])->withInput();
+                }
+                
+                if ($file->getSize() > 2048 * 1024) { // 2MB
+                    return back()->withErrors(["gallery.{$index}" => 'The image may not be greater than 2MB.'])->withInput();
+                }
+            }
+        }
 
         $data = [
             'title' => $request->title,
@@ -927,21 +1086,34 @@ class AdminController extends Controller
         ];
 
         // معالجة الصورة الرئيسية إذا تم تحميلها
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            \Log::info('Processing main image upload');
             // حذف الصورة القديمة
             if ($portfolioItem->image && Storage::disk('public')->exists($portfolioItem->image)) {
                 Storage::disk('public')->delete($portfolioItem->image);
             }
-            $data['image'] = $request->file('image')->store('portfolio', 'public');
+            $imagePath = $request->file('image')->store('images/portfolio', 'public');
+            $data['image'] = $imagePath;
+            \Log::info('Main image stored at: ' . $imagePath);
         }
 
         // معالجة معرض الصور إذا تم تحميلها
         if ($request->hasFile('gallery')) {
-            $gallery = $portfolioItem->gallery ?? [];
-            foreach ($request->file('gallery') as $image) {
-                $gallery[] = $image->store('portfolio/gallery', 'public');
+            $galleryFiles = $request->file('gallery');
+            $validGalleryFiles = array_filter($galleryFiles, function($file) {
+                return $file && $file->isValid();
+            });
+            
+            if (!empty($validGalleryFiles)) {
+                \Log::info('Processing gallery images upload');
+                $gallery = $portfolioItem->gallery ?? [];
+                foreach ($validGalleryFiles as $image) {
+                    $galleryPath = $image->store('images/portfolio/gallery', 'public');
+                    $gallery[] = $galleryPath;
+                    \Log::info('Gallery image stored at: ' . $galleryPath);
+                }
+                $data['gallery'] = $gallery;
             }
-            $data['gallery'] = $gallery;
         }
 
         // حذف الصور المحددة من المعرض
@@ -959,7 +1131,9 @@ class AdminController extends Controller
             $data['gallery'] = array_values($gallery);
         }
 
+        \Log::info('Updating portfolio item with data:', $data);
         $portfolioItem->update($data);
+        \Log::info('Portfolio item updated successfully');
 
         return redirect()->route('admin.portfolio.index')
             ->with('success', 'تم تحديث العمل بنجاح');

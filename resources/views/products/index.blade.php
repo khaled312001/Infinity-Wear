@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'المنتجات - Infinity Wear')
 
@@ -155,10 +155,10 @@
                 <form method="GET" action="{{ route('products.index') }}">
                     <select name="category" class="form-select category-select" onchange="this.form.submit()">
                         <option value="">جميع الفئات</option>
-                        @foreach($categories as $category)
+                        @foreach($categories ?? [] as $category)
                             <option value="{{ $category->id }}" 
                                     {{ request('category') == $category->id ? 'selected' : '' }}>
-                                {{ $category->name_ar }}
+                                {{ $category->name_ar ?? $category->name }}
                             </option>
                         @endforeach
                     </select>
@@ -168,7 +168,7 @@
     </div>
     
     <!-- المنتجات -->
-    @if($products->count() > 0)
+    @if(isset($products) && $products->count() > 0)
         <div class="row g-4">
             @foreach($products as $product)
                 <div class="col-md-6 col-lg-4 col-xl-3" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
@@ -182,8 +182,8 @@
                             @endif
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">{{ $product->name_ar }}</h5>
-                            <p class="card-text">{{ Str::limit($product->description_ar, 80) }}</p>
+                            <h5 class="card-title">{{ $product->name_ar ?? $product->name }}</h5>
+                            <p class="card-text">{{ Str::limit($product->description_ar ?? $product->description, 80) }}</p>
                             
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div>

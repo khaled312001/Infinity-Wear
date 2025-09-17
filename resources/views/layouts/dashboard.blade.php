@@ -262,6 +262,25 @@
         .progress-bar {
             border-radius: 10px;
         }
+
+        /* Website Link Button Styles */
+        .btn-outline-success {
+            border-color: #10b981;
+            color: #10b981;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-success:hover {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-outline-success:focus {
+            box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+        }
     </style>
 
     @stack('styles')
@@ -276,6 +295,13 @@
             </a>
 
             <div class="d-flex align-items-center">
+                <!-- Website Link -->
+                <a href="{{ route('home') }}" target="_blank" class="btn btn-outline-success me-3" title="الذهاب للموقع الإلكتروني">
+                    <i class="fas fa-globe me-2"></i>
+                    <span class="d-none d-md-inline">الموقع الإلكتروني</span>
+                    <span class="d-md-none">الموقع</span>
+                </a>
+                
                 <!-- User Dropdown -->
                 <div class="dropdown">
                     <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -313,7 +339,7 @@
                     </div>
                     
                     <nav class="nav flex-column px-3">
-                        @yield('sidebar-menu')
+                        @include('partials.admin-sidebar')
                     </nav>
                 </div>
             </div>

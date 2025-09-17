@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>إضافة محتوى جديد</h1>
-        <a href="{{ route('admin.section-contents.index', $homeSection) }}" class="btn btn-secondary">
+        <a href="{{ route('admin.home-sections.section-contents.index', $homeSection) }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> العودة
         </a>
     </div>
@@ -16,7 +16,7 @@
             <h5>قسم: {{ $homeSection->name }} ({{ $homeSection->section_type }})</h5>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('admin.section-contents.store', $homeSection) }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('admin.home-sections.section-contents.store', $homeSection) }}" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="row">
@@ -161,10 +161,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="order" class="form-label">الترتيب</label>
-                            <input type="number" class="form-control @error('order') is-invalid @enderror" 
-                                   id="order" name="order" value="{{ old('order', 0) }}">
-                            @error('order')
+                            <label for="sort_order" class="form-label">الترتيب</label>
+                            <input type="number" class="form-control @error('sort_order') is-invalid @enderror" 
+                                   id="sort_order" name="sort_order" value="{{ old('sort_order', 0) }}">
+                            @error('sort_order')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

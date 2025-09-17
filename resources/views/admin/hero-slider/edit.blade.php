@@ -98,10 +98,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="order" class="form-label">الترتيب</label>
-                            <input type="number" class="form-control @error('order') is-invalid @enderror" 
-                                   id="order" name="order" value="{{ old('order', $heroSlider->order) }}">
-                            @error('order')
+                            <label for="sort_order" class="form-label">الترتيب</label>
+                            <input type="number" class="form-control @error('sort_order') is-invalid @enderror" 
+                                   id="sort_order" name="sort_order" value="{{ old('sort_order', $heroSlider->sort_order) }}">
+                            @error('sort_order')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

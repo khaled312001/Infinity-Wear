@@ -80,7 +80,7 @@
                                                 تصفح المنتجات
                                                 <i class="fas fa-arrow-left me-2"></i>
                                             </a>
-                                            <a href="{{ route('custom-designs.create') }}" class="btn btn-outline-light btn-lg hero-btn">
+                                            <a href="{{ route('importers.form') }}" class="btn btn-outline-light btn-lg hero-btn">
                                                 تصميم مخصص
                                                 <i class="fas fa-palette me-2"></i>
                                             </a>

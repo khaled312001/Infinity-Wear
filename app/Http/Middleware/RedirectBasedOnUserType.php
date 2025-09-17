@@ -27,8 +27,10 @@ class RedirectBasedOnUserType
                         return redirect()->route('admin.dashboard');
                     case 'importer':
                         return redirect()->route('importers.dashboard');
-                    case 'customer':
-                        return redirect()->route('customer.dashboard');
+                    case 'sales':
+                        return redirect()->route('sales.dashboard');
+                    case 'marketing':
+                        return redirect()->route('marketing.dashboard');
                 }
             }
         }

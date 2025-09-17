@@ -20,14 +20,6 @@
         <i class="fas fa-palette me-2"></i>
         تصاميمي
     </a>
-    <a href="{{ route('products.index') }}" class="nav-link">
-        <i class="fas fa-tshirt me-2"></i>
-        المنتجات
-    </a>
-    <a href="{{ route('custom-designs.create') }}" class="nav-link">
-        <i class="fas fa-plus me-2"></i>
-        تصميم جديد
-    </a>
     <a href="{{ route('customer.profile') }}" class="nav-link">
         <i class="fas fa-user me-2"></i>
         الملف الشخصي
@@ -35,7 +27,7 @@
 @endsection
 
 @section('page-actions')
-    <a href="{{ route('custom-designs.create') }}" class="btn btn-primary">
+                <a href="{{ route('importers.form') }}" class="btn btn-primary">
         <i class="fas fa-plus me-2"></i>
         تصميم جديد
     </a>
@@ -189,7 +181,7 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('custom-designs.create') }}" class="btn btn-primary">
+                        <a href="{{ route('importers.form') }}" class="btn btn-primary">
                             <i class="fas fa-palette me-2"></i>
                             إنشاء تصميم مخصص
                         </a>
@@ -246,45 +238,6 @@
         </div>
     </div>
 
-    <!-- Featured Products -->
-    @if($featuredProducts->count() > 0)
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="dashboard-card">
-                    <div class="card-header bg-white border-bottom">
-                        <h5 class="mb-0">
-                            <i class="fas fa-star me-2 text-warning"></i>
-                            منتجات مميزة
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            @foreach($featuredProducts as $product)
-                                <div class="col-lg-2 col-md-4 col-sm-6">
-                                    <div class="card border-0 shadow-sm">
-                                        @if($product->image)
-                                            <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" style="height: 150px; object-fit: cover;">
-                                        @else
-                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
-                                                <i class="fas fa-tshirt fa-3x text-muted"></i>
-                                            </div>
-                                        @endif
-                                        <div class="card-body p-2">
-                                            <h6 class="card-title mb-1">{{ Str::limit($product->name, 20) }}</h6>
-                                            <p class="card-text text-muted small mb-2">{{ $product->price }} ر.س</p>
-                                            <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-outline-primary w-100">
-                                                عرض المنتج
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
 @endsection
 
 @push('scripts')

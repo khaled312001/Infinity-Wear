@@ -16,30 +16,12 @@
         <i class="fas fa-shopping-cart me-2"></i>
         طلباتي
     </a>
-    <a href="{{ route('customer.designs') }}" class="nav-link">
-        <i class="fas fa-palette me-2"></i>
-        تصاميمي
-    </a>
-    <a href="{{ route('products.index') }}" class="nav-link">
-        <i class="fas fa-tshirt me-2"></i>
-        المنتجات
-    </a>
-    <a href="{{ route('custom-designs.create') }}" class="nav-link">
-        <i class="fas fa-plus me-2"></i>
-        تصميم جديد
-    </a>
     <a href="{{ route('customer.profile') }}" class="nav-link">
         <i class="fas fa-user me-2"></i>
         الملف الشخصي
     </a>
 @endsection
 
-@section('page-actions')
-    <a href="{{ route('products.index') }}" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i>
-        طلب جديد
-    </a>
-@endsection
 
 @section('content')
     <div class="dashboard-card">
@@ -285,17 +267,7 @@
                 <div class="text-center py-5">
                     <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
                     <h4 class="text-muted">لا توجد طلبات حتى الآن</h4>
-                    <p class="text-muted mb-4">ابدأ بتصفح منتجاتنا وإنشاء طلبك الأول</p>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <a href="{{ route('products.index') }}" class="btn btn-primary">
-                            <i class="fas fa-tshirt me-2"></i>
-                            تصفح المنتجات
-                        </a>
-                        <a href="{{ route('custom-designs.create') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-palette me-2"></i>
-                            تصميم مخصص
-                        </a>
-                    </div>
+                    <p class="text-muted mb-4">تواصل معنا لإنشاء طلبك الأول</p>
                 </div>
             @endif
         </div>

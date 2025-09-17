@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Importer;
 use App\Models\ImporterOrder;
 use App\Models\Task;

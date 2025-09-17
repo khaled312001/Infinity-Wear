@@ -25,13 +25,9 @@
             <i class="fas fa-tshirt me-2"></i>
             المنتجات
         </a>
-        <a href="{{ route('admin.categories.index') }}" class="nav-link">
-            <i class="fas fa-tags me-2"></i>
-            الفئات
-        </a>
-        <a href="{{ route('admin.custom-designs.index') }}" class="nav-link">
-            <i class="fas fa-palette me-2"></i>
-            التصاميم المخصصة
+                <a href="{{ route('admin.orders.index') }}" class="nav-link">
+            <i class="fas fa-shopping-cart me-2"></i>
+            الطلبات
         </a>
         <a href="{{ route('admin.portfolio.index') }}" class="nav-link">
             <i class="fas fa-image me-2"></i>
@@ -356,17 +352,6 @@
                                     <div class="info-content">
                                         <div class="info-label">إجمالي الطلبات</div>
                                         <div class="info-value">{{ $user->orders()->count() }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="info-card">
-                                    <div class="info-icon text-info">
-                                        <i class="fas fa-palette"></i>
-                                    </div>
-                                    <div class="info-content">
-                                        <div class="info-label">التصاميم المخصصة</div>
-                                        <div class="info-value">{{ $user->customDesigns()->count() }}</div>
                                     </div>
                                 </div>
                             </div>

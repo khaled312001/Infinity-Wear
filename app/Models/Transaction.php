@@ -40,10 +40,6 @@ class Transaction extends Model
         return $this->belongsTo(Order::class, 'reference_id')->where('reference_type', 'order');
     }
 
-    public function customDesign()
-    {
-        return $this->belongsTo(CustomDesign::class, 'reference_id')->where('reference_type', 'custom_design');
-    }
 
     // النطاقات (Scopes)
     public function scopeIncome($query)
@@ -246,19 +242,4 @@ class Transaction extends Model
         ]);
     }
 
-    // إنشاء معاملة من تصميم مخصص
-    public static function createFromCustomDesign(CustomDesign $design, $amount)
-    {
-        return self::create([
-            'type' => 'income',
-            'category' => 'custom_designs',
-            'amount' => $amount,
-            'description' => "إيراد من التصميم المخصص: {$design->name}",
-            'reference_id' => $design->id,
-            'reference_type' => 'custom_design',
-            'transaction_date' => now(),
-            'status' => 'completed',
-            'created_by' => auth('admin')->id()
-        ]);
-    }
 }

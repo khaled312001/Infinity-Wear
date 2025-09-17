@@ -2,10 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\CustomDesignController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminAuthController;
@@ -19,20 +16,11 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/services', [HomeController::class, 'services'])->name('services');
 
+// المنتجات - تم إزالتها
 
+// الفئات - تم حذفها
 
-// المنتجات
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-
-// الفئات
-Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
-
-// التقييمات
-Route::get('/testimonials', [TestimonialController::class, 'index'])->name('testimonials.index');
-Route::get('/testimonials/create', [TestimonialController::class, 'create'])->name('testimonials.create');
-Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
+// التقييمات - تم نقلها إلى مجموعة admin
 
 // معرض الأعمال
 use App\Http\Controllers\PortfolioController;
@@ -40,19 +28,12 @@ Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio
 Route::get('/portfolio/{portfolioItem}', [PortfolioController::class, 'show'])->name('portfolio.show');
 Route::post('/portfolio/filter', [PortfolioController::class, 'filterByCategory'])->name('portfolio.filter');
 
-// التصاميم المخصصة (متاحة بدون تسجيل دخول)
-Route::get('/custom-designs/create', [CustomDesignController::class, 'create'])->name('custom-designs.create');
-Route::get('/custom-designs/enhanced-create', [CustomDesignController::class, 'enhancedCreate'])->name('custom-designs.enhanced-create');
-Route::post('/custom-designs', [CustomDesignController::class, 'store'])->name('custom-designs.store');
+// التقييمات والشهادات
+Route::get('/testimonials', [TestimonialController::class, 'index'])->name('testimonials.index');
+Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
 
-// التصاميم المخصصة (تتطلب تسجيل دخول)
-Route::middleware('auth')->group(function () {
-    Route::get('/custom-designs', [CustomDesignController::class, 'index'])->name('custom-designs.index');
-    Route::get('/custom-designs/{customDesign}', [CustomDesignController::class, 'show'])->name('custom-designs.show');
-    Route::get('/custom-designs/{customDesign}/edit', [CustomDesignController::class, 'edit'])->name('custom-designs.edit');
-    Route::put('/custom-designs/{customDesign}', [CustomDesignController::class, 'update'])->name('custom-designs.update');
-    Route::delete('/custom-designs/{customDesign}', [CustomDesignController::class, 'destroy'])->name('custom-designs.destroy');
-});
+// التصاميم المخصصة (متاحة بدون تسجيل دخول) - تم إزالتها
+
 
 // المصادقة
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -96,10 +77,7 @@ Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admi
 // لوحة التحكم الإدارية
 Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::resource('products', ProductController::class);
-    Route::resource('categories', CategoryController::class);
     Route::resource('orders', OrderController::class);
-    Route::resource('custom-designs', CustomDesignController::class);
     
     // إدارة المحتوى
     Route::resource('hero-slider', App\Http\Controllers\Admin\HeroSliderController::class);
@@ -124,7 +102,12 @@ Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(functi
     
     // المستوردين
     Route::get('/importers', [AdminController::class, 'importersIndex'])->name('importers.index');
+    Route::get('/importers/create', [AdminController::class, 'importersCreate'])->name('importers.create');
+    Route::post('/importers', [AdminController::class, 'importersStore'])->name('importers.store');
     Route::get('/importers/{id}', [AdminController::class, 'importersShow'])->name('importers.show');
+    Route::get('/importers/{id}/edit', [AdminController::class, 'importersEdit'])->name('importers.edit');
+    Route::put('/importers/{id}', [AdminController::class, 'importersUpdate'])->name('importers.update');
+    Route::delete('/importers/{id}', [AdminController::class, 'importersDestroy'])->name('importers.destroy');
     Route::put('/importers/{id}/status', [AdminController::class, 'importersUpdateStatus'])->name('importers.updateStatus');
     Route::put('/orders/{id}/status', [AdminController::class, 'ordersUpdateStatus'])->name('orders.updateStatus');
     
@@ -154,6 +137,27 @@ Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(functi
         Route::post('/generate-sitemap', [ContentController::class, 'generateSitemap'])->name('generate-sitemap');
     });
     
+    // إدارة ملاحظات العملاء
+    Route::resource('customer-notes', App\Http\Controllers\Admin\CustomerNotesController::class);
+    Route::post('customer-notes/{customerNote}/archive', [App\Http\Controllers\Admin\CustomerNotesController::class, 'archive'])->name('customer-notes.archive');
+    Route::post('customer-notes/{customerNote}/restore', [App\Http\Controllers\Admin\CustomerNotesController::class, 'restore'])->name('customer-notes.restore');
+    Route::get('customers/{customer}/notes', [App\Http\Controllers\Admin\CustomerNotesController::class, 'customerNotes'])->name('customers.notes');
+    Route::get('api/customers/{customer}/notes', [App\Http\Controllers\Admin\CustomerNotesController::class, 'getCustomerNotes'])->name('api.customers.notes');
+    
+    // إدارة الواتساب
+    Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\WhatsAppController::class, 'index'])->name('index');
+        Route::get('/test', function() { return view('admin.whatsapp.test'); })->name('test');
+        Route::get('/conversation/{phoneNumber}', [App\Http\Controllers\Admin\WhatsAppController::class, 'conversation'])->name('conversation');
+        Route::post('/send', [App\Http\Controllers\Admin\WhatsAppController::class, 'sendMessage'])->name('send');
+        Route::post('/test', [App\Http\Controllers\Admin\WhatsAppController::class, 'testMessage'])->name('test.send');
+        Route::get('/test-connection', [App\Http\Controllers\Admin\WhatsAppController::class, 'testConnection'])->name('test.connection');
+        Route::post('/receive', [App\Http\Controllers\Admin\WhatsAppController::class, 'receiveMessage'])->name('receive');
+        Route::post('/messages/{message}/archive', [App\Http\Controllers\Admin\WhatsAppController::class, 'archiveMessage'])->name('messages.archive');
+        Route::delete('/messages/{message}', [App\Http\Controllers\Admin\WhatsAppController::class, 'deleteMessage'])->name('messages.delete');
+        Route::get('/stats', [App\Http\Controllers\Admin\WhatsAppController::class, 'getConversationStats'])->name('stats');
+    });
+    
     // إدارة المستخدمين
     Route::get('/users', [AdminController::class, 'users'])->name('users.index');
     Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
@@ -163,18 +167,15 @@ Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(functi
     Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('users.update');
     Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
     
-    // إدارة المشرفين
-    Route::get('/admins', [AdminController::class, 'admins'])->name('admins.index');
-    Route::get('/admins/create', [AdminController::class, 'createAdmin'])->name('admins.create');
-    Route::post('/admins', [AdminController::class, 'storeAdmin'])->name('admins.store');
-    Route::get('/admins/{id}', [AdminController::class, 'showAdmin'])->name('admins.show');
-    Route::get('/admins/{id}/edit', [AdminController::class, 'editAdmin'])->name('admins.edit');
-    Route::put('/admins/{id}', [AdminController::class, 'updateAdmin'])->name('admins.update');
-    Route::delete('/admins/{id}', [AdminController::class, 'destroyAdmin'])->name('admins.destroy');
     
     // فريق التسويق
     Route::get('/marketing', [AdminController::class, 'marketingTeam'])->name('marketing.index');
+    Route::get('/marketing/create', [AdminController::class, 'createMarketingMember'])->name('marketing.create');
+    Route::post('/marketing', [AdminController::class, 'storeMarketingMember'])->name('marketing.store');
     Route::get('/marketing/{id}', [AdminController::class, 'showMarketingMember'])->name('marketing.show');
+    Route::get('/marketing/{id}/edit', [AdminController::class, 'editMarketingMember'])->name('marketing.edit');
+    Route::put('/marketing/{id}', [AdminController::class, 'updateMarketingMember'])->name('marketing.update');
+    Route::delete('/marketing/{id}', [AdminController::class, 'destroyMarketingMember'])->name('marketing.destroy');
     Route::post('/marketing/{id}/assign-task', [AdminController::class, 'assignTaskToMarketing'])->name('marketing.assign-task');
     Route::put('/marketing/{id}/disable', [AdminController::class, 'disableMarketingMember'])->name('marketing.disable');
     
@@ -195,6 +196,16 @@ Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(functi
         Route::put('/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('update');
         Route::delete('/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('destroy');
         Route::put('/{task}/status', [App\Http\Controllers\TaskController::class, 'updateStatus'])->name('update-status');
+        
+        // مسارات Kanban الجديدة
+        Route::post('/{task}/position', [App\Http\Controllers\TaskController::class, 'updatePosition'])->name('update-position');
+        Route::post('/{task}/comment', [App\Http\Controllers\TaskController::class, 'addComment'])->name('add-comment');
+        Route::post('/{task}/checklist', [App\Http\Controllers\TaskController::class, 'addChecklistItem'])->name('add-checklist');
+        Route::put('/{task}/checklist', [App\Http\Controllers\TaskController::class, 'updateChecklistItem'])->name('update-checklist');
+        Route::post('/{task}/time-log', [App\Http\Controllers\TaskController::class, 'addTimeLog'])->name('add-time-log');
+        
+        // مسارات اللوحات
+        Route::post('/board', [App\Http\Controllers\TaskController::class, 'createBoard'])->name('create-board');
     });
     
     // معرض الأعمال
@@ -215,6 +226,17 @@ Route::prefix('admin')->middleware(['auth:admin'])->name('admin.')->group(functi
     
     // التقارير
     Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
+    
+    // إدارة خطط الشركة
+    Route::resource('company-plans', App\Http\Controllers\Admin\CompanyPlanController::class);
+    Route::put('/company-plans/{companyPlan}/status', [App\Http\Controllers\Admin\CompanyPlanController::class, 'updateStatus'])->name('company-plans.update-status');
+    
+    // إدارة الصلاحيات
+    Route::prefix('permissions')->name('permissions.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('index');
+        Route::put('/', [App\Http\Controllers\Admin\PermissionController::class, 'update'])->name('update');
+        Route::post('/reset', [App\Http\Controllers\Admin\PermissionController::class, 'reset'])->name('reset');
+    });
     
     // الإعدادات
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');

@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -12,45 +10,32 @@ class CategoryController extends Controller
     /**
      * عرض قائمة الفئات
      */
-    public function index()
+    public function index(Request $request)
     {
+        // إذا كان الطلب من الإدارة
+        if ($request->is('admin/*')) {
+            $categories = Category::orderBy('sort_order')->get();
+            return view('admin.categories.index', compact('categories'));
+        }
+        
+        // للعرض العام
         $categories = Category::where('is_active', true)
             ->orderBy('sort_order')
-            ->withCount('products')
             ->get();
         
         return view('categories.index', compact('categories'));
     }
 
     /**
-     * عرض منتجات فئة محددة
+     * عرض تفاصيل فئة محددة
      */
-    public function show(Category $category, Request $request)
+    public function show(Category $category)
     {
         if (!$category->is_active) {
             abort(404);
         }
         
-        $query = $category->products()->where('is_active', true);
-        
-        // البحث بالنص
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name_ar', 'LIKE', "%{$search}%")
-                  ->orWhere('name_en', 'LIKE', "%{$search}%")
-                  ->orWhere('description_ar', 'LIKE', "%{$search}%");
-            });
-        }
-        
-        // ترتيب المنتجات
-        $sortBy = $request->get('sort', 'created_at');
-        $sortOrder = $request->get('order', 'desc');
-        $query->orderBy($sortBy, $sortOrder);
-        
-        $products = $query->paginate(12);
-        
-        return view('categories.show', compact('category', 'products'));
+        return view('categories.show', compact('category'));
     }
 
     /**
@@ -132,12 +117,6 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        // التحقق من وجود منتجات في الفئة
-        if ($category->products()->count() > 0) {
-            return redirect()->route('admin.categories.index')
-                ->with('error', 'لا يمكن حذف الفئة لوجود منتجات بها');
-        }
-        
         $category->delete();
         return redirect()->route('admin.categories.index')
             ->with('success', 'تم حذف الفئة بنجاح');

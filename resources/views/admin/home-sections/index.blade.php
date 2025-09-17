@@ -40,12 +40,12 @@
                                     <span class="badge bg-info">{{ $section->section_type }}</span>
                                 </td>
                                 <td>
-                                    <span class="badge bg-secondary">{{ $section->allContents->count() }}</span>
-                                    <a href="{{ route('admin.section-contents.index', $section) }}" class="btn btn-sm btn-outline-primary ms-2">
+                                    <span class="badge bg-secondary">{{ $section->contents->count() }}</span>
+                                    <a href="{{ route('admin.home-sections.section-contents.index', $section) }}" class="btn btn-sm btn-outline-primary ms-2">
                                         إدارة المحتوى
                                     </a>
                                 </td>
-                                <td>{{ $section->order }}</td>
+                                <td>{{ $section->sort_order }}</td>
                                 <td>
                                     <span class="badge {{ $section->is_active ? 'bg-success' : 'bg-secondary' }}">
                                         {{ $section->is_active ? 'نشط' : 'غير نشط' }}

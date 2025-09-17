@@ -42,7 +42,7 @@
                                 </td>
                                 <td>{{ $slider->title }}</td>
                                 <td>{{ $slider->subtitle }}</td>
-                                <td>{{ $slider->order }}</td>
+                                <td>{{ $slider->sort_order }}</td>
                                 <td>
                                     <span class="badge {{ $slider->is_active ? 'bg-success' : 'bg-secondary' }}">
                                         {{ $slider->is_active ? 'نشط' : 'غير نشط' }}

@@ -25,13 +25,9 @@
             <i class="fas fa-tshirt me-2"></i>
             المنتجات
         </a>
-        <a href="{{ route('admin.categories.index') }}" class="nav-link">
-            <i class="fas fa-tags me-2"></i>
-            الفئات
-        </a>
-        <a href="{{ route('admin.custom-designs.index') }}" class="nav-link">
-            <i class="fas fa-palette me-2"></i>
-            التصاميم المخصصة
+                <a href="{{ route('admin.orders.index') }}" class="nav-link">
+            <i class="fas fa-shopping-cart me-2"></i>
+            الطلبات
         </a>
         <a href="{{ route('admin.portfolio.index') }}" class="nav-link">
             <i class="fas fa-image me-2"></i>

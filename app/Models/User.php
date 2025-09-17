@@ -39,24 +39,25 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
-    public function customDesigns(): HasMany
-    {
-        return $this->hasMany(CustomDesign::class);
-    }
 
     public function isAdmin(): bool
     {
         return $this->user_type === 'admin';
     }
 
-    public function isCustomer(): bool
-    {
-        return $this->user_type === 'customer';
-    }
-
     public function isImporter(): bool
     {
         return $this->user_type === 'importer';
+    }
+
+    public function isSales(): bool
+    {
+        return $this->user_type === 'sales';
+    }
+
+    public function isMarketing(): bool
+    {
+        return $this->user_type === 'marketing';
     }
 
     public function hasRole(string $role): bool
@@ -76,9 +77,12 @@ class User extends Authenticatable
                 return 'admin.dashboard';
             case 'importer':
                 return 'importers.dashboard';
-            case 'customer':
+            case 'sales':
+                return 'sales.dashboard';
+            case 'marketing':
+                return 'marketing.dashboard';
             default:
-                return 'customer.dashboard';
+                return 'importers.dashboard';
         }
     }
 } 

@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>تحرير القسم: {{ $homeSection->name }}</h1>
         <div>
-            <a href="{{ route('admin.section-contents.index', $homeSection) }}" class="btn btn-info me-2">
+            <a href="{{ route('admin.home-sections.section-contents.index', $homeSection) }}" class="btn btn-info me-2">
                 <i class="fas fa-list"></i> إدارة المحتوى
             </a>
             <a href="{{ route('admin.home-sections.index') }}" class="btn btn-secondary">

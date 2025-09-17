@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -73,19 +73,6 @@
                             <i class="fas fa-home me-1"></i>الرئيسية
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle{{ request()->routeIs('custom-designs.*') ? ' active' : '' }}" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-palette me-1"></i>أدوات التصميم
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('custom-designs.create') }}">
-                                <i class="fas fa-paint-brush me-2"></i>أداة التصميم البسيطة
-                            </a></li>
-                            <li><a class="dropdown-item" href="{{ route('custom-designs.enhanced-create') }}">
-                                <i class="fas fa-magic me-2"></i>أداة التصميم المتقدمة
-                            </a></li>
-                        </ul>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link{{ request()->routeIs('importers.form') ? ' active' : '' }}" href="{{ route('importers.form') }}">
                             <i class="fas fa-file-import me-1"></i>طلب جديد للمستورد
@@ -120,17 +107,11 @@
                 
                 <ul class="navbar-nav">
                     @auth
-                        <li class="nav-item">
-                            <a class="nav-link{{ request()->routeIs('custom-designs.index') ? ' active' : '' }}" href="{{ route('custom-designs.index') }}">
-                                <i class="fas fa-palette me-1"></i> تصميمي
-                            </a>
-                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{{ route('custom-designs.index') }}"><i class="fas fa-palette me-2"></i>تصاميمي</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" class="d-inline">

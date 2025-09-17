@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>إدارة محتوى القسم: {{ $homeSection->name }}</h1>
         <div>
-            <a href="{{ route('admin.section-contents.create', $homeSection) }}" class="btn btn-primary me-2">
+            <a href="{{ route('admin.home-sections.section-contents.create', $homeSection) }}" class="btn btn-primary me-2">
                 <i class="fas fa-plus"></i> إضافة محتوى جديد
             </a>
             <a href="{{ route('admin.home-sections.index') }}" class="btn btn-secondary">
@@ -80,19 +80,19 @@
                                 <td>
                                     <span class="badge bg-info">{{ $content->type }}</span>
                                 </td>
-                                <td>{{ $content->order }}</td>
+                                <td>{{ $content->sort_order }}</td>
                                 <td>
                                     <span class="badge {{ $content->is_active ? 'bg-success' : 'bg-secondary' }}">
                                         {{ $content->is_active ? 'نشط' : 'غير نشط' }}
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.section-contents.edit', [$homeSection, $content]) }}" 
+                                    <a href="{{ route('admin.section-contents.edit', $content) }}" 
                                        class="btn btn-sm btn-warning">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form method="POST" 
-                                          action="{{ route('admin.section-contents.destroy', [$homeSection, $content]) }}" 
+                                          action="{{ route('admin.section-contents.destroy', $content) }}" 
                                           class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -115,7 +115,7 @@
                 <div class="text-center py-5">
                     <h4>لا يوجد محتوى في هذا القسم</h4>
                     <p>ابدأ بإضافة أول محتوى لهذا القسم</p>
-                    <a href="{{ route('admin.section-contents.create', $homeSection) }}" class="btn btn-primary">
+                    <a href="{{ route('admin.home-sections.section-contents.create', $homeSection) }}" class="btn btn-primary">
                         إضافة محتوى جديد
                     </a>
                 </div>

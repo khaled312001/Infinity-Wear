@@ -21,7 +21,7 @@
                             <div class="category-overlay">
                                 <div class="category-info">
                                     <h4 class="category-title">{{ $category->name_ar }}</h4>
-                                    <p class="category-count">{{ $category->products_count }} منتج</p>
+                                    <p class="category-count">فئة متاحة</p>
                                 </div>
                             </div>
                         </div>
@@ -31,12 +31,12 @@
                             
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="text-muted">
-                                    <i class="fas fa-box me-1"></i>
-                                    {{ $category->products_count }} منتج
+                                    <i class="fas fa-tag me-1"></i>
+                                    فئة متاحة
                                 </span>
                                 <a href="{{ route('categories.show', $category) }}" class="btn btn-primary">
                                     <i class="fas fa-arrow-left me-2"></i>
-                                    عرض المنتجات
+                                    عرض التفاصيل
                                 </a>
                             </div>
                         </div>
@@ -75,8 +75,8 @@
                         </div>
                         <h5 class="card-title">ملابس رياضية</h5>
                         <p class="card-text">أفضل الملابس الرياضية للأكاديميات والفرق مكةية</p>
-                        <a href="{{ route('products.index', ['category' => 'sports']) }}" class="btn btn-outline-primary">
-                            تصفح المنتجات
+                        <a href="{{ route('importers.form') }}" class="btn btn-outline-primary">
+                            طلب تصميم
                         </a>
                     </div>
                 </div>
@@ -90,8 +90,8 @@
                         </div>
                         <h5 class="card-title">زي مدرسي</h5>
                         <p class="card-text">زي موحد أنيق ومريح للمدارس والأكاديميات</p>
-                        <a href="{{ route('products.index', ['category' => 'school']) }}" class="btn btn-outline-primary">
-                            تصفح المنتجات
+                        <a href="{{ route('importers.form') }}" class="btn btn-outline-primary">
+                            طلب تصميم
                         </a>
                     </div>
                 </div>
@@ -105,8 +105,8 @@
                         </div>
                         <h5 class="card-title">زي شركات</h5>
                         <p class="card-text">زي موحد احترافي للشركات والمؤسسات</p>
-                        <a href="{{ route('products.index', ['category' => 'corporate']) }}" class="btn btn-outline-primary">
-                            تصفح المنتجات
+                        <a href="{{ route('importers.form') }}" class="btn btn-outline-primary">
+                            طلب تصميم
                         </a>
                     </div>
                 </div>

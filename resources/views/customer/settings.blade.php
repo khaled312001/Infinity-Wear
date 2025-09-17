@@ -16,18 +16,6 @@
         <i class="fas fa-shopping-cart me-2"></i>
         طلباتي
     </a>
-    <a href="{{ route('customer.designs') }}" class="nav-link">
-        <i class="fas fa-palette me-2"></i>
-        تصاميمي
-    </a>
-    <a href="{{ route('products.index') }}" class="nav-link">
-        <i class="fas fa-tshirt me-2"></i>
-        المنتجات
-    </a>
-    <a href="{{ route('custom-designs.create') }}" class="nav-link">
-        <i class="fas fa-plus me-2"></i>
-        تصميم جديد
-    </a>
     <a href="{{ route('customer.profile') }}" class="nav-link">
         <i class="fas fa-user me-2"></i>
         الملف الشخصي

@@ -1,66 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'إدارة الطلبات - Infinity Wear')
+@section('dashboard-title', 'لوحة الإدارة')
+@section('page-title', 'إدارة الطلبات')
+@section('page-subtitle', 'عرض وإدارة طلبات العملاء')
 
 @section('content')
-<div class="container-fluid py-4">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <span class="infinity-logo me-2"></span>
-                        لوحة التحكم
-                    </h5>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a href="{{ route('admin.dashboard') }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-tachometer-alt me-2"></i>
-                        الرئيسية
-                    </a>
-                    <a href="{{ route('admin.products.index') }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-tshirt me-2"></i>
-                        المنتجات
-                    </a>
-                    <a href="{{ route('admin.categories.index') }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-tags me-2"></i>
-                        الفئات
-                    </a>
-                    <a href="{{ route('admin.orders.index') }}" class="list-group-item list-group-item-action active">
-                        <i class="fas fa-shopping-cart me-2"></i>
-                        الطلبات
-                    </a>
-                    <a href="{{ route('admin.custom-designs.index') }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-palette me-2"></i>
-                        التصاميم المخصصة
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-users me-2"></i>
-                        العملاء
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-chart-bar me-2"></i>
-                        التقارير
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-cog me-2"></i>
-                        الإعدادات
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Main Content -->
-        <div class="col-md-9 col-lg-10">
-            <div class="row mb-4">
-                <div class="col-12 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2 class="section-title">إدارة الطلبات</h2>
-                        <p class="text-muted">عرض وإدارة طلبات العملاء</p>
-                    </div>
-                </div>
-            </div>
             
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">

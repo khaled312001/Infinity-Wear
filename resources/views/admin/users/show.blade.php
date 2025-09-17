@@ -25,13 +25,9 @@
             <i class="fas fa-tshirt me-2"></i>
             المنتجات
         </a>
-        <a href="{{ route('admin.categories.index') }}" class="nav-link">
-            <i class="fas fa-tags me-2"></i>
-            الفئات
-        </a>
-        <a href="{{ route('admin.custom-designs.index') }}" class="nav-link">
-            <i class="fas fa-palette me-2"></i>
-            التصاميم المخصصة
+                <a href="{{ route('admin.orders.index') }}" class="nav-link">
+            <i class="fas fa-shopping-cart me-2"></i>
+            الطلبات
         </a>
         <a href="{{ route('admin.portfolio.index') }}" class="nav-link">
             <i class="fas fa-image me-2"></i>
@@ -244,10 +240,6 @@
                             <div class="stat-label">طلبات مكتملة</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value text-info">{{ $user->customDesigns()->count() }}</div>
-                            <div class="stat-label">تصاميم مخصصة</div>
-                        </div>
-                        <div class="stat-item">
                             <div class="stat-value text-warning">{{ $user->orders()->where('status', 'pending')->count() }}</div>
                             <div class="stat-label">طلبات معلقة</div>
                         </div>
@@ -266,12 +258,6 @@
                             <button class="nav-link active" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab">
                                 <i class="fas fa-shopping-cart me-2"></i>
                                 الطلبات
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="designs-tab" data-bs-toggle="tab" data-bs-target="#designs" type="button" role="tab">
-                                <i class="fas fa-palette me-2"></i>
-                                التصاميم المخصصة
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -364,40 +350,6 @@
                             @endif
                         </div>
 
-                        <!-- التصاميم المخصصة -->
-                        <div class="tab-pane fade" id="designs" role="tabpanel">
-                            @if($user->customDesigns()->count() > 0)
-                                <div class="row g-3">
-                                    @foreach($user->customDesigns()->latest()->take(6)->get() as $design)
-                                        <div class="col-md-6">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h6 class="card-title">{{ $design->title }}</h6>
-                                                    <p class="card-text text-muted small">
-                                                        {{ Str::limit($design->description, 100) }}
-                                                    </p>
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <small class="text-muted">
-                                                            {{ $design->created_at->diffForHumans() }}
-                                                        </small>
-                                                        <a href="{{ route('admin.custom-designs.show', $design->id) }}" 
-                                                           class="btn btn-sm btn-outline-primary">
-                                                            عرض
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <div class="text-center py-5">
-                                    <i class="fas fa-palette fa-3x text-muted mb-3"></i>
-                                    <h5 class="text-muted">لا توجد تصاميم مخصصة</h5>
-                                    <p class="text-muted">لم يقم هذا العميل بطلب أي تصاميم مخصصة حتى الآن</p>
-                                </div>
-                            @endif
-                        </div>
 
                         <!-- سجل النشاط -->
                         <div class="tab-pane fade" id="activity" role="tabpanel">
@@ -439,7 +391,7 @@
                                     </div>
                                 @endforeach
 
-                                @if($user->orders()->count() == 0 && $user->customDesigns()->count() == 0)
+                                @if($user->orders()->count() == 0)
                                     <div class="text-center py-5">
                                         <i class="fas fa-history fa-3x text-muted mb-3"></i>
                                         <h5 class="text-muted">لا يوجد نشاط</h5>

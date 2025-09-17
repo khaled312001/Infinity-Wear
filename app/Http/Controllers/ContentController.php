@@ -10,7 +10,7 @@ class ContentController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:admin']);
+        // Middleware is applied in routes
     }
 
     /**
@@ -271,8 +271,7 @@ class ContentController extends Controller
             ['url' => route('portfolio.index'), 'priority' => '0.9'],
             ['url' => route('testimonials.index'), 'priority' => '0.7'],
             ['url' => route('contact'), 'priority' => '0.6'],
-            ['url' => route('custom-designs.create'), 'priority' => '0.9'],
-            ['url' => route('custom-designs.enhanced-create'), 'priority' => '0.9'],
+            ['url' => route('importers.form'), 'priority' => '0.9'],
         ];
 
         $xml = view('admin.content.sitemap', compact('urls'))->render();
