@@ -64,23 +64,6 @@
 <body>
     <!-- Header -->
     <header class="infinity-header">
-        <!-- Top Bar -->
-        <div class="header-top-bar">
-            <div class="container">
-                <div class="header-top-bar-content">
-                    <div class="header-social-links">
-                        <a href="#" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" aria-label="تويتر"><i class="fab fa-twitter"></i></a>
-                        <a href="#" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
-                        <a href="#" aria-label="لينكد إن"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <div class="header-contact-info">
-                        <span><i class="fas fa-phone"></i> +966 50 123 4567</span>
-                        <span><i class="fas fa-envelope"></i> info@infinitywear.sa</span>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Main Navigation -->
         <nav class="infinity-navbar">
