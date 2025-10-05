@@ -121,6 +121,7 @@ body {
     flex-wrap: nowrap;
     gap: 1rem;
     min-height: 2.5rem;
+    direction: ltr; /* لضمان الترتيب من اليسار لليمين */
 }
 
 .header-contact-info {
@@ -129,6 +130,7 @@ body {
     flex-wrap: nowrap;
     align-items: center;
     flex-shrink: 0;
+    order: 2; /* معلومات الاتصال على اليمين */
 }
 
 .header-contact-info span {
@@ -150,6 +152,7 @@ body {
     gap: 1rem;
     align-items: center;
     flex-shrink: 0;
+    order: 1; /* أيقونات السوشال ميديا على اليسار */
 }
 
 .header-social-links a {
@@ -1239,7 +1242,6 @@ body {
 
 .service-card {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 2rem;
     border-radius: 15px;
     box-shadow: var(--shadow-md);
     transition: all var(--transition-medium);
@@ -1247,6 +1249,9 @@ body {
     text-align: center;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .service-card::before {
@@ -1342,6 +1347,170 @@ body {
     right: 0;
     color: var(--success-color);
     font-weight: bold;
+}
+
+/* Service Image Styles */
+.service-image {
+    height: 200px;
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+    position: relative;
+}
+
+.service-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-medium);
+}
+
+.service-card:hover .service-image img {
+    transform: scale(1.05);
+}
+
+.service-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+/* Service Content Styles */
+.service-content {
+    padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Call to Action في قسم الخدمات */
+.services-cta {
+    margin-top: 4rem;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.services-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 2;
+}
+
+.services-cta h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.services-cta p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.cta-buttons .btn {
+    min-width: 200px;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all var(--transition-medium);
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-buttons .btn-primary {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+.cta-buttons .btn-primary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.cta-buttons .btn-outline {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+.cta-buttons .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .services-cta {
+        margin-top: 3rem;
+        padding: 2rem 1rem;
+    }
+    
+    .services-cta h3 {
+        font-size: 1.5rem;
+    }
+    
+    .services-cta p {
+        font-size: 1rem;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-buttons .btn {
+        min-width: 250px;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .service-image {
+        height: 180px;
+    }
+    
+    .service-content {
+        padding: 1.5rem;
+    }
+    
+    .infinity-services-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
 }
 
 /* قسم المنتجات */
@@ -3728,12 +3897,14 @@ textarea.form-control {
         gap: 0.75rem;
         text-align: center;
         min-height: auto;
+        direction: ltr; /* الحفاظ على الاتجاه */
     }
 
     .header-contact-info {
         gap: 1rem;
         justify-content: center;
         flex-wrap: wrap;
+        order: 2; /* معلومات الاتصال تظهر أولاً على الموبايل */
     }
 
     .header-contact-info span {
@@ -3742,6 +3913,7 @@ textarea.form-control {
 
     .header-social-links {
         justify-content: center;
+        order: 1; /* أيقونات السوشال ميديا تظهر ثانياً على الموبايل */
     }
 
 }

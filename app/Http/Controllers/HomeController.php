@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PortfolioItem;
 use App\Models\Testimonial;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -32,6 +33,9 @@ class HomeController extends Controller
             ->take(5)
             ->get();
 
-        return view('home', compact('featuredPortfolio', 'portfolioItems', 'testimonials'));
+        // الحصول على الخدمات النشطة للعرض في الصفحة الرئيسية
+        $services = Service::active()->ordered()->take(6)->get();
+
+        return view('home', compact('featuredPortfolio', 'portfolioItems', 'testimonials', 'services'));
     }
 }

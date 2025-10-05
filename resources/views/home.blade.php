@@ -213,106 +213,185 @@ use Illuminate\Support\Facades\Storage;
     <!-- Services Section -->
     <section id="services" class="infinity-services">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header" data-aos="fade-up">
                 <h2 class="section-title">خدماتنا</h2>
                 <p class="section-subtitle">نقدم مجموعة شاملة من الخدمات المتخصصة في الملابس الرياضية</p>
             </div>
 
             <div class="infinity-services-grid">
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-users"></i>
+                @forelse($services as $index => $service)
+                <div class="service-card" data-aos="fade-up" data-aos-delay="{{ ($index + 1) * 100 }}">
+                    <div class="service-image">
+                        @if($service->image)
+                            <img src="{{ $service->image_url }}" alt="{{ $service->title }}">
+                        @else
+                            <div class="service-image-placeholder">
+                                <i class="{{ $service->icon ?? 'fas fa-cog' }} fa-3x"></i>
+                            </div>
+                        @endif
                     </div>
-                    <h3 class="service-title">زي الفرق الرياضية</h3>
-                    <p class="service-description">
-                        تصميم وإنتاج أزياء متكاملة للفرق الرياضية بمختلف الأنواع (كرة قدم، كرة سلة، كرة طائرة، إلخ)
-                    </p>
-                    <ul class="service-features">
-                        <li>تصاميم عصرية وجذابة</li>
-                        <li>مواد مقاومة للعرق والرطوبة</li>
-                        <li>ألوان ثابتة لا تبهت</li>
-                        <li>مقاسات متنوعة ومريحة</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="{{ $service->icon ?? 'fas fa-cog' }}"></i>
+                        </div>
+                        <h3 class="service-title">{{ $service->title }}</h3>
+                        <p class="service-description">
+                            {{ $service->description }}
+                        </p>
+                        @if($service->features && count($service->features) > 0)
+                        <ul class="service-features">
+                            @foreach($service->features as $feature)
+                            <li>{{ $feature }}</li>
+                            @endforeach
+                        </ul>
+                        @endif
+                    </div>
+                </div>
+                @empty
+                <!-- Default Services if no services in database -->
+                <div class="service-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-image">
+                        <img src="{{ asset('images/sections/sports-equipment.svg') }}" alt="زي الفرق الرياضية">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="service-title">زي الفرق الرياضية</h3>
+                        <p class="service-description">
+                            تصميم وإنتاج أزياء متكاملة للفرق الرياضية بمختلف الأنواع (كرة قدم، كرة سلة، كرة طائرة، إلخ)
+                        </p>
+                        <ul class="service-features">
+                            <li>تصاميم عصرية وجذابة</li>
+                            <li>مواد مقاومة للعرق والرطوبة</li>
+                            <li>ألوان ثابتة لا تبهت</li>
+                            <li>مقاسات متنوعة ومريحة</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-graduation-cap"></i>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-image">
+                        <img src="{{ asset('images/sections/uniform-design.svg') }}" alt="زي المدارس والجامعات">
                     </div>
-                    <h3 class="service-title">زي المدارس والجامعات</h3>
-                    <p class="service-description">
-                        زي موحد للمدارس والجامعات يجمع بين الأناقة والراحة والمتانة للاستخدام اليومي
-                    </p>
-                    <ul class="service-features">
-                        <li>تصاميم رسمية ومناسبة</li>
-                        <li>أقمشة عالية الجودة</li>
-                        <li>سهولة في الصيانة والغسيل</li>
-                        <li>أسعار تنافسية للكميات الكبيرة</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="service-title">زي المدارس والجامعات</h3>
+                        <p class="service-description">
+                            زي موحد للمدارس والجامعات يجمع بين الأناقة والراحة والمتانة للاستخدام اليومي
+                        </p>
+                        <ul class="service-features">
+                            <li>تصاميم رسمية ومناسبة</li>
+                            <li>أقمشة عالية الجودة</li>
+                            <li>سهولة في الصيانة والغسيل</li>
+                            <li>أسعار تنافسية للكميات الكبيرة</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-building"></i>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-image">
+                        <img src="{{ asset('images/sections/quality-manufacturing.svg') }}" alt="زي الشركات والمؤسسات">
                     </div>
-                    <h3 class="service-title">زي الشركات والمؤسسات</h3>
-                    <p class="service-description">
-                        ملابس عمل رسمية وأنيقة تعكس هوية الشركة وتعزز من المظهر المهني للموظفين
-                    </p>
-                    <ul class="service-features">
-                        <li>تصاميم احترافية</li>
-                        <li>ألوان وشعارات مخصصة</li>
-                        <li>مقاسات متعددة</li>
-                        <li>كميات مرنة حسب الحاجة</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 class="service-title">زي الشركات والمؤسسات</h3>
+                        <p class="service-description">
+                            ملابس عمل رسمية وأنيقة تعكس هوية الشركة وتعزز من المظهر المهني للموظفين
+                        </p>
+                        <ul class="service-features">
+                            <li>تصاميم احترافية</li>
+                            <li>ألوان وشعارات مخصصة</li>
+                            <li>مقاسات متعددة</li>
+                            <li>كميات مرنة حسب الحاجة</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-palette"></i>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-image">
+                        <img src="{{ asset('images/sections/custom-design.svg') }}" alt="تصاميم مخصصة">
                     </div>
-                    <h3 class="service-title">تصاميم مخصصة</h3>
-                    <p class="service-description">
-                        خدمة تصميم مخصصة بالكامل حسب متطلبات العميل ورؤيته الخاصة
-                    </p>
-                    <ul class="service-features">
-                        <li>فريق تصميم محترف</li>
-                        <li>نماذج ثلاثية الأبعاد</li>
-                        <li>مراجعات متعددة</li>
-                        <li>تنفيذ دقيق للتصميم</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <h3 class="service-title">تصاميم مخصصة</h3>
+                        <p class="service-description">
+                            خدمة تصميم مخصصة بالكامل حسب متطلبات العميل ورؤيته الخاصة
+                        </p>
+                        <ul class="service-features">
+                            <li>فريق تصميم محترف</li>
+                            <li>نماذج ثلاثية الأبعاد</li>
+                            <li>مراجعات متعددة</li>
+                            <li>تنفيذ دقيق للتصميم</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-print"></i>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-image">
+                        <img src="{{ asset('images/sections/printing-service.svg') }}" alt="الطباعة والتطريز">
                     </div>
-                    <h3 class="service-title">الطباعة والتطريز</h3>
-                    <p class="service-description">
-                        خدمات طباعة وتطريز عالية الجودة للشعارات والأسماء والأرقام
-                    </p>
-                    <ul class="service-features">
-                        <li>تقنيات طباعة حديثة</li>
-                        <li>تطريز دقيق ومتين</li>
-                        <li>ألوان ثابتة وواضحة</li>
-                        <li>تنفيذ سريع وبدقة عالية</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-print"></i>
+                        </div>
+                        <h3 class="service-title">الطباعة والتطريز</h3>
+                        <p class="service-description">
+                            خدمات طباعة وتطريز عالية الجودة للشعارات والأسماء والأرقام
+                        </p>
+                        <ul class="service-features">
+                            <li>تقنيات طباعة حديثة</li>
+                            <li>تطريز دقيق ومتين</li>
+                            <li>ألوان ثابتة وواضحة</li>
+                            <li>تنفيذ سريع وبدقة عالية</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-truck"></i>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="service-image">
+                        <img src="{{ asset('images/sections/customer-service.svg') }}" alt="التوصيل والتوزيع">
                     </div>
-                    <h3 class="service-title">التوصيل والتوزيع</h3>
-                    <p class="service-description">
-                        خدمة توصيل وتوزيع شاملة تغطي جميع مناطق المملكة العربية السعودية
-                    </p>
-                    <ul class="service-features">
-                        <li>توصيل مجاني للطلبات الكبيرة</li>
-                        <li>تغليف آمن ومحترف</li>
-                        <li>تتبع الشحنات</li>
-                        <li>خدمة عملاء على مدار الساعة</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h3 class="service-title">التوصيل والتوزيع</h3>
+                        <p class="service-description">
+                            خدمة توصيل وتوزيع شاملة تغطي جميع مناطق المملكة العربية السعودية
+                        </p>
+                        <ul class="service-features">
+                            <li>توصيل مجاني للطلبات الكبيرة</li>
+                            <li>تغليف آمن ومحترف</li>
+                            <li>تتبع الشحنات</li>
+                            <li>خدمة عملاء على مدار الساعة</li>
+                        </ul>
+                    </div>
+                </div>
+                @endforelse
+            </div>
+            
+            <!-- Call to Action -->
+            <div class="services-cta" data-aos="fade-up" data-aos-delay="700">
+                <div class="cta-content">
+                    <h3>هل تريد معرفة المزيد عن خدماتنا؟</h3>
+                    <p>تواصل معنا اليوم للحصول على استشارة مجانية وتقدير سعر لمشروعك</p>
+                    <div class="cta-buttons">
+                        <a href="{{ route('services') }}" class="btn btn-primary btn-large">
+                            <i class="fas fa-eye"></i>
+                            عرض جميع الخدمات
+                        </a>
+                        <a href="#contact" class="btn btn-outline btn-large">
+                            <i class="fas fa-phone"></i>
+                            تواصل معنا
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

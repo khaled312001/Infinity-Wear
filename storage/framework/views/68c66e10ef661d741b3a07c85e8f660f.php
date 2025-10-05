@@ -68,15 +68,15 @@
         <div class="header-top-bar">
             <div class="container">
                 <div class="header-top-bar-content">
-                    <div class="header-contact-info">
-                        <span><i class="fas fa-phone"></i> +966 50 123 4567</span>
-                        <span><i class="fas fa-envelope"></i> info@infinitywear.sa</span>
-                    </div>
                     <div class="header-social-links">
                         <a href="#" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" aria-label="تويتر"><i class="fab fa-twitter"></i></a>
                         <a href="#" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
                         <a href="#" aria-label="لينكد إن"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <div class="header-contact-info">
+                        <span><i class="fas fa-phone"></i> +966 50 123 4567</span>
+                        <span><i class="fas fa-envelope"></i> info@infinitywear.sa</span>
                     </div>
                 </div>
             </div>
@@ -229,7 +229,7 @@
     <footer class="site-footer modern-footer">
         <div class="container">
             <div class="row gy-4 footer-main-content">
-                <div class="col-12">
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <div class="footer-brand-section">
                         <div class="brand-logo-container">
                             <img src="<?php echo e(\App\Helpers\SiteSettingsHelper::getLogoUrl()); ?>" 
@@ -261,10 +261,10 @@
                     </div>
                 </div>
                 
-                <div class="col-12">
-                    <div class="footer-navigation-section">
-                        <h5 class="section-heading">التنقل</h5>
-                        <ul class="navigation-links">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="footer-nav-section">
+                        <h5 class="footer-section-heading">التنقل</h5>
+                        <ul class="footer-nav-links">
                             <li><a href="<?php echo e(route('home')); ?>">الرئيسية</a></li>
                             <li><a href="<?php echo e(route('services')); ?>">خدماتنا</a></li>
                             <li><a href="<?php echo e(route('portfolio.index')); ?>">معرض أعمالنا</a></li>
@@ -274,10 +274,10 @@
                     </div>
                 </div>
                 
-                <div class="col-12">
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <div class="footer-services-section">
-                        <h5 class="section-heading">خدماتنا</h5>
-                        <ul class="services-links">
+                        <h5 class="footer-section-heading">خدماتنا</h5>
+                        <ul class="footer-services-links">
                             <li><a href="#">تصميم الأزياء</a></li>
                             <li><a href="#">الزي الموحد للأكاديميات</a></li>
                             <li><a href="#">ملابس الفرق الرياضية</a></li>
@@ -287,32 +287,32 @@
                     </div>
                 </div>
                 
-                <div class="col-12">
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <div class="footer-contact-section">
-                        <h5 class="section-heading">معلومات التواصل</h5>
-                        <div class="contact-info-list">
+                        <h5 class="footer-section-heading">معلومات التواصل</h5>
+                        <div class="footer-contact-info-list">
                             <?php if(\App\Models\Setting::get('contact_phone')): ?>
-                                <div class="contact-info-item">
-                                    <i class="fas fa-phone-alt contact-icon"></i>
-                                    <span class="contact-text"><?php echo e(\App\Models\Setting::get('contact_phone')); ?></span>
+                                <div class="footer-contact-info-item">
+                                    <i class="fas fa-phone-alt footer-contact-icon"></i>
+                                    <span class="footer-contact-text"><?php echo e(\App\Models\Setting::get('contact_phone')); ?></span>
                                 </div>
                             <?php endif; ?>
                             <?php if(\App\Models\Setting::get('contact_email')): ?>
-                                <div class="contact-info-item">
-                                    <i class="fas fa-envelope contact-icon"></i>
-                                    <span class="contact-text"><?php echo e(\App\Models\Setting::get('contact_email')); ?></span>
+                                <div class="footer-contact-info-item">
+                                    <i class="fas fa-envelope footer-contact-icon"></i>
+                                    <span class="footer-contact-text"><?php echo e(\App\Models\Setting::get('contact_email')); ?></span>
                                 </div>
                             <?php endif; ?>
                             <?php if(\App\Models\Setting::get('address')): ?>
-                                <div class="contact-info-item">
-                                    <i class="fas fa-map-marker-alt contact-icon"></i>
-                                    <span class="contact-text"><?php echo e(\App\Models\Setting::get('address')); ?></span>
+                                <div class="footer-contact-info-item">
+                                    <i class="fas fa-map-marker-alt footer-contact-icon"></i>
+                                    <span class="footer-contact-text"><?php echo e(\App\Models\Setting::get('address')); ?></span>
                                 </div>
                             <?php endif; ?>
                             <?php if(\App\Models\Setting::get('business_hours')): ?>
-                                <div class="contact-info-item">
-                                    <i class="fas fa-clock contact-icon"></i>
-                                    <span class="contact-text"><?php echo e(\App\Models\Setting::get('business_hours')); ?></span>
+                                <div class="footer-contact-info-item">
+                                    <i class="fas fa-clock footer-contact-icon"></i>
+                                    <span class="footer-contact-text"><?php echo e(\App\Models\Setting::get('business_hours')); ?></span>
                                 </div>
                             <?php endif; ?>
                         </div>

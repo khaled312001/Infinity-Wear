@@ -1164,3 +1164,4 @@ if (!document.querySelector('#infinity-dynamic-styles')) {
 `;
 
 document.head.appendChild(dynamicStyles);
+}

@@ -93,7 +93,7 @@ use Illuminate\Support\Facades\Storage;
         
         <div class="container">
             <div class="infinity-hero-content">
-                <div class="infinity-hero-text">
+                <div class="infinity-hero-text" style="width: 100%;">
                     <h1 class="infinity-hero-title">
                         <span class="title-line animate-text">ملابس رياضية احترافية</span>
                         <span class="title-highlight animate-text-delay">جودة لا تُضاهى</span>
@@ -113,7 +113,7 @@ use Illuminate\Support\Facades\Storage;
                         </a>
                     </div>
                 </div>
-                <div class="infinity-hero-stats">
+                <div class="infinity-hero-stats" style="width: 100%; margin-top: 2rem;">
                     <div class="stat-item animate-counter">
                         <div class="stat-icon">
                             <i class="fas fa-users"></i>
@@ -164,7 +164,7 @@ use Illuminate\Support\Facades\Storage;
             </div>
 
             <div class="infinity-about-content">
-                <div class="infinity-about-text">
+                <div class="infinity-about-text" style="width: 100%; margin-bottom: 2rem;">
                     <h3>رؤيتنا</h3>
                     <p>
                         أن نكون الخيار الأول في المملكة العربية السعودية للملابس الرياضية والزي الموحد،
@@ -197,7 +197,7 @@ use Illuminate\Support\Facades\Storage;
                     </div>
                 </div>
 
-                <div class="infinity-about-image">
+                <div class="infinity-about-image" style="width: 100%;">
                     <img src="<?php echo e(asset('images/about.png')); ?>" alt="فريق العمل">
                     <div class="image-overlay">
                         <div class="overlay-text">
@@ -213,106 +213,186 @@ use Illuminate\Support\Facades\Storage;
     <!-- Services Section -->
     <section id="services" class="infinity-services">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header" data-aos="fade-up">
                 <h2 class="section-title">خدماتنا</h2>
                 <p class="section-subtitle">نقدم مجموعة شاملة من الخدمات المتخصصة في الملابس الرياضية</p>
             </div>
 
             <div class="infinity-services-grid">
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-users"></i>
+                <?php $__empty_1 = true; $__currentLoopData = $services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="<?php echo e(($index + 1) * 100); ?>">
+                    <div class="service-image">
+                        <?php if($service->image): ?>
+                            <img src="<?php echo e($service->image_url); ?>" alt="<?php echo e($service->title); ?>">
+                        <?php else: ?>
+                            <div class="service-image-placeholder">
+                                <i class="<?php echo e($service->icon ?? 'fas fa-cog'); ?> fa-3x"></i>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                    <h3 class="service-title">زي الفرق الرياضية</h3>
-                    <p class="service-description">
-                        تصميم وإنتاج أزياء متكاملة للفرق الرياضية بمختلف الأنواع (كرة قدم، كرة سلة، كرة طائرة، إلخ)
-                    </p>
-                    <ul class="service-features">
-                        <li>تصاميم عصرية وجذابة</li>
-                        <li>مواد مقاومة للعرق والرطوبة</li>
-                        <li>ألوان ثابتة لا تبهت</li>
-                        <li>مقاسات متنوعة ومريحة</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="<?php echo e($service->icon ?? 'fas fa-cog'); ?>"></i>
+                        </div>
+                        <h3 class="service-title"><?php echo e($service->title); ?></h3>
+                        <p class="service-description">
+                            <?php echo e($service->description); ?>
+
+                        </p>
+                        <?php if($service->features && count($service->features) > 0): ?>
+                        <ul class="service-features">
+                            <?php $__currentLoopData = $service->features; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($feature); ?></li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </ul>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                <!-- Default Services if no services in database -->
+                <div class="service-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-image">
+                        <img src="<?php echo e(asset('images/sections/sports-equipment.svg')); ?>" alt="زي الفرق الرياضية">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="service-title">زي الفرق الرياضية</h3>
+                        <p class="service-description">
+                            تصميم وإنتاج أزياء متكاملة للفرق الرياضية بمختلف الأنواع (كرة قدم، كرة سلة، كرة طائرة، إلخ)
+                        </p>
+                        <ul class="service-features">
+                            <li>تصاميم عصرية وجذابة</li>
+                            <li>مواد مقاومة للعرق والرطوبة</li>
+                            <li>ألوان ثابتة لا تبهت</li>
+                            <li>مقاسات متنوعة ومريحة</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-graduation-cap"></i>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-image">
+                        <img src="<?php echo e(asset('images/sections/uniform-design.svg')); ?>" alt="زي المدارس والجامعات">
                     </div>
-                    <h3 class="service-title">زي المدارس والجامعات</h3>
-                    <p class="service-description">
-                        زي موحد للمدارس والجامعات يجمع بين الأناقة والراحة والمتانة للاستخدام اليومي
-                    </p>
-                    <ul class="service-features">
-                        <li>تصاميم رسمية ومناسبة</li>
-                        <li>أقمشة عالية الجودة</li>
-                        <li>سهولة في الصيانة والغسيل</li>
-                        <li>أسعار تنافسية للكميات الكبيرة</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="service-title">زي المدارس والجامعات</h3>
+                        <p class="service-description">
+                            زي موحد للمدارس والجامعات يجمع بين الأناقة والراحة والمتانة للاستخدام اليومي
+                        </p>
+                        <ul class="service-features">
+                            <li>تصاميم رسمية ومناسبة</li>
+                            <li>أقمشة عالية الجودة</li>
+                            <li>سهولة في الصيانة والغسيل</li>
+                            <li>أسعار تنافسية للكميات الكبيرة</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-building"></i>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-image">
+                        <img src="<?php echo e(asset('images/sections/quality-manufacturing.svg')); ?>" alt="زي الشركات والمؤسسات">
                     </div>
-                    <h3 class="service-title">زي الشركات والمؤسسات</h3>
-                    <p class="service-description">
-                        ملابس عمل رسمية وأنيقة تعكس هوية الشركة وتعزز من المظهر المهني للموظفين
-                    </p>
-                    <ul class="service-features">
-                        <li>تصاميم احترافية</li>
-                        <li>ألوان وشعارات مخصصة</li>
-                        <li>مقاسات متعددة</li>
-                        <li>كميات مرنة حسب الحاجة</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 class="service-title">زي الشركات والمؤسسات</h3>
+                        <p class="service-description">
+                            ملابس عمل رسمية وأنيقة تعكس هوية الشركة وتعزز من المظهر المهني للموظفين
+                        </p>
+                        <ul class="service-features">
+                            <li>تصاميم احترافية</li>
+                            <li>ألوان وشعارات مخصصة</li>
+                            <li>مقاسات متعددة</li>
+                            <li>كميات مرنة حسب الحاجة</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-palette"></i>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-image">
+                        <img src="<?php echo e(asset('images/sections/custom-design.svg')); ?>" alt="تصاميم مخصصة">
                     </div>
-                    <h3 class="service-title">تصاميم مخصصة</h3>
-                    <p class="service-description">
-                        خدمة تصميم مخصصة بالكامل حسب متطلبات العميل ورؤيته الخاصة
-                    </p>
-                    <ul class="service-features">
-                        <li>فريق تصميم محترف</li>
-                        <li>نماذج ثلاثية الأبعاد</li>
-                        <li>مراجعات متعددة</li>
-                        <li>تنفيذ دقيق للتصميم</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <h3 class="service-title">تصاميم مخصصة</h3>
+                        <p class="service-description">
+                            خدمة تصميم مخصصة بالكامل حسب متطلبات العميل ورؤيته الخاصة
+                        </p>
+                        <ul class="service-features">
+                            <li>فريق تصميم محترف</li>
+                            <li>نماذج ثلاثية الأبعاد</li>
+                            <li>مراجعات متعددة</li>
+                            <li>تنفيذ دقيق للتصميم</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-print"></i>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-image">
+                        <img src="<?php echo e(asset('images/sections/printing-service.svg')); ?>" alt="الطباعة والتطريز">
                     </div>
-                    <h3 class="service-title">الطباعة والتطريز</h3>
-                    <p class="service-description">
-                        خدمات طباعة وتطريز عالية الجودة للشعارات والأسماء والأرقام
-                    </p>
-                    <ul class="service-features">
-                        <li>تقنيات طباعة حديثة</li>
-                        <li>تطريز دقيق ومتين</li>
-                        <li>ألوان ثابتة وواضحة</li>
-                        <li>تنفيذ سريع وبدقة عالية</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-print"></i>
+                        </div>
+                        <h3 class="service-title">الطباعة والتطريز</h3>
+                        <p class="service-description">
+                            خدمات طباعة وتطريز عالية الجودة للشعارات والأسماء والأرقام
+                        </p>
+                        <ul class="service-features">
+                            <li>تقنيات طباعة حديثة</li>
+                            <li>تطريز دقيق ومتين</li>
+                            <li>ألوان ثابتة وواضحة</li>
+                            <li>تنفيذ سريع وبدقة عالية</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-truck"></i>
+                <div class="service-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="service-image">
+                        <img src="<?php echo e(asset('images/sections/customer-service.svg')); ?>" alt="التوصيل والتوزيع">
                     </div>
-                    <h3 class="service-title">التوصيل والتوزيع</h3>
-                    <p class="service-description">
-                        خدمة توصيل وتوزيع شاملة تغطي جميع مناطق المملكة العربية السعودية
-                    </p>
-                    <ul class="service-features">
-                        <li>توصيل مجاني للطلبات الكبيرة</li>
-                        <li>تغليف آمن ومحترف</li>
-                        <li>تتبع الشحنات</li>
-                        <li>خدمة عملاء على مدار الساعة</li>
-                    </ul>
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h3 class="service-title">التوصيل والتوزيع</h3>
+                        <p class="service-description">
+                            خدمة توصيل وتوزيع شاملة تغطي جميع مناطق المملكة العربية السعودية
+                        </p>
+                        <ul class="service-features">
+                            <li>توصيل مجاني للطلبات الكبيرة</li>
+                            <li>تغليف آمن ومحترف</li>
+                            <li>تتبع الشحنات</li>
+                            <li>خدمة عملاء على مدار الساعة</li>
+                        </ul>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+            
+            <!-- Call to Action -->
+            <div class="services-cta" data-aos="fade-up" data-aos-delay="700">
+                <div class="cta-content">
+                    <h3>هل تريد معرفة المزيد عن خدماتنا؟</h3>
+                    <p>تواصل معنا اليوم للحصول على استشارة مجانية وتقدير سعر لمشروعك</p>
+                    <div class="cta-buttons">
+                        <a href="<?php echo e(route('services')); ?>" class="btn btn-primary btn-large">
+                            <i class="fas fa-eye"></i>
+                            عرض جميع الخدمات
+                        </a>
+                        <a href="#contact" class="btn btn-outline btn-large">
+                            <i class="fas fa-phone"></i>
+                            تواصل معنا
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -558,7 +638,7 @@ use Illuminate\Support\Facades\Storage;
             </div>
 
             <div class="infinity-contact-content">
-                <div class="infinity-contact-info">
+                <div class="infinity-contact-info" style="width: 100%; margin-bottom: 2rem;">
                     <div class="infinity-contact-card">
                         <div class="infinity-contact-icon">
                             <i class="fas fa-map-marker-alt"></i>
@@ -600,7 +680,7 @@ use Illuminate\Support\Facades\Storage;
                     </div>
                 </div>
 
-                <div class="infinity-contact-form-container">
+                <div class="infinity-contact-form-container" style="width: 100%;">
                     <form class="infinity-contact-form" id="contactForm">
                         <div class="form-row">
                             <div class="form-group">
