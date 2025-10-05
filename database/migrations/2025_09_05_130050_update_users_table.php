@@ -12,7 +12,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('city')->nullable();
-            $table->enum('user_type', ['customer', 'admin'])->default('customer');
+            $table->string('user_type')->default('customer');
         });
     }
 

@@ -9,28 +9,11 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // تنفيذ البذور الجديدة فقط
+        // تنفيذ البذور الشاملة
         $this->call([
-            AdminSeeder::class,
-            ImporterSeeder::class,
-            MarketingTeamSeeder::class,
-            SalesTeamSeeder::class,
-            ImporterOrderSeeder::class,
-            TaskSeeder::class,
-            PortfolioItemSeeder::class,
-            TestimonialSeeder::class,
-            OrderSeeder::class,
-        ]);
-
-        // إنشاء مستخدم تجريبي
-        User::create([
-            'name' => 'مستخدم تجريبي',
-            'email' => 'test@infinitywear.sa',
-            'password' => bcrypt('password123'),
-            'phone' => '+966501234567',
-            'address' => 'مكة المملكة العربية السعودية',
-            'city' => 'مكة',
-            'user_type' => 'customer',
+            ComprehensiveDataSeeder::class,
+            HomePageSeeder::class,
+            MarketingSalesUsersSeeder::class,
         ]);
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'إضافة شهادة جديدة - مؤسسة اللباس اللامحدود')
+@section('title', 'إضافة تقييم جديد - مؤسسة الزي اللامحدود')
 
 @section('styles')
 <style>
@@ -324,7 +324,7 @@
                             
                             <div class="form-group">
                                 <label for="content" class="form-label">
-                                    <i class="fas fa-comment me-2"></i>نص الشهادة <span class="text-danger">*</span>
+                                    <i class="fas fa-comment me-2"></i>نص التقييم <span class="text-danger">*</span>
                                 </label>
                                 <textarea class="form-control" id="content" name="content" rows="5" required placeholder="اكتب تجربتك مع منتجاتنا أو خدماتنا...">{{ old('content') }}</textarea>
                                 <small class="text-muted">يرجى كتابة تجربتك مع منتجاتنا أو خدماتنا (10 أحرف على الأقل)</small>
@@ -371,7 +371,7 @@
                             
                             <div class="text-center">
                                 <button type="submit" class="btn-submit">
-                                    <i class="fas fa-paper-plane me-2"></i>إرسال الشهادة
+                                    <i class="fas fa-paper-plane me-2"></i>إرسال التقييم
                                 </button>
                             </div>
                         </form>
@@ -447,7 +447,7 @@
         const content = document.getElementById('content').value.trim();
         if (content.length < 10) {
             e.preventDefault();
-            alert('يرجى كتابة نص الشهادة (10 أحرف على الأقل)');
+            alert('يرجى كتابة نص التقييم (10 أحرف على الأقل)');
             return false;
         }
     });

@@ -154,9 +154,14 @@
                                                     <h6 class="mb-1">{{ $contact['name'] ?? 'جهة اتصال غير معروفة' }}</h6>
                                                     <small class="text-muted">{{ $phoneNumber }}</small>
                                                 </div>
-                                                @if($unreadCount > 0)
-                                                    <span class="badge bg-danger">{{ $unreadCount }}</span>
-                                                @endif
+                                                <div class="d-flex align-items-center gap-2">
+                                                    @if($unreadCount > 0)
+                                                        <span class="badge bg-danger">{{ $unreadCount }}</span>
+                                                    @endif
+                                                    <button class="btn btn-sm btn-outline-success" onclick="openWhatsAppDirect('{{ $phoneNumber }}')" title="فتح WhatsApp">
+                                                        <i class="fab fa-whatsapp"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                             <p class="mb-0 text-muted small">
                                                 {{ Str::limit($lastMessage->message_content, 50) }}
@@ -317,28 +322,69 @@
         
         const formData = new FormData(this);
         
+        // Debug: Log form data
+        console.log('Form data being sent:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
+        
+        // Validate required fields
+        const toNumber = formData.get('to_number');
+        const messageContent = formData.get('message_content');
+        const contactType = formData.get('contact_type');
+        
+        if (!toNumber || !messageContent || !contactType) {
+            alert('يرجى ملء جميع الحقول المطلوبة');
+            return;
+        }
+        
         fetch('/admin/whatsapp/send', {
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 // إغلاق المودال
                 bootstrap.Modal.getInstance(document.getElementById('newMessageModal')).hide();
                 
+                // التحقق من نوع الإرسال
+                if (data.data && data.send_result && data.send_result.success) {
+                    alert('🎉 تم إرسال الرسالة تلقائياً بنجاح!\n\nالرسالة وصلت مباشرة إلى WhatsApp بدون الحاجة لفتح التطبيق!');
+                } else if (data.data && data.data.whatsapp_url) {
+                    const whatsappUrl = data.data.whatsapp_url;
+                    const openWhatsApp = confirm('تم إنشاء رابط WhatsApp بنجاح!\n\nهل تريد فتح WhatsApp Web لإرسال الرسالة؟');
+                    
+                    if (openWhatsApp) {
+                        window.open(whatsappUrl, '_blank');
+                    } else {
+                        // نسخ الرابط للحافظة
+                        navigator.clipboard.writeText(whatsappUrl).then(() => {
+                            alert('تم نسخ رابط WhatsApp إلى الحافظة!\n\nيمكنك مشاركة الرابط مع المستخدم لإرسال الرسالة.');
+                        }).catch(() => {
+                            alert('رابط WhatsApp:\n' + whatsappUrl);
+                        });
+                    }
+                }
+                
                 // إعادة تحميل الصفحة
                 location.reload();
             } else {
-                alert('حدث خطأ في إرسال الرسالة');
+                alert('حدث خطأ في إرسال الرسالة: ' + (data.message || 'خطأ غير معروف'));
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('حدث خطأ في إرسال الرسالة');
+            alert('حدث خطأ في إرسال الرسالة: ' + error.message);
         });
     });
 
@@ -374,7 +420,15 @@
         window.open(whatsappUrl, '_blank');
     }
 
-    // جعل الدالة متاحة عالمياً
+    // فتح WhatsApp مباشرة برقم الهاتف
+    function openWhatsAppDirect(phoneNumber) {
+        const cleanNumber = phoneNumber.replace(/[^0-9]/g, '');
+        const whatsappUrl = `https://wa.me/${cleanNumber}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    // جعل الدوال متاحة عالمياً
     window.openWhatsApp = openWhatsApp;
+    window.openWhatsAppDirect = openWhatsAppDirect;
 </script>
 @endpush

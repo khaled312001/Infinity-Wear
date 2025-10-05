@@ -1,0 +1,182 @@
+[
+    {
+        "id": 1,
+        "title": "\u0645\u0634\u0631\u0648\u0639 1",
+        "description": "\u0648\u0635\u0641 \u0645\u0641\u0635\u0644 \u0644\u0644\u0645\u0634\u0631\u0648\u0639 \u0631\u0642\u0645 1 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+        "image": "\/images\/portfolio\/project1.jpg",
+        "gallery": [
+            "\/images\/portfolio\/project1_1.jpg",
+            "\/images\/portfolio\/project1_2.jpg"
+        ],
+        "client_name": "\u0639\u0645\u064a\u0644 1",
+        "completion_date": "2024-12-11T00:00:00.000000Z",
+        "category": "\u0623\u0632\u064a\u0627\u0621 \u0645\u0648\u062d\u062f\u0629",
+        "is_featured": true,
+        "sort_order": 1,
+        "created_at": "2025-05-07T13:05:39.000000Z",
+        "updated_at": "2025-09-10T13:05:39.000000Z",
+        "is_active": 1
+    },
+    {
+        "id": 2,
+        "title": "\u0645\u0634\u0631\u0648\u0639 2",
+        "description": "\u0648\u0635\u0641 \u0645\u0641\u0635\u0644 \u0644\u0644\u0645\u0634\u0631\u0648\u0639 \u0631\u0642\u0645 2 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+        "image": "\/images\/portfolio\/project2.jpg",
+        "gallery": [
+            "\/images\/portfolio\/project2_1.jpg",
+            "\/images\/portfolio\/project2_2.jpg"
+        ],
+        "client_name": "\u0639\u0645\u064a\u0644 2",
+        "completion_date": "2024-11-14T00:00:00.000000Z",
+        "category": "\u0623\u0632\u064a\u0627\u0621 \u0634\u0631\u0643\u0627\u062a",
+        "is_featured": true,
+        "sort_order": 2,
+        "created_at": "2025-07-14T13:05:39.000000Z",
+        "updated_at": "2025-09-02T13:05:39.000000Z",
+        "is_active": 1
+    },
+    {
+        "id": 3,
+        "title": "\u0645\u0634\u0631\u0648\u0639 3",
+        "description": "\u0648\u0635\u0641 \u0645\u0641\u0635\u0644 \u0644\u0644\u0645\u0634\u0631\u0648\u0639 \u0631\u0642\u0645 3 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+        "image": "\/images\/portfolio\/project3.jpg",
+        "gallery": [
+            "\/images\/portfolio\/project3_1.jpg",
+            "\/images\/portfolio\/project3_2.jpg"
+        ],
+        "client_name": "\u0639\u0645\u064a\u0644 3",
+        "completion_date": "2024-10-10T00:00:00.000000Z",
+        "category": "\u0623\u0632\u064a\u0627\u0621 \u0634\u0631\u0643\u0627\u062a",
+        "is_featured": true,
+        "sort_order": 3,
+        "created_at": "2025-06-05T13:05:39.000000Z",
+        "updated_at": "2025-08-24T13:05:39.000000Z",
+        "is_active": 1
+    },
+    {
+        "id": 4,
+        "title": "\u0645\u0634\u0631\u0648\u0639 4",
+        "description": "\u0648\u0635\u0641 \u0645\u0641\u0635\u0644 \u0644\u0644\u0645\u0634\u0631\u0648\u0639 \u0631\u0642\u0645 4 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+        "image": "\/images\/portfolio\/project4.jpg",
+        "gallery": [
+            "\/images\/portfolio\/project4_1.jpg",
+            "\/images\/portfolio\/project4_2.jpg"
+        ],
+        "client_name": "\u0639\u0645\u064a\u0644 4",
+        "completion_date": "2025-05-13T00:00:00.000000Z",
+        "category": "\u0623\u0632\u064a\u0627\u0621 \u0634\u0631\u0643\u0627\u062a",
+        "is_featured": false,
+        "sort_order": 4,
+        "created_at": "2025-04-28T13:05:39.000000Z",
+        "updated_at": "2025-08-29T13:05:39.000000Z",
+        "is_active": 1
+    },
+    {
+        "id": 5,
+        "title": "\u0645\u0634\u0631\u0648\u0639 5",
+        "description": "\u0648\u0635\u0641 \u0645\u0641\u0635\u0644 \u0644\u0644\u0645\u0634\u0631\u0648\u0639 \u0631\u0642\u0645 5 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+        "image": "\/images\/portfolio\/project5.jpg",
+        "gallery": [
+            "\/images\/portfolio\/project5_1.jpg",
+            "\/images\/portfolio\/project5_2.jpg"
+        ],
+        "client_name": "\u0639\u0645\u064a\u0644 5",
+        "completion_date": "2025-02-06T00:00:00.000000Z",
+        "category": "\u0623\u0632\u064a\u0627\u0621 \u0634\u0631\u0643\u0627\u062a",
+        "is_featured": true,
+        "sort_order": 5,
+        "created_at": "2025-07-09T13:05:39.000000Z",
+        "updated_at": "2025-09-18T13:05:39.000000Z",
+        "is_active": 1
+    },
+    {
+        "id": 6,
+        "title": "\u0645\u0634\u0631\u0648\u0639 6",
+        "description": "\u0648\u0635\u0641 \u0645\u0641\u0635\u0644 \u0644\u0644\u0645\u0634\u0631\u0648\u0639 \u0631\u0642\u0645 6 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+        "image": "\/images\/portfolio\/project6.jpg",
+        "gallery": [
+            "\/images\/portfolio\/project6_1.jpg",
+            "\/images\/portfolio\/project6_2.jpg"
+        ],
+        "client_name": "\u0639\u0645\u064a\u0644 6",
+        "completion_date": "2024-11-21T00:00:00.000000Z",
+        "category": "\u0623\u0632\u064a\u0627\u0621 \u0645\u062f\u0631\u0633\u064a\u0629",
+        "is_featured": true,
+        "sort_order": 6,
+        "created_at": "2025-06-21T13:05:39.000000Z",
+        "updated_at": "2025-09-16T13:05:39.000000Z",
+        "is_active": 1
+    },
+    {
+        "id": 7,
+        "title": "\u0645\u0634\u0631\u0648\u0639 7",
+        "description": "\u0648\u0635\u0641 \u0645\u0641\u0635\u0644 \u0644\u0644\u0645\u0634\u0631\u0648\u0639 \u0631\u0642\u0645 7 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+        "image": "\/images\/portfolio\/project7.jpg",
+        "gallery": [
+            "\/images\/portfolio\/project7_1.jpg",
+            "\/images\/portfolio\/project7_2.jpg"
+        ],
+        "client_name": "\u0639\u0645\u064a\u0644 7",
+        "completion_date": "2025-01-16T00:00:00.000000Z",
+        "category": "\u0623\u0632\u064a\u0627\u0621 \u0645\u0648\u062d\u062f\u0629",
+        "is_featured": false,
+        "sort_order": 7,
+        "created_at": "2025-03-09T13:05:39.000000Z",
+        "updated_at": "2025-09-03T13:05:39.000000Z",
+        "is_active": 1
+    },
+    {
+        "id": 8,
+        "title": "\u0645\u0634\u0631\u0648\u0639 8",
+        "description": "\u0648\u0635\u0641 \u0645\u0641\u0635\u0644 \u0644\u0644\u0645\u0634\u0631\u0648\u0639 \u0631\u0642\u0645 8 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+        "image": "\/images\/portfolio\/project8.jpg",
+        "gallery": [
+            "\/images\/portfolio\/project8_1.jpg",
+            "\/images\/portfolio\/project8_2.jpg"
+        ],
+        "client_name": "\u0639\u0645\u064a\u0644 8",
+        "completion_date": "2025-07-02T00:00:00.000000Z",
+        "category": "\u0623\u0632\u064a\u0627\u0621 \u0645\u062f\u0631\u0633\u064a\u0629",
+        "is_featured": false,
+        "sort_order": 8,
+        "created_at": "2025-03-29T13:05:39.000000Z",
+        "updated_at": "2025-08-26T13:05:39.000000Z",
+        "is_active": 1
+    },
+    {
+        "id": 9,
+        "title": "\u0645\u0634\u0631\u0648\u0639 9",
+        "description": "\u0648\u0635\u0641 \u0645\u0641\u0635\u0644 \u0644\u0644\u0645\u0634\u0631\u0648\u0639 \u0631\u0642\u0645 9 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+        "image": "\/images\/portfolio\/project9.jpg",
+        "gallery": [
+            "\/images\/portfolio\/project9_1.jpg",
+            "\/images\/portfolio\/project9_2.jpg"
+        ],
+        "client_name": "\u0639\u0645\u064a\u0644 9",
+        "completion_date": "2025-05-21T00:00:00.000000Z",
+        "category": "\u0623\u0632\u064a\u0627\u0621 \u0634\u0631\u0643\u0627\u062a",
+        "is_featured": false,
+        "sort_order": 9,
+        "created_at": "2025-08-12T13:05:39.000000Z",
+        "updated_at": "2025-09-20T13:05:39.000000Z",
+        "is_active": 1
+    },
+    {
+        "id": 10,
+        "title": "\u0645\u0634\u0631\u0648\u0639 10",
+        "description": "\u0648\u0635\u0641 \u0645\u0641\u0635\u0644 \u0644\u0644\u0645\u0634\u0631\u0648\u0639 \u0631\u0642\u0645 10 \u0645\u0639 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+        "image": "\/images\/portfolio\/project10.jpg",
+        "gallery": [
+            "\/images\/portfolio\/project10_1.jpg",
+            "\/images\/portfolio\/project10_2.jpg"
+        ],
+        "client_name": "\u0639\u0645\u064a\u0644 10",
+        "completion_date": "2025-01-01T00:00:00.000000Z",
+        "category": "\u0623\u0632\u064a\u0627\u0621 \u0631\u064a\u0627\u0636\u064a\u0629",
+        "is_featured": true,
+        "sort_order": 10,
+        "created_at": "2025-04-07T13:05:39.000000Z",
+        "updated_at": "2025-09-17T13:05:39.000000Z",
+        "is_active": 1
+    }
+]

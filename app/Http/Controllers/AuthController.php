@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -16,16 +17,31 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+        // Debug: Log all request data
+        \Log::info('Customer login request data', $request->all());
+        
+        try {
+            $credentials = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Customer validation failed', $e->errors());
+            throw $e;
+        }
+
+        // Debug logging
+        \Log::info('Customer login attempt', [
+            'email' => $credentials['email']
         ]);
 
+        // Customer login only
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
             // Redirect to appropriate dashboard based on user type
             $user = Auth::user();
+            \Log::info('Customer login successful', ['user_id' => $user->id, 'user_type' => $user->user_type]);
             return redirect()->route($user->getDashboardRoute());
         }
 
@@ -62,11 +78,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        // Logout from both guards
         Auth::logout();
+        Auth::guard('admin')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/')->with('success', 'تم تسجيل الخروج بنجاح!');
     }
 } 

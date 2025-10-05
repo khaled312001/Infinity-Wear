@@ -17,17 +17,9 @@
             <i class="fas fa-store me-2"></i>
             إدارة المحتوى
         </div>
-        <a href="{{ route('admin.orders.index') }}" class="nav-link">
-            <i class="fas fa-shopping-cart me-2"></i>
-            الطلبات
-        </a>
-        <a href="{{ route('admin.products.index') }}" class="nav-link">
+        <a href="{{ route('admin.portfolio.index') }}" class="nav-link">
             <i class="fas fa-tshirt me-2"></i>
             المنتجات
-        </a>
-                <a href="{{ route('admin.orders.index') }}" class="nav-link">
-            <i class="fas fa-shopping-cart me-2"></i>
-            الطلبات
         </a>
         <a href="{{ route('admin.portfolio.index') }}" class="nav-link">
             <i class="fas fa-image me-2"></i>
@@ -35,7 +27,7 @@
         </a>
         <a href="{{ route('admin.testimonials.index') }}" class="nav-link">
             <i class="fas fa-star me-2"></i>
-            الشهادات والتقييمات
+            التقييمات
         </a>
     </div>
     
@@ -331,10 +323,7 @@
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <a href="{{ route('admin.orders.show', $order->id) }}" 
-                                                           class="btn btn-sm btn-outline-primary">
-                                                            <i class="fas fa-eye"></i>
-                                                        </a>
+                                                        <span class="text-muted">غير متاح</span>
                                                     </td>
                                                 </tr>
                                             @endforeach

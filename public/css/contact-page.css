@@ -1,0 +1,1135 @@
+/* ===== صفحة الاتصال - تصميم محسن ومخصص ===== */
+
+/* متغيرات الألوان المخصصة لصفحة الاتصال */
+:root {
+    /* ألوان أساسية */
+    --contact-primary: #2563eb;
+    --contact-secondary: #64748b;
+    --contact-accent: #f59e0b;
+    --contact-success: #10b981;
+    --contact-danger: #ef4444;
+    --contact-warning: #f59e0b;
+    --contact-info: #06b6d4;
+    
+    /* ألوان التدرج المخصصة */
+    --contact-gradient-primary: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    --contact-gradient-secondary: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    --contact-gradient-accent: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --contact-gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    
+    /* ألوان الخلفية */
+    --contact-bg-primary: #ffffff;
+    --contact-bg-secondary: #f8fafc;
+    --contact-bg-tertiary: #f1f5f9;
+    --contact-bg-dark: #0f172a;
+    
+    /* ألوان النصوص */
+    --contact-text-primary: #0f172a;
+    --contact-text-secondary: #64748b;
+    --contact-text-muted: #94a3b8;
+    --contact-text-white: #ffffff;
+    
+    /* الظلال المخصصة */
+    --contact-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --contact-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --contact-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --contact-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* الانتقالات */
+    --contact-transition-fast: 0.15s ease-in-out;
+    --contact-transition-normal: 0.3s ease-in-out;
+    --contact-transition-slow: 0.5s ease-in-out;
+    
+    /* الحدود */
+    --contact-border-radius-sm: 0.375rem;
+    --contact-border-radius-md: 0.5rem;
+    --contact-border-radius-lg: 0.75rem;
+    --contact-border-radius-xl: 1rem;
+    --contact-border-radius-2xl: 1.5rem;
+}
+
+/* إعادة تعيين الأساسيات لصفحة الاتصال */
+.contact-page-wrapper {
+    font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--contact-text-primary);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+}
+
+/* قسم البطل المخصص للاتصال */
+.contact-hero-section {
+    position: relative;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 25%, #475569 50%, #64748b 75%, #94a3b8 100%);
+    overflow: hidden;
+}
+
+.contact-hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="contactPattern" width="50" height="50" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="40" cy="40" r="0.5" fill="rgba(255,255,255,0.08)"/></pattern></defs><rect width="100" height="100" fill="url(%23contactPattern)"/></svg>');
+    opacity: 0.3;
+    z-index: 1;
+}
+
+.contact-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--contact-text-white);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.contact-hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(45deg, #ffffff, #e2e8f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    animation: contactTitleSlideIn 1s ease-out;
+}
+
+.contact-hero-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2.5rem;
+    line-height: 1.7;
+    animation: contactSubtitleFadeIn 1s ease-out 0.3s both;
+}
+
+.contact-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+    animation: contactStatsSlideUp 1s ease-out 0.6s both;
+}
+
+.contact-stat-item {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--contact-border-radius-xl);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: all var(--contact-transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.contact-stat-item:hover::before {
+    left: 100%;
+}
+
+.contact-stat-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: var(--contact-shadow-xl);
+}
+
+.contact-stat-icon {
+    font-size: 2.5rem;
+    color: var(--contact-accent);
+    margin-bottom: 1rem;
+    animation: contactIconBounce 2s ease-in-out infinite;
+}
+
+.contact-stat-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* القسم الرئيسي للاتصال */
+.contact-main-section {
+    padding: 6rem 0;
+    position: relative;
+}
+
+.contact-layout-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* نموذج الاتصال المحسن */
+.contact-form-section {
+    background: var(--contact-bg-primary);
+    border-radius: var(--contact-border-radius-2xl);
+    padding: 3rem;
+    box-shadow: var(--contact-shadow-xl);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-form-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.02) 0%, rgba(245, 158, 11, 0.02) 100%);
+    z-index: 1;
+}
+
+.contact-form-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.contact-form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--contact-text-primary);
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+
+.contact-form-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: var(--contact-gradient-primary);
+    border-radius: 2px;
+    animation: contactTitleUnderline 2s ease-in-out infinite;
+}
+
+.contact-form-subtitle {
+    color: var(--contact-text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* تنبيهات النموذج */
+.contact-alert {
+    padding: 1rem 1.5rem;
+    border-radius: var(--contact-border-radius-lg);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    position: relative;
+    z-index: 2;
+    animation: contactAlertSlideIn 0.5s ease-out;
+}
+
+.contact-alert-success {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: var(--contact-success);
+}
+
+.contact-alert-danger {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: var(--contact-danger);
+}
+
+.contact-alert-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.contact-alert-content h6 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.contact-alert-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.contact-alert-content ul {
+    margin: 0.5rem 0 0 0;
+    padding-right: 1.5rem;
+}
+
+.contact-alert-content li {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+/* النموذج نفسه */
+.contact-form {
+    position: relative;
+    z-index: 2;
+}
+
+.contact-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.contact-form-group {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.contact-form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--contact-text-primary);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.contact-form-label i {
+    color: var(--contact-primary);
+    font-size: 0.9rem;
+    width: 16px;
+    text-align: center;
+}
+
+.contact-form-input {
+    padding: 1rem 1.25rem;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--contact-border-radius-lg);
+    font-size: 1rem;
+    transition: all var(--contact-transition-normal);
+    background: var(--contact-bg-secondary);
+    font-family: inherit;
+    position: relative;
+}
+
+.contact-form-input:focus {
+    outline: none;
+    border-color: var(--contact-primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    transform: translateY(-2px);
+    background: var(--contact-bg-primary);
+}
+
+.contact-form-input:hover {
+    border-color: var(--contact-primary);
+    transform: translateY(-1px);
+}
+
+.contact-form-input.is-invalid {
+    border-color: var(--contact-danger);
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.contact-form-textarea {
+    resize: vertical;
+    min-height: 140px;
+    line-height: 1.6;
+}
+
+.contact-char-counter {
+    position: absolute;
+    bottom: -25px;
+    right: 0;
+    font-size: 0.8rem;
+    color: var(--contact-text-muted);
+}
+
+.contact-char-counter .current-count {
+    color: var(--contact-primary);
+    font-weight: 600;
+}
+
+.contact-invalid-feedback {
+    color: var(--contact-danger);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.contact-invalid-feedback::before {
+    content: '⚠';
+    font-size: 0.75rem;
+}
+
+/* زر الإرسال المحسن */
+.contact-submit-section {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.contact-submit-btn {
+    position: relative;
+    overflow: hidden;
+    padding: 1.25rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: var(--contact-border-radius-lg);
+    transition: all var(--contact-transition-normal);
+    background: var(--contact-gradient-primary);
+    color: var(--contact-text-white);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--contact-shadow-lg);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 200px;
+    justify-content: center;
+}
+
+.contact-submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.contact-submit-btn:hover::before {
+    left: 100%;
+}
+
+.contact-submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--contact-shadow-xl);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+.contact-submit-btn:active {
+    transform: translateY(-1px);
+}
+
+.contact-submit-btn.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.contact-btn-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contact-btn-loading {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contact-submit-btn.loading .contact-btn-text {
+    display: none;
+}
+
+.contact-submit-btn.loading .contact-btn-loading {
+    display: flex;
+}
+
+/* قسم معلومات الاتصال */
+.contact-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* الخريطة */
+.contact-map-container {
+    background: var(--contact-bg-primary);
+    border-radius: var(--contact-border-radius-2xl);
+    overflow: hidden;
+    box-shadow: var(--contact-shadow-xl);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    position: relative;
+}
+
+.contact-map-header {
+    padding: 2rem 2rem 1rem;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(245, 158, 11, 0.05) 100%);
+}
+
+.contact-map-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--contact-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.contact-map-subtitle {
+    color: var(--contact-text-secondary);
+    font-size: 1rem;
+}
+
+.contact-map-wrapper {
+    position: relative;
+    height: 300px;
+    background: var(--contact-bg-secondary);
+}
+
+.contact-map-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(245, 158, 11, 0.05) 100%);
+}
+
+.contact-map-placeholder i {
+    font-size: 3rem;
+    color: var(--contact-primary);
+    margin-bottom: 1rem;
+    opacity: 0.7;
+}
+
+.contact-map-placeholder h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--contact-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.contact-map-placeholder p {
+    color: var(--contact-text-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.contact-map-overlay {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: var(--contact-border-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--contact-shadow-lg);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-width: 250px;
+    z-index: 10;
+}
+
+.contact-map-info {
+    text-align: right;
+}
+
+.contact-map-info h4 {
+    color: var(--contact-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.contact-map-info p {
+    color: var(--contact-text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.contact-map-info .contact-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+}
+
+/* بطاقات معلومات الاتصال */
+.contact-cards-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.contact-info-card {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    padding: 2rem;
+    background: var(--contact-bg-primary);
+    border-radius: var(--contact-border-radius-xl);
+    box-shadow: var(--contact-shadow-lg);
+    transition: all var(--contact-transition-normal);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+.contact-info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(245, 158, 11, 0.03) 100%);
+    opacity: 0;
+    transition: opacity var(--contact-transition-normal);
+    z-index: 1;
+}
+
+.contact-info-card:hover::before {
+    opacity: 1;
+}
+
+.contact-info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--contact-shadow-xl);
+    border-color: var(--contact-primary);
+}
+
+.contact-card-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--contact-gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--contact-text-white);
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    transition: all var(--contact-transition-normal);
+    position: relative;
+    z-index: 2;
+    box-shadow: var(--contact-shadow-md);
+}
+
+.contact-info-card:hover .contact-card-icon {
+    transform: scale(1.1) rotate(10deg);
+    background: var(--contact-gradient-accent);
+    box-shadow: var(--contact-shadow-lg);
+}
+
+.contact-card-content {
+    flex: 1;
+    position: relative;
+    z-index: 2;
+}
+
+.contact-card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--contact-text-primary);
+    position: relative;
+}
+
+.contact-card-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 30px;
+    height: 3px;
+    background: var(--contact-gradient-primary);
+    border-radius: 2px;
+    animation: contactCardTitleUnderline 2s ease-in-out infinite;
+}
+
+.contact-card-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.contact-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--contact-primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all var(--contact-transition-normal);
+    padding: 0.5rem 1rem;
+    border-radius: var(--contact-border-radius-md);
+    background: rgba(37, 99, 235, 0.1);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.contact-card-link:hover {
+    background: var(--contact-primary);
+    color: var(--contact-text-white);
+    transform: translateY(-2px);
+    box-shadow: var(--contact-shadow-md);
+}
+
+.contact-card-description {
+    color: var(--contact-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+.contact-working-hours {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.contact-hour-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: rgba(37, 99, 235, 0.05);
+    border-radius: var(--contact-border-radius-md);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+.contact-hour-day {
+    font-weight: 600;
+    color: var(--contact-text-primary);
+    font-size: 0.9rem;
+}
+
+.contact-hour-time {
+    font-weight: 500;
+    color: var(--contact-success);
+    font-size: 0.9rem;
+}
+
+.contact-hour-time.closed {
+    color: var(--contact-danger);
+}
+
+/* قسم المميزات */
+.contact-features-section {
+    padding: 5rem 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    position: relative;
+}
+
+.contact-features-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.contact-section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.contact-section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--contact-text-primary);
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.contact-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: var(--contact-gradient-primary);
+    border-radius: 2px;
+    animation: contactSectionTitleUnderline 2s ease-in-out infinite;
+}
+
+.contact-section-subtitle {
+    font-size: 1.1rem;
+    color: var(--contact-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.contact-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.contact-feature-card {
+    background: var(--contact-bg-primary);
+    padding: 2.5rem 2rem;
+    border-radius: var(--contact-border-radius-xl);
+    box-shadow: var(--contact-shadow-lg);
+    text-align: center;
+    transition: all var(--contact-transition-normal);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.contact-feature-card:hover::before {
+    left: 100%;
+}
+
+.contact-feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--contact-shadow-xl);
+    border-color: var(--contact-primary);
+}
+
+.contact-feature-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--contact-gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: var(--contact-text-white);
+    font-size: 2rem;
+    box-shadow: var(--contact-shadow-md);
+    transition: all var(--contact-transition-normal);
+    position: relative;
+    z-index: 2;
+}
+
+.contact-feature-card:hover .contact-feature-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: var(--contact-gradient-accent);
+    box-shadow: var(--contact-shadow-lg);
+}
+
+.contact-feature-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--contact-text-primary);
+    position: relative;
+    z-index: 2;
+}
+
+.contact-feature-description {
+    color: var(--contact-text-secondary);
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
+}
+
+/* قسم الأسئلة الشائعة */
+.contact-faq-section {
+    padding: 5rem 0;
+    background: var(--contact-bg-primary);
+}
+
+.contact-faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.contact-faq-item {
+    background: var(--contact-bg-secondary);
+    border-radius: var(--contact-border-radius-lg);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    box-shadow: var(--contact-shadow-sm);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    transition: all var(--contact-transition-normal);
+}
+
+.contact-faq-item:hover {
+    box-shadow: var(--contact-shadow-md);
+    border-color: var(--contact-primary);
+}
+
+.contact-faq-question {
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all var(--contact-transition-normal);
+    background: var(--contact-bg-primary);
+}
+
+.contact-faq-question:hover {
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.contact-faq-question h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--contact-text-primary);
+    margin: 0;
+}
+
+.contact-faq-question i {
+    color: var(--contact-primary);
+    font-size: 1.2rem;
+    transition: transform var(--contact-transition-normal);
+}
+
+.contact-faq-item.active .contact-faq-question i {
+    transform: rotate(180deg);
+}
+
+.contact-faq-answer {
+    padding: 0 2rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: all var(--contact-transition-normal);
+    background: var(--contact-bg-secondary);
+}
+
+.contact-faq-item.active .contact-faq-answer {
+    padding: 1.5rem 2rem;
+    max-height: 200px;
+}
+
+.contact-faq-answer p {
+    color: var(--contact-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* الأزرار العامة */
+.contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--contact-border-radius-md);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all var(--contact-transition-normal);
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.contact-btn-primary {
+    background: var(--contact-gradient-primary);
+    color: var(--contact-text-white);
+    box-shadow: var(--contact-shadow-md);
+}
+
+.contact-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--contact-shadow-lg);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+/* الأنيميشنز */
+@keyframes contactTitleSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes contactSubtitleFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes contactStatsSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes contactIconBounce {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes contactTitleUnderline {
+    0%, 100% {
+        width: 60px;
+    }
+    50% {
+        width: 100px;
+    }
+}
+
+@keyframes contactCardTitleUnderline {
+    0%, 100% {
+        width: 30px;
+    }
+    50% {
+        width: 50px;
+    }
+}
+
+@keyframes contactSectionTitleUnderline {
+    0%, 100% {
+        width: 60px;
+    }
+    50% {
+        width: 100px;
+    }
+}
+
+@keyframes contactAlertSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* التصميم المتجاوب */
+@media (max-width: 1024px) {
+    .contact-layout-container {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    
+    .contact-hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .contact-hero-stats {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .contact-form-section {
+        padding: 2rem;
+    }
+    
+    .contact-form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .contact-features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-section-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-hero-title {
+        font-size: 2rem;
+    }
+    
+    .contact-hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .contact-form-section {
+        padding: 1.5rem;
+    }
+    
+    .contact-info-card {
+        padding: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .contact-card-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .contact-feature-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .contact-feature-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .contact-faq-question {
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .contact-faq-answer {
+        padding: 0 1.5rem;
+    }
+    
+    .contact-faq-item.active .contact-faq-answer {
+        padding: 1.25rem 1.5rem;
+    }
+}

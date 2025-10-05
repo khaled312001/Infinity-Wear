@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa"/>
+  
+  <!-- Sports wear illustration -->
+  <g transform="translate(400, 300)">
+    <!-- T-shirt -->
+    <path d="M-100,-150 L100,-150 L150,-50 L150,150 L-150,150 L-150,-50 Z" fill="#20c997" stroke="#333" stroke-width="3"/>
+    
+    <!-- Collar -->
+    <path d="M-40,-150 L0,-180 L40,-150 L0,-130 Z" fill="#ffffff" stroke="#333" stroke-width="2"/>
+    
+    <!-- Team logo -->
+    <circle cx="0" cy="-50" r="50" fill="#ffffff" stroke="#333" stroke-width="2"/>
+    <text x="0" y="-40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#333">فريق</text>
+    
+    <!-- Number -->
+    <text x="0" y="70" font-family="Arial, sans-serif" font-size="80" font-weight="bold" text-anchor="middle" fill="#ffffff">10</text>
+    
+    <!-- Sleeves -->
+    <path d="M-100,-150 L-200,-100 L-180,-50 L-150,-50" fill="#20c997" stroke="#333" stroke-width="3"/>
+    <path d="M100,-150 L200,-100 L180,-50 L150,-50" fill="#20c997" stroke="#333" stroke-width="3"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="400" y="550" font-family="Arial, sans-serif" font-size="30" font-weight="bold" text-anchor="middle" fill="#333">الملابس مكةية</text>
+</svg>

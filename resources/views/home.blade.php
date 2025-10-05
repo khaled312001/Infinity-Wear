@@ -1,666 +1,672 @@
 @extends('layouts.app')
 
-@section('title', 'Infinity Wear - مؤسسة اللباس اللامحدود | الرائدون في تصنيع الملابس والزي الرسمي')
+@php
+use Illuminate\Support\Facades\Storage;
+@endphp
 
-@section('description', 'مؤسسة اللباس اللامحدود - شركة سعودية رائدة متخصصة في تصنيع وتوريد أجود أنواع الملابس والزي الرسمي للشركات والمؤسسات التعليمية والرياضية بأعلى معايير الجودة')
-
-@section('keywords', 'ملابس رياضية، زي موحد، زي مدرسي، زي شركات، تصميم ملابس، infinity wear، اللباس اللامحدود، السعودية، الرياض، جودة عالية، تصنيع ملابس')
+@section('title', 'إنفينيتي وير - ملابس رياضية احترافية')
+@section('description', 'إنفينيتي وير - شركة سعودية رائدة في تصميم وإنتاج الملابس الرياضية والزي الموحد للفرق والمدارس والشركات')
 
 @section('styles')
-<link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-@include('partials.hero-styles')
-
-<style>
-/* Advanced Home Page Enhancements */
-.loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--primary-color), var(--dark-blue));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease;
-}
-
-.loading-screen.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.loader {
-    width: 60px;
-    height: 60px;
-    border: 4px solid rgba(255,255,255,0.3);
-    border-top: 4px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Enhanced Statistics Section */
-.stats-section {
-    background: linear-gradient(135deg, var(--primary-color), var(--dark-blue));
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
-
-.stats-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-    opacity: 0.3;
-}
-
-.stat-counter {
-    font-size: 3rem;
-    font-weight: 900;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(45deg, #ffc107, #ff9800);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Enhanced Feature Cards */
-.feature-card {
-    background: white;
-    border-radius: 20px;
-    padding: 40px 30px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    border: 2px solid transparent;
-}
-
-.feature-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.feature-card:hover {
-    transform: translateY(-15px) scale(1.02);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-    border-color: var(--primary-color);
-}
-
-.feature-card:hover::before {
-    opacity: 0.95;
-}
-
-.feature-card:hover .card-content {
-    color: white;
-    position: relative;
-    z-index: 2;
-}
-
-.feature-card:hover .card-icon {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.2) rotate(360deg);
-}
-
-.card-icon {
-        width: 80px;
-        height: 80px;
-    margin: 0 auto 30px;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    color: white;
-    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    z-index: 2;
-}
-
-.card-icon::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.feature-card:hover .card-icon::before {
-    opacity: 1;
-}
-
-/* Advanced Testimonials */
-.testimonial-card {
-    background: white;
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.testimonial-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-}
-
-.testimonial-quote {
-    font-size: 3rem;
-    color: var(--primary-color);
-    opacity: 0.3;
-    position: absolute;
-    top: 20px;
-    right: 30px;
-}
-
-.testimonial-text {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    margin-bottom: 30px;
-    color: #555;
-    position: relative;
-    z-index: 2;
-}
-
-.author-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-left: 15px;
-    border: 3px solid var(--primary-color);
-}
-
-.author-name {
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 5px;
-}
-
-.author-position {
-    color: #666;
-    font-size: 0.9rem;
-    margin: 0;
-}
-
-/* Portfolio Hover Effects */
-.portfolio-item {
-    position: relative;
-    border-radius: 15px;
-    overflow: hidden;
-    background: #f8f9fa;
-    transition: all 0.4s ease;
-    cursor: pointer;
-}
-
-.portfolio-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    z-index: 1;
-}
-
-.portfolio-item:hover::before {
-    opacity: 0.9;
-}
-
-.portfolio-item:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-}
-
-.portfolio-item img {
-    width: 100%;
-    height: 280px;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
-
-.portfolio-item:hover img {
-    transform: scale(1.1);
-}
-
-.portfolio-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgba(0,0,0,0.9));
-    color: white;
-    padding: 40px 25px 25px;
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 2;
-}
-
-.portfolio-item:hover .portfolio-overlay {
-    transform: translateY(0);
-}
-
-/* Floating Action Button */
-.floating-whatsapp {
-    position: fixed;
-    bottom: 30px;
-    left: 30px;
-    width: 60px;
-    height: 60px;
-    background: #25D366;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-    font-size: 1.5rem;
-    box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
-    z-index: 1000;
-    transition: all 0.3s ease;
-    animation: pulse 2s infinite;
-}
-
-.floating-whatsapp:hover {
-    transform: scale(1.1);
-    color: white;
-    text-decoration: none;
-}
-
-@keyframes pulse {
-    0% { box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4); }
-    50% { box-shadow: 0 5px 30px rgba(37, 211, 102, 0.6), 0 0 0 10px rgba(37, 211, 102, 0.1); }
-    100% { box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4); }
-}
-
-/* Scroll to Top Button */
-.scroll-to-top {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    background: var(--primary-color);
-    border: none;
-    border-radius: 50%;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-.scroll-to-top.visible {
-    opacity: 1;
-    visibility: visible;
-}
-
-.scroll-to-top:hover {
-    background: var(--dark-blue);
-    transform: translateY(-3px);
-}
-
-/* Advanced Animations */
-@keyframes slideInFromLeft {
-    0% { transform: translateX(-100%); opacity: 0; }
-    100% { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slideInFromRight {
-    0% { transform: translateX(100%); opacity: 0; }
-    100% { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes fadeInScale {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-/* Responsive Enhancements */
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 2.5rem;
-    }
+    <!-- Custom CSS -->
+    <link href="{{ asset('css/infinity-home.css') }}" rel="stylesheet">
+    <!-- Home Page Responsive CSS -->
+    <link href="{{ asset('css/home-responsive.css') }}" rel="stylesheet">
     
-    .hero-description {
-        font-size: 1.1rem;
-    }
-    
-    .section-title {
-        font-size: 2.2rem;
-    }
-    
-    .hero-btn {
-        padding: 12px 25px;
-        font-size: 1rem;
-        display: block;
-        width: 100%;
-        margin-bottom: 15px;
-    }
-    
-    .hero-btn:last-child {
-        margin-bottom: 0;
-    }
-    
-    .feature-card {
-        padding: 30px 20px;
-    }
-    
-    .floating-whatsapp {
-        bottom: 20px;
-        left: 20px;
-        width: 50px;
-        height: 50px;
-    }
-    
-    .scroll-to-top {
-        bottom: 20px;
-        right: 20px;
-        width: 45px;
-        height: 45px;
-    }
-}
+    <!-- Loading Screen Styles -->
+    <style>
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 952%;
+            height: 952%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 952%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
 
-@media (max-width: 576px) {
-    .hero-title {
-        font-size: 2rem;
-    }
-    
-    .section-title {
-        font-size: 1.8rem;
-    }
-    
-    .stat-counter {
-        font-size: 2rem;
-    }
-    }
-</style>
+        .loading-spinner {
+            text-align: center;
+            color: white;
+        }
+
+        .spinner-ring {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .spinner-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 @endsection
 
 @section('content')
-<!-- Loading Screen -->
-<div class="loading-screen" id="loadingScreen">
-    <div class="loader"></div>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-text">إنفينيتي وير</div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="infinity-hero">
+        <!-- Animated Sky Background -->
+        <div class="infinity-hero-background">
+            <div class="stars-container">
+                <div class="stars"></div>
+                <div class="stars2"></div>
+                <div class="stars3"></div>
+            </div>
+            <div class="moon"></div>
+            <div class="clouds">
+                <div class="cloud cloud1"></div>
+                <div class="cloud cloud2"></div>
+                <div class="cloud cloud3"></div>
+            </div>
+            <div class="infinity-hero-overlay"></div>
         </div>
         
-<!-- Hero Slider Section -->
-@include('partials.hero-slider')
+        <!-- Floating Elements -->
+        <div class="floating-elements">
+            <div class="floating-shape shape1"></div>
+            <div class="floating-shape shape2"></div>
+            <div class="floating-shape shape3"></div>
+            <div class="floating-shape shape4"></div>
+        </div>
+        
+        <div class="container">
+            <div class="infinity-hero-content">
+                <div class="infinity-hero-text" style="width: 100%;">
+                    <h1 class="infinity-hero-title">
+                        <span class="title-line animate-text">ملابس رياضية احترافية</span>
+                        <span class="title-highlight animate-text-delay">جودة لا تُضاهى</span>
+                    </h1>
+                    <p class="infinity-hero-subtitle animate-fade-in">
+                        نحن نقدم أفضل الحلول في تصميم وإنتاج الملابس الرياضية والزي الموحد
+                        للفرق والمدارس والشركات في المملكة العربية السعودية
+                    </p>
+                    <div class="infinity-hero-actions animate-slide-up">
+                        <a href="#portfolio" class="btn btn-primary btn-large btn-glow">
+                            <i class="fas fa-eye"></i>
+                            <span>تصفح أعمالنا</span>
+                        </a>
+                        <a href="#contact" class="btn btn-outline btn-large btn-pulse">
+                            <i class="fas fa-phone"></i>
+                            <span>تواصل معنا</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="infinity-hero-stats" style="width: 100%; margin-top: 2rem;">
+                    <div class="stat-item animate-counter">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-number" data-target="173">0</div>
+                        <div class="stat-label">عميل راضي</div>
+                    </div>
+                    <div class="stat-item animate-counter">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-number" data-target="952">0</div>
+                        <div class="stat-label">مشروع مكتمل</div>
+                    </div>
+                    <div class="stat-item animate-counter">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <div class="stat-number" data-target="50">0</div>
+                        <div class="stat-label">فريق عمل</div>
+                    </div>
+                    <div class="stat-item animate-counter">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="stat-number" data-target="5">0</div>
+                        <div class="stat-label">سنوات خبرة</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<!-- Dynamic Sections -->
-@include('partials.dynamic-sections')
+        <!-- Enhanced Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-arrow">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="scroll-text">اكتشف المزيد</div>
+        </div>
+    </section>
 
-<!-- Floating WhatsApp Button -->
-<a href="https://wa.me/966501234567" class="floating-whatsapp" target="_blank" title="تواصل معنا عبر الواتساب">
-    <i class="fab fa-whatsapp"></i>
-</a>
+    <!-- About Section -->
+    <section id="about" class="infinity-about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">من نحن</h2>
+                <p class="section-subtitle">شركة سعودية رائدة في مجال الملابس الرياضية والزي الموحد</p>
+            </div>
 
-<!-- Scroll to Top Button -->
-<button class="scroll-to-top" id="scrollToTop" title="العودة للأعلى">
-    <i class="fas fa-arrow-up"></i>
-</button>
+            <div class="infinity-about-content">
+                <div class="infinity-about-text" style="width: 100%; margin-bottom: 2rem;">
+                    <h3>رؤيتنا</h3>
+                    <p>
+                        أن نكون الخيار الأول في المملكة العربية السعودية للملابس الرياضية والزي الموحد،
+                        من خلال تقديم منتجات عالية الجودة وخدمة عملاء متميزة تلبي احتياجات عملائنا وتتجاوز توقعاتهم.
+                    </p>
+
+                    <h3>رسالتنا</h3>
+                    <p>
+                        نقدم حلولاً شاملة في تصميم وإنتاج الملابس الرياضية والزي الموحد باستخدام أحدث التقنيات
+                        والمواد عالية الجودة، مع الحرص على إرضاء عملائنا وتحقيق أهدافهم بكفاءة واحترافية عالية.
+                    </p>
+
+                    <div class="infinity-about-features">
+                        <div class="feature-item">
+                            <i class="fas fa-award"></i>
+                            <span>جودة مضمونة</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-clock"></i>
+                            <span>تسليم سريع</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-handshake"></i>
+                            <span>خدمة عملاء متميزة</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-palette"></i>
+                            <span>تصاميم مخصصة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="infinity-about-image" style="width: 100%;">
+                    <img src="{{ asset('images/about.png') }}" alt="فريق العمل">
+                    <div class="image-overlay">
+                        <div class="overlay-text">
+                            <span class="years">5+</span>
+                            <span class="label">سنوات خبرة</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="infinity-services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">خدماتنا</h2>
+                <p class="section-subtitle">نقدم مجموعة شاملة من الخدمات المتخصصة في الملابس الرياضية</p>
+            </div>
+
+            <div class="infinity-services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="service-title">زي الفرق الرياضية</h3>
+                    <p class="service-description">
+                        تصميم وإنتاج أزياء متكاملة للفرق الرياضية بمختلف الأنواع (كرة قدم، كرة سلة، كرة طائرة، إلخ)
+                    </p>
+                    <ul class="service-features">
+                        <li>تصاميم عصرية وجذابة</li>
+                        <li>مواد مقاومة للعرق والرطوبة</li>
+                        <li>ألوان ثابتة لا تبهت</li>
+                        <li>مقاسات متنوعة ومريحة</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="service-title">زي المدارس والجامعات</h3>
+                    <p class="service-description">
+                        زي موحد للمدارس والجامعات يجمع بين الأناقة والراحة والمتانة للاستخدام اليومي
+                    </p>
+                    <ul class="service-features">
+                        <li>تصاميم رسمية ومناسبة</li>
+                        <li>أقمشة عالية الجودة</li>
+                        <li>سهولة في الصيانة والغسيل</li>
+                        <li>أسعار تنافسية للكميات الكبيرة</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 class="service-title">زي الشركات والمؤسسات</h3>
+                    <p class="service-description">
+                        ملابس عمل رسمية وأنيقة تعكس هوية الشركة وتعزز من المظهر المهني للموظفين
+                    </p>
+                    <ul class="service-features">
+                        <li>تصاميم احترافية</li>
+                        <li>ألوان وشعارات مخصصة</li>
+                        <li>مقاسات متعددة</li>
+                        <li>كميات مرنة حسب الحاجة</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="service-title">تصاميم مخصصة</h3>
+                    <p class="service-description">
+                        خدمة تصميم مخصصة بالكامل حسب متطلبات العميل ورؤيته الخاصة
+                    </p>
+                    <ul class="service-features">
+                        <li>فريق تصميم محترف</li>
+                        <li>نماذج ثلاثية الأبعاد</li>
+                        <li>مراجعات متعددة</li>
+                        <li>تنفيذ دقيق للتصميم</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-print"></i>
+                    </div>
+                    <h3 class="service-title">الطباعة والتطريز</h3>
+                    <p class="service-description">
+                        خدمات طباعة وتطريز عالية الجودة للشعارات والأسماء والأرقام
+                    </p>
+                    <ul class="service-features">
+                        <li>تقنيات طباعة حديثة</li>
+                        <li>تطريز دقيق ومتين</li>
+                        <li>ألوان ثابتة وواضحة</li>
+                        <li>تنفيذ سريع وبدقة عالية</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3 class="service-title">التوصيل والتوزيع</h3>
+                    <p class="service-description">
+                        خدمة توصيل وتوزيع شاملة تغطي جميع مناطق المملكة العربية السعودية
+                    </p>
+                    <ul class="service-features">
+                        <li>توصيل مجاني للطلبات الكبيرة</li>
+                        <li>تغليف آمن ومحترف</li>
+                        <li>تتبع الشحنات</li>
+                        <li>خدمة عملاء على مدار الساعة</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="infinity-portfolio">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">أعمالنا السابقة</h2>
+                <p class="section-subtitle">نماذج من مشاريعنا الناجحة مع عملاء مرموقين</p>
+            </div>
+
+
+            <div class="infinity-portfolio-grid">
+                @forelse($featuredPortfolio as $item)
+                <div class="portfolio-item" data-category="{{ $item->category }}">
+                    <div class="portfolio-image">
+                        @if($item->image)
+                            <img src="{{ Storage::url($item->image) }}" alt="{{ $item->title }}" 
+                                 class="portfolio-dynamic-image">
+                        @else
+                            <img src="{{ asset('images/default-image.png') }}" alt="{{ $item->title }}">
+                        @endif
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-content">
+                                <h3>{{ $item->title }}</h3>
+                                <p>{{ Str::limit($item->description, 100) }}</p>
+                                <div class="portfolio-meta">
+                                    <small class="text-muted">{{ $item->client_name ?? 'غير محدد' }}</small>
+                                    <span class="badge bg-primary">{{ $item->category }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="col-12 text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-images fa-3x mb-3 opacity-50"></i>
+                        <h5 class="mb-2">لا توجد أعمال متاحة حالياً</h5>
+                        <p class="mb-3">سيتم إضافة أعمال جديدة قريباً</p>
+                    </div>
+                </div>
+                @endforelse
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="infinity-testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">آراء عملائنا</h2>
+                <p class="section-subtitle">ما يقوله عملاؤنا عن خدماتنا ومنتجاتنا</p>
+            </div>
+
+            <div class="testimonials-container">
+                <div class="testimonials-slider">
+                    <div class="testimonial-card active">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-right"></i>
+                            </div>
+                            <div class="testimonial-text">
+                                "خدمة ممتازة وجودة عالية في المنتجات. فريق العمل محترف ومتعاون.
+                                تم تسليم الطلب في الموعد المحدد وبأفضل جودة ممكنة. أنصح بالتعامل معهم بشدة."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <img src="{{ asset('images/avatar-1.svg') }}" alt="أحمد محمد">
+                                    <div class="avatar-ring"></div>
+                                </div>
+                                <div class="author-info">
+                                    <h4 class="author-name">أحمد محمد</h4>
+                                    <p class="author-title">مدرب فريق كرة قدم</p>
+                                    <div class="author-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-right"></i>
+                            </div>
+                            <div class="testimonial-text">
+                                "تعامل راقي ومنتجات عالية الجودة. التصاميم المقدمة كانت إبداعية ومميزة.
+                                سنتعامل معهم في جميع مشاريعنا المستقبلية. فريق عمل متميز جداً."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <img src="{{ asset('images/avatar-2.svg') }}" alt="سارة أحمد">
+                                    <div class="avatar-ring"></div>
+                                </div>
+                                <div class="author-info">
+                                    <h4 class="author-name">سارة أحمد</h4>
+                                    <p class="author-title">مديرة مدرسة دولية</p>
+                                    <div class="author-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-right"></i>
+                            </div>
+                            <div class="testimonial-text">
+                                "شركة محترفة وملتزمة بالمواعيد. الجودة تفوق التوقعات والأسعار تنافسية.
+                                أنصح بالتعامل معهم لأي مشروع رياضي. خدمة عملاء متميزة."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <img src="{{ asset('images/avatar-3.svg') }}" alt="محمد علي">
+                                    <div class="avatar-ring"></div>
+                                </div>
+                                <div class="author-info">
+                                    <h4 class="author-name">محمد علي</h4>
+                                    <p class="author-title">مدير شركة رياضية</p>
+                                    <div class="author-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-right"></i>
+                            </div>
+                            <div class="testimonial-text">
+                                "تجربة رائعة من البداية للنهاية. التصاميم عصرية والتنفيذ دقيق.
+                                فريق العمل متعاون ويستمع لاحتياجات العميل. جودة لا تُضاهى."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <img src="{{ asset('images/avatar-1.svg') }}" alt="فاطمة السعد">
+                                    <div class="avatar-ring"></div>
+                                </div>
+                                <div class="author-info">
+                                    <h4 class="author-name">فاطمة السعد</h4>
+                                    <p class="author-title">مديرة أكاديمية رياضية</p>
+                                    <div class="author-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-right"></i>
+                            </div>
+                            <div class="testimonial-text">
+                                "أفضل شركة في مجال الملابس الرياضية. المواد عالية الجودة والألوان ثابتة.
+                                التوصيل سريع والتغليف احترافي. شكراً لكم على الخدمة المتميزة."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <img src="{{ asset('images/avatar-2.svg') }}" alt="خالد الرشيد">
+                                    <div class="avatar-ring"></div>
+                                </div>
+                                <div class="author-info">
+                                    <h4 class="author-name">خالد الرشيد</h4>
+                                    <p class="author-title">رئيس نادي رياضي</p>
+                                    <div class="author-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="testimonials-navigation">
+                    <button class="nav-btn prev-btn" aria-label="السابق">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button class="nav-btn next-btn" aria-label="التالي">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="testimonials-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Indicators -->
+                <div class="testimonials-indicators">
+                    <button class="indicator active" data-slide="0" aria-label="عرض الرأي الأول"></button>
+                    <button class="indicator" data-slide="1" aria-label="عرض الرأي الثاني"></button>
+                    <button class="indicator" data-slide="2" aria-label="عرض الرأي الثالث"></button>
+                    <button class="indicator" data-slide="3" aria-label="عرض الرأي الرابع"></button>
+                    <button class="indicator" data-slide="4" aria-label="عرض الرأي الخامس"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="infinity-contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">تواصل معنا</h2>
+                <p class="section-subtitle">نحن هنا لمساعدتك في تحقيق رؤيتك الرياضية</p>
+            </div>
+
+            <div class="infinity-contact-content">
+                <div class="infinity-contact-info" style="width: 100%; margin-bottom: 2rem;">
+                    <div class="infinity-contact-card">
+                        <div class="infinity-contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="infinity-contact-details">
+                            <h3>عنواننا</h3>
+                            <p>الرياض، حي النخيل<br>المملكة العربية السعودية</p>
+                        </div>
+                    </div>
+
+                    <div class="infinity-contact-card">
+                        <div class="infinity-contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="infinity-contact-details">
+                            <h3>الهاتف</h3>
+                            <p>+966 50 123 4567<br>+966 11 234 5678</p>
+                        </div>
+                    </div>
+
+                    <div class="infinity-contact-card">
+                        <div class="infinity-contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="infinity-contact-details">
+                            <h3>البريد الإلكتروني</h3>
+                            <p>info@infinitywear.sa<br>sales@infinitywear.sa</p>
+                        </div>
+                    </div>
+
+                    <div class="infinity-contact-card">
+                        <div class="infinity-contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="infinity-contact-details">
+                            <h3>ساعات العمل</h3>
+                            <p>الأحد - الخميس: 8:00 ص - 6:00 م<br>الجمعة - السبت: مغلق</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="infinity-contact-form-container" style="width: 100%;">
+                    <form class="infinity-contact-form" id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">الاسم الكامل *</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">البريد الإلكتروني *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">رقم الهاتف</label>
+                                <input type="tel" id="phone" name="phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="company">اسم الشركة/المؤسسة</label>
+                                <input type="text" id="company" name="company">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">موضوع الاستفسار *</label>
+                            <select id="subject" name="subject" required>
+                                <option value="">اختر موضوع الاستفسار</option>
+                                <option value="طلب عرض سعر">طلب عرض سعر</option>
+                                <option value="استفسار عن منتج">استفسار عن منتج</option>
+                                <option value="الشكاوى والمقترحات">الشكاوى والمقترحات</option>
+                                <option value="الدعم الفني">الدعم الفني</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">الرسالة *</label>
+                            <textarea id="message" name="message" rows="5" required placeholder="اكتب رسالتك هنا..."></textarea>
+                        </div>
+        
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-paper-plane"></i>
+                            إرسال الرسالة
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
 @endsection
 
 @section('scripts')
-<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-@include('partials.hero-scripts')
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize AOS (Animate On Scroll)
-    AOS.init({
-        duration: 1000,
-        easing: 'ease-in-out',
-        once: true,
-        mirror: false
-    });
-
-    // Hide loading screen
-    setTimeout(() => {
-        document.getElementById('loadingScreen').classList.add('hidden');
-        setTimeout(() => {
-            document.getElementById('loadingScreen').style.display = 'none';
-        }, 500);
-    }, 1500);
-
-    // Scroll to top functionality
-    const scrollToTopBtn = document.getElementById('scrollToTop');
+    <!-- Custom JavaScript -->
+    <script src="{{ asset('js/infinity-home.js') }}?v={{ time() }}"></script>
+    <!-- Home Page Responsive JavaScript -->
+    <script src="{{ asset('js/home-responsive.js') }}?v={{ time() }}"></script>
     
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-            scrollToTopBtn.classList.add('visible');
-        } else {
-            scrollToTopBtn.classList.remove('visible');
-        }
-    });
-
-    scrollToTopBtn.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+    <script>
+    // Handle image loading errors for portfolio images
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.portfolio-dynamic-image').forEach(function(img) {
+            img.addEventListener('error', function() {
+                this.src = '{{ asset("images/default-image.png") }}';
+            });
         });
     });
-
-    // Enhanced navbar scroll effect
-    const navbar = document.querySelector('.navbar');
-    let lastScrollY = window.scrollY;
-
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
-            navbar.classList.add('navbar-scrolled');
-        } else {
-            navbar.classList.remove('navbar-scrolled');
-        }
-
-        // Hide/show navbar on scroll
-        if (window.scrollY > lastScrollY && window.scrollY > 500) {
-            navbar.style.transform = 'translateY(-100%)';
-        } else {
-            navbar.style.transform = 'translateY(0)';
-        }
-        lastScrollY = window.scrollY;
-    });
-
-    // Intersection Observer for advanced animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const element = entry.target;
-                const animation = element.dataset.animation || 'fadeInUp';
-                const delay = element.dataset.delay || 0;
-                
-                setTimeout(() => {
-                    element.classList.add('animate__animated', `animate__${animation}`);
-                    element.style.opacity = '1';
-                    element.style.transform = 'translateY(0)';
-                }, delay);
-                
-                observer.unobserve(element);
-            }
-        });
-    }, observerOptions);
-
-    // Observe all animated elements
-    document.querySelectorAll('.animate-on-scroll').forEach(el => {
-        observer.observe(el);
-    });
-
-    // Advanced counter animation
-    const counters = document.querySelectorAll('.stat-counter');
-    const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const counter = entry.target;
-                const target = parseInt(counter.textContent.replace(/\D/g, ''));
-                const suffix = counter.textContent.replace(/\d/g, '');
-                const duration = 2000;
-                const increment = target / (duration / 16);
-                let current = 0;
-                
-                const timer = setInterval(() => {
-                    current += increment;
-                    counter.textContent = Math.floor(current) + suffix;
-                    
-                    if (current >= target) {
-                        counter.textContent = target + suffix;
-                        clearInterval(timer);
-                    }
-                }, 16);
-                
-                counterObserver.unobserve(counter);
-            }
-        });
-    });
-
-    counters.forEach(counter => counterObserver.observe(counter));
-
-    // Parallax effect for background elements
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const parallaxElements = document.querySelectorAll('.parallax');
-        
-        parallaxElements.forEach((element, index) => {
-            const speed = 0.5 + (index * 0.1);
-            const yPos = -(scrolled * speed);
-            element.style.transform = `translate3d(0, ${yPos}px, 0)`;
-        });
-    });
-
-    // Advanced hover effects for interactive elements
-    const interactiveElements = document.querySelectorAll('.feature-card, .portfolio-item, .testimonial-card');
-    
-    interactiveElements.forEach(element => {
-        element.addEventListener('mouseenter', function(e) {
-            this.style.transform = 'translateY(-10px) scale(1.02)';
-            
-            // Add ripple effect
-            const ripple = document.createElement('div');
-            ripple.className = 'ripple';
-            ripple.style.left = e.offsetX + 'px';
-            ripple.style.top = e.offsetY + 'px';
-            this.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 1000);
-        });
-        
-        element.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
-    });
-
-    // Smooth reveal animations for sections
-    const sections = document.querySelectorAll('.home-section');
-    const sectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('section-visible');
-                sectionObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.2 });
-
-    sections.forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(50px)';
-        section.style.transition = 'all 0.8s ease';
-        sectionObserver.observe(section);
-    });
-
-    // Add CSS for section visibility
-    const style = document.createElement('style');
-    style.textContent = `
-        .section-visible {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
-        }
-        
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.6);
-            transform: scale(0);
-            animation: ripple-animation 0.6s linear;
-            pointer-events: none;
-        }
-        
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-        
-        .navbar-scrolled {
-            background: rgba(30, 58, 138, 0.95) !important;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-        
-        .navbar {
-            transition: all 0.3s ease;
-        }
-    `;
-    document.head.appendChild(style);
-});
-
-// Performance optimization
-window.addEventListener('load', () => {
-    // Preload critical images
-    const criticalImages = [
-        '{{ asset("images/hero/home-hero.svg") }}',
-        '{{ asset("images/sections/quality-manufacturing.svg") }}',
-        '{{ asset("images/sections/team-collaboration.svg") }}'
-    ];
-    
-    criticalImages.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
-});
-</script>
+    </script>
 @endsection

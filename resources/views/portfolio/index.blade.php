@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+use Illuminate\Support\Facades\Storage;
+@endphp
+
 @section('title', 'معرض أعمالنا - Infinity Wear')
 
 @section('content')
@@ -30,46 +34,11 @@
             @foreach($featuredItems as $item)
             <div class="col-md-4">
                 <div class="card portfolio-card h-100">
-                    <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="{{ $item->title }}">
+                    <img src="{{ Storage::url($item->image) }}" class="card-img-top" alt="{{ $item->title }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ $item->title }}</h5>
                         <p class="card-text text-muted">{{ $item->category }}</p>
                         <a href="{{ route('portfolio.show', $item->id) }}" class="btn btn-outline-primary">عرض التفاصيل</a>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-<!-- قسم تصفية الأعمال حسب الفئة -->
-<section class="portfolio-filter py-5">
-    <div class="container">
-        <div class="section-title text-center mb-5">
-            <h2 class="fw-bold">جميع الأعمال</h2>
-            <p class="text-muted">تصفح جميع أعمالنا حسب الفئة</p>
-        </div>
-        
-        <div class="filter-buttons text-center mb-4">
-            <button class="btn btn-outline-primary me-2 mb-2 filter-btn active" data-category="all">الكل</button>
-            @foreach($categories as $category)
-            <button class="btn btn-outline-primary me-2 mb-2 filter-btn" data-category="{{ $category }}">{{ $category }}</button>
-            @endforeach
-        </div>
-        
-        <div class="row g-4" id="portfolio-items">
-            @foreach($portfolioItems as $item)
-            <div class="col-md-4 col-lg-3 portfolio-item" data-category="{{ $item->category }}">
-                <div class="card portfolio-card h-100">
-                    <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="{{ $item->title }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $item->title }}</h5>
-                        <p class="card-text text-muted">{{ $item->category }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="{{ route('portfolio.show', $item->id) }}" class="btn btn-sm btn-outline-primary">عرض التفاصيل</a>
-                            <small class="text-muted">{{ $item->completion_date->format('Y/m/d') }}</small>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -83,7 +52,7 @@
     <div class="container">
         <h2 class="fw-bold mb-3">هل تريد تنفيذ مشروع مماثل؟</h2>
         <p class="lead mb-4">نحن هنا لمساعدتك في تحقيق رؤيتك بأعلى جودة وأفضل سعر</p>
-        <a href="{{ route('contact') }}" class="btn btn-primary btn-lg">تواصل معنا الآن</a>
+        <a href="{{ route('contact.index') }}" class="btn btn-primary btn-lg">تواصل معنا الآن</a>
     </div>
 </section>
 

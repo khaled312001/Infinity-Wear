@@ -1,0 +1,870 @@
+/**
+ * Trello Board Styles
+ * أنماط لوحة Trello
+ * 
+ * Features:
+ * - Modern gradient design
+ * - Smooth animations and transitions
+ * - Responsive layout
+ * - Drag and drop visual feedback
+ * - Glass morphism effects
+ */
+
+/* Trello Board Container */
+.trello-board {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 30px;
+    min-height: 80vh;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.trello-board::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* Trello Columns */
+.trello-column {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    min-height: 70vh;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.trello-column:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.trello-column::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #28a745, #ffc107);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.trello-column:hover::before {
+    opacity: 1;
+}
+
+/* Column Headers */
+.trello-column-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    border-radius: 16px 16px 0 0;
+    border-bottom: 2px solid #e9ecef;
+    position: relative;
+    overflow: hidden;
+}
+
+.trello-column-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #28a745, #ffc107);
+}
+
+.trello-column-header h6 {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+/* Column Bodies */
+.trello-column-body {
+    padding: 20px;
+    min-height: 60vh;
+    transition: all 0.3s ease;
+    border-radius: 0 0 16px 16px;
+    position: relative;
+}
+
+.trello-column-body.drag-over {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px dashed #2196f3;
+    transform: scale(1.02);
+    box-shadow: inset 0 0 20px rgba(33, 150, 243, 0.3);
+}
+
+.trello-column-body.drag-over::after {
+    content: 'إفلات المهمة هنا';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #2196f3;
+    font-size: 18px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+/* Trello Cards */
+.trello-card {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    cursor: grab;
+    position: relative;
+    overflow: hidden;
+}
+
+.trello-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+    border-color: #007bff;
+}
+
+.trello-card:active {
+    cursor: grabbing;
+}
+
+.trello-card.dragging {
+    opacity: 0.8;
+    transform: rotate(5deg) scale(1.05);
+    z-index: 1000;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border-color: #007bff;
+}
+
+.trello-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #007bff, #28a745);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.trello-card:hover::before {
+    opacity: 1;
+}
+
+/* Card Headers */
+.trello-card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.trello-card-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.trello-card-actions {
+    margin-left: 10px;
+}
+
+/* Card Bodies */
+.trello-card-body {
+    padding: 15px;
+}
+
+.trello-card-description {
+    color: #6c757d;
+    line-height: 1.5;
+    margin: 0 0 15px 0;
+    font-size: 13px;
+}
+
+.trello-card-meta {
+    border-top: 1px solid #f8f9fa;
+    padding-top: 10px;
+}
+
+/* Stats Cards */
+.stats-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #28a745, #ffc107, #dc3545);
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.stats-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover .stats-icon {
+    transform: scale(1.1);
+}
+
+.stats-icon.primary { 
+    background: linear-gradient(135deg, #007bff, #0056b3); 
+}
+.stats-icon.warning { 
+    background: linear-gradient(135deg, #ffc107, #e0a800); 
+}
+.stats-icon.info { 
+    background: linear-gradient(135deg, #17a2b8, #138496); 
+}
+.stats-icon.success { 
+    background: linear-gradient(135deg, #28a745, #1e7e34); 
+}
+
+/* Badge Styles */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Loading Animation */
+.trello-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+.trello-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.trello-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.trello-empty i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .trello-board {
+        padding: 15px;
+        border-radius: 15px;
+    }
+    
+    .trello-column {
+        margin-bottom: 20px;
+        min-height: 50vh;
+        border-radius: 12px;
+    }
+    
+    .trello-column-body {
+        min-height: 40vh;
+        padding: 15px;
+    }
+    
+    .trello-card {
+        margin-bottom: 10px;
+    }
+    
+    .trello-card-header {
+        padding: 12px;
+    }
+    
+    .trello-card-body {
+        padding: 12px;
+    }
+    
+    .stats-card {
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .stats-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .trello-board {
+        padding: 10px;
+    }
+    
+    .trello-column-header {
+        padding: 15px;
+    }
+    
+    .trello-column-body {
+        padding: 10px;
+    }
+    
+    .trello-card-title {
+        font-size: 13px;
+    }
+    
+    .trello-card-description {
+        font-size: 12px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .trello-column {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .trello-column-header {
+        background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+        border-bottom-color: #444;
+    }
+    
+    .trello-card {
+        background: #2d2d2d;
+        border-color: #444;
+    }
+    
+    .trello-card-header {
+        background: linear-gradient(135deg, #3d3d3d 0%, #2d2d2d 100%);
+        border-bottom-color: #444;
+    }
+    
+    .trello-card-title {
+        color: #fff;
+    }
+    
+    .trello-card-description {
+        color: #ccc;
+    }
+    
+    .stats-card {
+        background: #2d2d2d;
+        border-color: #444;
+    }
+}
+
+/* Marketing Trello Styles */
+.marketing-trello-board {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 30px;
+    min-height: 80vh;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.marketing-trello-board::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.marketing-trello-column {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    min-height: 70vh;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.marketing-trello-column:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.marketing-trello-column::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #28a745, #ffc107);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.marketing-trello-column:hover::before {
+    opacity: 1;
+}
+
+.marketing-trello-column-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    border-radius: 16px 16px 0 0;
+    border-bottom: 2px solid #e9ecef;
+    position: relative;
+    overflow: hidden;
+}
+
+.marketing-trello-column-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #28a745, #ffc107);
+}
+
+.marketing-trello-column-header h6 {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.marketing-trello-column-body {
+    padding: 20px;
+    min-height: 60vh;
+    transition: all 0.3s ease;
+    border-radius: 0 0 16px 16px;
+    position: relative;
+}
+
+.marketing-trello-column-body.drag-over {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px dashed #2196f3;
+    transform: scale(1.02);
+    box-shadow: inset 0 0 20px rgba(33, 150, 243, 0.3);
+}
+
+.marketing-trello-column-body.drag-over::after {
+    content: 'إفلات المهمة هنا';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #2196f3;
+    font-size: 18px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    animation: pulse 1.5s infinite;
+}
+
+.marketing-trello-card {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    cursor: grab;
+    position: relative;
+    overflow: hidden;
+}
+
+.marketing-trello-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+    border-color: #007bff;
+}
+
+.marketing-trello-card:active {
+    cursor: grabbing;
+}
+
+.marketing-trello-card.dragging {
+    opacity: 0.8;
+    transform: rotate(5deg) scale(1.05);
+    z-index: 1000;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border-color: #007bff;
+}
+
+.marketing-trello-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #007bff, #28a745);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.marketing-trello-card:hover::before {
+    opacity: 1;
+}
+
+.marketing-trello-card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.marketing-trello-card-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.marketing-trello-card-actions {
+    margin-left: 10px;
+}
+
+.marketing-trello-card-body {
+    padding: 15px;
+}
+
+.marketing-trello-card-description {
+    color: #6c757d;
+    line-height: 1.5;
+    margin: 0 0 15px 0;
+    font-size: 13px;
+}
+
+.marketing-trello-card-meta {
+    border-top: 1px solid #f8f9fa;
+    padding-top: 10px;
+}
+
+/* Sales Trello Styles */
+.sales-trello-board {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 20px;
+    padding: 30px;
+    min-height: 80vh;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.sales-trello-board::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.sales-trello-column {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    min-height: 70vh;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sales-trello-column:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.sales-trello-column::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #f093fb, #f5576c, #4facfe);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sales-trello-column:hover::before {
+    opacity: 1;
+}
+
+.sales-trello-column-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    border-radius: 16px 16px 0 0;
+    border-bottom: 2px solid #e9ecef;
+    position: relative;
+    overflow: hidden;
+}
+
+.sales-trello-column-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #f093fb, #f5576c, #4facfe);
+}
+
+.sales-trello-column-header h6 {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.sales-trello-column-body {
+    padding: 20px;
+    min-height: 60vh;
+    transition: all 0.3s ease;
+    border-radius: 0 0 16px 16px;
+    position: relative;
+}
+
+.sales-trello-column-body.drag-over {
+    background: linear-gradient(135deg, #ffeef0 0%, #ffd6da 100%);
+    border: 2px dashed #f5576c;
+    transform: scale(1.02);
+    box-shadow: inset 0 0 20px rgba(245, 87, 108, 0.3);
+}
+
+.sales-trello-column-body.drag-over::after {
+    content: 'إفلات المهمة هنا';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #f5576c;
+    font-size: 18px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    animation: pulse 1.5s infinite;
+}
+
+.sales-trello-card {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    cursor: grab;
+    position: relative;
+    overflow: hidden;
+}
+
+.sales-trello-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+    border-color: #f5576c;
+}
+
+.sales-trello-card:active {
+    cursor: grabbing;
+}
+
+.sales-trello-card.dragging {
+    opacity: 0.8;
+    transform: rotate(5deg) scale(1.05);
+    z-index: 1000;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border-color: #f5576c;
+}
+
+.sales-trello-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f093fb, #f5576c);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sales-trello-card:hover::before {
+    opacity: 1;
+}
+
+.sales-trello-card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.sales-trello-card-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.sales-trello-card-actions {
+    margin-left: 10px;
+}
+
+.sales-trello-card-body {
+    padding: 15px;
+}
+
+.sales-trello-card-description {
+    color: #6c757d;
+    line-height: 1.5;
+    margin: 0 0 15px 0;
+    font-size: 13px;
+}
+
+.sales-trello-card-meta {
+    border-top: 1px solid #f8f9fa;
+    padding-top: 10px;
+}
+
+/* Print Styles */
+@media print {
+    .trello-board,
+    .marketing-trello-board,
+    .sales-trello-board {
+        background: white !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+    
+    .trello-column,
+    .marketing-trello-column,
+    .sales-trello-column {
+        background: white !important;
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+        margin-bottom: 20px;
+    }
+    
+    .trello-card,
+    .marketing-trello-card,
+    .sales-trello-card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+    }
+    
+    .trello-card-actions,
+    .marketing-trello-card-actions,
+    .sales-trello-card-actions {
+        display: none !important;
+    }
+}

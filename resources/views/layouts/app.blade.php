@@ -3,30 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', app('seo')['site_title'] ?? 'Infinity Wear - مؤسسة اللباس اللامحدود')</title>
-    <meta name="description" content="@yield('description', app('seo')['site_description'] ?? 'Infinity Wear - مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية')">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', \App\Helpers\SiteSettingsHelper::getPageTitle())</title>
+    <meta name="description" content="@yield('description', \App\Helpers\SiteSettingsHelper::getSiteDescription())">
     
     <!-- SEO Meta Tags -->
-    <meta name="keywords" content="@yield('keywords', app('seo')['site_keywords'] ?? 'ملابس رياضية، زي موحد، أكاديميات رياضية، السعودية، كرة قدم، تصميم ملابس، infinity wear، اللباس اللامحدود')">
-    <meta name="author" content="Infinity Wear">
+    <meta name="keywords" content="@yield('keywords', app('seo')['site_keywords'] ?? 'ملابس رياضية، زي موحد، أكاديميات رياضية، السعودية، كرة قدم، تصميم ملابس، infinity wear، الزي اللامحدود')">
+    <meta name="author" content="{{ \App\Helpers\SiteSettingsHelper::getSiteName() }}">
     <meta name="robots" content="index, follow">
     <meta name="language" content="Arabic">
     <meta name="revisit-after" content="7 days">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="@yield('title', app('seo')['site_title'] ?? 'Infinity Wear - مؤسسة اللباس اللامحدود')">
-    <meta property="og:description" content="@yield('description', app('seo')['site_description'] ?? 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية')">
+    <meta property="og:title" content="@yield('title', \App\Helpers\SiteSettingsHelper::getPageTitle())">
+    <meta property="og:description" content="@yield('description', \App\Helpers\SiteSettingsHelper::getSiteDescription())">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:image" content="{{ asset('images/infinity-wear-logo.png') }}">
-    <meta property="og:site_name" content="Infinity Wear">
+    <meta property="og:image" content="{{ \App\Helpers\SiteSettingsHelper::getLogoUrl() }}">
+    <meta property="og:site_name" content="{{ \App\Helpers\SiteSettingsHelper::getSiteName() }}">
     <meta property="og:locale" content="ar_SA">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('title', app('seo')['site_title'] ?? 'Infinity Wear - مؤسسة اللباس اللامحدود')">
-    <meta name="twitter:description" content="@yield('description', app('seo')['site_description'] ?? 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية')">
-    <meta name="twitter:image" content="{{ asset('images/infinity-wear-logo.png') }}">
+    <meta name="twitter:title" content="@yield('title', \App\Helpers\SiteSettingsHelper::getPageTitle())">
+    <meta name="twitter:description" content="@yield('description', \App\Helpers\SiteSettingsHelper::getSiteDescription())">
+    <meta name="twitter:image" content="{{ \App\Helpers\SiteSettingsHelper::getLogoUrl() }}">
     
     <!-- Google Site Verification -->
     @if(app('seo')['google_site_verification'] ?? false)
@@ -37,8 +38,12 @@
     <link rel="canonical" href="{{ url()->current() }}">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.ico">
-    <link rel="apple-touch-icon" href="{{ asset('images/infinity-wear-logo.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="icon" type="image/svg+xml" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     
     <!-- Bootstrap RTL CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
@@ -49,96 +54,170 @@
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Main CSS -->
-    <link href="{{ asset('css/main.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/infinity-home.css') }}" rel="stylesheet">
+    <!-- Football Animation CSS -->
+    <!-- WhatsApp Button CSS -->
+    <link href="{{ asset('css/whatsapp-button.css') }}" rel="stylesheet">
     
     @yield('styles')
 </head>
 <body>
     <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">
-                <span class="infinity-logo pulse-soft"></span>
-                <span class="brand-text">Infinity Wear</span>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link{{ request()->routeIs('home') ? ' active' : '' }}" href="{{ route('home') }}">
-                            <i class="fas fa-home me-1"></i>الرئيسية
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link{{ request()->routeIs('importers.form') ? ' active' : '' }}" href="{{ route('importers.form') }}">
-                            <i class="fas fa-file-import me-1"></i>طلب جديد للمستورد
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link{{ request()->routeIs('services') ? ' active' : '' }}" href="{{ route('services') }}">
-                            <i class="fas fa-concierge-bell me-1"></i>خدماتنا
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link{{ request()->routeIs('portfolio.index') ? ' active' : '' }}" href="{{ route('portfolio.index') }}">
-                            <i class="fas fa-briefcase me-1"></i>معرض أعمالنا
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link{{ request()->routeIs('testimonials.index') ? ' active' : '' }}" href="{{ route('testimonials.index') }}">
-                            <i class="fas fa-star me-1"></i>عملاؤنا السابقين
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link{{ request()->routeIs('about') ? ' active' : '' }}" href="{{ route('about') }}">
-                            <i class="fas fa-info-circle me-1"></i>من نحن
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link{{ request()->routeIs('contact') ? ' active' : '' }}" href="{{ route('contact') }}">
-                            <i class="fas fa-envelope me-1"></i>اتصل بنا
-                        </a>
-                    </li>
-                </ul>
-                
-                <ul class="navbar-nav">
-                    @auth
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->name }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    @else
-                        <li class="nav-item">
-                            <a class="nav-link{{ request()->routeIs('login') ? ' active' : '' }}" href="{{ route('login') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i> تسجيل الدخول
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link{{ request()->routeIs('register') ? ' active' : '' }}" href="{{ route('register') }}">
-                                <i class="fas fa-user-plus me-1"></i> إنشاء حساب
-                            </a>
-                        </li>
-                    @endauth
-                </ul>
+    <header class="infinity-header">
+        <!-- Top Bar -->
+        <div class="header-top-bar">
+            <div class="container">
+                <div class="header-top-bar-content">
+                    <div class="header-contact-info">
+                        <span><i class="fas fa-phone"></i> +966 50 123 4567</span>
+                        <span><i class="fas fa-envelope"></i> info@infinitywear.sa</span>
+                    </div>
+                    <div class="header-social-links">
+                        <a href="#" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="تويتر"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="لينكد إن"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
+
+        <!-- Main Navigation -->
+        <nav class="infinity-navbar">
+            <div class="container">
+                <div class="infinity-navbar-content">
+                    <!-- Logo -->
+                    <div class="logo">
+                        <a href="{{ route('home') }}">
+                            <img src="{{ \App\Helpers\SiteSettingsHelper::getLogoUrl() }}" 
+                                 alt="{{ \App\Helpers\SiteSettingsHelper::getSiteName() }}" 
+                                 style="height: 50px;">
+                        </a>
+                    </div>
+
+                    <!-- Navigation Menu -->
+                    <ul class="nav-menu">
+                        <li><a href="{{ route('home') }}" class="nav-link{{ request()->routeIs('home') ? ' active' : '' }}">الرئيسية</a></li>
+                        <li><a href="{{ route('about') }}" class="nav-link{{ request()->routeIs('about') ? ' active' : '' }}">من نحن</a></li>
+                        <li><a href="{{ route('services') }}" class="nav-link{{ request()->routeIs('services') ? ' active' : '' }}">خدماتنا</a></li>
+                        <li><a href="{{ route('portfolio.index') }}" class="nav-link{{ request()->routeIs('portfolio.index') ? ' active' : '' }}">أعمالنا</a></li>
+                        <li><a href="{{ route('contact.index') }}" class="nav-link{{ request()->routeIs('contact.index') ? ' active' : '' }}">تواصل معنا</a></li>
+                    </ul>
+
+                    <!-- Mobile Menu Toggle Button -->
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="فتح القائمة">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+
+                    <!-- Action Buttons -->
+                    <div class="header-actions">
+                        @auth
+                            <a href="{{ route('customer.dashboard') }}" class="btn btn-outline">لوحة التحكم</a>
+                            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">تسجيل الخروج</button>
+                            </form>
+                        @elseif(Auth::guard('admin')->check())
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-outline">لوحة التحكم</a>
+                            <form method="POST" action="{{ route('admin.logout') }}" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">تسجيل الخروج</button>
+                            </form>
+                        @else
+                            <a href="{{ route('importers.form') }}" class="btn btn-primary">تسجيل كمستورد</a>
+                        @endauth
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar-overlay" id="mobileSidebarOverlay"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="infinity-logo">IW</div>
+                <div class="sidebar-logo-text">إنفينيتي وير</div>
+            </div>
+            <button class="sidebar-close" id="sidebarClose" aria-label="إغلاق القائمة">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-item">
+                <a href="{{ route('home') }}" class="sidebar-nav-link{{ request()->routeIs('home') ? ' active' : '' }}">
+                    <i class="fas fa-home"></i>
+                    الرئيسية
+                </a>
+            </div>
+            <div class="sidebar-nav-item">
+                <a href="{{ route('about') }}" class="sidebar-nav-link{{ request()->routeIs('about') ? ' active' : '' }}">
+                    <i class="fas fa-info-circle"></i>
+                    من نحن
+                </a>
+            </div>
+            <div class="sidebar-nav-item">
+                <a href="{{ route('services') }}" class="sidebar-nav-link{{ request()->routeIs('services') ? ' active' : '' }}">
+                    <i class="fas fa-cogs"></i>
+                    خدماتنا
+                </a>
+            </div>
+            <div class="sidebar-nav-item">
+                <a href="{{ route('portfolio.index') }}" class="sidebar-nav-link{{ request()->routeIs('portfolio.index') ? ' active' : '' }}">
+                    <i class="fas fa-briefcase"></i>
+                    أعمالنا
+                </a>
+            </div>
+            <div class="sidebar-nav-item">
+                <a href="{{ route('contact.index') }}" class="sidebar-nav-link{{ request()->routeIs('contact.index') ? ' active' : '' }}">
+                    <i class="fas fa-envelope"></i>
+                    تواصل معنا
+                </a>
+            </div>
+        </nav>
+        
+        <div class="sidebar-user">
+            <div class="sidebar-user-info">
+                <div class="sidebar-user-avatar">
+                    @auth
+                        {{ substr(Auth::user()->name, 0, 1) }}
+                    @else
+                        <i class="fas fa-user"></i>
+                    @endauth
+                </div>
+                <div class="sidebar-user-details">
+                    @auth
+                        <h6>{{ Auth::user()->name }}</h6>
+                        <p>مرحباً بك</p>
+                    @else
+                        <h6>زائر</h6>
+                        <p>مرحباً بك</p>
+                    @endauth
+                </div>
+            </div>
+            <div class="sidebar-user-actions">
+                @auth
+                    <a href="{{ route('customer.dashboard') }}" class="btn btn-sidebar-primary">لوحة التحكم</a>
+                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-sidebar-outline">تسجيل الخروج</button>
+                    </form>
+                @elseif(Auth::guard('admin')->check())
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-sidebar-primary">لوحة التحكم</a>
+                    <form method="POST" action="{{ route('admin.logout') }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-sidebar-outline">تسجيل الخروج</button>
+                    </form>
+                @else
+                    <a href="{{ route('importers.form') }}" class="btn btn-sidebar-primary">تسجيل كمستورد</a>
+                @endauth
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main>
@@ -146,72 +225,253 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="site-footer modern-footer">
         <div class="container">
-            <div class="row gy-4">
-                <div class="col-lg-4 col-md-6">
-                    <h5>
-                        <span class="infinity-logo"></span>
-                        Infinity Wear
-                    </h5>
-                    <p>مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية</p>
+            <div class="row gy-4 footer-main-content">
+                <div class="col-12">
+                    <div class="footer-brand-section">
+                        <div class="brand-logo-container">
+                            <img src="{{ \App\Helpers\SiteSettingsHelper::getLogoUrl() }}" 
+                                 alt="{{ \App\Helpers\SiteSettingsHelper::getSiteName() }}" 
+                                 class="brand-logo">
+                            <div class="brand-text-content">
+                                <h3 class="brand-title">{{ \App\Helpers\SiteSettingsHelper::getSiteName() }}</h3>
+                                <p class="brand-subtitle">{{ \App\Helpers\SiteSettingsHelper::getSiteTagline() }}</p>
+                            </div>
+                        </div>
+                        <p class="footer-description">{{ \App\Helpers\SiteSettingsHelper::getSiteDescription() }}</p>
+                        <div class="social-media-links">
+                            @if(\App\Models\Setting::get('facebook_url'))
+                                <a href="{{ \App\Models\Setting::get('facebook_url') }}" aria-label="Facebook" class="social-link facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                            @endif
+                            @if(\App\Models\Setting::get('twitter_url'))
+                                <a href="{{ \App\Models\Setting::get('twitter_url') }}" aria-label="Twitter" class="social-link twitter" target="_blank"><i class="fab fa-twitter"></i></a>
+                            @endif
+                            @if(\App\Models\Setting::get('instagram_url'))
+                                <a href="{{ \App\Models\Setting::get('instagram_url') }}" aria-label="Instagram" class="social-link instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                            @endif
+                            @if(\App\Models\Setting::get('linkedin_url'))
+                                <a href="{{ \App\Models\Setting::get('linkedin_url') }}" aria-label="LinkedIn" class="social-link linkedin" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                            @endif
+                            @if(\App\Models\Setting::get('whatsapp_number'))
+                                <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', \App\Models\Setting::get('whatsapp_number')) }}" aria-label="WhatsApp" class="social-link whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                            @endif
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="col-lg-3 col-md-6">
-                    <h5>روابط سريعة</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="{{ route('home') }}" class="text-light text-decoration-none">الرئيسية</a></li>
-                        <li><a href="{{ route('services') }}" class="text-light text-decoration-none">خدماتنا</a></li>
-                        <li><a href="{{ route('portfolio.index') }}" class="text-light text-decoration-none">معرض أعمالنا</a></li>
-                        <li><a href="{{ route('about') }}" class="text-light text-decoration-none">من نحن</a></li>
-                        <li><a href="{{ route('contact') }}" class="text-light text-decoration-none">اتصل بنا</a></li>
-                    </ul>
+                <div class="col-12">
+                    <div class="footer-navigation-section">
+                        <h5 class="section-heading">التنقل</h5>
+                        <ul class="navigation-links">
+                            <li><a href="{{ route('home') }}">الرئيسية</a></li>
+                            <li><a href="{{ route('services') }}">خدماتنا</a></li>
+                            <li><a href="{{ route('portfolio.index') }}">معرض أعمالنا</a></li>
+                            <li><a href="{{ route('about') }}">من نحن</a></li>
+                            <li><a href="{{ route('contact.index') }}">اتصل بنا</a></li>
+                        </ul>
+                    </div>
                 </div>
                 
-                <div class="col-lg-3 col-md-6">
-                    <h5>خدماتنا</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light text-decoration-none">تصميم الأزياء</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">الزي الموحد للأكاديميات</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">ملابس الفرق الرياضية</a></li>
-                        <li><a href="#" class="text-light text-decoration-none">الطباعة على الملابس</a></li>
-                    </ul>
+                <div class="col-12">
+                    <div class="footer-services-section">
+                        <h5 class="section-heading">خدماتنا</h5>
+                        <ul class="services-links">
+                            <li><a href="#">تصميم الأزياء</a></li>
+                            <li><a href="#">الزي الموحد للأكاديميات</a></li>
+                            <li><a href="#">ملابس الفرق الرياضية</a></li>
+                            <li><a href="#">الطباعة على الملابس</a></li>
+                            <li><a href="#">التصميم المخصص</a></li>
+                        </ul>
+                    </div>
                 </div>
                 
-                <div class="col-lg-2 col-md-6">
-                    <h5>تواصل معنا</h5>
-                    <div class="contact-info">
-                        <div><i class="fas fa-phone-alt"></i> +966 50 123 4567</div>
-                        <div><i class="fas fa-envelope"></i> info@infinitywear.sa</div>
-                        <div><i class="fas fa-map-marker-alt"></i> مكة، المملكة العربية السعودية</div>
+                <div class="col-12">
+                    <div class="footer-contact-section">
+                        <h5 class="section-heading">معلومات التواصل</h5>
+                        <div class="contact-info-list">
+                            @if(\App\Models\Setting::get('contact_phone'))
+                                <div class="contact-info-item">
+                                    <i class="fas fa-phone-alt contact-icon"></i>
+                                    <span class="contact-text">{{ \App\Models\Setting::get('contact_phone') }}</span>
+                                </div>
+                            @endif
+                            @if(\App\Models\Setting::get('contact_email'))
+                                <div class="contact-info-item">
+                                    <i class="fas fa-envelope contact-icon"></i>
+                                    <span class="contact-text">{{ \App\Models\Setting::get('contact_email') }}</span>
+                                </div>
+                            @endif
+                            @if(\App\Models\Setting::get('address'))
+                                <div class="contact-info-item">
+                                    <i class="fas fa-map-marker-alt contact-icon"></i>
+                                    <span class="contact-text">{{ \App\Models\Setting::get('address') }}</span>
+                                </div>
+                            @endif
+                            @if(\App\Models\Setting::get('business_hours'))
+                                <div class="contact-info-item">
+                                    <i class="fas fa-clock contact-icon"></i>
+                                    <span class="contact-text">{{ \App\Models\Setting::get('business_hours') }}</span>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <hr class="my-4">
-            <div class="copyright">
-                <p>&copy; 2025 Infinity Wear. جميع الحقوق محفوظة.</p>
+            <hr class="footer-divider">
+            <div class="footer-bottom-section d-flex justify-content-center align-items-center" style="min-height: 50px;">
+                <div class="footer-bottom-content">
+                    <p class="copyright-text m-0 text-center">
+                        &copy; {{ date('Y') }} {{ \App\Helpers\SiteSettingsHelper::getSiteName() }}. جميع الحقوق محفوظة.
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- AOS Animation Library -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- Main JavaScript -->
-    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/infinity-home.js') }}"></script>
+    
+    <!-- Responsive Navigation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile sidebar elements
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
+            const sidebarClose = document.getElementById('sidebarClose');
+            
+            // Navbar scroll effect
+            const navbar = document.querySelector('.infinity-navbar');
+            let lastScrollTop = 0;
+            
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > 100) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                lastScrollTop = scrollTop;
+            });
+            
+            // Mobile sidebar functions
+            function openSidebar() {
+                mobileSidebar.classList.add('show');
+                mobileSidebarOverlay.classList.add('show');
+                mobileMenuToggle.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            function closeSidebar() {
+                mobileSidebar.classList.remove('show');
+                mobileSidebarOverlay.classList.remove('show');
+                mobileMenuToggle.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // Event listeners for mobile sidebar
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('click', openSidebar);
+            }
+            
+            if (sidebarClose) {
+                sidebarClose.addEventListener('click', closeSidebar);
+            }
+            
+            if (mobileSidebarOverlay) {
+                mobileSidebarOverlay.addEventListener('click', closeSidebar);
+            }
+            
+            // Close sidebar on link click
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav-link');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', closeSidebar);
+            });
+            
+            // Close sidebar on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileSidebar.classList.contains('show')) {
+                    closeSidebar();
+                }
+            });
+            
+            // Mobile menu close on link click (for desktop navbar)
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                        const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+                            toggle: false
+                        });
+                        bsCollapse.hide();
+                    }
+                });
+            });
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Add animation classes on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe footer elements
+            document.querySelectorAll('.infinity-footer-content > *').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 991) {
+                    closeSidebar();
+                }
+            });
+        });
+    </script>
     
     @yield('scripts')
     
     <!-- Google Analytics -->
     @if(app('seo')['google_analytics_id'] ?? false)
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ app('seo')['google_analytics_id'] }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ app("seo")["google_analytics_id"] }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', '{{ app('seo')['google_analytics_id'] }}');
+        gtag('config', '{{ app("seo")["google_analytics_id"] }}');
     </script>
     @endif
     
@@ -226,12 +486,12 @@
         t.src=v;s=b.getElementsByTagName(e)[0];
         s.parentNode.insertBefore(t,s)}(window, document,'script',
         'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '{{ app('seo')['facebook_pixel_id'] }}');
+        fbq('init', '{{ app("seo")["facebook_pixel_id"] }}');
         fbq('track', 'PageView');
     </script>
     <noscript>
         <img height="1" width="1" style="display:none" 
-             src="https://www.facebook.com/tr?id={{ app('seo')['facebook_pixel_id'] }}&ev=PageView&noscript=1" />
+             src="https://www.facebook.com/tr?id={{ app("seo")["facebook_pixel_id"] }}&ev=PageView&noscript=1" />
     </noscript>
     @endif
     
@@ -241,7 +501,7 @@
             "@context" => "https://schema.org",
             "@type" => "Organization",
             "name" => "Infinity Wear",
-            "alternateName" => "مؤسسة اللباس اللامحدود",
+            "alternateName" => "مؤسسة الزي اللامحدود",
             "url" => url('/'),
             "logo" => asset('images/infinity-wear-logo.png'),
             "description" => app('seo')['site_description'] ?? 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية',
@@ -265,6 +525,49 @@
     @endphp
     <script type="application/ld+json">
     {!! json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+    </script>
+    
+    <!-- WhatsApp Floating Button - Only show on non-admin pages -->
+    @if(!request()->is('admin*') && !request()->is('dashboard*') && !request()->is('customer*') && !request()->is('importer*') && !request()->is('employee*') && !request()->is('marketing*') && !request()->is('sales*'))
+    <div id="whatsapp-float" class="whatsapp-float">
+        <div class="whatsapp-button" onclick="openWhatsApp()">
+            <i class="fab fa-whatsapp"></i>
+            <span class="whatsapp-text">تواصل معنا</span>
+        </div>
+        <div class="whatsapp-tooltip">
+            <span>أرسل لنا رسالة على واتساب</span>
+            <div class="tooltip-arrow"></div>
+        </div>
+    </div>
+    @endif
+    
+    <!-- WhatsApp Button JavaScript -->
+    <script>
+        function openWhatsApp() {
+            // Replace with your actual WhatsApp number (with country code, no + sign)
+            const phoneNumber = '966501234567';
+            const message = encodeURIComponent('مرحباً، أريد الاستفسار عن خدماتكم في الملابس الرياضية والزي الموحد');
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        // Show/hide tooltip on hover - only if button exists
+        document.addEventListener('DOMContentLoaded', function() {
+            const whatsappButton = document.querySelector('.whatsapp-button');
+            const tooltip = document.querySelector('.whatsapp-tooltip');
+            
+            if (whatsappButton && tooltip) {
+                whatsappButton.addEventListener('mouseenter', function() {
+                    tooltip.style.opacity = '1';
+                    tooltip.style.visibility = 'visible';
+                });
+                
+                whatsappButton.addEventListener('mouseleave', function() {
+                    tooltip.style.opacity = '0';
+                    tooltip.style.visibility = 'hidden';
+                });
+            }
+        });
     </script>
 </body>
 </html>

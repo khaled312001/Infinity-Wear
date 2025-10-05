@@ -1,5 +1,9 @@
 @extends('layouts.dashboard')
 
+@php
+use Illuminate\Support\Facades\Storage;
+@endphp
+
 @section('title', 'تحرير العمل: ' . $portfolioItem->title)
 
 @section('content')
@@ -86,8 +90,8 @@
                             @if($portfolioItem->image)
                                 <div class="mt-2">
                                     <small class="text-muted">الصورة الحالية:</small><br>
-                                    <img src="{{ asset('storage/' . $portfolioItem->image) }}" alt="Current image" 
-                                         class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                    <img src="{{ Storage::url($portfolioItem->image) }}" alt="Current image" 
+                                         class="img-thumbnail portfolio-image" style="max-width: 200px; max-height: 200px;">
                                 </div>
                             @endif
                             @error('image')
@@ -112,8 +116,8 @@
                                     @foreach($portfolioItem->gallery as $index => $galleryImage)
                                         <div class="col-6 mb-2">
                                             <div class="position-relative">
-                                                <img src="{{ asset('storage/' . $galleryImage) }}" alt="Gallery image" 
-                                                     class="img-thumbnail" style="width: 100%; height: 80px; object-fit: cover;">
+                                                <img src="{{ Storage::url($galleryImage) }}" alt="Gallery image" 
+                                                     class="img-thumbnail portfolio-gallery-image" style="width: 100%; height: 80px; object-fit: cover;">
                                                 <div class="form-check position-absolute" style="top: 5px; right: 5px;">
                                                     <input class="form-check-input" type="checkbox" 
                                                            name="delete_gallery[]" value="{{ $index }}" 
@@ -207,8 +211,16 @@ function validateGallery(input) {
     return true;
 }
 
-// Debug form submission
+// Handle image loading errors
 document.addEventListener('DOMContentLoaded', function() {
+    // Handle portfolio images
+    document.querySelectorAll('.portfolio-image, .portfolio-gallery-image').forEach(function(img) {
+        img.addEventListener('error', function() {
+            this.src = '{{ asset("images/default-image.png") }}';
+        });
+    });
+
+    // Debug form submission
     const form = document.querySelector('form');
     if (form) {
         form.addEventListener('submit', function(e) {

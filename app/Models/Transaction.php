@@ -155,6 +155,12 @@ class Transaction extends Model
         for ($month = 1; $month <= 12; $month++) {
             $revenue = self::getMonthlyRevenue($year, $month);
             $expenses = self::getMonthlyExpenses($year, $month);
+            $transactionsCount = self::whereYear('transaction_date', $year)
+                ->whereMonth('transaction_date', $month)
+                ->count();
+            
+            $profit = $revenue - $expenses;
+            $profitMargin = $revenue > 0 ? ($profit / $revenue) * 100 : 0;
             
             $data[] = [
                 'month' => $month,
@@ -162,7 +168,9 @@ class Transaction extends Model
                 'month_name_ar' => self::getArabicMonthName($month),
                 'revenue' => $revenue,
                 'expenses' => $expenses,
-                'profit' => $revenue - $expenses
+                'profit' => $profit,
+                'profit_margin' => $profitMargin,
+                'transactions_count' => $transactionsCount
             ];
         }
         

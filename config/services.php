@@ -35,4 +35,25 @@ return [
         ],
     ],
 
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+        'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
+    ],
+
+    'huggingface' => [
+        'api_key' => env('HUGGINGFACE_API_KEY'),
+    ],
+
+    'stablediffusion' => [
+        'api_key' => env('STABLEDIFFUSION_API_KEY'),
+    ],
+
+    'modelslab' => [
+        'api_key' => env('MODELSLAB_API_KEY'),
+    ],
+
+    'replicate' => [
+        'api_token' => env('REPLICATE_API_TOKEN'),
+    ],
+
 ];

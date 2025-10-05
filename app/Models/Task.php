@@ -90,6 +90,14 @@ class Task extends Model
     }
 
     /**
+     * العلاقة مع المعين (Employee)
+     */
+    public function assignedTo(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'assigned_to');
+    }
+
+    /**
      * الحصول على حالة المهمة بشكل مقروء
      */
     public function getStatusLabelAttribute(): string

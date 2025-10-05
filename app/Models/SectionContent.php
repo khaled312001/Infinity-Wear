@@ -13,7 +13,7 @@ class SectionContent extends Model
         'home_section_id',
         'title',
         'subtitle',
-        'description',
+        'content',
         'content_type',
         'image',
         'video_url',
@@ -21,6 +21,8 @@ class SectionContent extends Model
         'button_text',
         'button_link',
         'button_style',
+        'link_text',
+        'link_url',
         'custom_data',
         'sort_order',
         'is_active',
@@ -65,6 +67,98 @@ class SectionContent extends Model
     }
 
     /**
+     * الحصول على نوع المحتوى (محاولة استنتاج من البيانات المتاحة)
+     */
+    public function getContentTypeAttribute()
+    {
+        if ($this->image && $this->image != 'sections/') {
+            return 'image';
+        } elseif (!empty($this->link_text) && !empty($this->link_url)) {
+            return 'button';
+        } elseif (preg_match('/\d+/', $this->title) && preg_match('/عميل|مشروع|سنوات|ساعة/', $this->content)) {
+            return 'icon';
+        } elseif (preg_match('/أحمد|فاطمة|خالد/', $this->title)) {
+            return 'testimonial';
+        } elseif ($this->title == 'مرحباً بكم في إنفينيتي وير' && !empty($this->link_text)) {
+            return 'button';
+        } else {
+            return 'text';
+        }
+    }
+
+    /**
+     * الحصول على الوصف (استخدام محتوى الحقل content)
+     */
+    public function getDescriptionAttribute()
+    {
+        return $this->content;
+    }
+
+    /**
+     * الحصول على النص الفرعي (استخدام link_text كبديل)
+     */
+    public function getSubtitleAttribute()
+    {
+        return $this->link_text;
+    }
+
+    /**
+     * الحصول على نص الزر (استخدام link_text)
+     */
+    public function getButtonTextAttribute()
+    {
+        return $this->link_text;
+    }
+
+    /**
+     * الحصول على رابط الزر (استخدام link_url)
+     */
+    public function getButtonLinkAttribute()
+    {
+        return $this->link_url;
+    }
+
+    /**
+     * الحصول على نمط الزر
+     */
+    public function getButtonStyleAttribute()
+    {
+        return 'primary';
+    }
+
+    /**
+     * الحصول على أيقونة المحتوى (استخدام link_text كأيقونة)
+     */
+    public function getIconClassAttribute()
+    {
+        return $this->link_text;
+    }
+
+    /**
+     * الحصول على كلاس الأيقونة الكامل
+     */
+    public function getFullIconClassAttribute()
+    {
+        return $this->icon_class ? 'fas ' . $this->icon_class : 'fas fa-star';
+    }
+
+    /**
+     * الحصول على رابط الفيديو (غير متوفر حالياً)
+     */
+    public function getVideoUrlAttribute()
+    {
+        return null;
+    }
+
+    /**
+     * الحصول على البيانات المخصصة (غير متوفر حالياً)
+     */
+    public function getCustomDataAttribute()
+    {
+        return [];
+    }
+
+    /**
      * الحصول على نوع المحتوى المترجم
      */
     public function getContentTypeTranslatedAttribute()
@@ -95,13 +189,5 @@ class SectionContent extends Model
         ];
 
         return $styles[$this->button_style] ?? 'أساسي';
-    }
-
-    /**
-     * الحصول على كلاس الأيقونة الكامل
-     */
-    public function getFullIconClassAttribute()
-    {
-        return $this->icon_class ? 'fas ' . $this->icon_class : 'fas fa-star';
     }
 }

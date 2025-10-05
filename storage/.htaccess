@@ -1,0 +1,9 @@
+Options -Indexes
+<Files "*.php">
+    Order Deny,Allow
+    Deny from all
+</Files>
+<Files "*.log">
+    Order Deny,Allow
+    Deny from all
+</Files>

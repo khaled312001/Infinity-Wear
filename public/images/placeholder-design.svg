@@ -1,0 +1,33 @@
+<svg width="400" height="500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="500" fill="#f8f9fa"/>
+  
+  <!-- T-shirt outline -->
+  <g stroke="#dee2e6" stroke-width="2" fill="none">
+    <!-- T-shirt body -->
+    <path d="M150 100 L250 100 L280 200 L120 200 Z"/>
+    
+    <!-- Left sleeve -->
+    <path d="M120 120 L80 140 L100 180 L120 160 Z"/>
+    
+    <!-- Right sleeve -->
+    <path d="M280 120 L320 140 L300 180 L280 160 Z"/>
+    
+    <!-- Neck -->
+    <path d="M175 120 A25 25 0 0 1 225 120"/>
+  </g>
+  
+  <!-- Placeholder text -->
+  <text x="200" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#6c757d">
+    تصميم التيشرت
+  </text>
+  <text x="200" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#adb5bd">
+    سيظهر هنا
+  </text>
+  
+  <!-- Icon -->
+  <g transform="translate(175, 350)">
+    <circle cx="25" cy="25" r="20" fill="#e9ecef" stroke="#dee2e6" stroke-width="2"/>
+    <text x="25" y="32" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#6c757d">🎨</text>
+  </g>
+</svg>

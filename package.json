@@ -3,7 +3,7 @@
     "private": true,
     "type": "module",
     "name": "infinity-wear",
-    "description": "Infinity Wear - مؤسسة اللباس اللامحدود",
+    "description": "Infinity Wear - مؤسسة الزي اللامحدود",
     "version": "1.0.0",
     "scripts": {
         "build": "vite build",

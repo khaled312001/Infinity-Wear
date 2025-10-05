@@ -30,7 +30,7 @@ class TestimonialController extends Controller
     }
 
     /**
-     * عرض نموذج إضافة شهادة جديدة
+     * عرض نموذج إضافة تقييم جديد
      */
     public function create()
     {
@@ -38,7 +38,7 @@ class TestimonialController extends Controller
     }
 
     /**
-     * حفظ شهادة جديدة من العميل
+     * حفظ تقييم جديد من العميل
      */
     public function store(Request $request)
     {

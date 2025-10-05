@@ -1,0 +1,207 @@
+/* Enhanced Pages Styles */
+
+/* Common Page Styles */
+.page-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 4rem 0;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 3rem;
+}
+
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../images/pattern-overlay.png');
+    opacity: 0.1;
+}
+
+.page-header h1 {
+    font-weight: 800;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.page-header h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background-color: var(--accent-color);
+}
+
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: white;
+}
+
+.breadcrumb-item.active {
+    color: white;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Card Styles */
+.enhanced-card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.enhanced-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.enhanced-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.enhanced-card .card-body {
+    padding: 1.5rem;
+}
+
+.enhanced-card .card-title {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.enhanced-card .card-text {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+/* Form Styles */
+.enhanced-form .form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.enhanced-form .form-control {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.enhanced-form .form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem rgba(96, 165, 250, 0.25);
+}
+
+.enhanced-form .btn-primary {
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.enhanced-form .btn-primary:hover {
+    background-color: var(--dark-blue);
+    border-color: var(--dark-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(30, 58, 138, 0.2);
+}
+
+/* Importer Registration Form Specific Styles */
+.importer-form {
+    background-color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.form-section-title {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--light-blue);
+}
+
+.design-option-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.design-option-card:hover {
+    border-color: var(--accent-color);
+    background-color: rgba(96, 165, 250, 0.05);
+}
+
+.design-option-card.selected {
+    border-color: var(--accent-color);
+    background-color: rgba(96, 165, 250, 0.1);
+}
+
+.design-template-item {
+    border: 3px solid transparent;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.design-template-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.design-template-item.selected {
+    border-color: var(--accent-color);
+}
+
+.design-template-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.design-template-item .template-info {
+    padding: 1rem;
+    background-color: white;
+}
+
+.design-template-item .template-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.design-template-item .template-description {
+    font-size: 0.9rem;
+    color: #666;
+}

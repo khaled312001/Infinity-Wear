@@ -239,25 +239,13 @@ class FinanceController extends Controller
         // إحصائيات السنة
         $yearlyStats = Transaction::getYearlyStats($year);
 
-        // بيانات الرسم البياني
+        // بيانات الرسم البياني والإحصائيات الشهرية
         $chartData = Transaction::getMonthlyChartData($year);
+        $monthlyStats = $chartData; // استخدام نفس البيانات للجدول
 
         // تقرير الفئات
         $incomeByCategory = Transaction::getCategoryStats('income', $year);
         $expenseByCategory = Transaction::getCategoryStats('expense', $year);
-
-        // إحصائيات شهرية إذا تم تحديد الشهر
-        $monthlyStats = null;
-        if ($month) {
-            $monthlyStats = [
-                'revenue' => Transaction::getMonthlyRevenue($year, $month),
-                'expenses' => Transaction::getMonthlyExpenses($year, $month),
-                'profit' => Transaction::getMonthlyProfit($year, $month),
-                'transactions_count' => Transaction::whereYear('transaction_date', $year)
-                    ->whereMonth('transaction_date', $month)
-                    ->count()
-            ];
-        }
 
         // مقارنة مع السنة السابقة
         $previousYearStats = Transaction::getYearlyStats($year - 1);

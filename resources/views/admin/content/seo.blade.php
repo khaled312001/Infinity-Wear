@@ -231,7 +231,7 @@
                                onkeyup="updateCharCount(this, 'title-count', 60)">
                         <div class="char-counter" id="title-count"></div>
                         <div class="seo-preview">
-                            <div class="seo-preview-title" id="title-preview">{{ $seoData['site_title'] ?? 'Infinity Wear - مؤسسة اللباس اللامحدود' }}</div>
+                            <div class="seo-preview-title" id="title-preview">{{ $seoData['site_title'] ?? 'Infinity Wear - مؤسسة الزي اللامحدود' }}</div>
                             <div class="seo-preview-url">https://infinitywear.sa</div>
                             <div class="seo-preview-description" id="description-preview">{{ $seoData['site_description'] ?? 'مؤسسة متخصصة في توريد الملابس الرياضية...' }}</div>
                         </div>
@@ -432,7 +432,7 @@
         const title = document.querySelector('input[name="site_title"]').value;
         const description = document.querySelector('textarea[name="site_description"]').value;
         
-        document.getElementById('title-preview').textContent = title || 'Infinity Wear - مؤسسة اللباس اللامحدود';
+        document.getElementById('title-preview').textContent = title || 'Infinity Wear - مؤسسة الزي اللامحدود';
         document.getElementById('description-preview').textContent = description || 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية';
     }
 

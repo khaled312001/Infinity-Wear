@@ -6,12 +6,21 @@ use App\Models\Importer;
 use App\Models\ImporterOrder;
 use App\Models\Task;
 use App\Models\User;
+use App\Services\AIDesignService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class ImporterController extends Controller
 {
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
     /**
      * عرض قائمة المستوردين
      */
@@ -114,7 +123,7 @@ class ImporterController extends Controller
      */
     public function showImporterForm()
     {
-        return view('importers.form')->withErrors([]);
+        return view('importers.form');
     }
 
     /**
@@ -134,14 +143,13 @@ class ImporterController extends Controller
             'country' => 'nullable|string|max:100',
             'requirements' => 'required|string',
             'quantity' => 'required|integer|min:1',
-            'design_option' => 'required|string|in:text,upload,template,ai',
+            'design_option' => 'required|string|in:text,upload,template',
             'design_details_text' => 'required_if:design_option,text|nullable|string',
             'design_file' => 'required_if:design_option,upload|nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
             'design_upload_notes' => 'nullable|string',
-            'design_template' => 'required_if:design_option,template|nullable|string',
-            'design_template_notes' => 'nullable|string',
-            'design_ai_prompt' => 'required_if:design_option,ai|nullable|string',
-            'design_ai_style' => 'required_if:design_option,ai|nullable|string',
+            'design_3d_tshirt' => 'required_if:design_option,template|nullable|array',
+            'design_3d_shorts' => 'nullable|array',
+            'design_3d_socks' => 'nullable|array',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -188,12 +196,11 @@ class ImporterController extends Controller
                 $designDetails['notes'] = $validated['design_upload_notes'];
                 break;
             case 'template':
-                $designDetails['template'] = $validated['design_template'];
-                $designDetails['notes'] = $validated['design_template_notes'];
-                break;
-            case 'ai':
-                $designDetails['prompt'] = $validated['design_ai_prompt'];
-                $designDetails['style'] = $validated['design_ai_style'];
+                $designDetails['3d_design'] = [
+                    'tshirt' => $validated['design_3d_tshirt'] ?? null,
+                    'shorts' => $validated['design_3d_shorts'] ?? null,
+                    'socks' => $validated['design_3d_socks'] ?? null,
+                ];
                 break;
         }
 
@@ -206,6 +213,9 @@ class ImporterController extends Controller
             'quantity' => $validated['quantity'],
             'design_details' => json_encode($designDetails),
         ]);
+
+        // إنشاء إشعار لطلب المستورد الجديد
+        $this->notificationService->createImporterOrderNotification($order);
 
         // تسجيل الدخول للمستخدم
         Auth::login($user);
@@ -230,5 +240,75 @@ class ImporterController extends Controller
         $orders = $importer->orders()->latest()->get();
         
         return view('importers.dashboard', compact('importer', 'orders'));
+    }
+
+    /**
+     * API endpoint for AI design assistance
+     */
+    public function aiDesignAssistance(Request $request)
+    {
+        $request->validate([
+            'prompt' => 'required|string|max:1000',
+            'style' => 'required|string|in:realistic,modern,minimalist,sporty,elegant'
+        ]);
+
+        try {
+            $aiService = new AIDesignService();
+            $result = $aiService->generateDesignDescription($request->prompt, $request->style);
+            
+            return response()->json($result);
+        } catch (\Exception $e) {
+            Log::error('AI Assistance Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'حدث خطأ في خدمة الذكاء الاصطناعي'
+            ], 500);
+        }
+    }
+
+    /**
+     * API endpoint for design analysis
+     */
+    public function analyzeDesignRequirements(Request $request)
+    {
+        $request->validate([
+            'requirements' => 'required|string|max:2000'
+        ]);
+
+        try {
+            $aiService = new AIDesignService();
+            $result = $aiService->analyzeDesignRequirements($request->requirements);
+            
+            return response()->json($result);
+        } catch (\Exception $e) {
+            Log::error('Design Analysis Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'حدث خطأ في تحليل المتطلبات'
+            ], 500);
+        }
+    }
+
+    /**
+     * API endpoint for AI design generation
+     */
+    public function generateDesign(Request $request)
+    {
+        $request->validate([
+            'prompt' => 'required|string|max:1000'
+        ]);
+
+        try {
+            $aiService = new \App\Services\AIDesignService();
+            $result = $aiService->generateTShirtDesign($request->prompt);
+            
+            return response()->json($result);
+        } catch (\Exception $e) {
+            Log::error('AI Design Generation Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'حدث خطأ في إنشاء التصميم'
+            ], 500);
+        }
     }
 }

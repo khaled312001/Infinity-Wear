@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <rect width="300" height="200" fill="#f0f0f0"/>
+  <text x="150" y="100" font-family="Arial" font-size="16" text-anchor="middle" fill="#666666">صورة غير متوفرة</text>
+  <path d="M130,80 L170,80 L170,120 L130,120 Z" stroke="#999999" stroke-width="2" fill="none"/>
+  <path d="M140,100 C145,95 155,95 160,100" stroke="#999999" stroke-width="2" fill="none"/>
+  <circle cx="145" cy="90" r="3" fill="#999999"/>
+  <circle cx="155" cy="90" r="3" fill="#999999"/>
+</svg>

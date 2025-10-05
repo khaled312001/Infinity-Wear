@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="300" viewBox="0 0 500 300">
+  <!-- Background -->
+  <rect width="500" height="300" fill="#f8f9fa" opacity="0.8"/>
+  
+  <!-- Portfolio text -->
+  <text x="250" y="100" font-family="Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#0d6efd">معرض أعمالنا</text>
+  
+  <!-- Portfolio icon -->
+  <g transform="translate(250, 180)">
+    <!-- Portfolio folder -->
+    <path d="M-60,-40 L-40,-40 L-30,-30 L60,-30 L60,40 L-60,40 Z" fill="#0d6efd" opacity="0.8"/>
+    <path d="M-55,-25 L55,-25 L55,35 L-55,35 Z" fill="white"/>
+    
+    <!-- Portfolio items -->
+    <rect x="-45" y="-15" width="25" height="20" fill="#ffc107"/>
+    <rect x="-10" y="-15" width="25" height="20" fill="#20c997"/>
+    <rect x="25" y="-15" width="25" height="20" fill="#dc3545"/>
+    
+    <rect x="-45" y="10" width="25" height="20" fill="#6f42c1"/>
+    <rect x="-10" y="10" width="25" height="20" fill="#0dcaf0"/>
+    <rect x="25" y="10" width="25" height="20" fill="#fd7e14"/>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="100" cy="50" r="20" fill="#0d6efd" opacity="0.2"/>
+  <circle cx="400" cy="250" r="30" fill="#0d6efd" opacity="0.2"/>
+  <circle cx="450" cy="80" r="15" fill="#0d6efd" opacity="0.2"/>
+  <circle cx="50" cy="200" r="25" fill="#0d6efd" opacity="0.2"/>
+</svg>

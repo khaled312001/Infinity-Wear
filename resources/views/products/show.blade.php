@@ -29,7 +29,7 @@
                         @endif
                     </div>
                 @else
-                    <img src="/images/placeholder.jpg" class="img-fluid" alt="{{ $product->name_ar ?? $product->name }}" style="height: 400px; object-fit: cover;">
+                    <img src="{{ asset('images/placeholder.jpg') }}" class="img-fluid" alt="{{ $product->name_ar ?? $product->name }}" style="height: 400px; object-fit: cover;">
                 @endif
             </div>
         </div>
@@ -71,11 +71,11 @@
                 @endif
                 
                 <div class="product-actions">
-                    <a href="{{ route('contact') }}" class="btn btn-primary btn-lg me-3">
+                    <a href="{{ route('contact.index') }}" class="btn btn-primary btn-lg me-3">
                         <i class="fas fa-phone me-2"></i>
                         اطلب الآن
                     </a>
-                    <a href="{{ route('custom-designs.create') }}" class="btn btn-outline-primary btn-lg">
+                    <a href="{{ route('contact.index') }}" class="btn btn-outline-primary btn-lg">
                         <i class="fas fa-palette me-2"></i>
                         تصميم مخصص
                     </a>
@@ -93,7 +93,7 @@
                     @foreach($relatedProducts as $relatedProduct)
                         <div class="col-md-4">
                             <div class="card product-card h-100">
-                                <img src="{{ $relatedProduct->images ? json_decode($relatedProduct->images)[0] : '/images/placeholder.jpg' }}" 
+                                <img src="{{ $relatedProduct->images ? json_decode($relatedProduct->images)[0] : asset('images/placeholder.jpg') }}" 
                                      class="card-img-top" alt="{{ $relatedProduct->name_ar ?? $relatedProduct->name }}" 
                                      style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
@@ -101,7 +101,7 @@
                                     <p class="card-text">{{ Str::limit($relatedProduct->description_ar ?? $relatedProduct->description, 60) }}</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="product-price">{{ number_format($relatedProduct->price, 2) }} ريال</span>
-                                        <a href="{{ route('products.show', $relatedProduct) }}" class="btn btn-sm btn-outline-primary">عرض</a>
+                                        <a href="{{ route('portfolio.show', $relatedProduct) }}" class="btn btn-sm btn-outline-primary">عرض</a>
                                     </div>
                                 </div>
                             </div>

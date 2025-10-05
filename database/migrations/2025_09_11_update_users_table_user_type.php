@@ -9,13 +9,34 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // First, modify the column to allow NULL values temporarily
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('user_type')->nullable()->change();
-        });
+        // For SQLite, we need to recreate the table
+        if (DB::getDriverName() === 'sqlite') {
+            // Create a new table with the updated schema
+            Schema::create('users_new', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('email')->unique();
+                $table->timestamp('email_verified_at')->nullable();
+                $table->string('password');
+                $table->enum('user_type', ['customer', 'admin', 'importer'])->default('customer');
+                $table->rememberToken();
+                $table->timestamps();
+            });
 
-        // Then update the enum values using a raw SQL statement
-        DB::statement("ALTER TABLE users MODIFY COLUMN user_type ENUM('customer', 'admin', 'importer') NOT NULL DEFAULT 'customer'");
+            // Copy data from old table to new table
+            DB::statement('INSERT INTO users_new SELECT * FROM users');
+
+            // Drop old table and rename new table
+            Schema::drop('users');
+            Schema::rename('users_new', 'users');
+        } else {
+            // For MySQL, use the original approach
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('user_type')->nullable()->change();
+            });
+
+            DB::statement("ALTER TABLE users MODIFY COLUMN user_type ENUM('customer', 'admin', 'importer') NOT NULL DEFAULT 'customer'");
+        }
     }
 
     public function down(): void

@@ -1,0 +1,44 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- خلفية الشعار -->
+  <rect width="200" height="60" rx="8" fill="url(#gradient)"/>
+
+  <!-- رمز اللانهاية -->
+  <g transform="translate(20, 15)">
+    <path d="M15 15C15 8.37258 20.3726 3 27 3C33.6274 3 39 8.37258 39 15C39 21.6274 33.6274 27 27 27C20.3726 27 15 21.6274 15 15Z" 
+          fill="none" 
+          stroke="white" 
+          stroke-width="3" 
+          stroke-linecap="round"/>
+    <path d="M39 15C39 8.37258 44.3726 3 51 3C57.6274 3 63 8.37258 63 15C63 21.6274 57.6274 27 51 27C44.3726 27 39 21.6274 39 15Z" 
+          fill="none" 
+          stroke="white" 
+          stroke-width="3" 
+          stroke-linecap="round"/>
+    <path d="M15 15C15 21.6274 20.3726 27 27 27C33.6274 27 39 21.6274 39 15" 
+          fill="none" 
+          stroke="white" 
+          stroke-width="3" 
+          stroke-linecap="round"/>
+    <path d="M39 15C39 21.6274 44.3726 27 51 27C57.6274 27 63 21.6274 63 15" 
+          fill="none" 
+          stroke="white" 
+          stroke-width="3" 
+          stroke-linecap="round"/>
+  </g>
+
+  <!-- النص الرئيسي -->
+  <text x="90" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">إنفينيتي وير</text>
+  <text x="90" y="42" font-family="Arial, sans-serif" font-size="12" font-weight="500" fill="rgba(255,255,255,0.8)">INFINITY WEAR</text>
+
+  <!-- خطوط زخرفية -->
+  <line x1="90" y1="30" x2="180" y2="30" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  <circle cx="185" cy="30" r="2" fill="white"/>
+
+  <!-- تعريف التدرج -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#007bff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0056b3;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

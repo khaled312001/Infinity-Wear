@@ -2,31 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\PortfolioItem;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    /**
+     * عرض الصفحة الرئيسية
+     */
     public function index()
     {
-        $heroSliders = \App\Models\HeroSlider::active()->ordered()->get();
-        $homeSections = \App\Models\HomeSection::active()->ordered()->with('contents')->get();
-        
-        return view('home', compact('heroSliders', 'homeSections'));
-    }
+        // الحصول على الأعمال المميزة للعرض في الصفحة الرئيسية
+        $featuredPortfolio = PortfolioItem::where('is_featured', true)
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->take(12)
+            ->get();
 
-    public function about()
-    {
-        return view('about');
-    }
+        // الحصول على جميع الأعمال للعرض في المعرض
+        $portfolioItems = PortfolioItem::where('is_active', true)
+            ->orderBy('sort_order')
+            ->latest()
+            ->get();
 
-    public function contact()
-    {
-        return view('contact');
-    }
+        // الحصول على الشهادات للعرض
+        $testimonials = Testimonial::where('is_active', true)
+            ->orderBy('sort_order')
+            ->take(5)
+            ->get();
 
-    public function services()
-    {
-        return view('services');
+        return view('home', compact('featuredPortfolio', 'portfolioItems', 'testimonials'));
     }
 }

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>اختبار بسيط</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>اختبار بسيط للأزرار</h1>
+        
+        <div class="row">
+            <div class="col-12">
+                <button class="btn btn-primary" onclick="testFunction()">اختبار الدالة</button>
+                <button class="btn btn-success" onclick="handleEditService(1)">اختبار التعديل</button>
+                <button class="btn btn-warning" onclick="handleToggleService(1)">اختبار التفعيل</button>
+                <button class="btn btn-danger" onclick="handleDeleteService(1)">اختبار الحذف</button>
+            </div>
+        </div>
+        
+        <div class="row mt-3">
+            <div class="col-12">
+                <div id="result" class="alert alert-info">النتائج ستظهر هنا...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function testFunction() {
+            document.getElementById('result').innerHTML = 'الدالة تعمل بشكل صحيح!';
+            console.log('Test function called successfully');
+        }
+        
+        function handleEditService(serviceId) {
+            document.getElementById('result').innerHTML = 'زر التعديل تم الضغط عليه للخدمة رقم: ' + serviceId;
+            console.log('Edit button clicked for service ID:', serviceId);
+        }
+        
+        function handleToggleService(serviceId) {
+            document.getElementById('result').innerHTML = 'زر التفعيل تم الضغط عليه للخدمة رقم: ' + serviceId;
+            console.log('Toggle button clicked for service ID:', serviceId);
+        }
+        
+        function handleDeleteService(serviceId) {
+            document.getElementById('result').innerHTML = 'زر الحذف تم الضغط عليه للخدمة رقم: ' + serviceId;
+            console.log('Delete button clicked for service ID:', serviceId);
+        }
+        
+        // Test function availability
+        console.log('Function availability test:');
+        console.log('testFunction:', typeof testFunction === 'function');
+        console.log('handleEditService:', typeof handleEditService === 'function');
+        console.log('handleToggleService:', typeof handleToggleService === 'function');
+        console.log('handleDeleteService:', typeof handleDeleteService === 'function');
+    </script>
+</body>
+</html>

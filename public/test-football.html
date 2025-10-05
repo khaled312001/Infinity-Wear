@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار كرات القدم المتحركة</title>
+    <link href="css/football-animation.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .test-content {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            margin: 20px;
+        }
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 1000;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h4>تحكم الكرات</h4>
+        <button onclick="addFootball()">إضافة كرة</button>
+        <button onclick="clearFootballs()">مسح الكرات</button>
+        <button onclick="toggleAnimation()">إيقاف/تشغيل</button>
+    </div>
+
+    <div class="test-content">
+        <h1>اختبار كرات القدم المتحركة</h1>
+        <p>هذه صفحة اختبار لكرات القدم المتحركة في الخلفية.</p>
+        <p>يجب أن ترى كرات قدم متحركة بألوان وأحجام مختلفة في الخلفية.</p>
+        
+        <h2>المميزات:</h2>
+        <ul>
+            <li>كرات بألوان مختلفة (أزرق، أخضر، أحمر، بنفسجي، ذهبي، أبيض)</li>
+            <li>أحجام مختلفة (صغير، متوسط، كبير)</li>
+            <li>حركات متنوعة (عادي، جاذبية، متعرج)</li>
+            <li>تأثيرات خاصة (توهج، ضوء، شرارة)</li>
+            <li>متجاوب مع الأجهزة المحمولة</li>
+        </ul>
+        
+        <h2>التحكم:</h2>
+        <ul>
+            <li>اضغط على "إضافة كرة" لإضافة كرة جديدة</li>
+            <li>اضغط على "مسح الكرات" لإزالة جميع الكرات</li>
+            <li>اضغط على "إيقاف/تشغيل" لإيقاف أو تشغيل الأنيميشن</li>
+        </ul>
+    </div>
+
+    <script src="js/football-simple.js"></script>
+    <script>
+        let isAnimating = true;
+        let animationInterval;
+        
+        function addFootball() {
+            const container = document.getElementById('football-background');
+            if (container) {
+                const football = document.createElement('div');
+                football.className = 'football';
+                
+                const colors = ['blue', 'green', 'red', 'purple', 'special', 'light'];
+                const sizes = ['small', 'medium', 'large'];
+                
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = sizes[Math.floor(Math.random() * sizes.length)];
+                
+                football.classList.add(color, size);
+                
+                const startX = Math.random() * window.innerWidth;
+                football.style.left = startX + 'px';
+                
+                const duration = Math.random() * 4 + 6;
+                football.style.animationDuration = duration + 's';
+                
+                const delay = Math.random() * 2;
+                football.style.animationDelay = '-' + delay + 's';
+                
+                container.appendChild(football);
+                
+                setTimeout(() => {
+                    if (football.parentNode) {
+                        football.parentNode.removeChild(football);
+                    }
+                }, 12000);
+            }
+        }
+        
+        function clearFootballs() {
+            const container = document.getElementById('football-background');
+            if (container) {
+                container.innerHTML = '';
+            }
+        }
+        
+        function toggleAnimation() {
+            const container = document.getElementById('football-background');
+            if (container) {
+                if (isAnimating) {
+                    container.style.display = 'none';
+                    isAnimating = false;
+                } else {
+                    container.style.display = 'block';
+                    isAnimating = true;
+                }
+            }
+        }
+        
+        // إضافة كرات تلقائياً
+        setInterval(() => {
+            if (isAnimating) {
+                addFootball();
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

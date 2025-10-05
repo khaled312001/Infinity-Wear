@@ -28,7 +28,8 @@ class WhatsAppMessage extends Model
         'sent_by',
         'contact_id',
         'contact_type',
-        'is_archived'
+        'is_archived',
+        'whatsapp_url'
     ];
 
     protected $casts = [

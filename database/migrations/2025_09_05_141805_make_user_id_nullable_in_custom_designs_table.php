@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('custom_designs', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->foreignId('user_id')->nullable()->change()->constrained()->onDelete('cascade');
-        });
+        if (Schema::hasTable('custom_designs')) {
+            Schema::table('custom_designs', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+                $table->foreignId('user_id')->nullable()->change()->constrained()->onDelete('cascade');
+            });
+        }
     }
 
     /**
@@ -22,9 +24,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('custom_designs', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->foreignId('user_id')->nullable(false)->change()->constrained()->onDelete('cascade');
-        });
+        if (Schema::hasTable('custom_designs')) {
+            Schema::table('custom_designs', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+                $table->foreignId('user_id')->nullable(false)->change()->constrained()->onDelete('cascade');
+            });
+        }
     }
 };

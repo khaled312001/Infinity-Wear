@@ -14,6 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'user.type' => \App\Http\Middleware\CheckUserType::class,
             'redirect.dashboard' => \App\Http\Middleware\RedirectBasedOnUserType::class,
+            'maintenance' => \App\Http\Middleware\MaintenanceMode::class,
+            'admin.auth' => \App\Http\Middleware\CheckAdminAuth::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

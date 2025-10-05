@@ -129,9 +129,9 @@ class ContentController extends Controller
 
             // القيم الافتراضية
             return [
-                'site_title' => 'Infinity Wear - مؤسسة اللباس اللامحدود',
+                'site_title' => 'Infinity Wear - مؤسسة الزي اللامحدود',
                 'site_description' => 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية. ثقة، سرعة، مصداقية، جودة، تصميم، احترافية.',
-                'site_keywords' => 'ملابس رياضية، زي موحد، أكاديميات رياضية، السعودية، كرة قدم، تصميم ملابس، infinity wear، اللباس اللامحدود',
+                'site_keywords' => 'ملابس رياضية، زي موحد، أكاديميات رياضية، السعودية، كرة قدم، تصميم ملابس، infinity wear، الزي اللامحدود',
                 'home_title' => 'الرئيسية - Infinity Wear',
                 'home_description' => 'مؤسسة Infinity Wear متخصصة في توريد أفضل الملابس الرياضية والأزياء الموحدة للأكاديميات الرياضية في المملكة العربية السعودية',
                 'about_title' => 'من نحن - Infinity Wear',
@@ -163,7 +163,7 @@ class ContentController extends Controller
 
             // القيم الافتراضية
             return [
-                'home_hero_title' => 'مؤسسة اللباس اللامحدود',
+                'home_hero_title' => 'مؤسسة الزي اللامحدود',
                 'home_hero_subtitle' => 'زي موحد يعبر عن هويتكم وعلامتكم التجارية',
                 'home_about_title' => 'من نحن',
                 'home_about_content' => 'نحن مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية. نتميز بالثقة، السرعة، المصداقية، الجودة، التصميم، والاحترافية.',
@@ -255,8 +255,26 @@ class ContentController extends Controller
      */
     public function clearCache()
     {
-        Cache::flush();
-        return redirect()->back()->with('success', 'تم مسح الكاش بنجاح');
+        try {
+            // مسح جميع أنواع الكاش
+            Cache::flush();
+            
+            // مسح كاش التطبيق
+            \Artisan::call('cache:clear');
+            \Artisan::call('config:clear');
+            \Artisan::call('route:clear');
+            \Artisan::call('view:clear');
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'تم مسح الكاش بنجاح'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء مسح الكاش: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -264,20 +282,50 @@ class ContentController extends Controller
      */
     public function generateSitemap()
     {
-        $urls = [
-            ['url' => route('home'), 'priority' => '1.0'],
-            ['url' => route('about'), 'priority' => '0.8'],
-            ['url' => route('services'), 'priority' => '0.8'],
-            ['url' => route('portfolio.index'), 'priority' => '0.9'],
-            ['url' => route('testimonials.index'), 'priority' => '0.7'],
-            ['url' => route('contact'), 'priority' => '0.6'],
-            ['url' => route('importers.form'), 'priority' => '0.9'],
-        ];
+        try {
+            $urls = [
+                ['url' => route('home'), 'priority' => '1.0', 'changefreq' => 'daily'],
+                ['url' => route('about'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+                ['url' => route('services'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+                ['url' => route('portfolio.index'), 'priority' => '0.9', 'changefreq' => 'weekly'],
+                ['url' => route('testimonials.index'), 'priority' => '0.7', 'changefreq' => 'monthly'],
+                ['url' => route('contact'), 'priority' => '0.6', 'changefreq' => 'monthly'],
+                ['url' => route('importers.form'), 'priority' => '0.9', 'changefreq' => 'weekly'],
+            ];
 
-        $xml = view('admin.content.sitemap', compact('urls'))->render();
-        
-        File::put(public_path('sitemap.xml'), $xml);
+            // إضافة صفحات معرض الأعمال
+            try {
+                $portfolioItems = \App\Models\PortfolioItem::where('is_active', true)->get();
+                foreach ($portfolioItems as $item) {
+                    $urls[] = [
+                        'url' => route('portfolio.show', $item),
+                        'priority' => '0.7',
+                        'changefreq' => 'monthly'
+                    ];
+                }
+            } catch (\Exception $e) {
+                // تجاهل الخطأ إذا لم تكن النماذج موجودة
+            }
 
-        return redirect()->back()->with('success', 'تم إنشاء خريطة الموقع بنجاح');
+            $xml = view('admin.content.sitemap', compact('urls'))->render();
+            
+            // التأكد من وجود مجلد public
+            if (!File::exists(public_path())) {
+                File::makeDirectory(public_path(), 0755, true);
+            }
+            
+            File::put(public_path('sitemap.xml'), $xml);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'تم إنشاء خريطة الموقع بنجاح',
+                'sitemap_url' => url('sitemap.xml')
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء إنشاء خريطة الموقع: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

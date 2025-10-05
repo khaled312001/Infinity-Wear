@@ -12,11 +12,13 @@ use App\Models\PortfolioItem;
 use App\Models\Testimonial;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -27,34 +29,49 @@ class AdminController extends Controller
     {
         // إحصائيات عامة محسنة
         $totalImporters = Importer::count();
-        $newImporters = Importer::where('status', 'pending')->count();
-        $approvedImporters = Importer::where('status', 'approved')->count();
-        $rejectedImporters = Importer::where('status', 'rejected')->count();
+        $newImporters = Importer::where('status', 'new')->count();
+        $approvedImporters = Importer::where('status', 'qualified')->count();
+        $rejectedImporters = Importer::where('status', 'closed_lost')->count();
         
-        $totalOrders = Order::count();
-        $pendingOrders = Order::where('status', 'pending')->get();
         $processingOrders = ImporterOrder::where('status', 'processing')->count();
         $completedOrders = ImporterOrder::where('status', 'completed')->count();
         
         // إحصائيات المستخدمين والتصاميم
         $totalUsers = User::count();
+        $newUsersThisMonth = User::whereMonth('created_at', now()->month)
+                                ->whereYear('created_at', now()->year)
+                                ->count();
         
-        // الإيرادات الشهرية (إذا كان هناك جدول المعاملات)
-        $monthlyRevenue = 25000; // قيمة افتراضية للعرض
-        if (class_exists('\App\Models\Transaction')) {
-            $monthlyRevenue = \App\Models\Transaction::getMonthlyRevenue();
-        }
+        // الإيرادات الشهرية من المعاملات
+        $monthlyRevenue = Transaction::getMonthlyRevenue();
+        $monthlyExpenses = Transaction::getMonthlyExpenses();
+        $monthlyProfit = Transaction::getMonthlyProfit();
         
+        // إحصائيات المهام
         $totalTasks = Task::count();
         $pendingTasks = Task::where('status', '!=', 'completed')->count();
+        $overdueTasks = Task::where('due_date', '<', now())
+                           ->where('status', '!=', 'completed')
+                           ->count();
+        
         
         // إحصائيات للوحة التحكم الجديدة
         $stats = [
-            'total_orders' => $totalOrders,
             'total_users' => $totalUsers,
+            'total_importers' => $totalImporters,
+            'new_importers' => $newImporters,
             'monthly_revenue' => $monthlyRevenue,
-            'pending_orders' => $pendingOrders->count(),
+            'monthly_expenses' => $monthlyExpenses,
+            'monthly_profit' => $monthlyProfit,
+            'total_tasks' => $totalTasks,
+            'pending_tasks' => $pendingTasks,
+            'overdue_tasks' => $overdueTasks,
+            'new_users_this_month' => $newUsersThisMonth,
+            'completed_orders' => $completedOrders,
+            'processing_orders' => $processingOrders
         ];
+        
+        // إحصائيات المهام المتأخرة
         $overdueTasks = Task::where('status', '!=', 'completed')
                           ->where('due_date', '<', now())
                           ->count();
@@ -67,18 +84,14 @@ class AdminController extends Controller
         
         // إعداد الإحصائيات للوحة التحكم
         $stats = [
-            'total_orders' => $totalOrders,
             'total_users' => $totalUsers,
             'monthly_revenue' => $monthlyRevenue,
-            'pending_orders' => $pendingOrders->count(),
             'total_importers' => $totalImporters,
             'new_importers' => $newImporters,
             'approved_importers' => $approvedImporters,
             'rejected_importers' => $rejectedImporters,
         ];
         
-        // أحدث الطلبات
-        $latestOrders = ImporterOrder::with('importer')->latest()->take(5)->get();
         
         // المهام العاجلة
         $urgentTasks = Task::where('status', '!=', 'completed')
@@ -87,23 +100,170 @@ class AdminController extends Controller
                          ->take(5)
                          ->get();
         
-        // إحصائيات المبيعات
-        $monthlySales = ImporterOrder::where('status', 'completed')
-                                   ->whereYear('updated_at', now()->year)
-                                   ->selectRaw('MONTH(updated_at) as month, SUM(final_cost) as total')
-                                   ->groupBy('month')
-                                   ->get()
-                                   ->pluck('total', 'month')
-                                   ->toArray();
+        // إحصائيات المبيعات الشهرية للرسم البياني
+        $monthlySales = Transaction::getMonthlyChartData();
+        
+        // إحصائيات النشاط الأخير
+        $recentActivity = $this->getRecentActivity();
+        
+        // إحصائيات الأداء
+        $performanceStats = $this->getPerformanceStats();
+        
+        // بيانات الرسم البياني
+        $chartData = $this->getChartData();
         
         return view('admin.dashboard', compact(
-            'stats', 'pendingOrders',
+            'stats',
             'totalImporters', 'newImporters', 'approvedImporters', 'rejectedImporters',
-            'totalOrders', 'processingOrders', 'completedOrders',
+            'processingOrders', 'completedOrders',
             'totalTasks', 'pendingTasks', 'overdueTasks',
             'marketingTeamCount', 'salesTeamCount',
-            'latestImporters', 'latestOrders', 'urgentTasks', 'monthlySales'
+            'latestImporters', 'urgentTasks', 'monthlySales',
+            'recentActivity', 'performanceStats', 'chartData'
         ));
+    }
+
+    /**
+     * الحصول على النشاط الأخير
+     */
+    private function getRecentActivity()
+    {
+        $activities = collect();
+        
+        // أحدث المستوردين
+        $recentImporters = Importer::latest()->take(3)->get();
+        foreach ($recentImporters as $importer) {
+            $activities->push([
+                'type' => 'importer',
+                'title' => 'مستورد جديد: ' . $importer->name,
+                'time' => $importer->created_at,
+                'icon' => 'fas fa-truck',
+                'color' => 'success'
+            ]);
+        }
+        
+        // أحدث الطلبات
+        $recentOrders = ImporterOrder::latest()->take(3)->get();
+        foreach ($recentOrders as $order) {
+            $activities->push([
+                'type' => 'order',
+                'title' => 'طلب جديد #' . $order->order_number,
+                'time' => $order->created_at,
+                'icon' => 'fas fa-shopping-cart',
+                'color' => 'primary'
+            ]);
+        }
+        
+        // أحدث المهام
+        $recentTasks = Task::latest()->take(3)->get();
+        foreach ($recentTasks as $task) {
+            $activities->push([
+                'type' => 'task',
+                'title' => 'مهمة جديدة: ' . $task->title,
+                'time' => $task->created_at,
+                'icon' => 'fas fa-tasks',
+                'color' => 'warning'
+            ]);
+        }
+        
+        return $activities->sortByDesc('time')->take(10);
+    }
+
+    /**
+     * الحصول على إحصائيات الأداء
+     */
+    private function getPerformanceStats()
+    {
+        $currentMonth = now()->month;
+        $lastMonth = now()->subMonth()->month;
+        
+        // مقارنة الطلبات
+        $currentMonthOrders = ImporterOrder::whereMonth('created_at', $currentMonth)->count();
+        $lastMonthOrders = ImporterOrder::whereMonth('created_at', $lastMonth)->count();
+        $ordersGrowth = $lastMonthOrders > 0 ? (($currentMonthOrders - $lastMonthOrders) / $lastMonthOrders) * 100 : 0;
+        
+        // مقارنة المستوردين
+        $currentMonthImporters = Importer::whereMonth('created_at', $currentMonth)->count();
+        $lastMonthImporters = Importer::whereMonth('created_at', $lastMonth)->count();
+        $importersGrowth = $lastMonthImporters > 0 ? (($currentMonthImporters - $lastMonthImporters) / $lastMonthImporters) * 100 : 0;
+        
+        // مقارنة الإيرادات
+        $currentMonthRevenue = Transaction::getMonthlyRevenue();
+        $lastMonthRevenue = Transaction::getMonthlyRevenue(now()->subMonth()->year, $lastMonth);
+        $revenueGrowth = $lastMonthRevenue > 0 ? (($currentMonthRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100 : 0;
+        
+        return [
+            'orders_growth' => round($ordersGrowth, 1),
+            'importers_growth' => round($importersGrowth, 1),
+            'revenue_growth' => round($revenueGrowth, 1),
+            'current_month_orders' => $currentMonthOrders,
+            'current_month_importers' => $currentMonthImporters,
+            'current_month_revenue' => $currentMonthRevenue
+        ];
+    }
+
+    /**
+     * الحصول على بيانات الرسم البياني
+     */
+    private function getChartData()
+    {
+        $months = [];
+        $importersData = [];
+        $revenueData = [];
+        
+        for ($i = 5; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $months[] = $date->format('M');
+            
+            
+            $importersData[] = Importer::whereMonth('created_at', $date->month)
+                                     ->whereYear('created_at', $date->year)
+                                     ->count();
+            
+            $revenueData[] = Transaction::getMonthlyRevenue($date->year, $date->month);
+        }
+        
+        return [
+            'months' => $months,
+            'importers' => $importersData,
+            'revenue' => $revenueData
+        ];
+    }
+
+    /**
+     * API endpoint للحصول على إحصائيات لوحة التحكم
+     */
+    public function getDashboardStats()
+    {
+        try {
+            // إحصائيات سريعة
+            $stats = [
+                'total_users' => User::count(),
+                'total_importers' => Importer::count(),
+                'monthly_revenue' => Transaction::getMonthlyRevenue(),
+                'total_tasks' => Task::count(),
+                'pending_tasks' => Task::where('status', '!=', 'completed')->count(),
+                'overdue_tasks' => Task::where('status', '!=', 'completed')
+                                   ->where('due_date', '<', now())
+                                   ->count(),
+            ];
+
+            // بيانات الرسم البياني
+            $chartData = $this->getChartData();
+
+            return response()->json([
+                'success' => true,
+                'stats' => $stats,
+                'chartData' => $chartData,
+                'timestamp' => now()->toISOString()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'خطأ في جلب البيانات',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
     
     /**
@@ -250,26 +410,37 @@ class AdminController extends Controller
         $order->status = $request->status;
         $order->save();
         
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'تم تحديث حالة الطلب بنجاح']);
+        }
+        
         return redirect()->back()->with('success', 'تم تحديث حالة الطلب بنجاح');
     }
     
     /**
-     * عرض قائمة الطلبات
+     * عرض طلبات المستوردين
+     */
+    public function importersOrders()
+    {
+        $orders = ImporterOrder::with(['importer', 'importer.user'])
+            ->latest()
+            ->paginate(15);
+            
+        return view('admin.importers.orders', compact('orders'));
+    }
+
+    /**
+     * عرض جميع الطلبات
      */
     public function ordersIndex()
     {
-        $orders = Order::with('user')->latest()->paginate(10);
+        $orders = ImporterOrder::with(['importer', 'importer.user'])
+            ->latest()
+            ->paginate(15);
+            
         return view('admin.orders.index', compact('orders'));
     }
     
-    /**
-     * عرض قائمة الطلبات الجديدة
-     */
-    public function newOrders()
-    {
-        $newOrders = ImporterOrder::where('status', 'pending')->latest()->paginate(10);
-        return view('admin.orders.new', compact('newOrders'));
-    }
     
     // The dashboardUpdated method has been merged into the dashboard method
 
@@ -458,7 +629,8 @@ class AdminController extends Controller
      */
     public function settings()
     {
-        return view('admin.settings');
+        $settings = \App\Models\Setting::getAll();
+        return view('admin.settings', compact('settings'));
     }
 
     /**
@@ -466,29 +638,164 @@ class AdminController extends Controller
      */
     public function updateSettings(Request $request)
     {
+        // Log the request for debugging
+        Log::info('Settings update request received', [
+            'has_site_logo' => $request->hasFile('site_logo'),
+            'has_site_favicon' => $request->hasFile('site_favicon'),
+            'all_files' => $request->allFiles()
+        ]);
+
         $validatedData = $request->validate([
+            // General Settings
             'site_name' => 'required|string|max:255',
+            'site_tagline' => 'nullable|string|max:255',
             'site_description' => 'required|string',
+            'default_language' => 'nullable|string|in:ar,en',
+            'default_currency' => 'nullable|string|in:SAR,USD,EUR',
+            'timezone' => 'nullable|string',
+            
+            // File Uploads
+            'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp,avif|max:2048',
+            'site_favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp,avif|max:1024',
+            
+            // Contact Information
             'contact_email' => 'required|email',
             'contact_phone' => 'required|string',
+            'whatsapp_number' => 'nullable|string',
+            'support_email' => 'nullable|email',
             'address' => 'required|string',
+            'business_hours' => 'nullable|string',
+            'emergency_contact' => 'nullable|string',
+            
+            // Social Media
             'facebook_url' => 'nullable|url',
             'twitter_url' => 'nullable|url',
             'instagram_url' => 'nullable|url',
             'linkedin_url' => 'nullable|url',
+            'youtube_url' => 'nullable|url',
+            'tiktok_url' => 'nullable|url',
+            
+            // System Settings
+            'enable_registration' => 'boolean',
+            'email_verification' => 'boolean',
+            'maintenance_mode' => 'boolean',
+            'debug_mode' => 'boolean',
+            'backup_frequency' => 'nullable|string|in:daily,weekly,monthly',
+            'log_level' => 'nullable|string|in:error,warning,info,debug',
+            'session_timeout' => 'nullable|integer|min:30|max:1440',
         ]);
 
-        // حفظ الإعدادات في قاعدة البيانات أو ملف التكوين
-        foreach ($validatedData as $key => $value) {
-            // يمكن حفظها في جدول الإعدادات
-            DB::table('settings')->updateOrInsert(
-                ['key' => $key],
-                ['value' => $value, 'updated_at' => now()]
-            );
-        }
+        try {
+            // Handle file uploads
+            if ($request->hasFile('site_logo')) {
+                $logoFile = $request->file('site_logo');
+                
+                // Additional validation
+                if (!$logoFile->isValid()) {
+                    return redirect()->route('admin.settings')
+                        ->with('error', 'ملف الشعار غير صالح');
+                }
+                
+                // Delete old logo if exists
+                $oldLogo = \App\Models\Setting::get('site_logo');
+                if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
+                    Storage::disk('public')->delete($oldLogo);
+                }
+                
+                $logoPath = $logoFile->store('settings', 'public');
+                $validatedData['site_logo'] = $logoPath;
+            }
 
-        return redirect()->route('admin.settings')
-            ->with('success', 'تم تحديث الإعدادات بنجاح');
+            if ($request->hasFile('site_favicon')) {
+                $faviconFile = $request->file('site_favicon');
+                
+                // Additional validation
+                if (!$faviconFile->isValid()) {
+                    return redirect()->route('admin.settings')
+                        ->with('error', 'ملف الأيقونة غير صالح');
+                }
+                
+                // Delete old favicon if exists
+                $oldFavicon = \App\Models\Setting::get('site_favicon');
+                if ($oldFavicon && Storage::disk('public')->exists($oldFavicon)) {
+                    Storage::disk('public')->delete($oldFavicon);
+                }
+                
+                $faviconPath = $faviconFile->store('settings', 'public');
+                $validatedData['site_favicon'] = $faviconPath;
+            }
+
+            // Convert boolean values
+            $validatedData['enable_registration'] = $request->has('enable_registration') ? 1 : 0;
+            $validatedData['email_verification'] = $request->has('email_verification') ? 1 : 0;
+            $validatedData['maintenance_mode'] = $request->has('maintenance_mode') ? 1 : 0;
+            $validatedData['debug_mode'] = $request->has('debug_mode') ? 1 : 0;
+
+            // Save settings
+            \App\Models\Setting::setMultiple($validatedData);
+
+            // Clear cache
+            \App\Models\Setting::clearCache();
+            \App\Helpers\SiteSettingsHelper::clearCache();
+
+            // Update environment file for critical settings
+            $this->updateEnvironmentFile($validatedData);
+
+            // Log successful update
+            Log::info('Settings updated successfully', [
+                'updated_fields' => array_keys($validatedData)
+            ]);
+
+            $successMessage = 'تم تحديث الإعدادات بنجاح';
+            if (isset($validatedData['site_logo'])) {
+                $successMessage .= ' - تم تحديث الشعار';
+            }
+            if (isset($validatedData['site_favicon'])) {
+                $successMessage .= ' - تم تحديث الأيقونة';
+            }
+
+            return redirect()->route('admin.settings')
+                ->with('success', $successMessage);
+
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('Settings update failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->route('admin.settings')
+                ->with('error', 'حدث خطأ أثناء تحديث الإعدادات: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update environment file for critical settings
+     */
+    private function updateEnvironmentFile($settings)
+    {
+        $envFile = base_path('.env');
+        
+        if (file_exists($envFile)) {
+            $envContent = file_get_contents($envFile);
+            
+            // Update critical settings
+            $criticalSettings = [
+                'APP_DEBUG' => $settings['debug_mode'] ? 'true' : 'false',
+                'APP_LOCALE' => $settings['default_language'] ?? 'ar',
+                'APP_TIMEZONE' => $settings['timezone'] ?? 'Asia/Riyadh',
+            ];
+
+            foreach ($criticalSettings as $key => $value) {
+                if (strpos($envContent, $key) !== false) {
+                    $envContent = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $envContent);
+                } else {
+                    $envContent .= "\n{$key}={$value}";
+                }
+            }
+
+            file_put_contents($envFile, $envContent);
+        }
     }
     
     /**
@@ -1013,7 +1320,7 @@ class AdminController extends Controller
         $portfolioItem = PortfolioItem::findOrFail($id);
         
         // Debug: Log what's being received
-        \Log::info('Update Portfolio Request Data:', [
+        Log::info('Update Portfolio Request Data:', [
             'has_image' => $request->hasFile('image'),
             'image_file' => $request->file('image'),
             'all_files' => $request->allFiles(),
@@ -1034,7 +1341,7 @@ class AdminController extends Controller
         // Manual file validation
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            \Log::info('Image file details:', [
+            Log::info('Image file details:', [
                 'isValid' => $image->isValid(),
                 'mimeType' => $image->getMimeType(),
                 'size' => $image->getSize(),
@@ -1087,14 +1394,14 @@ class AdminController extends Controller
 
         // معالجة الصورة الرئيسية إذا تم تحميلها
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            \Log::info('Processing main image upload');
+            Log::info('Processing main image upload');
             // حذف الصورة القديمة
             if ($portfolioItem->image && Storage::disk('public')->exists($portfolioItem->image)) {
                 Storage::disk('public')->delete($portfolioItem->image);
             }
             $imagePath = $request->file('image')->store('images/portfolio', 'public');
             $data['image'] = $imagePath;
-            \Log::info('Main image stored at: ' . $imagePath);
+            Log::info('Main image stored at: ' . $imagePath);
         }
 
         // معالجة معرض الصور إذا تم تحميلها
@@ -1105,12 +1412,12 @@ class AdminController extends Controller
             });
             
             if (!empty($validGalleryFiles)) {
-                \Log::info('Processing gallery images upload');
+                Log::info('Processing gallery images upload');
                 $gallery = $portfolioItem->gallery ?? [];
                 foreach ($validGalleryFiles as $image) {
                     $galleryPath = $image->store('images/portfolio/gallery', 'public');
                     $gallery[] = $galleryPath;
-                    \Log::info('Gallery image stored at: ' . $galleryPath);
+                    Log::info('Gallery image stored at: ' . $galleryPath);
                 }
                 $data['gallery'] = $gallery;
             }
@@ -1131,9 +1438,9 @@ class AdminController extends Controller
             $data['gallery'] = array_values($gallery);
         }
 
-        \Log::info('Updating portfolio item with data:', $data);
+        Log::info('Updating portfolio item with data:', $data);
         $portfolioItem->update($data);
-        \Log::info('Portfolio item updated successfully');
+        Log::info('Portfolio item updated successfully');
 
         return redirect()->route('admin.portfolio.index')
             ->with('success', 'تم تحديث العمل بنجاح');
@@ -1179,7 +1486,7 @@ class AdminController extends Controller
     }
 
     /**
-     * عرض نموذج إضافة شهادة جديدة
+     * عرض نموذج إضافة تقييم جديد
      */
     public function createTestimonial()
     {
@@ -1187,7 +1494,7 @@ class AdminController extends Controller
     }
 
     /**
-     * حفظ بيانات الشهادة الجديدة
+     * حفظ بيانات التقييم الجديدة
      */
     public function storeTestimonial(Request $request)
     {
@@ -1220,11 +1527,11 @@ class AdminController extends Controller
         Testimonial::create($data);
 
         return redirect()->route('admin.testimonials.index')
-            ->with('success', 'تم إضافة الشهادة بنجاح');
+            ->with('success', 'تم إضافة التقييم بنجاح');
     }
 
     /**
-     * عرض نموذج تعديل الشهادة
+     * عرض نموذج تعديل التقييم
      */
     public function editTestimonial($id)
     {
@@ -1233,7 +1540,7 @@ class AdminController extends Controller
     }
 
     /**
-     * تحديث بيانات الشهادة
+     * تحديث بيانات التقييم
      */
     public function updateTestimonial(Request $request, $id)
     {
@@ -1272,11 +1579,11 @@ class AdminController extends Controller
         $testimonial->update($data);
 
         return redirect()->route('admin.testimonials.index')
-            ->with('success', 'تم تحديث الشهادة بنجاح');
+            ->with('success', 'تم تحديث التقييم بنجاح');
     }
 
     /**
-     * حذف الشهادة
+     * حذف التقييم
      */
     public function destroyTestimonial($id)
     {
@@ -1290,6 +1597,101 @@ class AdminController extends Controller
         $testimonial->delete();
 
         return redirect()->route('admin.testimonials.index')
-            ->with('success', 'تم حذف الشهادة بنجاح');
+            ->with('success', 'تم حذف التقييم بنجاح');
+    }
+
+    /**
+     * عرض الملف الشخصي للمشرف
+     */
+    public function profile()
+    {
+        $admin = Auth::guard('admin')->user();
+        return view('admin.profile.index', compact('admin'));
+    }
+
+    /**
+     * تحديث الملف الشخصي للمشرف
+     */
+    public function updateProfile(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:admins,email,' . $admin->id,
+            'phone' => 'nullable|string|max:20',
+            'bio' => 'nullable|string|max:1000',
+        ]);
+
+        $admin->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'bio' => $request->bio,
+        ]);
+
+        return redirect()->route('admin.profile')
+            ->with('success', 'تم تحديث الملف الشخصي بنجاح');
+    }
+
+    /**
+     * تحديث كلمة مرور المشرف
+     */
+    public function updatePassword(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
+        
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // التحقق من كلمة المرور الحالية
+        if (!Hash::check($request->current_password, $admin->password)) {
+            return redirect()->back()
+                ->withErrors(['current_password' => 'كلمة المرور الحالية غير صحيحة']);
+        }
+
+        $admin->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('admin.profile')
+            ->with('success', 'تم تحديث كلمة المرور بنجاح');
+    }
+
+    /**
+     * عرض إعدادات المشرف
+     */
+    public function adminSettings()
+    {
+        $admin = Auth::guard('admin')->user();
+        return view('admin.settings.index', compact('admin'));
+    }
+
+    /**
+     * تحديث إعدادات المشرف
+     */
+    public function updateAdminSettings(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
+        
+        $request->validate([
+            'language' => 'required|string|in:ar,en',
+            'timezone' => 'required|string',
+            'notifications' => 'nullable|array',
+            'notifications.email' => 'boolean',
+            'notifications.sms' => 'boolean',
+            'notifications.push' => 'boolean',
+        ]);
+
+        $admin->update([
+            'language' => $request->language,
+            'timezone' => $request->timezone,
+            'notification_settings' => json_encode($request->notifications ?? []),
+        ]);
+
+        return redirect()->route('admin.admin-settings')
+            ->with('success', 'تم تحديث الإعدادات بنجاح');
     }
 }

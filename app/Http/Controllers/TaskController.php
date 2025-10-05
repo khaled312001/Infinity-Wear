@@ -177,6 +177,45 @@ class TaskController extends Controller
     }
 
     /**
+     * Update task status
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $task = Task::findOrFail($id);
+        
+        $request->validate([
+            'status' => 'required|in:pending,in_progress,completed,cancelled',
+            'note' => 'nullable|string|max:500'
+        ]);
+
+        $oldStatus = $task->status;
+        $task->update([
+            'status' => $request->status,
+            'started_at' => $request->status === 'in_progress' && !$task->started_at ? now() : $task->started_at,
+            'completed_at' => $request->status === 'completed' ? now() : null,
+        ]);
+
+        // إضافة تعليق إذا تم توفير ملاحظة
+        if ($request->note) {
+            $user = Auth::guard('admin')->user();
+            $task->addComment("تحديث الحالة من '{$oldStatus}' إلى '{$request->status}': " . $request->note, $user->id, $user->name);
+        }
+
+        // تحديد نوع الطلب (AJAX أو عادي)
+        $isAjax = $request->ajax() || $request->wantsJson();
+        
+        if ($isAjax) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تم تحديث حالة المهمة بنجاح',
+                'task' => $task
+            ]);
+        } else {
+            return redirect()->back()->with('success', 'تم تحديث حالة المهمة بنجاح');
+        }
+    }
+
+    /**
      * تحديث موضع المهمة (للسحب والإفلات)
      */
     public function updatePosition(Request $request)

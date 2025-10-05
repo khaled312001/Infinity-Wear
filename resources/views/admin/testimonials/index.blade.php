@@ -1,8 +1,8 @@
 @extends('layouts.dashboard')
 
-@section('title', 'إدارة الشهادات')
+@section('title', 'إدارة التقييمات')
 @section('dashboard-title', 'لوحة الإدارة')
-@section('page-title', 'إدارة الشهادات')
+@section('page-title', 'إدارة التقييمات')
 @section('page-subtitle', 'عرض وإدارة جميع شهادات العملاء')
 @section('profile-route', '#')
 @section('settings-route', '#')
@@ -14,7 +14,7 @@
 @section('page-actions')
     <a href="{{ route('admin.testimonials.create') }}" class="btn btn-primary">
         <i class="fas fa-plus me-2"></i>
-        إضافة شهادة جديدة
+        إضافة تقييم جديد
     </a>
 @endsection
 
@@ -24,10 +24,10 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
                     <i class="fas fa-quote-left me-2 text-primary"></i>
-                    جميع الشهادات
+                    جميع التقييمات
                 </h5>
                 <div class="d-flex gap-2">
-                    <input type="text" class="form-control form-control-sm" placeholder="البحث في الشهادات..." id="searchInput">
+                    <input type="text" class="form-control form-control-sm" placeholder="البحث في التقييمات..." id="searchInput">
                 </div>
             </div>
         </div>
@@ -106,7 +106,7 @@
                                         <form action="{{ route('admin.testimonials.destroy', $testimonial) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('هل أنت متأكد من حذف هذه الشهادة؟')">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('هل أنت متأكد من حذف هذه التقييم؟')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -126,10 +126,10 @@
                 <div class="text-center py-5">
                     <i class="fas fa-quote-left fa-4x text-muted mb-3"></i>
                     <h4 class="text-muted">لا توجد شهادات حتى الآن</h4>
-                    <p class="text-muted mb-4">ابدأ بإضافة شهادة جديدة لعرض آراء عملائك</p>
+                    <p class="text-muted mb-4">ابدأ بإضافة تقييم جديد لعرض آراء عملائك</p>
                     <a href="{{ route('admin.testimonials.create') }}" class="btn btn-primary btn-lg">
                         <i class="fas fa-plus me-2"></i>
-                        إضافة شهادة جديدة
+                        إضافة تقييم جديد
                     </a>
                 </div>
             @endif
@@ -139,7 +139,7 @@
 
 @push('scripts')
 <script>
-    // البحث في الشهادات
+    // البحث في التقييمات
     document.getElementById('searchInput').addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
         const rows = document.querySelectorAll('tbody tr');

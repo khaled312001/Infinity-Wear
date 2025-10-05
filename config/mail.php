@@ -18,6 +18,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Email Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the admin email address that will receive
+    | notifications from the contact form and other system notifications.
+    |
+    */
+
+    'admin_email' => env('MAIL_ADMIN_EMAIL', 'admin@infinitywear.sa'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Mailer Configurations
     |--------------------------------------------------------------------------
     |

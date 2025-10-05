@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+use Illuminate\Support\Facades\Storage;
+@endphp
+
 @section('title', $portfolioItem->title . ' - Infinity Wear')
 
 @section('content')
@@ -8,14 +12,14 @@
     <div class="container">
         <div class="row mb-5">
             <div class="col-lg-8">
-                <img src="{{ asset('storage/' . $portfolioItem->image) }}" alt="{{ $portfolioItem->title }}" class="img-fluid rounded main-image mb-4">
+                <img src="{{ Storage::url($portfolioItem->image) }}" alt="{{ $portfolioItem->title }}" class="img-fluid rounded main-image mb-4">
                 
                 @if($portfolioItem->gallery && count($portfolioItem->gallery) > 0)
                 <div class="row g-2 gallery-images">
                     @foreach($portfolioItem->gallery as $image)
                     <div class="col-4 col-md-3">
-                        <a href="{{ asset('storage/' . $image) }}" data-lightbox="portfolio-gallery">
-                            <img src="{{ asset('storage/' . $image) }}" alt="{{ $portfolioItem->title }}" class="img-fluid rounded gallery-thumb">
+                        <a href="{{ Storage::url($image) }}" data-lightbox="portfolio-gallery">
+                            <img src="{{ Storage::url($image) }}" alt="{{ $portfolioItem->title }}" class="img-fluid rounded gallery-thumb">
                         </a>
                     </div>
                     @endforeach
@@ -49,7 +53,7 @@
                         </div>
                         
                         <div class="mt-4">
-                            <a href="{{ route('contact') }}" class="btn btn-primary w-100">طلب مشروع مماثل</a>
+                            <a href="{{ route('contact.index') }}" class="btn btn-primary w-100">طلب مشروع مماثل</a>
                         </div>
                     </div>
                 </div>
@@ -64,7 +68,7 @@
                 @foreach($relatedItems as $item)
                 <div class="col-md-4">
                     <div class="card portfolio-card h-100">
-                        <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" alt="{{ $item->title }}">
+                        <img src="{{ Storage::url($item->image) }}" class="card-img-top" alt="{{ $item->title }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $item->title }}</h5>
                             <p class="card-text text-muted">{{ $item->category }}</p>

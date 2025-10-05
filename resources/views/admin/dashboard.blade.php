@@ -1,518 +1,522 @@
 ﻿@extends('layouts.dashboard')
 
-@section('title', 'لوحة التحكم الإدارية')
-@section('dashboard-title', 'لوحة الإدارة')
-@section('page-title', 'مرحبا بك في لوحة التحكم')
-@section('page-subtitle', 'إدارة شاملة لموقع Infinity Wear - مؤسسة اللباس اللامحدود')
-@section('profile-route', '#')
-@section('settings-route', '#')
-
-{{-- Sidebar menu is now handled by the unified admin-sidebar partial --}}
-
-@section('page-actions')
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            <i class="fas fa-plus me-2"></i>
-            إضافة جديد
-        </button>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ route('admin.orders.create') }}"><i class="fas fa-shopping-cart me-2"></i>طلب جديد</a></li>
-        </ul>
-    </div>
-@endsection
+@section('title', 'لوحة التحكم - الأدمن')
+@section('dashboard-title', 'لوحة التحكم')
+@section('page-title', 'لوحة التحكم')
+@section('page-subtitle', 'مرحباً بك في لوحة تحكم الأدمن')
 
 @section('content')
-    <!-- الإحصائيات السريعة -->
-    <div class="row g-4 mb-4">
-        <div class="col-lg-3 col-md-6">
-            <div class="stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon primary me-3">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
+<!-- Welcome Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="welcome-card dashboard-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <h3 class="mb-0">{{ $stats['total_orders'] ?? 156 }}</h3>
-                        <p class="text-muted mb-0">إجمالي الطلبات</p>
-                        <small class="text-success">
-                            <i class="fas fa-arrow-up me-1"></i>
-                            +12% من الشهر الماضي
-                        </small>
+                        <h2 class="welcome-title mb-2">
+                            مرحباً بك، {{ Auth::guard('admin')->user()->name }}! 👋
+                        </h2>
+                        <p class="welcome-subtitle mb-0">
+                            إليك نظرة عامة على أداء النظام اليوم
+                        </p>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-            <div class="stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon success me-3">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div>
-                        <h3 class="mb-0">{{ $stats['total_users'] ?? 89 }}</h3>
-                        <p class="text-muted mb-0">العملاء المسجلين</p>
-                        <small class="text-success">
-                            <i class="fas fa-arrow-up me-1"></i>
-                            +8% من الشهر الماضي
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-            <div class="stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon warning me-3">
-                        <i class="fas fa-truck"></i>
-                    </div>
-                    <div>
-                        <h3 class="mb-0">{{ $stats['total_importers'] ?? 0 }}</h3>
-                        <p class="text-muted mb-0">المستوردين</p>
-                        <small class="text-success">
-                            <i class="fas fa-arrow-up me-1"></i>
-                            +{{ $stats['new_importers'] ?? 0 }} جديد هذا الشهر
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-            <div class="stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon danger me-3">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div>
-                        <h3 class="mb-0">{{ number_format($stats['monthly_revenue'] ?? 25000) }}</h3>
-                        <p class="text-muted mb-0">إيرادات الشهر (ر.س)</p>
-                        <small class="text-success">
-                            <i class="fas fa-arrow-up me-1"></i>
-                            +15% من الشهر الماضي
-                        </small>
+                    <div class="welcome-actions">
+                        <button class="btn btn-outline-primary me-2" onclick="refreshDashboard()">
+                            <i class="fas fa-sync-alt me-2"></i>تحديث
+                        </button>
+                        <button class="btn btn-primary" onclick="exportReport()">
+                            <i class="fas fa-download me-2"></i>تصدير تقرير
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="row g-4">
-        <!-- الإجراءات السريعة -->
-        <div class="col-lg-4">
-            <div class="dashboard-card">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">
-                        <i class="fas fa-bolt me-2 text-warning"></i>
-                        إجراءات سريعة
-                    </h5>
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card enhanced">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon primary">
+                    <i class="fas fa-users"></i>
                 </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="{{ route('admin.importers.index') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-truck me-2"></i>
-                            إدارة المستوردين
-                        </a>
-                        <a href="{{ route('admin.finance.dashboard') }}" class="btn btn-outline-warning">
-                            <i class="fas fa-chart-pie me-2"></i>
-                            تقرير مالي
-                        </a>
-                        <a href="{{ route('admin.settings') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-cog me-2"></i>
-                            إعدادات النظام
-                        </a>
+                <div class="ms-3 flex-grow-1">
+                    <h3 class="mb-0 stats-number">{{ number_format($stats['total_users']) }}</h3>
+                    <p class="mb-0 text-muted stats-label">إجمالي المستخدمين</p>
+                    <div class="stats-trend">
+                        <i class="fas fa-arrow-up text-success me-1"></i>
+                        <span class="text-success">+12%</span>
+                        <small class="text-muted">من الشهر الماضي</small>
                     </div>
                 </div>
             </div>
-
-            <!-- حالة النظام -->
-            <div class="dashboard-card mt-4">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">
-                        <i class="fas fa-server me-2 text-success"></i>
-                        حالة النظام
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
-                            <span>الموقع الإلكتروني</span>
-                        </div>
-                        <span class="badge bg-success">متصل</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
-                            <span>قاعدة البيانات</span>
-                        </div>
-                        <span class="badge bg-success">متصلة</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-warning rounded-circle me-2" style="width: 12px; height: 12px;"></div>
-                            <span>مساحة التخزين</span>
-                        </div>
-                        <span class="badge bg-warning">75%</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
-                            <span>النسخ الاحتياطي</span>
-                        </div>
-                        <span class="badge bg-success">محدث</span>
-                    </div>
-                </div>
+            <div class="stats-chart">
+                <canvas id="usersChart" width="60" height="30"></canvas>
             </div>
         </div>
+    </div>
 
-        <!-- الرسم البياني -->
-        <div class="col-lg-8">
-            <div class="dashboard-card">
-                <div class="card-header bg-white border-bottom">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="fas fa-chart-area me-2 text-primary"></i>
-                            نظرة عامة على الأداء
-                        </h5>
-                        <div class="btn-group" role="group">
-                            <button class="btn btn-sm btn-outline-primary active" onclick="updateChart('7days')">7 أيام</button>
-                            <button class="btn btn-sm btn-outline-primary" onclick="updateChart('30days')">30 يوم</button>
-                            <button class="btn btn-sm btn-outline-primary" onclick="updateChart('3months')">3 أشهر</button>
-                        </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card enhanced">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon info">
+                    <i class="fas fa-industry"></i>
+                </div>
+                <div class="ms-3 flex-grow-1">
+                    <h3 class="mb-0 stats-number">{{ number_format($stats['total_importers']) }}</h3>
+                    <p class="mb-0 text-muted stats-label">إجمالي المستوردين</p>
+                    <div class="stats-trend">
+                        <i class="fas fa-arrow-up text-success me-1"></i>
+                        <span class="text-success">+15%</span>
+                        <small class="text-muted">من الشهر الماضي</small>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="performanceChart"></canvas>
+            </div>
+            <div class="stats-chart">
+                <canvas id="importersChart" width="60" height="30"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card enhanced">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon success">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="ms-3 flex-grow-1">
+                    <h3 class="mb-0 stats-number">{{ number_format($stats['total_tasks']) }}</h3>
+                    <p class="mb-0 text-muted stats-label">إجمالي المهام</p>
+                    <div class="stats-trend">
+                        <i class="fas fa-arrow-down text-danger me-1"></i>
+                        <span class="text-danger">-5%</span>
+                        <small class="text-muted">من الشهر الماضي</small>
                     </div>
+                </div>
+            </div>
+            <div class="stats-chart">
+                <canvas id="tasksChart" width="60" height="30"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- إحصائيات المبيعات الشهرية -->
+    <div class="col-lg-8 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    إحصائيات المبيعات الشهرية
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="salesChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- النشاط الأخير والطلبات المعلقة -->
-    <div class="row g-4 mt-4">
-        <div class="col-lg-6">
-            <div class="dashboard-card">
-                <div class="card-header bg-white border-bottom">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="fas fa-history me-2 text-primary"></i>
-                            النشاط الأخير
-                        </h5>
-                        <a href="#" class="btn btn-sm btn-outline-primary">عرض الكل</a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="recent-activity">
-                        <div class="activity-item">
-                            <div class="d-flex align-items-center">
-                                <div class="stats-icon success me-3" style="width: 40px; height: 40px; font-size: 16px;">
-                                    <i class="fas fa-shopping-cart"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">طلب جديد #1234</h6>
-                                    <small class="text-muted">منذ 5 دقائق</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="activity-item">
-                            <div class="d-flex align-items-center">
-                                <div class="stats-icon info me-3" style="width: 40px; height: 40px; font-size: 16px;">
-                                    <i class="fas fa-truck"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">مستورد جديد مسجل</h6>
-                                    <small class="text-muted">منذ 15 دقيقة</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="activity-item">
-                            <div class="d-flex align-items-center">
-                                <div class="stats-icon warning me-3" style="width: 40px; height: 40px; font-size: 16px;">
-                                    <i class="fas fa-user-plus"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">عميل جديد مسجل</h6>
-                                    <small class="text-muted">منذ ساعة</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="activity-item">
-                            <div class="d-flex align-items-center">
-                                <div class="stats-icon danger me-3" style="width: 40px; height: 40px; font-size: 16px;">
-                                    <i class="fas fa-tasks"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1">مهام عاجلة تحتاج متابعة</h6>
-                                    <small class="text-muted">منذ 3 ساعات</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- إحصائيات المعاملات المالية -->
+    <div class="col-lg-4 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-money-bill-wave me-2"></i>
+                    المعاملات المالية
+                </h5>
             </div>
-        </div>
-
-        <div class="col-lg-6">
-            <div class="dashboard-card">
-                <div class="card-header bg-white border-bottom">
+            <div class="card-body">
+                <div class="mb-3">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="fas fa-clock me-2 text-warning"></i>
-                            الطلبات المعلقة
-                        </h5>
-                        <span class="badge bg-warning">{{ $stats['pending_orders'] ?? 5 }}</span>
+                        <span class="text-muted">إجمالي الإيرادات</span>
+                        <span class="fw-bold text-success">{{ number_format($financialStats['total_income']) }} ريال</span>
                     </div>
                 </div>
-                <div class="card-body">
-                    @if(isset($pendingOrders) && $pendingOrders->count() > 0)
-                        <div class="recent-activity">
-                            @foreach($pendingOrders as $order)
-                            <div class="activity-item">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <div class="stats-icon warning me-3" style="width: 40px; height: 40px; font-size: 16px;">
-                                            <i class="fas fa-clock"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-1">طلب #{{ $order->id }} - {{ $order->customer_name }}</h6>
-                                            <small class="text-muted">{{ $order->created_at->diffForHumans() }}</small>
-                                        </div>
-                                    </div>
-                                    <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-outline-primary">
-                                        عرض
-                                    </a>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-                            <h6 class="text-muted">لا توجد طلبات معلقة</h6>
-                            <p class="text-muted mb-0">جميع الطلبات تمت معالجتها</p>
-                        </div>
-                    @endif
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">إجمالي المصروفات</span>
+                        <span class="fw-bold text-danger">{{ number_format($financialStats['total_expenses']) }} ريال</span>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- روابط سريعة للأقسام -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="dashboard-card">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">
-                        <i class="fas fa-th-large me-2 text-primary"></i>
-                        إدارة الأقسام
-                    </h5>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">إيرادات الشهر الحالي</span>
+                        <span class="fw-bold text-success">{{ number_format($financialStats['monthly_income']) }} ريال</span>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-lg-2 col-md-4 col-6">
-                            <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3">
-                                <i class="fas fa-shopping-cart fa-2x mb-2"></i>
-                                <div class="fw-bold">الطلبات</div>
-                                <small class="text-muted">إدارة الطلبات</small>
-                            </a>
-                        </div>
-
-
-
-                        <div class="col-lg-2 col-md-4 col-6">
-                        <a href="{{ route('admin.finance.dashboard') }}" class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3">
-                            <i class="fas fa-chart-line fa-2x mb-2"></i>
-                            <div class="fw-bold">المالية</div>
-                            <small class="text-muted">الإيرادات والمصروفات</small>
-                        </a>
-                        </div>
-
-                        <div class="col-lg-2 col-md-4 col-6">
-                            <a href="{{ route('admin.importers.index') }}" class="btn btn-outline-secondary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3">
-                                <i class="fas fa-truck fa-2x mb-2"></i>
-                                <div class="fw-bold">المستوردين</div>
-                                <small class="text-muted">إدارة المستوردين</small>
-                            </a>
-                        </div>
-
-                        <div class="col-lg-2 col-md-4 col-6">
-                        <a href="{{ route('admin.settings') }}" class="btn btn-outline-dark w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3">
-                            <i class="fas fa-cog fa-2x mb-2"></i>
-                            <div class="fw-bold">الإعدادات</div>
-                            <small class="text-muted">إعدادات النظام</small>
-                        </a>
-                        </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">مصروفات الشهر الحالي</span>
+                        <span class="fw-bold text-danger">{{ number_format($financialStats['monthly_expenses']) }} ريال</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<div class="row">
+    <!-- الطلبات الحديثة -->
+    <div class="col-lg-6 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-shopping-cart me-2"></i>
+                    الطلبات الحديثة
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="recent-activity">
+                    @forelse($recentOrders as $order)
+                    <div class="activity-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">{{ $order->order_number }}</h6>
+                                <p class="mb-1 text-muted">{{ $order->customer_name }}</p>
+                                <small class="text-muted">{{ $order->created_at->diffForHumans() }}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-{{ $order->status === 'pending' ? 'warning' : ($order->status === 'completed' ? 'success' : 'info') }}">
+                                    {{ $order->status === 'pending' ? 'معلق' : ($order->status === 'completed' ? 'مكتمل' : 'قيد المعالجة') }}
+                                </span>
+                                <div class="mt-1">
+                                    <strong>{{ number_format($order->total) }} ريال</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                        <p>لا توجد طلبات حديثة</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- المهام المعلقة -->
+    <div class="col-lg-6 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-tasks me-2"></i>
+                    المهام المعلقة
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="recent-activity">
+                    @forelse($pendingTasks as $task)
+                    <div class="activity-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">{{ $task->title }}</h6>
+                                <p class="mb-1 text-muted">{{ $task->description }}</p>
+                                <small class="text-muted">{{ $task->created_at->diffForHumans() }}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-{{ $task->priority === 'urgent' ? 'danger' : ($task->priority === 'high' ? 'warning' : 'info') }}">
+                                    {{ $task->priority === 'urgent' ? 'عاجل' : ($task->priority === 'high' ? 'عالي' : 'عادي') }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-tasks fa-3x mb-3"></i>
+                        <p>لا توجد مهام معلقة</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- المستوردين الجدد -->
+    <div class="col-lg-6 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-industry me-2"></i>
+                    المستوردين الجدد
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="recent-activity">
+                    @forelse($newImporters as $importer)
+                    <div class="activity-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">{{ $importer->name }}</h6>
+                                <p class="mb-1 text-muted">{{ $importer->company_name }}</p>
+                                <small class="text-muted">{{ $importer->created_at->diffForHumans() }}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-success">جديد</span>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-industry fa-3x mb-3"></i>
+                        <p>لا توجد مستوردين جدد</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- النشاط الأخير -->
+    <div class="col-lg-6 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>
+                    النشاط الأخير
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="recent-activity">
+                    @forelse($recentActivity as $activity)
+                    <div class="activity-item">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <i class="fas {{ $activity['icon'] }} text-{{ $activity['color'] }}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ $activity['title'] }}</h6>
+                                <p class="mb-1 text-muted">{{ $activity['description'] }}</p>
+                                <small class="text-muted">{{ $activity['time']->diffForHumans() }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-history fa-3x mb-3"></i>
+                        <p>لا يوجد نشاط حديث</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
-    <script>
-        // رسم بياني للأداء
-        const ctx = document.getElementById('performanceChart').getContext('2d');
-        let performanceChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'],
-                datasets: [
-                    {
-                        label: 'الطلبات',
-                        data: [12, 19, 3, 5, 2, 3, 9],
-                        borderColor: '#1e3a8a',
-                        backgroundColor: 'rgba(30, 58, 138, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'المستوردين',
-                        data: [2, 3, 20, 5, 1, 4, 6],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'العملاء الجدد',
-                        data: [3, 10, 13, 15, 22, 30, 25],
-                        borderColor: '#f59e0b',
-                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            font: {
-                                family: 'Cairo'
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
-                        }
+<script>
+// رسم بياني للمبيعات الشهرية
+const salesCtx = document.getElementById('salesChart').getContext('2d');
+const monthlySalesData = [
+    @if(isset($monthlySales))
+        @foreach($monthlySales as $sale)
+            {{ $sale->total ?? 0 }},
+        @endforeach
+    @else
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    @endif
+];
+
+const salesChart = new Chart(salesCtx, {
+    type: 'line',
+    data: {
+        labels: [
+            'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+            'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+        ],
+        datasets: [{
+            label: 'المبيعات (ريال)',
+            data: monthlySalesData,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return value.toLocaleString() + ' ريال';
                     }
                 }
             }
-        });
-
-        // تحديث الرسم البياني
-        function updateChart(period) {
-            // إزالة الفئة النشطة من جميع الأزرار
-            document.querySelectorAll('.btn-group .btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // إضافة الفئة النشطة للزر المضغوط
-            event.target.classList.add('active');
-            
-            // بيانات مختلفة للفترات المختلفة
-            let newData;
-            switch(period) {
-                case '7days':
-                    newData = {
-                        labels: ['الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'],
-                        datasets: [
-                            {
-                                ...performanceChart.data.datasets[0],
-                                data: [12, 19, 3, 5, 2, 3, 9]
-                            },
-                            {
-                                ...performanceChart.data.datasets[1],
-                                data: [2, 3, 20, 5, 1, 4, 6]
-                            },
-                            {
-                                ...performanceChart.data.datasets[2],
-                                data: [3, 10, 13, 15, 22, 30, 25]
-                            }
-                        ]
-                    };
-                    break;
-                case '30days':
-                    newData = {
-                        labels: ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'],
-                        datasets: [
-                            {
-                                ...performanceChart.data.datasets[0],
-                                data: [45, 52, 38, 61]
-                            },
-                            {
-                                ...performanceChart.data.datasets[1],
-                                data: [15, 23, 18, 28]
-                            },
-                            {
-                                ...performanceChart.data.datasets[2],
-                                data: [32, 45, 38, 52]
-                            }
-                        ]
-                    };
-                    break;
-                case '3months':
-                    newData = {
-                        labels: ['الشهر 1', 'الشهر 2', 'الشهر 3'],
-                        datasets: [
-                            {
-                                ...performanceChart.data.datasets[0],
-                                data: [156, 189, 234]
-                            },
-                            {
-                                ...performanceChart.data.datasets[1],
-                                data: [67, 89, 123]
-                            },
-                            {
-                                ...performanceChart.data.datasets[2],
-                                data: [234, 298, 367]
-                            }
-                        ]
-                    };
-                    break;
-            }
-            
-            performanceChart.data = newData;
-            performanceChart.update();
         }
+    }
+});
 
-        // تحديث الإحصائيات كل دقيقة (يمكن إضافة AJAX)
-        setInterval(function() {
-            console.log('تحديث الإحصائيات...');
-            // هنا يمكن إضافة استدعاء AJAX لتحديث الإحصائيات
-        }, 60000);
+// Mini charts for stats cards
+function createMiniChart(canvasId, data, color) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['', '', '', '', '', ''],
+            datasets: [{
+                data: data,
+                borderColor: color,
+                backgroundColor: color + '20',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 0
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: { display: false },
+                y: { display: false }
+            },
+            elements: {
+                point: { radius: 0 }
+            }
+        }
+    });
+}
 
-        // تأثيرات التفاعل للبطاقات
-        document.querySelectorAll('.stats-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-5px)';
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
-    </script>
+// Create mini charts
+createMiniChart('usersChart', [10, 15, 12, 18, 20, 25], '#3b82f6');
+createMiniChart('importersChart', [2, 4, 6, 8, 10, 12], '#3b82f6');
+createMiniChart('tasksChart', [20, 18, 15, 12, 10, 8], '#10b981');
+
+// Dashboard functions
+function refreshDashboard() {
+    const btn = event.target.closest('button');
+    const icon = btn.querySelector('i');
+    
+    // Add loading animation
+    icon.classList.add('fa-spin');
+    btn.disabled = true;
+    
+    // Simulate refresh
+    setTimeout(() => {
+        icon.classList.remove('fa-spin');
+        btn.disabled = false;
+        
+        // Show success message
+        showNotification('تم تحديث البيانات بنجاح', 'success');
+        
+        // Reload page
+        location.reload();
+    }, 2000);
+}
+
+function exportReport() {
+    const btn = event.target.closest('button');
+    const icon = btn.querySelector('i');
+    
+    // Add loading animation
+    icon.classList.add('fa-spin');
+    btn.disabled = true;
+    
+    // Simulate export
+    setTimeout(() => {
+        icon.classList.remove('fa-spin');
+        btn.disabled = false;
+        
+        // Show success message
+        showNotification('تم تصدير التقرير بنجاح', 'success');
+        
+        // Create and download file
+        const data = 'تقرير لوحة التحكم\nتاريخ: ' + new Date().toLocaleDateString('ar-SA');
+        const blob = new Blob([data], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'dashboard-report-' + new Date().toISOString().split('T')[0] + '.txt';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }, 1500);
+}
+
+function showNotification(message, type = 'info') {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'error' ? 'alert-danger' : 
+                      type === 'warning' ? 'alert-warning' : 'alert-info';
+    
+    const alertHtml = `
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                               type === 'error' ? 'exclamation-circle' : 
+                               type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', alertHtml);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        const alert = document.querySelector('.alert:last-of-type');
+        if (alert) {
+            alert.remove();
+        }
+    }, 5000);
+}
+
+// Animate numbers on page load
+function animateNumbers() {
+    const numbers = document.querySelectorAll('.stats-number');
+    numbers.forEach(number => {
+        const finalValue = parseInt(number.textContent.replace(/,/g, ''));
+        let currentValue = 0;
+        const increment = finalValue / 50;
+        
+        const timer = setInterval(() => {
+            currentValue += increment;
+            if (currentValue >= finalValue) {
+                currentValue = finalValue;
+                clearInterval(timer);
+            }
+            number.textContent = Math.floor(currentValue).toLocaleString();
+        }, 30);
+    });
+}
+
+// Initialize animations when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    animateNumbers();
+    
+    // Add entrance animations to cards
+    const cards = document.querySelectorAll('.stats-card, .dashboard-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
 @endpush

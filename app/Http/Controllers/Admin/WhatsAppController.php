@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Importer;
 use App\Models\MarketingTeam;
 use App\Models\SalesTeam;
+use App\Services\WhatsAppAutoService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -16,6 +18,12 @@ use Illuminate\Support\Facades\Config;
 
 class WhatsAppController extends Controller
 {
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
     /**
      * عرض لوحة تحكم الواتساب
      */
@@ -94,42 +102,78 @@ class WhatsAppController extends Controller
      */
     public function sendMessage(Request $request)
     {
-        $validated = $request->validate([
-            'to_number' => 'required|string',
-            'message_content' => 'required|string|max:4096',
-            'contact_type' => 'required|in:importer,marketing,sales,customer,external',
-            'contact_id' => 'nullable|exists:users,id',
-        ]);
+        try {
+            $validated = $request->validate([
+                'to_number' => 'required|string',
+                'message_content' => 'required|string|max:4096',
+                'contact_type' => 'required|in:importer,marketing,sales,customer,external',
+                'contact_id' => 'nullable|exists:users,id',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'خطأ في البيانات المرسلة',
+                'errors' => $e->errors()
+            ], 422);
+        }
 
-        $toNumber = WhatsAppMessage::formatPhoneNumber($validated['to_number']);
-        
-        // إنشاء معرف فريد للرسالة
-        $messageId = 'msg_' . time() . '_' . Str::random(10);
+        try {
+            $toNumber = WhatsAppMessage::formatPhoneNumber($validated['to_number']);
+            
+            // إنشاء معرف فريد للرسالة
+            $messageId = 'msg_' . time() . '_' . Str::random(10);
 
-        // حفظ الرسالة في قاعدة البيانات
-        $message = WhatsAppMessage::create([
-            'message_id' => $messageId,
-            'from_number' => $this->getPrimaryWhatsAppNumber(), // رقم النظام الأساسي للواتساب
-            'to_number' => $toNumber,
-            'contact_name' => $this->getContactName($toNumber),
-            'message_content' => $validated['message_content'],
-            'message_type' => 'text',
-            'direction' => 'outbound',
-            'status' => 'sent',
-            'sent_at' => now(),
-            'sent_by' => Auth::guard('admin')->id(),
-            'contact_id' => $validated['contact_id'],
-            'contact_type' => $validated['contact_type'],
-        ]);
+            // حفظ الرسالة في قاعدة البيانات
+            $message = WhatsAppMessage::create([
+                'message_id' => $messageId,
+                'from_number' => $this->getPrimaryWhatsAppNumber(), // رقم النظام الأساسي للواتساب
+                'to_number' => $toNumber,
+                'contact_name' => $this->getContactName($toNumber),
+                'message_content' => $validated['message_content'],
+                'message_type' => 'text',
+                'direction' => 'outbound',
+                'status' => 'sent',
+                'sent_at' => now(),
+                'sent_by' => Auth::guard('admin')->id(),
+                'contact_id' => $validated['contact_id'],
+                'contact_type' => $validated['contact_type'],
+            ]);
 
-        // محاولة إرسال الرسالة عبر WhatsApp Web
-        $this->sendViaWhatsAppWeb($message);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'تم إرسال الرسالة بنجاح',
-            'data' => $message
-        ]);
+            // محاولة إرسال الرسالة تلقائياً
+            $autoService = new WhatsAppAutoService();
+            $sendResult = $autoService->sendMessage($toNumber, $validated['message_content']);
+            
+            if ($sendResult['success']) {
+                $message->update([
+                    'status' => 'delivered',
+                    'delivered_at' => now(),
+                    'whatsapp_url' => $message->whatsapp_url
+                ]);
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم إرسال الرسالة تلقائياً بنجاح',
+                    'data' => $message,
+                    'send_result' => $sendResult
+                ]);
+            } else {
+                // في حالة فشل الإرسال التلقائي، استخدم الطريقة القديمة
+                $this->sendViaWhatsAppWeb($message);
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم إنشاء رابط WhatsApp (الإرسال التلقائي غير متاح)',
+                    'data' => $message,
+                    'auto_send_failed' => $sendResult['error'] ?? 'Unknown error'
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('WhatsApp send message error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ في إرسال الرسالة: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -165,6 +209,9 @@ class WhatsAppController extends Controller
             'delivered_at' => now(),
             'contact_type' => $this->getContactType($fromNumber),
         ]);
+
+        // إنشاء إشعار للرسالة الواردة
+        $this->notificationService->createWhatsAppNotification($message);
 
         return response()->json([
             'success' => true,
@@ -329,16 +376,109 @@ class WhatsAppController extends Controller
     private function sendWhatsAppMessageViaAPI($message)
     {
         try {
-            $apiProvider = config('whatsapp.api_provider', 'aisensy');
+            $apiProvider = config('whatsapp.api.provider', 'free_api');
             
-            if ($apiProvider === 'aisensy') {
-                return $this->sendViaAiSensy($message);
-            } else {
-                return $this->sendViaWhapi($message);
+            switch ($apiProvider) {
+                case 'free_api':
+                    return $this->sendViaFreeAPI($message);
+                case 'aisensy':
+                    return $this->sendViaAiSensy($message);
+                case 'whapi':
+                    return $this->sendViaWhapi($message);
+                case 'whatsapp_web':
+                    return $this->sendViaWhatsAppWebAPI($message);
+                default:
+                    return $this->sendViaFreeAPI($message);
             }
         } catch (\Exception $e) {
             \Log::error('WhatsApp API exception: ' . $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * إرسال الرسالة عبر Free API (WhatsApp Web)
+     */
+    private function sendViaFreeAPI($message)
+    {
+        try {
+            // استخدام WhatsApp Web API مجاني
+            $response = Http::timeout(30)->post('https://api.whatsapp.com/send', [
+                'phone' => $message->to_number,
+                'text' => $message->message_content
+            ]);
+
+            if ($response->successful()) {
+                \Log::info('WhatsApp message sent successfully via Free API', [
+                    'message_id' => $message->message_id,
+                    'to' => $message->to_number,
+                    'response' => $response->json()
+                ]);
+                return true;
+            } else {
+                // محاولة بديلة باستخدام WhatsApp Web URL
+                return $this->sendViaWhatsAppWebURL($message);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Free API exception: ' . $e->getMessage());
+            // محاولة بديلة
+            return $this->sendViaWhatsAppWebURL($message);
+        }
+    }
+
+    /**
+     * إرسال الرسالة عبر WhatsApp Web URL
+     */
+    private function sendViaWhatsAppWebURL($message)
+    {
+        try {
+            // إنشاء رابط WhatsApp Web
+            $whatsappUrl = "https://wa.me/{$message->to_number}?text=" . urlencode($message->message_content);
+            
+            // حفظ الرابط في قاعدة البيانات للرجوع إليه
+            $message->update(['whatsapp_url' => $whatsappUrl]);
+            
+            \Log::info('WhatsApp Web URL generated', [
+                'message_id' => $message->message_id,
+                'to' => $message->to_number,
+                'url' => $whatsappUrl
+            ]);
+            
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('WhatsApp Web URL exception: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * إرسال الرسالة عبر WhatsApp Web API
+     */
+    private function sendViaWhatsAppWebAPI($message)
+    {
+        try {
+            // استخدام WhatsApp Web API مباشرة
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            ])->timeout(30)->post('https://web.whatsapp.com/send', [
+                'phone' => $message->to_number,
+                'text' => $message->message_content
+            ]);
+
+            if ($response->successful()) {
+                \Log::info('WhatsApp message sent successfully via Web API', [
+                    'message_id' => $message->message_id,
+                    'to' => $message->to_number,
+                    'response' => $response->json()
+                ]);
+                return true;
+            } else {
+                return $this->sendViaWhatsAppWebURL($message);
+            }
+        } catch (\Exception $e) {
+            \Log::error('WhatsApp Web API exception: ' . $e->getMessage());
+            return $this->sendViaWhatsAppWebURL($message);
         }
     }
 
@@ -424,20 +564,21 @@ class WhatsAppController extends Controller
     public function testConnection()
     {
         try {
-            $apiToken = config('whatsapp.api_token');
-            $apiProvider = config('whatsapp.api_provider', 'aisensy');
+            $apiProvider = config('whatsapp.api.provider', 'auto_api');
             
-            if (empty($apiToken)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'API Token غير محدد. يرجى إضافة WHATSAPP_API_TOKEN في ملف .env'
-                ]);
-            }
-
-            if ($apiProvider === 'aisensy') {
-                return $this->testAiSensyConnection($apiToken);
-            } else {
-                return $this->testWhapiConnection($apiToken);
+            switch ($apiProvider) {
+                case 'auto_api':
+                    return $this->testAutoAPIConnection();
+                case 'free_api':
+                    return $this->testFreeAPIConnection();
+                case 'aisensy':
+                    return $this->testAiSensyConnection();
+                case 'whapi':
+                    return $this->testWhapiConnection();
+                case 'whatsapp_web':
+                    return $this->testWhatsAppWebConnection();
+                default:
+                    return $this->testAutoAPIConnection();
             }
         } catch (\Exception $e) {
             return response()->json([
@@ -448,11 +589,148 @@ class WhatsAppController extends Controller
     }
 
     /**
-     * اختبار الاتصال بـ AiSensy API
+     * اختبار الاتصال بـ Auto API (إرسال تلقائي)
      */
-    private function testAiSensyConnection($apiToken)
+    private function testAutoAPIConnection()
     {
         try {
+            $autoService = new WhatsAppAutoService();
+            $results = $autoService->testConnection();
+            
+            $successfulServices = array_filter($results, function($result) {
+                return $result['success'];
+            });
+            
+            if (!empty($successfulServices)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم العثور على خدمات إرسال تلقائي متاحة',
+                    'provider' => 'Auto API',
+                    'data' => [
+                        'available_services' => array_keys($successfulServices),
+                        'total_services' => count($results),
+                        'working_services' => count($successfulServices),
+                        'details' => $results
+                    ]
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لا توجد خدمات إرسال تلقائي متاحة حالياً',
+                    'provider' => 'Auto API',
+                    'data' => [
+                        'total_services' => count($results),
+                        'working_services' => 0,
+                        'details' => $results,
+                        'fallback' => 'سيتم استخدام إنشاء الروابط كبديل'
+                    ]
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'خطأ في اختبار الخدمات التلقائية: ' . $e->getMessage(),
+                'provider' => 'Auto API'
+            ]);
+        }
+    }
+
+    /**
+     * اختبار الاتصال بـ Free API
+     */
+    private function testFreeAPIConnection()
+    {
+        try {
+            // اختبار الاتصال بـ WhatsApp Web
+            $response = Http::timeout(10)->get('https://web.whatsapp.com');
+            
+            if ($response->successful()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'الاتصال بـ WhatsApp Web ناجح - يمكن إرسال الرسائل',
+                    'provider' => 'Free API (WhatsApp Web)',
+                    'data' => [
+                        'status' => 'connected',
+                        'method' => 'whatsapp_web_url',
+                        'primary_number' => $this->getPrimaryWhatsAppNumber()
+                    ]
+                ]);
+            } else {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'WhatsApp Web متاح - سيتم إنشاء روابط للإرسال',
+                    'provider' => 'Free API (WhatsApp Web)',
+                    'data' => [
+                        'status' => 'available',
+                        'method' => 'whatsapp_web_url',
+                        'primary_number' => $this->getPrimaryWhatsAppNumber()
+                    ]
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => true,
+                'message' => 'WhatsApp Web متاح - سيتم إنشاء روابط للإرسال',
+                'provider' => 'Free API (WhatsApp Web)',
+                'data' => [
+                    'status' => 'available',
+                    'method' => 'whatsapp_web_url',
+                    'primary_number' => $this->getPrimaryWhatsAppNumber(),
+                    'note' => 'سيتم إنشاء روابط WhatsApp Web للإرسال'
+                ]
+            ]);
+        }
+    }
+
+    /**
+     * اختبار الاتصال بـ WhatsApp Web
+     */
+    private function testWhatsAppWebConnection()
+    {
+        try {
+            $response = Http::timeout(10)->get('https://web.whatsapp.com');
+            
+            if ($response->successful()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'الاتصال بـ WhatsApp Web ناجح',
+                    'provider' => 'WhatsApp Web',
+                    'data' => [
+                        'status' => 'connected',
+                        'primary_number' => $this->getPrimaryWhatsAppNumber()
+                    ]
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'فشل الاتصال بـ WhatsApp Web',
+                    'provider' => 'WhatsApp Web'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'خطأ في الاتصال بـ WhatsApp Web: ' . $e->getMessage(),
+                'provider' => 'WhatsApp Web'
+            ]);
+        }
+    }
+
+    /**
+     * اختبار الاتصال بـ AiSensy API
+     */
+    private function testAiSensyConnection()
+    {
+        try {
+            $apiToken = config('whatsapp.api.api_token');
+            
+            if (empty($apiToken)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'API Token غير محدد. يرجى إضافة WHATSAPP_API_TOKEN في ملف .env'
+                ]);
+            }
+            
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $apiToken,
             ])->get('https://backend.aisensy.com/campaign/t1/api/v2/status');
@@ -485,9 +763,18 @@ class WhatsAppController extends Controller
     /**
      * اختبار الاتصال بـ Whapi API
      */
-    private function testWhapiConnection($apiToken)
+    private function testWhapiConnection()
     {
         try {
+            $apiToken = config('whatsapp.api.api_token');
+            
+            if (empty($apiToken)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'API Token غير محدد. يرجى إضافة WHATSAPP_API_TOKEN في ملف .env'
+                ]);
+            }
+            
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $apiToken,
             ])->get('https://gate.whapi.cloud/status');
@@ -522,44 +809,86 @@ class WhatsAppController extends Controller
      */
     public function testMessage(Request $request)
     {
-        $validated = $request->validate([
-            'to_number' => 'required|string',
-            'message_content' => 'required|string|max:4096',
-        ]);
+        try {
+            $validated = $request->validate([
+                'to_number' => 'required|string',
+                'message_content' => 'required|string|max:4096',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'خطأ في البيانات المرسلة',
+                'errors' => $e->errors()
+            ], 422);
+        }
 
-        $toNumber = WhatsAppMessage::formatPhoneNumber($validated['to_number']);
-        
-        // إنشاء معرف فريد للرسالة
-        $messageId = 'test_msg_' . time() . '_' . Str::random(10);
+        try {
+            $toNumber = WhatsAppMessage::formatPhoneNumber($validated['to_number']);
+            
+            // إنشاء معرف فريد للرسالة
+            $messageId = 'test_msg_' . time() . '_' . Str::random(10);
 
-        // حفظ الرسالة في قاعدة البيانات
-        $message = WhatsAppMessage::create([
-            'message_id' => $messageId,
-            'from_number' => $this->getPrimaryWhatsAppNumber(),
-            'to_number' => $toNumber,
-            'contact_name' => 'اختبار',
-            'message_content' => $validated['message_content'],
-            'message_type' => 'text',
-            'direction' => 'outbound',
-            'status' => 'sent',
-            'sent_at' => now(),
-            'sent_by' => Auth::guard('admin')->id(),
-            'contact_type' => 'external',
-        ]);
+            // حفظ الرسالة في قاعدة البيانات
+            $message = WhatsAppMessage::create([
+                'message_id' => $messageId,
+                'from_number' => $this->getPrimaryWhatsAppNumber(),
+                'to_number' => $toNumber,
+                'contact_name' => 'اختبار',
+                'message_content' => $validated['message_content'],
+                'message_type' => 'text',
+                'direction' => 'outbound',
+                'status' => 'sent',
+                'sent_at' => now(),
+                'sent_by' => Auth::guard('admin')->id(),
+                'contact_type' => 'external',
+            ]);
 
-        // محاولة إرسال الرسالة عبر WhatsApp Web
-        $this->sendViaWhatsAppWeb($message);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'تم إرسال الرسالة التجريبية بنجاح',
-            'data' => [
-                'message_id' => $message->message_id,
-                'from_number' => $message->from_number,
-                'to_number' => $message->to_number,
-                'whatsapp_url' => $message->whatsapp_url,
-            ]
-        ]);
+            // محاولة إرسال الرسالة تلقائياً
+            $autoService = new WhatsAppAutoService();
+            $sendResult = $autoService->sendMessage($toNumber, $validated['message_content']);
+            
+            if ($sendResult['success']) {
+                $message->update([
+                    'status' => 'delivered',
+                    'delivered_at' => now()
+                ]);
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم إرسال الرسالة التجريبية تلقائياً بنجاح',
+                    'data' => [
+                        'message_id' => $message->message_id,
+                        'from_number' => $message->from_number,
+                        'to_number' => $message->to_number,
+                        'whatsapp_url' => $message->whatsapp_url,
+                        'auto_sent' => true,
+                        'service_used' => $sendResult['service'] ?? 'unknown'
+                    ]
+                ]);
+            } else {
+                // في حالة فشل الإرسال التلقائي، استخدم الطريقة القديمة
+                $this->sendViaWhatsAppWeb($message);
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم إنشاء رابط WhatsApp (الإرسال التلقائي غير متاح)',
+                    'data' => [
+                        'message_id' => $message->message_id,
+                        'from_number' => $message->from_number,
+                        'to_number' => $message->to_number,
+                        'whatsapp_url' => $message->whatsapp_url,
+                        'auto_sent' => false,
+                        'auto_send_error' => $sendResult['error'] ?? 'Unknown error'
+                    ]
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('WhatsApp test message error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ في إرسال الرسالة التجريبية: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

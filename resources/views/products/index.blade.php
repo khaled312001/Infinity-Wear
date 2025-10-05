@@ -141,7 +141,7 @@
     <div class="filter-section" data-aos="fade-up">
         <div class="row g-3">
             <div class="col-md-8">
-                <form method="GET" action="{{ route('products.index') }}">
+                <form method="GET" action="{{ route('portfolio.index') }}">
                     <div class="input-group">
                         <input type="text" class="form-control search-input" name="search" 
                                value="{{ request('search') }}" placeholder="ابحث عن منتج...">
@@ -152,7 +152,7 @@
                 </form>
             </div>
             <div class="col-md-4">
-                <form method="GET" action="{{ route('products.index') }}">
+                <form method="GET" action="{{ route('portfolio.index') }}">
                     <select name="category" class="form-select category-select" onchange="this.form.submit()">
                         <option value="">جميع الفئات</option>
                         @foreach($categories ?? [] as $category)
@@ -174,7 +174,7 @@
                 <div class="col-md-6 col-lg-4 col-xl-3" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
                     <div class="card product-card h-100">
                         <div class="product-image" 
-                             style="background-image: url('{{ $product->images ? json_decode($product->images)[0] : '/images/placeholder.jpg' }}')">
+                             style="background-image: url('{{ $product->images ? json_decode($product->images)[0] : asset('images/placeholder.jpg') }}')">
                             @if($product->is_featured)
                                 <div class="product-badge">
                                     <span class="badge bg-warning">مميز</span>
@@ -197,7 +197,7 @@
                             </div>
                             
                             <div class="d-grid gap-2">
-                                <a href="{{ route('products.show', $product) }}" class="btn btn-primary">
+                                <a href="{{ route('portfolio.show', $product) }}" class="btn btn-primary">
                                     <i class="fas fa-eye me-2"></i>
                                     عرض التفاصيل
                                 </a>

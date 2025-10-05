@@ -13,13 +13,30 @@ return [
     'primary_number' => env('WHATSAPP_PRIMARY_NUMBER', '966599476482'),
     
     'api' => [
-        'enabled' => env('WHATSAPP_API_ENABLED', false),
-        'provider' => env('WHATSAPP_API_PROVIDER', 'aisensy'), // aisensy or whapi
+        'enabled' => env('WHATSAPP_API_ENABLED', true),
+        'provider' => env('WHATSAPP_API_PROVIDER', 'auto_api'), // auto_api, free_api, aisensy, whapi, or whatsapp_web
         'api_token' => env('WHATSAPP_API_TOKEN'),
         'webhook_url' => env('WHATSAPP_WEBHOOK_URL'),
         'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
         'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
         'business_account_id' => env('WHATSAPP_BUSINESS_ACCOUNT_ID'),
+        
+        // Free API Configuration
+        'free_api' => [
+            'base_url' => env('WHATSAPP_FREE_API_URL', 'https://api.whatsapp.com'),
+            'session_id' => env('WHATSAPP_SESSION_ID', 'infinity_wear_session'),
+            'webhook_token' => env('WHATSAPP_WEBHOOK_TOKEN', 'infinity_webhook_token'),
+        ],
+        
+        // Auto API Configuration (إرسال تلقائي)
+        'auto_api' => [
+            'url' => env('WHATSAPP_AUTO_API_URL', 'https://api.whatsapp.com'),
+            'key' => env('WHATSAPP_AUTO_API_KEY'),
+            'session_id' => env('WHATSAPP_AUTO_SESSION_ID', 'infinity_wear_auto'),
+            'baileys_url' => env('WHATSAPP_BAILEYS_URL', 'http://localhost:3000'),
+            'business_url' => env('WHATSAPP_BUSINESS_URL', 'https://graph.facebook.com/v18.0'),
+            'alternative_url' => env('WHATSAPP_ALTERNATIVE_URL', 'https://api.whatsapp.com/send'),
+        ],
     ],
 
     'web' => [
