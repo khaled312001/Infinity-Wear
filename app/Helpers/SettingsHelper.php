@@ -35,7 +35,7 @@ class SettingsHelper
     {
         return [
             'email' => self::get('contact_email', 'info@infinitywear.com'),
-            'phone' => self::get('contact_phone', '+966 50 123 4567'),
+            'phone' => self::get('contact_phone', '+966500982394'),
             'whatsapp' => self::get('whatsapp_number'),
             'support_email' => self::get('support_email'),
             'address' => self::get('address', 'المملكة العربية السعودية، الرياض'),

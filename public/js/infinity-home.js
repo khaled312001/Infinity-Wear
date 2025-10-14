@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // دالة التهيئة الرئيسية
 function initializeInfinityWear() {
-    initLoadingScreen();
     initMobileMenu();
     initSmoothScrolling();
     initScrollAnimations();
@@ -23,27 +22,6 @@ function initializeInfinityWear() {
     initAdvancedAnimations();
 }
 
-// شريط التحميل
-function initLoadingScreen() {
-    const loadingScreen = document.getElementById('loading-screen');
-    const loadingSpinner = document.querySelector('.spinner-ring');
-
-    // إضافة انيميشن دوران للـ spinner
-    if (loadingSpinner) {
-        loadingSpinner.style.animation = 'spin 1s linear infinite';
-    }
-
-    // إخفاء شاشة التحميل بعد 2 ثانية
-    setTimeout(() => {
-        if (loadingScreen) {
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                loadingScreen.classList.add('hidden');
-            }, 500);
-        }
-    }, 2000);
-}
 
 // القائمة المحمولة
 function initMobileMenu() {
@@ -568,7 +546,7 @@ function initContactForm() {
                 data.userAgent = navigator.userAgent;
                 data.referrer = document.referrer;
 
-                fetch('/api/contact', {
+                fetch('/contact', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

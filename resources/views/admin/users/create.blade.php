@@ -128,7 +128,7 @@
                                                id="phone" 
                                                name="phone" 
                                                value="{{ old('phone') }}"
-                                               placeholder="+966 50 123 4567">
+                                               placeholder="+966500982394">
                                         @error('phone')
                                             <div class="invalid-feedback">
                                                 {{ $message }}

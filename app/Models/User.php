@@ -194,7 +194,7 @@ class User extends Authenticatable
             case 'employee':
                 return 'employee.dashboard';
             case 'importer':
-                return 'importer.dashboard';
+                return 'importers.dashboard';
             case 'customer':
                 return 'customer.dashboard';
             case 'sales':

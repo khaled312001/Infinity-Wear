@@ -10,6 +10,7 @@ class Notification extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'type',
         'title',
         'message',
@@ -29,6 +30,14 @@ class Notification extends Model
         'is_read' => 'boolean',
         'is_archived' => 'boolean',
     ];
+
+    /**
+     * العلاقة مع المستخدم
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Scope للحصول على الإشعارات غير المقروءة
@@ -79,9 +88,10 @@ class Notification extends Model
     /**
      * إنشاء إشعار جديد
      */
-    public static function createNotification($type, $title, $message, $icon = 'fas fa-bell', $color = 'primary', $data = null)
+    public static function createNotification($userId, $type, $title, $message, $icon = 'fas fa-bell', $color = 'primary', $data = null)
     {
         return self::create([
+            'user_id' => $userId,
             'type' => $type,
             'title' => $title,
             'message' => $message,
@@ -94,9 +104,10 @@ class Notification extends Model
     /**
      * إنشاء إشعار طلب جديد
      */
-    public static function createOrderNotification($order)
+    public static function createOrderNotification($userId, $order)
     {
         return self::createNotification(
+            $userId,
             'order',
             'طلب جديد',
             "تم استلام طلب جديد من {$order->customer_name} بقيمة {$order->total} ريال",
@@ -109,9 +120,10 @@ class Notification extends Model
     /**
      * إنشاء إشعار رسالة اتصال جديدة
      */
-    public static function createContactNotification($contact)
+    public static function createContactNotification($userId, $contact)
     {
         return self::createNotification(
+            $userId,
             'contact',
             'رسالة اتصال جديدة',
             "رسالة جديدة من {$contact->name} - {$contact->subject}",
@@ -132,9 +144,10 @@ class Notification extends Model
     /**
      * إنشاء إشعار رسالة واتساب جديدة
      */
-    public static function createWhatsAppNotification($message)
+    public static function createWhatsAppNotification($userId, $message)
     {
         return self::createNotification(
+            $userId,
             'whatsapp',
             'رسالة واتساب جديدة',
             "رسالة جديدة من {$message->contact_name} ({$message->from_number})",
@@ -147,9 +160,10 @@ class Notification extends Model
     /**
      * إنشاء إشعار طلب مستورد جديد
      */
-    public static function createImporterOrderNotification($importerOrder)
+    public static function createImporterOrderNotification($userId, $importerOrder)
     {
         return self::createNotification(
+            $userId,
             'importer_order',
             'طلب مستورد جديد',
             "طلب جديد من المستورد {$importerOrder->importer->company_name}",

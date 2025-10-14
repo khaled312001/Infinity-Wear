@@ -2,16 +2,6 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ===== LOADING SCREEN =====
-    const loadingScreen = document.getElementById('loading-screen');
-    if (loadingScreen) {
-        setTimeout(() => {
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-            }, 500);
-        }, 1000);
-    }
     
     // ===== SMOOTH SCROLLING =====
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -201,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showNotification('جاري إرسال الرسالة...', 'info');
             
             // Submit form via API
-            fetch('/api/contact', {
+            fetch('/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

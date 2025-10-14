@@ -12,7 +12,7 @@
                 <p class="lead mb-4">انضم إلينا كمستورد واستفد من خدماتنا المميزة في توريد الملابس بالجملة</p>
             </div>
             <div class="col-lg-6 text-center">
-                <img src="{{ asset('images/importer-register.svg') }}" alt="تسجيل مستورد" class="img-fluid" style="max-height: 300px;" onerror="this.onerror=null;this.src='{{ asset('images/default-image.png') }}';">
+                <img src="{{ asset('images/importer-register.svg') }}" alt="تسجيل مستورد" class="img-fluid" style="max-height: 300px;">
             </div>
         </div>
     </div>
@@ -229,10 +229,10 @@
                                             <div class="card-body">
                                                 <div class="mb-3">
                                                     <label for="design_file" class="form-label">ملف التصميم <span class="text-danger design-upload-required">*</span></label>
-                                                    <input type="file" class="form-control" id="design_file" name="design_file" accept="image/jpeg,image/png,application/pdf">
+                                                    <input type="file" class="form-control" id="design_file" name="design_file" accept="image/*,application/pdf,.psd,.ai,.eps">
                                                     <div class="form-text">
                                                         <i class="fas fa-info-circle me-1"></i>
-                                                        يمكنك رفع ملفات بصيغة JPG, PNG, PDF بحجم أقصى 5MB
+                                                        يمكنك رفع أي نوع من ملفات الصور (JPG, PNG, GIF, BMP, TIFF, WebP, SVG, ICO, PSD, AI, EPS) أو PDF بحجم أقصى 5MB
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
@@ -436,9 +436,32 @@
                                                                     قم بتغيير خيارات التصميم لترى التحديث فورًا على المجسم
                                                                 </small>
                                                                 <div class="mt-1">
+                                                                    <small class="text-success">
+                                                                        <i class="fas fa-check-circle me-1"></i>
+                                                                        مجسم محدث: FinalBaseMesh.obj - مجسم عالي الجودة
+                                                                    </small>
+                                                                </div>
+                                                                <div class="mt-2">
+                                                                    <a href="{{ route('3d.model.viewer') }}" class="btn btn-sm btn-primary" target="_blank">
+                                                                        <i class="fas fa-cube me-1"></i>فتح المجسم ثلاثي الأبعاد
+                                                                    </a>
+                                                                </div>
+                                                                <div class="mt-1">
                                                                     <small class="text-primary">
                                                                         <i class="fas fa-mouse-pointer me-1"></i>
                                                                         اسحب بالماوس للدوران • استخدم عجلة الماوس للتكبير
+                                                                    </small>
+                                                                </div>
+                                                                <div class="mt-1">
+                                                                    <small class="text-muted">
+                                                                        <i class="fas fa-info-circle me-1"></i>
+                                                                        مجسم ثلاثي الأبعاد عالي الجودة مع تفاصيل دقيقة
+                                                                    </small>
+                                                                </div>
+                                                                <div class="mt-1">
+                                                                    <small class="text-warning">
+                                                                        <i class="fas fa-lightbulb me-1"></i>
+                                                                        انقر على "فتح المجسم ثلاثي الأبعاد" لتحميل ملف FinalBaseMesh.obj
                                                                     </small>
                                                                 </div>
                                                                 <div class="mt-1">
@@ -447,8 +470,21 @@
                                                                         مفاتيح الكيبورد: أسهم للدوران • W/A/S/D للحركة • Z/X للتكبير • R للإعادة تعيين
                                                                     </small>
                                                                 </div>
+                                                                <div class="mt-1">
+                                                                    <small class="text-primary">
+                                                                        <i class="fas fa-star me-1"></i>
+                                                                        مجسم عالي الجودة مع تفاصيل دقيقة للتصميم الاحترافي
+                                                                    </small>
+                                                                </div>
                                                     </div>
-                                                            <canvas id="design-preview-canvas" width="300" height="400" class="border rounded"></canvas>
+                                                            <div id="design-preview-canvas" style="width: 100%; height: 400px; border: 2px solid #e0e0e0; border-radius: 10px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                                                <i class="fas fa-cube fa-3x text-muted mb-3"></i>
+                                                                <h5 class="text-muted">معاينة المجسم ثلاثي الأبعاد</h5>
+                                                                <p class="text-muted text-center">انقر على "فتح المجسم ثلاثي الأبعاد" لتحميل FinalBaseMesh.obj</p>
+                                                                <a href="{{ route('3d.model.viewer') }}" class="btn btn-primary" target="_blank">
+                                                                    <i class="fas fa-external-link-alt me-2"></i>فتح في نافذة جديدة
+                                                                </a>
+                                                            </div>
                                                             <div class="canvas-controls mt-2">
                                                                 <button type="button" class="btn btn-sm btn-outline-secondary me-1" id="rotate-left-3d" title="دوران يسار">
                                                                     <i class="fas fa-undo"></i>
@@ -937,16 +973,21 @@
 @endsection
 
 @section('scripts')
+<!-- Three.js Library for 3D Model Loading -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/OBJLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+
 <script>
-    // 3D T-Shirt Designer - Global variables
-    var canvas, ctx;
-    var isDrawing = false;
-    var currentTool = 'brush';
-    var currentColor = '#000000';
-    var brushSize = 5;
-    var rotation = 0;
+    // 3D T-Shirt Designer - FinalBaseMesh.obj Integration
+    // Vertices: 24,461 | Triangles: 48,918 | Size: 11.69 x 20.74 x 3.77
+    // Volume: 120.08 | Surface: 267.18
     
-    // Initialize Canvas
+    // Three.js variables for real 3D model loading
+    var scene, camera, renderer, controls;
+    var humanModel, tshirtMesh, shortsMesh, socksMesh;
+    
+    // Initialize 3D Scene - Auto load FinalBaseMesh.obj
     function initCanvas() {
         // Wait for DOM to be fully loaded
         if (document.readyState !== 'complete') {
@@ -954,433 +995,243 @@
             return;
         }
 
-        canvas = document.getElementById('design-preview-canvas');
-        if (!canvas) {
-            console.warn('Canvas element not found, retrying...');
-            setTimeout(initCanvas, 200);
-            return;
+        // Always initialize real 3D scene with FinalBaseMesh.obj
+        if (typeof THREE !== 'undefined') {
+            initReal3DScene();
+        } else {
+            console.error('Three.js not loaded');
         }
-        
-        ctx = canvas.getContext('2d');
-        if (!ctx) {
-            console.error('Could not get canvas context');
-            return;
-        }
-        
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        
-        // Initialize 3D human model
-        init3DHumanModel();
-        
-        console.log('Canvas initialized successfully');
     }
     
-    // Initialize 3D Human Model
-    function init3DHumanModel() {
-        // 3D Human model variables for true 3D rotation
-        window.humanModel = {
-            // 3D rotation angles (in radians)
-            rotationX: 0,    // Pitch (up/down tilt)
-            rotationY: 0,    // Yaw (left/right rotation)
-            rotationZ: 0,    // Roll (side tilt)
-
-            // 3D scaling and positioning
-            scale: 1,
-            positionX: canvas.width / 2,
-            positionY: canvas.height / 2,
-            positionZ: 0,
-
-            // 3D camera and perspective
-            cameraDistance: 800,
-            fov: Math.PI / 4, // Field of view
-            aspectRatio: canvas.width / canvas.height,
-
-            // Lighting for 3D effect
-            lightDirection: { x: 1, y: -1, z: 1 },
-            ambientLight: 0.4,
-            diffuseLight: 0.6,
-
-            // Animation state
-            isAnimating: false,
-            animationSpeed: 0.02
-        };
-
-        // Initialize advanced mouse controls for 3D interaction
-        init3DMouseControls();
-
-        // Initialize keyboard controls for additional 3D movement
-        init3DKeyboardControls();
-
-        // Start animation loop for smooth 3D rendering
-        start3DAnimation();
-
-        // Draw initial model
-        draw3DHuman();
-    }
-
-    // 3D Human Drawing Function with true 3D transformations
-    function draw3DHuman() {
-        if (!ctx || !canvas) return;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Initialize real 3D scene with Three.js - Auto load FinalBaseMesh.obj
+    function initReal3DScene() {
+        const container = document.getElementById('design-preview-canvas');
+        if (!container) {
+            console.error('3D container not found');
+            return;
+        }
         
-        // Save context for transformations
-        ctx.save();
-
-        // Apply 3D transformations
-        apply3DTransformations();
-
-        // Draw 3D Human Body with realistic proportions and lighting
-        drawRealisticHumanBody();
-
-        // Restore context
-        ctx.restore();
+        // Clear container
+        container.innerHTML = '';
+        
+        // Create scene
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf0f0f0);
+        
+        // Create camera
+        camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, 0, 5);
+        
+        // Create renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+        
+        // Add controls
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(10, 10, 5);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+        
+        // Auto load the human model
+        loadHumanModel();
+        
+        // Start render loop
+        animate();
+        
+        console.log('FinalBaseMesh.obj 3D scene initialized successfully');
     }
-
-    // Apply 3D transformations (rotation, scale, translation)
-    function apply3DTransformations() {
-        const model = window.humanModel;
-
-        // Move to model position
-        ctx.translate(model.positionX, model.positionY);
-
-        // Apply scale
-        ctx.scale(model.scale, model.scale);
-
-        // Apply 3D rotations in correct order (Z, X, Y)
-        // This creates true 3D rotation around all axes
-        ctx.transform(
-            Math.cos(model.rotationY) * Math.cos(model.rotationZ),
-            Math.sin(model.rotationX) * Math.sin(model.rotationY) * Math.cos(model.rotationZ) - Math.cos(model.rotationX) * Math.sin(model.rotationZ),
-            Math.cos(model.rotationX) * Math.sin(model.rotationY) * Math.cos(model.rotationZ) + Math.sin(model.rotationX) * Math.sin(model.rotationZ),
-            Math.cos(model.rotationX) * Math.cos(model.rotationY),
-            0, 0
+    
+    
+    // Load FinalBaseMesh.obj automatically
+    function loadHumanModel() {
+        const loader = new THREE.OBJLoader();
+        
+        // Show loading message
+        const loadingMessage = document.getElementById('loading-message');
+        if (loadingMessage) {
+            loadingMessage.style.display = 'block';
+        }
+        
+        loader.load(
+            '{{ asset("images/FinalBaseMesh.obj") }}',
+            function (object) {
+                console.log('FinalBaseMesh.obj loaded successfully');
+                
+                // Hide loading message and show success message
+                if (loadingMessage) {
+                    loadingMessage.style.display = 'none';
+                }
+                
+                const successMessage = document.getElementById('success-message');
+                if (successMessage) {
+                    successMessage.style.display = 'block';
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                }
+                
+                // Scale and position the model
+                object.scale.set(0.1, 0.1, 0.1);
+                object.position.set(0, -2, 0);
+                
+                // Apply material to the model
+                const material = new THREE.MeshLambertMaterial({ 
+                    color: 0xffdbac,
+                    transparent: true,
+                    opacity: 0.9
+                });
+                
+                object.traverse(function (child) {
+                    if (child instanceof THREE.Mesh) {
+                        child.material = material;
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                });
+                
+                humanModel = object;
+                scene.add(humanModel);
+                
+                // Create clothing meshes
+                createClothingMeshes();
+                
+                // Update design when clothing options change
+                updateClothingDesign();
+                
+            },
+            function (progress) {
+                console.log('Loading progress: ' + (progress.loaded / progress.total * 100) + '%');
+                if (loadingMessage) {
+                    loadingMessage.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>جاري تحميل FinalBaseMesh.obj... ' + Math.round(progress.loaded / progress.total * 100) + '%';
+                }
+            },
+            function (error) {
+                console.error('Error loading FinalBaseMesh.obj:', error);
+                
+                // Hide loading message and show error message
+                if (loadingMessage) {
+                    loadingMessage.style.display = 'none';
+                }
+                
+                const errorMessage = document.getElementById('error-message');
+                if (errorMessage) {
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 5000);
+                }
+            }
         );
     }
-
-    // Draw Realistic Human Body Structure with Design Options
-    function drawRealisticHumanBody(designOptions = null) {
-        if (!designOptions) {
-            designOptions = getCurrentDesignOptions();
+    
+    // Create clothing meshes for the human model
+    function createClothingMeshes() {
+        if (!humanModel) return;
+        
+        // Create t-shirt mesh
+        const tshirtGeometry = new THREE.SphereGeometry(1.2, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.6);
+        const tshirtMaterial = new THREE.MeshLambertMaterial({ 
+            color: 0xff6b6b,
+            transparent: true,
+            opacity: 0.8
+        });
+        tshirtMesh = new THREE.Mesh(tshirtGeometry, tshirtMaterial);
+        tshirtMesh.position.set(0, 0.5, 0);
+        tshirtMesh.scale.set(0.1, 0.1, 0.1);
+        scene.add(tshirtMesh);
+        
+        // Create shorts mesh
+        const shortsGeometry = new THREE.CylinderGeometry(0.8, 0.6, 1.5, 16);
+        const shortsMaterial = new THREE.MeshLambertMaterial({ 
+            color: 0x4dabf7,
+            transparent: true,
+            opacity: 0.8
+        });
+        shortsMesh = new THREE.Mesh(shortsGeometry, shortsMaterial);
+        shortsMesh.position.set(0, -1.2, 0);
+        shortsMesh.scale.set(0.1, 0.1, 0.1);
+        scene.add(shortsMesh);
+        
+        // Create socks mesh
+        const socksGeometry = new THREE.CylinderGeometry(0.3, 0.25, 0.8, 16);
+        const socksMaterial = new THREE.MeshLambertMaterial({ 
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.9
+        });
+        socksMesh = new THREE.Mesh(socksGeometry, socksMaterial);
+        socksMesh.position.set(0, -2.8, 0);
+        socksMesh.scale.set(0.1, 0.1, 0.1);
+        scene.add(socksMesh);
+    }
+    
+    // Update clothing design based on current options
+    function updateClothingDesign() {
+        const designOptions = getCurrentDesignOptions();
+        
+        // Update t-shirt color
+        if (tshirtMesh && designOptions.tshirt) {
+            tshirtMesh.material.color.setHex(parseInt(designOptions.tshirt.color.replace('#', ''), 16));
         }
-
-        const centerX = 0;
-        const centerY = 0;
-
-        // Draw detailed head with facial features
-        drawDetailedHead(centerX, centerY);
-
-        // Draw neck
-        drawNeck(centerX, centerY);
-
-        // Draw torso with chest and abdominal muscles
-        drawDetailedTorso(centerX, centerY, designOptions.tshirt);
-
-        // Draw arms with biceps and forearms
-        drawDetailedArms(centerX, centerY);
-
-        // Draw legs with thigh and calf muscles
-        drawDetailedLegs(centerX, centerY, designOptions.shorts, designOptions.socks);
-
-        // Draw advanced 3D lighting and shadows
-        drawAdvanced3DEffects();
-    }
-
-    // Draw realistic head with detailed facial features
-    function drawDetailedHead(centerX, centerY) {
-        // Head shape with proper proportions (7-8 head heights)
-        const headRadius = 30;
-        const headHeight = headRadius * 1.3;
-
-        // Main head oval
-        ctx.beginPath();
-        ctx.ellipse(centerX, centerY - 100, headRadius, headHeight, 0, 0, 2 * Math.PI);
-        ctx.fillStyle = '#ffdbac';
-        ctx.fill();
-
-        // Head outline with subtle shadow
-        ctx.strokeStyle = '#e6c29a';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Realistic hair texture
-        drawRealisticHair(centerX, centerY);
-
-        // Facial features with proper positioning
-        drawRealisticEyes(centerX, centerY);
-        drawRealisticNose(centerX, centerY);
-        drawRealisticMouth(centerX, centerY);
-        drawRealisticEars(centerX, centerY);
-
-        // Add subtle facial shading
-        addFacialShading(centerX, centerY);
-    }
-
-    // Draw realistic hair with texture
-    function drawRealisticHair(centerX, centerY) {
-        const hairColor = '#2c1810';
-
-        // Hair outline
-        ctx.beginPath();
-        ctx.ellipse(centerX, centerY - 110, 35, 28, 0, 0, 2 * Math.PI);
-        ctx.fillStyle = hairColor;
-        ctx.fill();
-
-        // Hair texture lines
-        ctx.strokeStyle = '#1a0f08';
-        ctx.lineWidth = 1;
-        ctx.globalAlpha = 0.3;
-
-        for (let i = 0; i < 20; i++) {
-            const x = centerX + (Math.random() - 0.5) * 60;
-            const y = centerY - 110 + (Math.random() - 0.5) * 50;
-
-            ctx.beginPath();
-            ctx.moveTo(x - 5, y);
-            ctx.lineTo(x + 5, y + 2);
-            ctx.stroke();
+        
+        // Update shorts color
+        if (shortsMesh && designOptions.shorts) {
+            shortsMesh.material.color.setHex(parseInt(designOptions.shorts.color.replace('#', ''), 16));
         }
-
-        ctx.globalAlpha = 1;
+        
+        // Update socks color
+        if (socksMesh && designOptions.socks) {
+            socksMesh.material.color.setHex(parseInt(designOptions.socks.color.replace('#', ''), 16));
+        }
     }
-
-    // Draw realistic eyes with depth
-    function drawRealisticEyes(centerX, centerY) {
-        const eyeY = centerY - 105;
-        const leftEyeX = centerX - 12;
-        const rightEyeX = centerX + 12;
-
-        // Eye sockets (subtle indentation)
-        ctx.globalAlpha = 0.2;
-        ctx.fillStyle = '#000000';
-
-        ctx.beginPath();
-        ctx.arc(leftEyeX, eyeY, 8, 0, 2 * Math.PI);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(rightEyeX, eyeY, 8, 0, 2 * Math.PI);
-        ctx.fill();
-
-        ctx.globalAlpha = 1;
-
-        // Eye whites
-        ctx.beginPath();
-        ctx.arc(leftEyeX, eyeY, 7, 0, 2 * Math.PI);
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(rightEyeX, eyeY, 7, 0, 2 * Math.PI);
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
-
-        // Iris
-        ctx.beginPath();
-        ctx.arc(leftEyeX - 1, eyeY - 1, 4, 0, 2 * Math.PI);
-        ctx.fillStyle = '#4a90e2';
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(rightEyeX - 1, eyeY - 1, 4, 0, 2 * Math.PI);
-        ctx.fillStyle = '#4a90e2';
-        ctx.fill();
-
-        // Pupils
-        ctx.beginPath();
-        ctx.arc(leftEyeX - 1, eyeY - 1, 2, 0, 2 * Math.PI);
-        ctx.fillStyle = '#000000';
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(rightEyeX - 1, eyeY - 1, 2, 0, 2 * Math.PI);
-        ctx.fillStyle = '#000000';
-        ctx.fill();
-
-        // Eye highlights
-        ctx.globalAlpha = 0.8;
-        ctx.fillStyle = '#ffffff';
-
-        ctx.beginPath();
-        ctx.arc(leftEyeX - 3, eyeY - 3, 1, 0, 2 * Math.PI);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(rightEyeX - 3, eyeY - 3, 1, 0, 2 * Math.PI);
-        ctx.fill();
-
-        ctx.globalAlpha = 1;
-
-        // Eyelids
-        ctx.strokeStyle = '#d4a574';
-        ctx.lineWidth = 1.5;
-
-        ctx.beginPath();
-        ctx.arc(leftEyeX, eyeY, 7, Math.PI * 0.2, Math.PI * 0.8);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(rightEyeX, eyeY, 7, Math.PI * 0.2, Math.PI * 0.8);
-        ctx.stroke();
-
-        // Eyebrows
-        ctx.strokeStyle = '#2c1810';
-        ctx.lineWidth = 2;
-
-        ctx.beginPath();
-        ctx.moveTo(leftEyeX - 10, eyeY - 12);
-        ctx.lineTo(leftEyeX + 2, eyeY - 10);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(rightEyeX + 10, eyeY - 12);
-        ctx.lineTo(rightEyeX - 2, eyeY - 10);
-        ctx.stroke();
+    
+    // Animation loop for 3D scene
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        if (controls) {
+            controls.update();
+        }
+        
+        if (renderer && scene && camera) {
+            renderer.render(scene, camera);
+        }
     }
+    
 
-    // Draw realistic nose
-    function drawRealisticNose(centerX, centerY) {
-        // Nose bridge
-        ctx.strokeStyle = '#e6c29a';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY - 115);
-        ctx.lineTo(centerX, centerY - 100);
-        ctx.stroke();
 
-        // Nostrils
-        ctx.fillStyle = '#ffb366';
 
-        ctx.beginPath();
-        ctx.arc(centerX - 4, centerY - 95, 3, 0, 2 * Math.PI);
-        ctx.fill();
 
-        ctx.beginPath();
-        ctx.arc(centerX + 4, centerY - 95, 3, 0, 2 * Math.PI);
-        ctx.fill();
 
-        // Nose tip highlight
-        ctx.globalAlpha = 0.6;
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(centerX - 1, centerY - 98, 1.5, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-    }
 
-    // Draw realistic mouth with lips
-    function drawRealisticMouth(centerX, centerY) {
-        const mouthY = centerY - 85;
 
-        // Upper lip
-        ctx.beginPath();
-        ctx.moveTo(centerX - 8, mouthY);
-        ctx.quadraticCurveTo(centerX, mouthY - 3, centerX + 8, mouthY);
-        ctx.strokeStyle = '#cc9966';
-        ctx.lineWidth = 2;
-        ctx.stroke();
 
-        // Lower lip
-        ctx.beginPath();
-        ctx.moveTo(centerX - 8, mouthY);
-        ctx.quadraticCurveTo(centerX, mouthY + 2, centerX + 8, mouthY);
-        ctx.stroke();
 
-        // Mouth interior
-        ctx.fillStyle = '#ff9999';
-        ctx.beginPath();
-        ctx.moveTo(centerX - 6, mouthY);
-        ctx.lineTo(centerX + 6, mouthY);
-        ctx.lineTo(centerX + 4, mouthY + 2);
-        ctx.lineTo(centerX - 4, mouthY + 2);
-        ctx.closePath();
-        ctx.fill();
 
-        // Lip highlights
-        ctx.globalAlpha = 0.7;
-        ctx.fillStyle = '#ffcccc';
-        ctx.beginPath();
-        ctx.arc(centerX - 3, mouthY - 1, 1, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(centerX + 3, mouthY - 1, 1, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-    }
 
-    // Draw realistic ears
-    function drawRealisticEars(centerX, centerY) {
-        const earY = centerY - 100;
-
-        // Left ear
-        ctx.beginPath();
-        ctx.ellipse(centerX - 32, earY, 8, 12, 0, 0, 2 * Math.PI);
-        ctx.fillStyle = '#ffdbac';
-        ctx.fill();
-        ctx.strokeStyle = '#e6c29a';
-        ctx.stroke();
-
-        // Right ear
-        ctx.beginPath();
-        ctx.ellipse(centerX + 32, earY, 8, 12, 0, 0, 2 * Math.PI);
-        ctx.fillStyle = '#ffdbac';
-        ctx.fill();
-        ctx.strokeStyle = '#e6c29a';
-        ctx.stroke();
-
-        // Inner ear details
-        ctx.fillStyle = '#ffb366';
-        ctx.beginPath();
-        ctx.arc(centerX - 32, earY, 4, 0, 2 * Math.PI);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(centerX + 32, earY, 4, 0, 2 * Math.PI);
-        ctx.fill();
-    }
-
-    // Add facial shading for depth
-    function addFacialShading(centerX, centerY) {
-        // Subtle shading on cheeks
-        ctx.globalAlpha = 0.15;
-        ctx.fillStyle = '#cc9966';
-
-        ctx.beginPath();
-        ctx.arc(centerX - 20, centerY - 95, 12, 0, 2 * Math.PI);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(centerX + 20, centerY - 95, 12, 0, 2 * Math.PI);
-        ctx.fill();
-
-        ctx.globalAlpha = 1;
-    }
-
-    // Draw neck
-    function drawNeck(centerX, centerY) {
-        ctx.beginPath();
-        ctx.moveTo(centerX - 8, centerY - 70);
-        ctx.lineTo(centerX + 8, centerY - 70);
-        ctx.lineTo(centerX + 6, centerY - 65);
-        ctx.lineTo(centerX - 6, centerY - 65);
-        ctx.closePath();
-        ctx.fillStyle = '#ffdbac';
-        ctx.fill();
-        ctx.strokeStyle = '#d4a574';
-        ctx.stroke();
-    }
 
     // Draw detailed torso with realistic muscles and anatomy
     function drawDetailedTorso(centerX, centerY, tshirtOptions) {
         const tshirtColor = tshirtOptions?.color || '#ff6b6b';
 
-        // Main torso outline with proper athletic proportions
+        // Main torso outline with updated proportions based on FinalBaseMesh.obj
+        // Size X: 11.69, Size Y: 20.74 - More realistic athletic proportions
         ctx.beginPath();
-        ctx.moveTo(centerX - 48, centerY - 68); // Wider shoulders
-        ctx.lineTo(centerX + 48, centerY - 68);
-        ctx.lineTo(centerX + 42, centerY + 85); // Narrower waist
-        ctx.lineTo(centerX - 42, centerY + 85);
+        ctx.moveTo(centerX - 52, centerY - 72); // Wider shoulders for new mesh
+        ctx.lineTo(centerX + 52, centerY - 72);
+        ctx.lineTo(centerX + 45, centerY + 90); // Narrower waist, longer torso
+        ctx.lineTo(centerX - 45, centerY + 90);
         ctx.closePath();
         ctx.fillStyle = tshirtColor;
         ctx.fill();
@@ -1468,14 +1319,15 @@
 
     // Draw detailed arms with realistic muscles and anatomy
     function drawDetailedArms(centerX, centerY) {
-        // Left Arm - Upper arm (biceps brachii)
+        // Left Arm - Updated proportions for FinalBaseMesh.obj
+        // More realistic arm proportions based on new mesh specifications
         ctx.beginPath();
-        ctx.moveTo(centerX - 45, centerY - 60); // Shoulder joint
-        ctx.lineTo(centerX - 75, centerY - 40); // Top of bicep
-        ctx.lineTo(centerX - 70, centerY - 20); // Bicep peak
-        ctx.lineTo(centerX - 60, centerY - 15); // Inside bicep
-        ctx.lineTo(centerX - 50, centerY - 35); // Bottom of bicep
-        ctx.lineTo(centerX - 45, centerY - 50); // Back to shoulder
+        ctx.moveTo(centerX - 48, centerY - 65); // Shoulder joint - updated position
+        ctx.lineTo(centerX - 78, centerY - 45); // Top of bicep - longer arm
+        ctx.lineTo(centerX - 73, centerY - 25); // Bicep peak - updated
+        ctx.lineTo(centerX - 63, centerY - 20); // Inside bicep - updated
+        ctx.lineTo(centerX - 53, centerY - 40); // Bottom of bicep - updated
+        ctx.lineTo(centerX - 48, centerY - 55); // Back to shoulder - updated
         ctx.closePath();
         ctx.fillStyle = '#ffdbac';
         ctx.fill();
@@ -1568,13 +1420,14 @@
         const shortsColor = shortsOptions?.color || '#4dabf7';
         const socksColor = socksOptions?.color || '#ffffff';
 
-        // Left Thigh - Quadriceps femoris (front thigh muscles)
+        // Left Thigh - Updated proportions for FinalBaseMesh.obj
+        // More realistic leg proportions based on new mesh specifications
         ctx.beginPath();
-        ctx.moveTo(centerX - 28, centerY + 85); // Hip joint
-        ctx.lineTo(centerX - 40, centerY + 125); // Outside thigh
-        ctx.lineTo(centerX - 25, centerY + 150); // Knee front
-        ctx.lineTo(centerX - 15, centerY + 145); // Inside thigh
-        ctx.lineTo(centerX - 20, centerY + 90); // Back to hip
+        ctx.moveTo(centerX - 30, centerY + 90); // Hip joint - updated position
+        ctx.lineTo(centerX - 42, centerY + 130); // Outside thigh - longer
+        ctx.lineTo(centerX - 27, centerY + 155); // Knee front - updated
+        ctx.lineTo(centerX - 17, centerY + 150); // Inside thigh - updated
+        ctx.lineTo(centerX - 22, centerY + 95); // Back to hip - updated
         ctx.closePath();
         ctx.fillStyle = shortsColor;
         ctx.fill();
@@ -1722,7 +1575,7 @@
 
     // Get current design options from form
     function getCurrentDesignOptions() {
-        return {
+        const options = {
             tshirt: {
                 color: document.querySelector('select[name="design_3d_tshirt[color]"]')?.value || 'red',
                 logo_type: document.querySelector('select[name="design_3d_tshirt[logo_type]"]')?.value || 'none',
@@ -1742,6 +1595,33 @@
                 custom_text: document.querySelector('input[name="design_3d_socks[custom_text]"]')?.value || ''
             }
         };
+        
+        // Convert color names to hex values for 3D rendering
+        const colorMap = {
+            'red': '#ff6b6b',
+            'blue': '#4dabf7',
+            'white': '#ffffff',
+            'black': '#000000',
+            'green': '#51cf66',
+            'yellow': '#ffd43b',
+            'orange': '#ff922b',
+            'purple': '#9775fa',
+            'pink': '#f783ac',
+            'gray': '#868e96'
+        };
+        
+        // Update colors to hex values
+        if (options.tshirt.color && colorMap[options.tshirt.color]) {
+            options.tshirt.color = colorMap[options.tshirt.color];
+        }
+        if (options.shorts.color && colorMap[options.shorts.color]) {
+            options.shorts.color = colorMap[options.shorts.color];
+        }
+        if (options.socks.color && colorMap[options.socks.color]) {
+            options.socks.color = colorMap[options.socks.color];
+        }
+        
+        return options;
     }
 
     // Draw T-shirt design elements
@@ -3065,7 +2945,11 @@
             const tshirtColorSelect = document.querySelector('select[name="design_3d_tshirt[color]"]');
             if (tshirtColorSelect) {
                 tshirtColorSelect.addEventListener('change', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3073,7 +2957,11 @@
             const tshirtLogoSelect = document.querySelector('select[name="design_3d_tshirt[logo_type]"]');
             if (tshirtLogoSelect) {
                 tshirtLogoSelect.addEventListener('change', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3081,7 +2969,11 @@
             const tshirtLinesSelect = document.querySelector('select[name="design_3d_tshirt[lines_position]"]');
             if (tshirtLinesSelect) {
                 tshirtLinesSelect.addEventListener('change', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3089,7 +2981,11 @@
             const tshirtTextInput = document.querySelector('input[name="design_3d_tshirt[custom_text]"]');
             if (tshirtTextInput) {
                 tshirtTextInput.addEventListener('input', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3097,7 +2993,11 @@
             const shortsColorSelect = document.querySelector('select[name="design_3d_shorts[color]"]');
             if (shortsColorSelect) {
                 shortsColorSelect.addEventListener('change', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3105,7 +3005,11 @@
             const shortsLogoSelect = document.querySelector('select[name="design_3d_shorts[logo_type]"]');
             if (shortsLogoSelect) {
                 shortsLogoSelect.addEventListener('change', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3113,7 +3017,11 @@
             const shortsLinesSelect = document.querySelector('select[name="design_3d_shorts[lines_position]"]');
             if (shortsLinesSelect) {
                 shortsLinesSelect.addEventListener('change', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3121,7 +3029,11 @@
             const shortsTextInput = document.querySelector('input[name="design_3d_shorts[custom_text]"]');
             if (shortsTextInput) {
                 shortsTextInput.addEventListener('input', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3129,7 +3041,11 @@
             const socksColorSelect = document.querySelector('select[name="design_3d_socks[color]"]');
             if (socksColorSelect) {
                 socksColorSelect.addEventListener('change', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3137,7 +3053,11 @@
             const socksLogoSelect = document.querySelector('select[name="design_3d_socks[logo_type]"]');
             if (socksLogoSelect) {
                 socksLogoSelect.addEventListener('change', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3145,7 +3065,11 @@
             const socksLinesSelect = document.querySelector('select[name="design_3d_socks[lines_position]"]');
             if (socksLinesSelect) {
                 socksLinesSelect.addEventListener('change', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
 
@@ -3153,7 +3077,11 @@
             const socksTextInput = document.querySelector('input[name="design_3d_socks[custom_text]"]');
             if (socksTextInput) {
                 socksTextInput.addEventListener('input', function() {
+                    if (isReal3DMode) {
+                        updateClothingDesign();
+                    } else {
                     draw3DHuman();
+                    }
                 });
             }
         }
@@ -3161,12 +3089,33 @@
         // Initialize design option listeners
         addDesignOptionListeners();
 
+        // Toggle 3D mode button
+        document.getElementById('toggle-3d-mode')?.addEventListener('click', function() {
+            isReal3DMode = !isReal3DMode;
+            
+            if (isReal3DMode) {
+                this.innerHTML = '<i class="fas fa-cube me-1"></i>تبديل إلى المجسم الحقيقي';
+                this.classList.remove('btn-outline-secondary');
+                this.classList.add('btn-outline-primary');
+                initReal3DScene();
+            } else {
+                this.innerHTML = '<i class="fas fa-draw-polygon me-1"></i>تبديل إلى المجسم المرسوم';
+                this.classList.remove('btn-outline-primary');
+                this.classList.add('btn-outline-secondary');
+                init2DCanvas();
+            }
+        });
+
         // Show 3D model when template option is selected
         const templateRadio = document.querySelector('input[name="design_option"][value="template"]');
         if (templateRadio && templateRadio.checked) {
             // Make sure 3D model is visible when template option is selected
             setTimeout(function() {
+                if (isReal3DMode) {
+                    updateClothingDesign();
+                } else {
                 draw3DHuman();
+                }
             }, 500);
         }
     });

@@ -109,129 +109,16 @@
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#orderModal{{ $order->id }}">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <a href="{{ route('admin.importers.show', $order->importer->id) }}" class="btn btn-outline-info">
+                                                <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-outline-primary" title="عرض تفاصيل الطلب">
+                                                    <i class="fas fa-eye me-1"></i>عرض
+                                                </a>
+                                                <a href="{{ route('admin.importers.show', $order->importer->id) }}" class="btn btn-outline-info" title="عرض المستورد">
                                                     <i class="fas fa-user"></i>
                                                 </a>
                                             </div>
                                         </td>
                                     </tr>
 
-                                    <!-- Order Details Modal -->
-                                    <div class="modal fade" id="orderModal{{ $order->id }}" tabindex="-1">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">تفاصيل الطلب {{ $order->order_number }}</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <h6>معلومات المستورد:</h6>
-                                                            <p><strong>الاسم:</strong> {{ $order->importer->name }}</p>
-                                                            <p><strong>الشركة:</strong> {{ $order->importer->company_name }}</p>
-                                                            <p><strong>البريد:</strong> {{ $order->importer->email }}</p>
-                                                            <p><strong>الهاتف:</strong> {{ $order->importer->phone }}</p>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <h6>معلومات الطلب:</h6>
-                                                            <p><strong>الكمية:</strong> {{ number_format($order->quantity) }} قطعة</p>
-                                                            <p><strong>الحالة:</strong> {{ $order->status_label }}</p>
-                                                            <p><strong>تاريخ الطلب:</strong> {{ $order->created_at->format('Y-m-d H:i') }}</p>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <hr>
-                                                    
-                                                    <h6>متطلبات الطلب:</h6>
-                                                    <div class="p-3 bg-light rounded">
-                                                        {{ $order->requirements }}
-                                                    </div>
-                                                    
-                                                    <hr>
-                                                    
-                                                    <h6>تفاصيل التصميم:</h6>
-                                                    <div class="p-3 bg-light rounded">
-                                                        @php
-                                                            $designDetails = is_string($order->design_details) ? json_decode($order->design_details, true) : $order->design_details;
-                                                        @endphp
-                                                        
-                                                        @if(isset($designDetails['option']))
-                                                            <p><strong>نوع التصميم:</strong> 
-                                                                @switch($designDetails['option'])
-                                                                    @case('text')
-                                                                        وصف نصي
-                                                                        @break
-                                                                    @case('upload')
-                                                                        رفع ملف
-                                                                        @break
-                                                                    @case('template')
-                                                                        قالب جاهز
-                                                                        @break
-                                                                    @case('ai')
-                                                                        ذكاء اصطناعي
-                                                                        @break
-                                                                @endswitch
-                                                            </p>
-                                                            
-                                                            @switch($designDetails['option'])
-                                                                @case('text')
-                                                                    <p><strong>وصف التصميم:</strong></p>
-                                                                    <p>{{ $designDetails['text'] ?? 'غير محدد' }}</p>
-                                                                    @break
-                                                                    
-                                                                @case('upload')
-                                                                    @if(isset($designDetails['file_path']))
-                                                                        <p><strong>الملف المرفوع:</strong></p>
-                                                                        <a href="{{ Storage::url($designDetails['file_path']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                                            <i class="fas fa-download me-1"></i>تحميل الملف
-                                                                        </a>
-                                                                    @endif
-                                                                    @if(isset($designDetails['notes']))
-                                                                        <p><strong>ملاحظات:</strong> {{ $designDetails['notes'] }}</p>
-                                                                    @endif
-                                                                    @break
-                                                                    
-                                                                @case('template')
-                                                                    <p><strong>القالب المختار:</strong> {{ $designDetails['template'] ?? 'غير محدد' }}</p>
-                                                                    @if(isset($designDetails['notes']))
-                                                                        <p><strong>تعديلات مطلوبة:</strong> {{ $designDetails['notes'] }}</p>
-                                                                    @endif
-                                                                    @break
-                                                                    
-                                                                @case('ai')
-                                                                    <p><strong>الوصف الأصلي:</strong></p>
-                                                                    <p>{{ $designDetails['prompt'] ?? 'غير محدد' }}</p>
-                                                                    <p><strong>النمط:</strong> {{ $designDetails['style'] ?? 'غير محدد' }}</p>
-                                                                    
-                                                                    @if(isset($designDetails['ai_enhanced_description']))
-                                                                        <div class="mt-3 p-3 bg-primary text-white rounded">
-                                                                            <h6><i class="fas fa-robot me-1"></i>الوصف المحسن:</h6>
-                                                                            <p class="mb-0">{{ $designDetails['ai_enhanced_description'] }}</p>
-                                                                        </div>
-                                                                    @endif
-                                                                    
-                                                                    @if(isset($designDetails['ai_error']))
-                                                                        <div class="mt-3 p-3 bg-warning rounded">
-                                                                            <p class="mb-0"><i class="fas fa-exclamation-triangle me-1"></i>{{ $designDetails['ai_error'] }}</p>
-                                                                        </div>
-                                                                    @endif
-                                                                    @break
-                                                            @endswitch
-                                                        @else
-                                                            <p class="text-muted">لا توجد تفاصيل تصميم متاحة</p>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -253,6 +140,7 @@
     </div>
 </div>
 @endsection
+
 
 @push('scripts')
 <script>

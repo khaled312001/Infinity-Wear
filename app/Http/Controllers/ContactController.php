@@ -35,6 +35,7 @@ class ContactController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
+            'company' => 'nullable|string|max:255',
             'subject' => 'required|string|max:255',
             'message' => 'required|string|max:2000',
         ], [
@@ -47,6 +48,14 @@ class ContactController extends Controller
         ]);
 
         if ($validator->fails()) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'يرجى التحقق من البيانات المدخلة',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -58,9 +67,12 @@ class ContactController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'company' => $request->company,
                 'subject' => $request->subject,
                 'message' => $request->message,
-                'status' => 'new'
+                'status' => 'new',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent()
             ]);
 
             // إنشاء إشعار للرسالة الجديدة
@@ -69,9 +81,30 @@ class ContactController extends Controller
             // Send email notification to admin
             $this->sendAdminNotification($contact);
 
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.',
+                    'data' => [
+                        'id' => $contact->id,
+                        'timestamp' => now()->toISOString()
+                    ]
+                ], 201);
+            }
+
             return redirect()->back()->with('success', 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.');
 
         } catch (\Exception $e) {
+            Log::error('Contact form submission error: ' . $e->getMessage());
+            
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.',
+                    'error' => 'Server error'
+                ], 500);
+            }
+            
             return redirect()->back()
                 ->with('error', 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.')
                 ->withInput();

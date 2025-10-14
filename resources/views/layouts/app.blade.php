@@ -58,6 +58,8 @@
     <!-- Football Animation CSS -->
     <!-- WhatsApp Button CSS -->
     <link href="{{ asset('css/whatsapp-button.css') }}" rel="stylesheet">
+    <!-- Push Notifications CSS -->
+    <link href="{{ asset('css/push-notifications.css') }}" rel="stylesheet">
     
     @yield('styles')
 </head>
@@ -248,9 +250,11 @@
                         <h5 class="footer-section-heading">التنقل</h5>
                         <ul class="footer-nav-links">
                             <li><a href="{{ route('home') }}">الرئيسية</a></li>
-                            <li><a href="{{ route('services') }}">خدماتنا</a></li>
-                            <li><a href="{{ route('portfolio.index') }}">معرض أعمالنا</a></li>
                             <li><a href="{{ route('about') }}">من نحن</a></li>
+                            <li><a href="{{ route('services') }}">خدماتنا</a></li>
+                            <li><a href="{{ route('products.index') }}">منتجاتنا</a></li>
+                            <li><a href="{{ route('portfolio.index') }}">معرض أعمالنا</a></li>
+                            <li><a href="{{ route('testimonials.index') }}">آراء العملاء</a></li>
                             <li><a href="{{ route('contact.index') }}">اتصل بنا</a></li>
                         </ul>
                     </div>
@@ -260,11 +264,13 @@
                     <div class="footer-services-section">
                         <h5 class="footer-section-heading">خدماتنا</h5>
                         <ul class="footer-services-links">
-                            <li><a href="#">تصميم الأزياء</a></li>
-                            <li><a href="#">الزي الموحد للأكاديميات</a></li>
-                            <li><a href="#">ملابس الفرق الرياضية</a></li>
-                            <li><a href="#">الطباعة على الملابس</a></li>
-                            <li><a href="#">التصميم المخصص</a></li>
+                            <li><a href="{{ route('services') }}#fashion-design">تصميم الأزياء</a></li>
+                            <li><a href="{{ route('services') }}#academy-uniforms">الزي الموحد للأكاديميات</a></li>
+                            <li><a href="{{ route('services') }}#sports-teams">ملابس الفرق الرياضية</a></li>
+                            <li><a href="{{ route('services') }}#clothing-printing">الطباعة على الملابس</a></li>
+                            <li><a href="{{ route('services') }}#custom-design">التصميم المخصص</a></li>
+                            <li><a href="{{ route('services') }}#ai-design">التصميم بالذكاء الاصطناعي</a></li>
+                            <li><a href="{{ route('importers.form') }}">تسجيل كمستورد</a></li>
                         </ul>
                     </div>
                 </div>
@@ -297,6 +303,29 @@
                                     <span class="footer-contact-text">{{ \App\Models\Setting::get('business_hours') }}</span>
                                 </div>
                             @endif
+                        </div>
+                        
+                        <!-- Quick Links Section -->
+                        <div class="footer-quick-links mt-4">
+                            <h6 class="footer-section-heading mb-3">روابط سريعة</h6>
+                            <div class="quick-links-grid">
+                                <a href="{{ route('login') }}" class="quick-link">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    تسجيل الدخول
+                                </a>
+                                <a href="{{ route('register') }}" class="quick-link">
+                                    <i class="fas fa-user-plus"></i>
+                                    إنشاء حساب
+                                </a>
+                                <a href="{{ route('testimonials.create') }}" class="quick-link">
+                                    <i class="fas fa-star"></i>
+                                    إضافة تقييم
+                                </a>
+                                <a href="{{ route('contact.index') }}" class="quick-link">
+                                    <i class="fas fa-headset"></i>
+                                    الدعم الفني
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -510,8 +539,8 @@
     {!! json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
     </script>
     
-    <!-- WhatsApp Floating Button - Only show on non-admin pages -->
-    @if(!request()->is('admin*') && !request()->is('dashboard*') && !request()->is('customer*') && !request()->is('importer*') && !request()->is('employee*') && !request()->is('marketing*') && !request()->is('sales*'))
+    <!-- WhatsApp Floating Button - Only show on non-admin pages and if enabled -->
+    @if(!request()->is('admin*') && !request()->is('dashboard*') && !request()->is('customer*') && !request()->is('importer*') && !request()->is('employee*') && !request()->is('marketing*') && !request()->is('sales*') && \App\Models\Setting::get('whatsapp_floating_enabled', 1))
     <div id="whatsapp-float" class="whatsapp-float">
         <div class="whatsapp-button" onclick="openWhatsApp()">
             <i class="fab fa-whatsapp"></i>
@@ -527,9 +556,9 @@
     <!-- WhatsApp Button JavaScript -->
     <script>
         function openWhatsApp() {
-            // Replace with your actual WhatsApp number (with country code, no + sign)
-            const phoneNumber = '966501234567';
-            const message = encodeURIComponent('مرحباً، أريد الاستفسار عن خدماتكم في الملابس الرياضية والزي الموحد');
+            // Get WhatsApp number and message from settings
+            const phoneNumber = '{{ str_replace(["+", " ", "-"], "", \App\Models\Setting::get("whatsapp_number", "+966501234567")) }}';
+            const message = encodeURIComponent('{{ \App\Models\Setting::get("whatsapp_message", "مرحباً، أريد الاستفسار عن خدماتكم في الملابس الرياضية والزي الموحد") }}');
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
             window.open(whatsappUrl, '_blank');
         }
@@ -550,6 +579,40 @@
                     tooltip.style.visibility = 'hidden';
                 });
             }
+        });
+    </script>
+
+    <!-- Push Notifications JavaScript -->
+    <script src="{{ asset('js/push-notifications.js') }}"></script>
+    <script>
+        // Initialize push notifications for contact forms
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize push notification manager
+            if (window.PushNotificationManager) {
+                window.pushNotificationManager = new PushNotificationManager();
+            }
+
+            // Handle contact form submissions
+            const contactForms = document.querySelectorAll('form[id*="contact"], form[action*="contact"]');
+            
+            contactForms.forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    // Check if push notifications are available and user is subscribed
+                    if (window.pushNotificationManager) {
+                        // Try to subscribe to notifications if not already subscribed
+                        window.pushNotificationManager.getSubscriptionStatus().then(function(status) {
+                            if (!status.isSubscribed && status.canSubscribe) {
+                                // Auto-subscribe to notifications when user submits contact form
+                                window.pushNotificationManager.subscribe('admin').then(function(success) {
+                                    if (success) {
+                                        console.log('Auto-subscribed to push notifications');
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 </body>

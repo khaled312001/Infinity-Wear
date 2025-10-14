@@ -671,7 +671,7 @@
                         </div>
                         <div class="infinity-contact-details">
                             <h3>الهاتف</h3>
-                            <p>+966 50 123 4567<br>+966 11 234 5678</p>
+                            <p>+966500982394<br>+966 11 234 5678</p>
                             <a href="tel:+966501234567" class="contact-link">
                                 <i class="fas fa-phone"></i>
                                 اتصل بنا الآن
@@ -813,7 +813,7 @@
                                     <i class="fas fa-phone"></i>
                                     رقم الهاتف
                                 </label>
-                                <input type="tel" id="phone" name="phone" class="form-control" placeholder="+966 50 123 4567">
+                                <input type="tel" id="phone" name="phone" class="form-control" placeholder="+966500982394">
                                 <div class="input-focus-line"></div>
                             </div>
                             <div class="form-group">

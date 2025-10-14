@@ -1179,14 +1179,7 @@
 
                 <!-- Quick Actions -->
                 <div class="quick-actions d-none d-lg-flex">
-                    <a href="{{ route('admin.tasks.index') }}" class="btn btn-outline-warning btn-sm me-2" title="المهام المعلقة">
-                        <i class="fas fa-tasks me-1"></i>
-                        <span class="badge bg-warning position-absolute top-0 start-100 translate-middle rounded-pill" id="pendingTasksBadge">0</span>
-                    </a>
-                    <a href="{{ route('admin.importers.index') }}" class="btn btn-outline-info btn-sm me-2" title="المستوردين الجدد">
-                        <i class="fas fa-industry me-1"></i>
-                        <span class="badge bg-info position-absolute top-0 start-100 translate-middle rounded-pill" id="newImportersBadge">0</span>
-                    </a>
+                    <!-- تم حذف الأزرار -->
                 </div>
             </div>
 
@@ -1248,7 +1241,7 @@
                             </div>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route(Auth::user()->user_type . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
+                        <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route((Auth::user()->user_type === 'importer' ? 'importers' : Auth::user()->user_type) . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
                         @if(Auth::guard('admin')->check())
                             <li><a class="dropdown-item" href="{{ route('admin.admin-settings') }}"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
                         @endif
@@ -1287,7 +1280,7 @@
                 @endif
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route(Auth::user()->user_type . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
+                <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route((Auth::user()->user_type === 'importer' ? 'importers' : Auth::user()->user_type) . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
                 @if(Auth::guard('admin')->check())
                     <li><a class="dropdown-item" href="{{ route('admin.admin-settings') }}"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
                 @endif
@@ -1316,12 +1309,50 @@
                     <div class="p-3">
                         <h5 class="text-white mb-3">
                             <span class="infinity-logo me-2"></span>
-                            @yield('dashboard-title', 'لوحة التحكم')
+                            @if(Auth::guard('admin')->check())
+                                لوحة التحكم الإدارية
+                            @else
+                                @switch(Auth::user()->user_type)
+                                    @case('customer')
+                                        لوحة تحكم العميل
+                                        @break
+                                    @case('importer')
+                                        لوحة تحكم المستورد
+                                        @break
+                                    @case('marketing')
+                                        لوحة تحكم التسويق
+                                        @break
+                                    @case('sales')
+                                        لوحة تحكم المبيعات
+                                        @break
+                                    @default
+                                        لوحة التحكم
+                                @endswitch
+                            @endif
                         </h5>
                     </div>
                     
                     <nav class="nav flex-column px-3">
-                        @include('partials.admin-sidebar')
+                        @if(Auth::guard('admin')->check())
+                            @include('partials.admin-sidebar')
+                        @else
+                            @switch(Auth::user()->user_type)
+                                @case('customer')
+                                    @include('partials.customer-sidebar')
+                                    @break
+                                @case('importer')
+                                    @include('partials.importer-sidebar')
+                                    @break
+                                @case('marketing')
+                                    @include('partials.marketing-sidebar')
+                                    @break
+                                @case('sales')
+                                    @include('partials.sales-sidebar')
+                                    @break
+                                @default
+                                    @include('partials.admin-sidebar')
+                            @endswitch
+                        @endif
                     </nav>
                 </div>
             </div>

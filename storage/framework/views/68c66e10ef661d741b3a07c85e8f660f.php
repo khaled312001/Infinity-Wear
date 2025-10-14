@@ -58,6 +58,8 @@
     <!-- Football Animation CSS -->
     <!-- WhatsApp Button CSS -->
     <link href="<?php echo e(asset('css/whatsapp-button.css')); ?>" rel="stylesheet">
+    <!-- Push Notifications CSS -->
+    <link href="<?php echo e(asset('css/push-notifications.css')); ?>" rel="stylesheet">
     
     <?php echo $__env->yieldContent('styles'); ?>
 </head>
@@ -249,9 +251,11 @@
                         <h5 class="footer-section-heading">التنقل</h5>
                         <ul class="footer-nav-links">
                             <li><a href="<?php echo e(route('home')); ?>">الرئيسية</a></li>
-                            <li><a href="<?php echo e(route('services')); ?>">خدماتنا</a></li>
-                            <li><a href="<?php echo e(route('portfolio.index')); ?>">معرض أعمالنا</a></li>
                             <li><a href="<?php echo e(route('about')); ?>">من نحن</a></li>
+                            <li><a href="<?php echo e(route('services')); ?>">خدماتنا</a></li>
+                            <li><a href="<?php echo e(route('products.index')); ?>">منتجاتنا</a></li>
+                            <li><a href="<?php echo e(route('portfolio.index')); ?>">معرض أعمالنا</a></li>
+                            <li><a href="<?php echo e(route('testimonials.index')); ?>">آراء العملاء</a></li>
                             <li><a href="<?php echo e(route('contact.index')); ?>">اتصل بنا</a></li>
                         </ul>
                     </div>
@@ -261,11 +265,13 @@
                     <div class="footer-services-section">
                         <h5 class="footer-section-heading">خدماتنا</h5>
                         <ul class="footer-services-links">
-                            <li><a href="#">تصميم الأزياء</a></li>
-                            <li><a href="#">الزي الموحد للأكاديميات</a></li>
-                            <li><a href="#">ملابس الفرق الرياضية</a></li>
-                            <li><a href="#">الطباعة على الملابس</a></li>
-                            <li><a href="#">التصميم المخصص</a></li>
+                            <li><a href="<?php echo e(route('services')); ?>#fashion-design">تصميم الأزياء</a></li>
+                            <li><a href="<?php echo e(route('services')); ?>#academy-uniforms">الزي الموحد للأكاديميات</a></li>
+                            <li><a href="<?php echo e(route('services')); ?>#sports-teams">ملابس الفرق الرياضية</a></li>
+                            <li><a href="<?php echo e(route('services')); ?>#clothing-printing">الطباعة على الملابس</a></li>
+                            <li><a href="<?php echo e(route('services')); ?>#custom-design">التصميم المخصص</a></li>
+                            <li><a href="<?php echo e(route('services')); ?>#ai-design">التصميم بالذكاء الاصطناعي</a></li>
+                            <li><a href="<?php echo e(route('importers.form')); ?>">تسجيل كمستورد</a></li>
                         </ul>
                     </div>
                 </div>
@@ -298,6 +304,29 @@
                                     <span class="footer-contact-text"><?php echo e(\App\Models\Setting::get('business_hours')); ?></span>
                                 </div>
                             <?php endif; ?>
+                        </div>
+                        
+                        <!-- Quick Links Section -->
+                        <div class="footer-quick-links mt-4">
+                            <h6 class="footer-section-heading mb-3">روابط سريعة</h6>
+                            <div class="quick-links-grid">
+                                <a href="<?php echo e(route('login')); ?>" class="quick-link">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    تسجيل الدخول
+                                </a>
+                                <a href="<?php echo e(route('register')); ?>" class="quick-link">
+                                    <i class="fas fa-user-plus"></i>
+                                    إنشاء حساب
+                                </a>
+                                <a href="<?php echo e(route('testimonials.create')); ?>" class="quick-link">
+                                    <i class="fas fa-star"></i>
+                                    إضافة تقييم
+                                </a>
+                                <a href="<?php echo e(route('contact.index')); ?>" class="quick-link">
+                                    <i class="fas fa-headset"></i>
+                                    الدعم الفني
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -512,8 +541,8 @@
 
     </script>
     
-    <!-- WhatsApp Floating Button - Only show on non-admin pages -->
-    <?php if(!request()->is('admin*') && !request()->is('dashboard*') && !request()->is('customer*') && !request()->is('importer*') && !request()->is('employee*') && !request()->is('marketing*') && !request()->is('sales*')): ?>
+    <!-- WhatsApp Floating Button - Only show on non-admin pages and if enabled -->
+    <?php if(!request()->is('admin*') && !request()->is('dashboard*') && !request()->is('customer*') && !request()->is('importer*') && !request()->is('employee*') && !request()->is('marketing*') && !request()->is('sales*') && \App\Models\Setting::get('whatsapp_floating_enabled', 1)): ?>
     <div id="whatsapp-float" class="whatsapp-float">
         <div class="whatsapp-button" onclick="openWhatsApp()">
             <i class="fab fa-whatsapp"></i>
@@ -529,9 +558,9 @@
     <!-- WhatsApp Button JavaScript -->
     <script>
         function openWhatsApp() {
-            // Replace with your actual WhatsApp number (with country code, no + sign)
-            const phoneNumber = '966501234567';
-            const message = encodeURIComponent('مرحباً، أريد الاستفسار عن خدماتكم في الملابس الرياضية والزي الموحد');
+            // Get WhatsApp number and message from settings
+            const phoneNumber = '<?php echo e(str_replace(["+", " ", "-"], "", \App\Models\Setting::get("whatsapp_number", "+966501234567"))); ?>';
+            const message = encodeURIComponent('<?php echo e(\App\Models\Setting::get("whatsapp_message", "مرحباً، أريد الاستفسار عن خدماتكم في الملابس الرياضية والزي الموحد")); ?>');
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
             window.open(whatsappUrl, '_blank');
         }
@@ -552,6 +581,40 @@
                     tooltip.style.visibility = 'hidden';
                 });
             }
+        });
+    </script>
+
+    <!-- Push Notifications JavaScript -->
+    <script src="<?php echo e(asset('js/push-notifications.js')); ?>"></script>
+    <script>
+        // Initialize push notifications for contact forms
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize push notification manager
+            if (window.PushNotificationManager) {
+                window.pushNotificationManager = new PushNotificationManager();
+            }
+
+            // Handle contact form submissions
+            const contactForms = document.querySelectorAll('form[id*="contact"], form[action*="contact"]');
+            
+            contactForms.forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    // Check if push notifications are available and user is subscribed
+                    if (window.pushNotificationManager) {
+                        // Try to subscribe to notifications if not already subscribed
+                        window.pushNotificationManager.getSubscriptionStatus().then(function(status) {
+                            if (!status.isSubscribed && status.canSubscribe) {
+                                // Auto-subscribe to notifications when user submits contact form
+                                window.pushNotificationManager.subscribe('admin').then(function(success) {
+                                    if (success) {
+                                        console.log('Auto-subscribed to push notifications');
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 </body>

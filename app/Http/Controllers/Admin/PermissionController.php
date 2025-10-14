@@ -13,73 +13,104 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        // Define available permissions for each user type
+        // Define available permissions for each user type based on actual sidebar pages
         $permissions = [
             'admin' => [
+                // الرئيسية
                 'dashboard' => 'الوصول للوحة التحكم',
-                'users_management' => 'إدارة المستخدمين',
-                'admins_management' => 'إدارة الإداريين',
-                'importers_management' => 'إدارة المستوردين',
-                'sales_management' => 'إدارة فريق المبيعات',
-                'marketing_management' => 'إدارة فريق التسويق',
-                'orders_management' => 'إدارة الطلبات',
-                'categories_management' => 'إدارة الفئات',
-                'content_management' => 'إدارة المحتوى',
-                'portfolio_management' => 'إدارة معرض الأعمال',
-                'testimonials_management' => 'إدارة التقييمات',
-                'tasks_management' => 'إدارة المهام',
-                'finance_management' => 'إدارة النظام المالي',
-                'reports_access' => 'الوصول للتقارير',
-                'settings_access' => 'إعدادات النظام',
-                'permissions_management' => 'إدارة الصلاحيات',
-                'seo_management' => 'إدارة SEO',
-                'hero_slider_management' => 'إدارة السلايدر الرئيسي',
-                'home_sections_management' => 'إدارة أقسام الصفحة الرئيسية'
+                'notifications' => 'الإشعارات',
+                'contacts' => 'رسائل التواصل',
+                'whatsapp' => 'رسائل الواتساب',
+                
+                // إدارة المحتوى
+                'services_management' => 'إدارة الخدمات',
+                'portfolio_management' => 'معرض الأعمال',
+                'testimonials_management' => 'التقييمات',
+                
+                // إدارة المستوردين
+                'importers_management' => 'المستوردين',
+                'importers_orders' => 'طلبات المستوردين',
+                
+                // إدارة المهام
+                'tasks_management' => 'المهام',
+                
+                // إدارة المالية
+                'finance_dashboard' => 'لوحة المالية',
+                'finance_transactions' => 'المعاملات المالية',
+                'finance_reports' => 'التقارير المالية',
+                
+                // إدارة الفرق
+                'marketing_team_management' => 'فريق التسويق',
+                'sales_team_management' => 'فريق المبيعات',
+                
+                // إدارة العملاء
+                'customer_notes' => 'ملاحظات العملاء',
+                
+                // إدارة النظام
+                'reports' => 'التقارير',
+                'settings' => 'الإعدادات',
+                'permissions_management' => 'الأدوار والصلاحيات',
+                'admins_management' => 'إدارة المديرين',
+                'profile' => 'الملف الشخصي'
             ],
             'importer' => [
+                // الرئيسية
                 'dashboard' => 'الوصول للوحة التحكم',
-                'profile_management' => 'إدارة الملف الشخصي',
-                'orders_view' => 'عرض الطلبات',
-                'orders_create' => 'إنشاء طلبات جديدة',
-                'orders_edit' => 'تعديل الطلبات',
-                'orders_delete' => 'حذف الطلبات',
-                'custom_designs_create' => 'إنشاء تصميمات مخصصة',
-                'portfolio_view' => 'عرض معرض الأعمال',
-                'testimonials_create' => 'إنشاء شهادات',
-                'reports_view' => 'عرض التقارير الخاصة',
-                'notifications_access' => 'الوصول للإشعارات'
+                
+                // إدارة الطلبات
+                'orders' => 'طلباتي',
+                'tracking' => 'تتبع الشحنات',
+                'invoices' => 'الفواتير',
+                
+                // إدارة الحساب
+                'profile' => 'الملف الشخصي',
+                'payment_methods' => 'طرق الدفع',
+                'notifications' => 'الإشعارات',
+                
+                // الدعم والمساعدة
+                'help' => 'المساعدة',
+                'support' => 'الدعم الفني',
+                'contact' => 'التواصل معنا'
             ],
             'sales' => [
+                // الرئيسية
                 'dashboard' => 'الوصول للوحة التحكم',
-                'profile_management' => 'إدارة الملف الشخصي',
-                'orders_view' => 'عرض الطلبات',
-                'orders_create' => 'إنشاء طلبات جديدة',
-                'orders_edit' => 'تعديل الطلبات',
-                'customers_management' => 'إدارة العملاء',
-                'leads_management' => 'إدارة العملاء المحتملين',
-                'sales_reports' => 'تقارير المبيعات',
-                'targets_management' => 'إدارة الأهداف',
-                'portfolio_view' => 'عرض معرض الأعمال',
-                'notifications_access' => 'الوصول للإشعارات',
-                'tasks_view' => 'عرض المهام المخصصة',
-                'tasks_update' => 'تحديث حالة المهام'
+                
+                // إدارة الطلبات
+                'orders' => 'طلبات العملاء',
+                'importer_orders' => 'طلبات المستوردين',
+                
+                // إدارة المستوردين
+                'importers' => 'المستوردين',
+                
+                // إدارة المهام
+                'tasks' => 'المهام',
+                
+                // إدارة التواصل
+                'contacts' => 'جهات الاتصال',
+                
+                // التقارير
+                'reports' => 'التقارير',
+                
+                // إدارة الحساب
+                'profile' => 'الملف الشخصي'
             ],
             'marketing' => [
+                // الرئيسية
                 'dashboard' => 'الوصول للوحة التحكم',
-                'profile_management' => 'إدارة الملف الشخصي',
-                'content_creation' => 'إنشاء المحتوى',
-                'social_media_management' => 'إدارة وسائل التواصل الاجتماعي',
-                'campaigns_management' => 'إدارة الحملات التسويقية',
-                'leads_management' => 'إدارة العملاء المحتملين',
-                'marketing_reports' => 'تقارير التسويق',
-                'portfolio_management' => 'إدارة معرض الأعمال',
-                'testimonials_management' => 'إدارة التقييمات',
-                'seo_management' => 'إدارة SEO',
-                'hero_slider_management' => 'إدارة السلايدر الرئيسي',
-                'home_sections_management' => 'إدارة أقسام الصفحة الرئيسية',
-                'notifications_access' => 'الوصول للإشعارات',
-                'tasks_view' => 'عرض المهام المخصصة',
-                'tasks_update' => 'تحديث حالة المهام'
+                
+                // إدارة المحتوى
+                'portfolio' => 'معرض الأعمال',
+                'testimonials' => 'التقييمات',
+                
+                // إدارة المهام
+                'tasks' => 'المهام',
+                
+                // إدارة التواصل
+                'contacts' => 'جهات الاتصال',
+                
+                // إدارة الحساب
+                'profile' => 'الملف الشخصي'
             ]
         ];
 
@@ -164,33 +195,28 @@ class PermissionController extends Controller
             // Clear existing permissions
             DB::table('user_type_permissions')->truncate();
 
-            // Set default permissions
+            // Set default permissions based on actual sidebar pages
             $defaultPermissions = [
                 'admin' => [
-                    'dashboard', 'users_management', 'admins_management', 'importers_management',
-                    'sales_management', 'marketing_management', 'orders_management', 
-                    'categories_management', 'content_management', 'portfolio_management', 
-                    'testimonials_management', 'tasks_management', 'finance_management',
-                    'reports_access', 'settings_access', 'permissions_management', 
-                    'seo_management', 'hero_slider_management', 'home_sections_management'
+                    'dashboard', 'notifications', 'contacts', 'whatsapp',
+                    'services_management', 'portfolio_management', 'testimonials_management',
+                    'importers_management', 'importers_orders', 'tasks_management',
+                    'finance_dashboard', 'finance_transactions', 'finance_reports',
+                    'marketing_team_management', 'sales_team_management', 'customer_notes',
+                    'reports', 'settings', 'permissions_management', 'admins_management', 'profile'
                 ],
                 'importer' => [
-                    'dashboard', 'profile_management', 'orders_view', 'orders_create',
-                    'orders_edit', 'orders_delete', 'custom_designs_create', 'portfolio_view', 
-                    'testimonials_create', 'reports_view', 'notifications_access'
+                    'dashboard', 'orders', 'tracking', 'invoices',
+                    'profile', 'payment_methods', 'notifications',
+                    'help', 'support', 'contact'
                 ],
                 'sales' => [
-                    'dashboard', 'profile_management', 'orders_view', 'orders_create',
-                    'orders_edit', 'customers_management', 'leads_management', 'sales_reports',
-                    'targets_management', 'portfolio_view', 'notifications_access',
-                    'tasks_view', 'tasks_update'
+                    'dashboard', 'orders', 'importer_orders', 'importers',
+                    'tasks', 'contacts', 'reports', 'profile'
                 ],
                 'marketing' => [
-                    'dashboard', 'profile_management', 'content_creation', 'social_media_management',
-                    'campaigns_management', 'leads_management', 'marketing_reports',
-                    'portfolio_management', 'testimonials_management', 'seo_management',
-                    'hero_slider_management', 'home_sections_management', 'notifications_access',
-                    'tasks_view', 'tasks_update'
+                    'dashboard', 'portfolio', 'testimonials', 'tasks',
+                    'contacts', 'profile'
                 ]
             ];
 

@@ -10,6 +10,9 @@
         الإشعارات
         <span class="notification-badge" id="sidebarNotificationsBadge" style="display: none;">0</span>
     </a>
+    <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.contacts*') ? 'active' : '' }}">
+        <i class="fas fa-address-book me-2"></i>
+        رسائل التواصل    </a>
     <a href="{{ route('admin.whatsapp.index') }}" class="nav-link {{ request()->routeIs('admin.whatsapp*') ? 'active' : '' }}">
         <i class="fas fa-comments me-2"></i>
         رسائل الواتساب
@@ -88,15 +91,16 @@
         <i class="fas fa-handshake me-2"></i>
         فريق المبيعات
     </a>
+    <a href="{{ route('admin.email-marketing.index') }}" class="nav-link {{ request()->routeIs('admin.email-marketing*') ? 'active' : '' }}">
+        <i class="fas fa-envelope-open-text me-2"></i>
+        التسويق بالبريد الإلكتروني
+    </a>
 </div>
 
 <!-- إدارة العملاء -->
 <div class="nav-group">
     <div class="nav-group-title">إدارة العملاء</div>
-    <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.contacts*') ? 'active' : '' }}">
-        <i class="fas fa-address-book me-2"></i>
-        جهات الاتصال
-    </a>
+   
     <a href="{{ route('admin.customer-notes.index') }}" class="nav-link {{ request()->routeIs('admin.customer-notes*') ? 'active' : '' }}">
         <i class="fas fa-sticky-note me-2"></i>
         ملاحظات العملاء

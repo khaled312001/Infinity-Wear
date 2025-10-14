@@ -310,6 +310,7 @@
 
                 <form method="POST" action="{{ route('login') }}" id="loginForm">
                     @csrf
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     
                     <div class="form-group">
                         <label for="email">البريد الإلكتروني</label>
@@ -379,6 +380,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginBtn = document.getElementById('loginBtn');
     const btnText = document.getElementById('btnText');
     const loadingSpinner = document.getElementById('loadingSpinner');
+
+    // Refresh CSRF token on page load
+    function refreshCSRFToken() {
+        fetch('/test-login', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.csrf_token) {
+                document.querySelector('meta[name="csrf-token"]').setAttribute('content', data.csrf_token);
+                document.querySelector('input[name="_token"]').value = data.csrf_token;
+                console.log('CSRF token refreshed:', data.csrf_token);
+            }
+        })
+        .catch(error => {
+            console.log('Failed to refresh CSRF token:', error);
+        });
+    }
+
+    // Refresh token every 5 minutes
+    setInterval(refreshCSRFToken, 300000);
 
     // Handle form submission
     loginForm.addEventListener('submit', function(e) {

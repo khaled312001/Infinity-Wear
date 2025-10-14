@@ -4,7 +4,69 @@
 @section('page-title', 'تعديل الخدمة')
 @section('page-subtitle', 'تعديل بيانات الخدمة')
 
+
 @section('content')
+<script>
+// Define functions immediately to ensure they're available
+window.addFeature = function() {
+    const container = document.getElementById('featuresContainer');
+    if (!container) return;
+    
+    const div = document.createElement('div');
+    div.className = 'input-group mb-2';
+    div.innerHTML = `
+        <input type="text" class="form-control" name="features[]" placeholder="أدخل ميزة">
+        <button type="button" class="btn btn-outline-danger" data-action="remove-feature">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    container.appendChild(div);
+};
+
+window.removeFeature = function(button) {
+    if (button && button.parentElement) {
+        button.parentElement.remove();
+    }
+};
+
+// Also define as regular functions for backward compatibility
+function addFeature() {
+    window.addFeature();
+}
+
+function removeFeature(button) {
+    window.removeFeature(button);
+}
+
+console.log('Feature functions defined at page start');
+
+// Add event delegation for dynamic buttons
+document.addEventListener('click', function(e) {
+    if (e.target.closest('button[data-action="remove-feature"]')) {
+        e.preventDefault();
+        const button = e.target.closest('button[data-action="remove-feature"]');
+        removeFeature(button);
+    }
+    
+    if (e.target.closest('button[data-action="add-feature"]')) {
+        e.preventDefault();
+        addFeature();
+    }
+    
+    // Fallback for onclick attributes
+    if (e.target.closest('button[onclick*="removeFeature"]')) {
+        e.preventDefault();
+        const button = e.target.closest('button[onclick*="removeFeature"]');
+        removeFeature(button);
+    }
+    
+    if (e.target.closest('button[onclick*="addFeature"]')) {
+        e.preventDefault();
+        addFeature();
+    }
+});
+</script>
+
 <div class="row">
     <div class="col-12">
         <div class="card dashboard-card">
@@ -80,7 +142,7 @@
                                 @foreach($service->features as $feature)
                                     <div class="input-group mb-2">
                                         <input type="text" class="form-control" name="features[]" value="{{ $feature }}">
-                                        <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
+                                        <button type="button" class="btn btn-outline-danger" data-action="remove-feature" onclick="if(typeof removeFeature === 'function') removeFeature(this); else console.error('removeFeature not defined');">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -88,13 +150,13 @@
                             @else
                                 <div class="input-group mb-2">
                                     <input type="text" class="form-control" name="features[]" placeholder="أدخل ميزة">
-                                    <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
+                                    <button type="button" class="btn btn-outline-danger" data-action="remove-feature" onclick="if(typeof removeFeature === 'function') removeFeature(this); else console.error('removeFeature not defined');">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             @endif
                         </div>
-                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addFeature()">
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-action="add-feature" id="addFeatureBtn" onclick="if(typeof addFeature === 'function') addFeature(); else console.error('addFeature not defined');">
                             <i class="fas fa-plus me-1"></i> إضافة ميزة
                         </button>
                         @error('features')
@@ -164,8 +226,8 @@
 
 @section('scripts')
 <script>
-// Simple functions for feature management
-function addFeature() {
+// Ensure functions are available globally
+window.addFeature = function() {
     const container = document.getElementById('featuresContainer');
     if (!container) return;
     
@@ -178,12 +240,46 @@ function addFeature() {
         </button>
     `;
     container.appendChild(div);
-}
+};
 
-function removeFeature(button) {
+window.removeFeature = function(button) {
     if (button && button.parentElement) {
         button.parentElement.remove();
     }
+};
+
+// Also define as regular functions for backward compatibility
+function addFeature() {
+    window.addFeature();
 }
+
+function removeFeature(button) {
+    window.removeFeature(button);
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Services edit page loaded');
+    console.log('addFeature function available:', typeof window.addFeature);
+    console.log('removeFeature function available:', typeof window.removeFeature);
+    
+    // Ensure all remove buttons work
+    const removeButtons = document.querySelectorAll('button[onclick*="removeFeature"]');
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            removeFeature(this);
+        });
+    });
+    
+    // Ensure add button works
+    const addButton = document.getElementById('addFeatureBtn');
+    if (addButton) {
+        addButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            addFeature();
+        });
+    }
+});
 </script>
 @endsection

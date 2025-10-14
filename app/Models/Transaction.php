@@ -240,7 +240,7 @@ class Transaction extends Model
         return self::create([
             'type' => 'income',
             'category' => 'orders',
-            'amount' => $order->total_amount,
+            'amount' => $order->total,
             'description' => "إيراد من الطلب رقم #{$order->id}",
             'reference_id' => $order->id,
             'reference_type' => 'order',

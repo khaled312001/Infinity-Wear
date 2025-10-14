@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الإشعارات - Infinity Wear</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: right;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .instructions ol {
+            text-align: right;
+            padding-right: 20px;
+        }
+        .instructions li {
+            margin: 10px 0;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔔 اختبار الإشعارات</h1>
+        
+        <div id="status" class="status info">
+            جاري التحقق من دعم الإشعارات...
+        </div>
+
+        <div class="instructions">
+            <h3>خطوات التفعيل:</h3>
+            <ol>
+                <li>اضغط "طلب إذن الإشعارات"</li>
+                <li>وافق على الإذن في المتصفح</li>
+                <li>اضغط "إرسال إشعار تجريبي" (إشعار عادي)</li>
+                <li>اضغط "إرسال إشعار عبر Service Worker" (مع أزرار الإجراءات)</li>
+                <li>اضغط "الاشتراك في الإشعارات" (للإشعارات التلقائية)</li>
+                <li>ستظهر الإشعارات في شريط الإشعارات!</li>
+            </ol>
+        </div>
+
+        <button id="requestPermission" onclick="requestPermission()">
+            🔔 طلب إذن الإشعارات
+        </button>
+
+        <button id="sendTest" onclick="sendTestNotification()" disabled>
+            📤 إرسال إشعار تجريبي
+        </button>
+
+        <button id="sendServiceWorkerTest" onclick="sendServiceWorkerNotification()" disabled>
+            🔧 إرسال إشعار عبر Service Worker
+        </button>
+
+        <button id="subscribe" onclick="subscribeToNotifications()" disabled>
+            ✅ الاشتراك في الإشعارات
+        </button>
+    </div>
+
+    <script>
+        let permissionGranted = false;
+        let subscription = null;
+
+        // التحقق من دعم الإشعارات
+        window.addEventListener('load', function() {
+            if (!('Notification' in window)) {
+                updateStatus('المتصفح لا يدعم الإشعارات', 'error');
+                return;
+            }
+
+            if (!('serviceWorker' in navigator)) {
+                updateStatus('المتصفح لا يدعم Service Worker', 'error');
+                return;
+            }
+
+            if (!('PushManager' in window)) {
+                updateStatus('المتصفح لا يدعم Push API', 'error');
+                return;
+            }
+
+            checkPermission();
+        });
+
+        function updateStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        function checkPermission() {
+            const permission = Notification.permission;
+            
+            if (permission === 'granted') {
+                updateStatus('✅ الإشعارات مفعلة! يمكنك إرسال إشعار تجريبي', 'success');
+                document.getElementById('sendTest').disabled = false;
+                document.getElementById('sendServiceWorkerTest').disabled = false;
+                document.getElementById('subscribe').disabled = false;
+                permissionGranted = true;
+            } else if (permission === 'denied') {
+                updateStatus('❌ الإشعارات مرفوضة. يرجى السماح بالإشعارات في إعدادات المتصفح', 'error');
+            } else {
+                updateStatus('⚠️ الإشعارات غير مفعلة. اضغط "طلب إذن الإشعارات"', 'info');
+            }
+        }
+
+        async function requestPermission() {
+            try {
+                const permission = await Notification.requestPermission();
+                
+                if (permission === 'granted') {
+                    updateStatus('✅ تم تفعيل الإشعارات بنجاح!', 'success');
+                    document.getElementById('sendTest').disabled = false;
+                    document.getElementById('sendServiceWorkerTest').disabled = false;
+                    document.getElementById('subscribe').disabled = false;
+                    permissionGranted = true;
+                } else {
+                    updateStatus('❌ تم رفض الإشعارات', 'error');
+                }
+            } catch (error) {
+                updateStatus('❌ خطأ في طلب الإذن: ' + error.message, 'error');
+            }
+        }
+
+        function sendTestNotification() {
+            if (!permissionGranted) {
+                updateStatus('❌ يرجى تفعيل الإشعارات أولاً', 'error');
+                return;
+            }
+
+            const notification = new Notification('🔔 اختبار الإشعارات', {
+                body: 'هذا اختبار لنظام الإشعارات - ' + new Date().toLocaleString('ar-SA'),
+                icon: '/images/logo.png',
+                badge: '/images/logo.png',
+                tag: 'test-notification',
+                requireInteraction: true
+            });
+
+            notification.onclick = function() {
+                window.open('/admin/notifications', '_blank');
+                notification.close();
+            };
+
+            updateStatus('✅ تم إرسال إشعار تجريبي! تحقق من شريط الإشعارات', 'success');
+        }
+
+        async function sendServiceWorkerNotification() {
+            try {
+                // تسجيل Service Worker
+                const registration = await navigator.serviceWorker.register('/sw.js');
+                
+                // إرسال إشعار عبر Service Worker (يدعم actions)
+                await registration.showNotification('🔔 اختبار Service Worker', {
+                    body: 'هذا اختبار للإشعارات عبر Service Worker - ' + new Date().toLocaleString('ar-SA'),
+                    icon: '/images/logo.png',
+                    badge: '/images/logo.png',
+                    tag: 'sw-test-notification',
+                    requireInteraction: true,
+                    actions: [
+                        {
+                            action: 'view',
+                            title: 'عرض',
+                            icon: '/images/logo.png'
+                        },
+                        {
+                            action: 'close',
+                            title: 'إغلاق',
+                            icon: '/images/logo.png'
+                        }
+                    ],
+                    data: {
+                        url: '/admin/notifications'
+                    }
+                });
+
+                updateStatus('✅ تم إرسال إشعار عبر Service Worker! تحقق من شريط الإشعارات', 'success');
+                
+            } catch (error) {
+                console.error('Error sending Service Worker notification:', error);
+                updateStatus('❌ خطأ في إرسال الإشعار: ' + error.message, 'error');
+            }
+        }
+
+        async function subscribeToNotifications() {
+            try {
+                // تسجيل Service Worker
+                const registration = await navigator.serviceWorker.register('/sw.js');
+                console.log('Service Worker registered:', registration);
+
+                // الحصول على VAPID public key
+                const response = await fetch('/api/push/vapid-key');
+                const data = await response.json();
+                const publicKey = data.public_key;
+
+                // إنشاء subscription
+                subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(publicKey)
+                });
+
+                // إرسال subscription للخادم
+                const subscribeResponse = await fetch('/api/push/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    body: JSON.stringify({
+                        endpoint: subscription.endpoint,
+                        keys: {
+                            p256dh: arrayBufferToBase64(subscription.getKey('p256dh')),
+                            auth: arrayBufferToBase64(subscription.getKey('auth'))
+                        },
+                        user_type: 'admin'
+                    })
+                });
+
+                const result = await subscribeResponse.json();
+                
+                if (result.success) {
+                    updateStatus('✅ تم الاشتراك في الإشعارات بنجاح!', 'success');
+                } else {
+                    updateStatus('❌ فشل في الاشتراك: ' + result.message, 'error');
+                }
+
+            } catch (error) {
+                console.error('Error subscribing:', error);
+                updateStatus('❌ خطأ في الاشتراك: ' + error.message, 'error');
+            }
+        }
+
+        // Utility functions
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        function arrayBufferToBase64(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+    </script>
+</body>
+</html>

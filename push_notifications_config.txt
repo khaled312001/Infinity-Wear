@@ -1,0 +1,20 @@
+# إعدادات Push Notifications للـ .env
+
+# أضف هذه الأسطر إلى ملف .env الخاص بك:
+
+PUSH_NOTIFICATIONS_ENABLED=true
+PUSH_VAPID_SUBJECT=http://127.0.0.1:8000
+PUSH_VAPID_PUBLIC_KEY=BEl62iUYgUivxIkv69yViEuiBIa40HI0QY-DRhkJjlbHUsQ_8j0ONQZfpb3ywsxcrkAIzHFrLyxcc96S0XgL0B8
+PUSH_VAPID_PRIVATE_KEY=yT78whF0YOwu9kzfuUaUfAGRINBoc7ync0PTQmI7pK0
+PUSH_DEFAULT_ICON=/images/logo.png
+PUSH_DEFAULT_BADGE=/images/logo.png
+PUSH_DEFAULT_URL=/admin/notifications
+
+# بعد إضافة هذه الإعدادات:
+# 1. احفظ ملف .env
+# 2. شغل: php artisan config:clear
+# 3. افتح الموقع في Chrome
+# 4. انتقل إلى: http://127.0.0.1:8000/admin/notifications/push-notifications
+# 5. اضغط "تفعيل الإشعارات"
+# 6. وافق على الإذن في Chrome
+# 7. اضغط "إرسال إشعار تجريبي"

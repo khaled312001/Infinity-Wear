@@ -33,7 +33,12 @@ class SiteSettingsHelper
     public static function getLogoUrl()
     {
         $logo = self::get('site_logo');
-        return $logo ? asset('storage/' . $logo) : asset('images/logo.svg');
+        if ($logo) {
+            // إضافة timestamp لمنع الكاش في المتصفح
+            $timestamp = filemtime(storage_path('app/public/' . $logo));
+            return asset('storage/' . $logo) . '?v=' . $timestamp;
+        }
+        return asset('images/logo.svg');
     }
 
     /**
@@ -42,7 +47,12 @@ class SiteSettingsHelper
     public static function getFaviconUrl()
     {
         $favicon = self::get('site_favicon');
-        return $favicon ? asset('storage/' . $favicon) : asset('images/logo.png');
+        if ($favicon) {
+            // إضافة timestamp لمنع الكاش في المتصفح
+            $timestamp = filemtime(storage_path('app/public/' . $favicon));
+            return asset('storage/' . $favicon) . '?v=' . $timestamp;
+        }
+        return asset('images/logo.png');
     }
 
     /**
@@ -90,5 +100,7 @@ class SiteSettingsHelper
         foreach ($keys as $key) {
             Cache::forget("site_setting_{$key}");
         }
+        // مسح كاش Laravel العام أيضاً
+        Cache::flush();
     }
 }

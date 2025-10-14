@@ -7,9 +7,9 @@
     </a>
 </div>
 
-<!-- إدارة المحتوى التسويقي -->
+<!-- إدارة المحتوى -->
 <div class="nav-group">
-    <div class="nav-group-title">إدارة المحتوى التسويقي</div>
+    <div class="nav-group-title">إدارة المحتوى</div>
     <a href="{{ route('marketing.portfolio') }}" class="nav-link {{ request()->routeIs('marketing.portfolio*') ? 'active' : '' }}">
         <i class="fas fa-images me-2"></i>
         معرض الأعمال
@@ -25,37 +25,24 @@
     <div class="nav-group-title">إدارة المهام</div>
     <a href="{{ route('marketing.tasks') }}" class="nav-link {{ request()->routeIs('marketing.tasks*') ? 'active' : '' }}">
         <i class="fas fa-tasks me-2"></i>
-        المهام التسويقية
+        المهام
     </a>
 </div>
 
-<!-- التواصل والتفاعل -->
+<!-- إدارة التواصل -->
 <div class="nav-group">
-    <div class="nav-group-title">التواصل والتفاعل</div>
+    <div class="nav-group-title">إدارة التواصل</div>
     <a href="{{ route('marketing.contacts') }}" class="nav-link {{ request()->routeIs('marketing.contacts*') ? 'active' : '' }}">
         <i class="fas fa-address-book me-2"></i>
-        جهات الاتصال المشتركة
+        جهات الاتصال
     </a>
-    {{-- <a href="{{ route('marketing.whatsapp') }}" class="nav-link {{ request()->routeIs('marketing.whatsapp*') ? 'active' : '' }}">
-        <i class="fas fa-comments me-2"></i>
-        رسائل الواتساب
-    </a> --}}
 </div>
 
-<!-- التقارير والإحصائيات -->
-{{-- <div class="nav-group">
-    <div class="nav-group-title">التقارير والإحصائيات</div>
-    <a href="{{ route('marketing.reports') }}" class="nav-link {{ request()->routeIs('marketing.reports*') ? 'active' : '' }}">
-        <i class="fas fa-chart-bar me-2"></i>
-        تقارير التسويق
-    </a>
-</div> --}}
-
-<!-- الملف الشخصي -->
+<!-- إدارة الحساب -->
 <div class="nav-group">
-    <div class="nav-group-title">الحساب الشخصي</div>
+    <div class="nav-group-title">إدارة الحساب</div>
     <a href="{{ route('marketing.profile') }}" class="nav-link {{ request()->routeIs('marketing.profile*') ? 'active' : '' }}">
-        <i class="fas fa-user-cog me-2"></i>
+        <i class="fas fa-user me-2"></i>
         الملف الشخصي
     </a>
 </div>

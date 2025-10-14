@@ -293,7 +293,7 @@
                                                     </td>
                                                     <td>
                                                         <span class="fw-bold text-success">
-                                                            {{ number_format($order->total_amount ?? 0) }} ر.س
+                                                            {{ number_format($order->total ?? 0) }} ر.س
                                                         </span>
                                                     </td>
                                                     <td>

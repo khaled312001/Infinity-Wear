@@ -1,0 +1,306 @@
+/* Push Notifications Styles */
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px 20px;
+    min-width: 300px;
+    max-width: 400px;
+    z-index: 9999;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    border-left: 4px solid #007bff;
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+}
+
+.toast-notification.toast-success {
+    border-left-color: #28a745;
+}
+
+.toast-notification.toast-error {
+    border-left-color: #dc3545;
+}
+
+.toast-notification.toast-warning {
+    border-left-color: #ffc107;
+}
+
+.toast-notification.toast-info {
+    border-left-color: #17a2b8;
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toast-content i {
+    font-size: 18px;
+    color: #007bff;
+}
+
+.toast-success .toast-content i {
+    color: #28a745;
+}
+
+.toast-error .toast-content i {
+    color: #dc3545;
+}
+
+.toast-warning .toast-content i {
+    color: #ffc107;
+}
+
+.toast-info .toast-content i {
+    color: #17a2b8;
+}
+
+.toast-content span {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.4;
+}
+
+/* Push Notification Button Styles */
+.push-notification-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.push-notification-btn .notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Push Notification Settings */
+.push-settings-card {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+}
+
+.push-settings-card h6 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.push-settings-card .form-check {
+    margin-bottom: 10px;
+}
+
+.push-settings-card .form-check-label {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Device Type Badges */
+.device-badge {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.device-badge.mobile {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.device-badge.tablet {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.device-badge.desktop {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+/* Subscription Status */
+.subscription-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.subscription-status.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.subscription-status.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.subscription-status i {
+    font-size: 10px;
+}
+
+/* Push Notification Stats */
+.push-stats-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.push-stats-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.push-stats-card p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .toast-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        max-width: none;
+    }
+    
+    .push-settings-card {
+        padding: 15px;
+    }
+    
+    .push-stats-card {
+        padding: 15px;
+    }
+    
+    .push-stats-card h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .toast-notification {
+        background: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .toast-content span {
+        color: #e2e8f0;
+    }
+    
+    .push-settings-card {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .push-settings-card h6 {
+        color: #e2e8f0;
+    }
+    
+    .push-settings-card .form-check-label {
+        color: #a0aec0;
+    }
+}
+
+/* Animation for new notifications */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast-notification.slide-in {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.toast-notification.slide-out {
+    animation: slideOutRight 0.3s ease-in;
+}
+
+/* Loading state for buttons */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

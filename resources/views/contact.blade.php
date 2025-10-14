@@ -41,6 +41,23 @@
                 <div class="contact-form-header">
                     <h2 class="contact-form-title">أرسل لنا رسالة</h2>
                     <p class="contact-form-subtitle">سنرد عليك في أقرب وقت ممكن</p>
+                    
+                    <!-- Push Notifications Toggle -->
+                    <div class="push-notifications-toggle" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-bell" style="color: #007bff;"></i>
+                                <span style="font-size: 14px; color: #495057;">تفعيل الإشعارات للرد السريع</span>
+                            </div>
+                            <button type="button" id="enableNotifications" class="btn btn-sm btn-outline-primary" style="font-size: 12px;">
+                                <i class="fas fa-bell"></i> تفعيل
+                            </button>
+                        </div>
+                        <div id="notificationStatus" style="margin-top: 8px; font-size: 12px; color: #6c757d; display: none;">
+                            <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                            <span>الإشعارات مفعلة - ستتلقى إشعار عند الرد</span>
+                        </div>
+                    </div>
                 </div>
                 
                 @if(session('success'))
@@ -162,13 +179,13 @@
                 <div class="contact-map-container">
                     <div class="contact-map-header">
                         <h3 class="contact-map-title">موقعنا</h3>
-                        <p class="contact-map-subtitle">مكة المكرمة، المملكة العربية السعودية</p>
+                        <p class="contact-map-subtitle">{{ \App\Models\Setting::get('address', 'الرياض، المملكة العربية السعودية') }}</p>
                     </div>
                     <div class="contact-map-wrapper">
                         <div class="contact-map-placeholder">
                             <i class="fas fa-map-marker-alt"></i>
                             <h4>موقعنا على الخريطة</h4>
-                            <p>شارع الملك فهد، حي النخيل، مكة المكرمة</p>
+                            <p>{{ \App\Models\Setting::get('address', 'شارع الملك فهد، حي النخيل، الرياض') }}</p>
                             <button class="contact-btn contact-btn-primary">
                                 <i class="fas fa-directions"></i>
                                 احصل على الاتجاهات
@@ -177,7 +194,7 @@
                         <div class="contact-map-overlay">
                             <div class="contact-map-info">
                                 <h4>العنوان</h4>
-                                <p>شارع الملك فهد، حي النخيل، مكة المكرمة، المملكة العربية السعودية</p>
+                                <p>{{ \App\Models\Setting::get('address', 'شارع الملك فهد، حي النخيل، الرياض، المملكة العربية السعودية') }}</p>
                                 <button class="contact-btn contact-btn-primary">
                                     <i class="fas fa-external-link-alt"></i>
                                     فتح في خرائط جوجل
@@ -196,10 +213,12 @@
                         <div class="contact-card-content">
                             <h4 class="contact-card-title">اتصل بنا</h4>
                             <div class="contact-card-links">
-                                <a href="tel:+966501234567" class="contact-card-link">+966 50 123 4567</a>
-                                <a href="tel:+966112345678" class="contact-card-link">+966 11 234 5678</a>
+                                <a href="tel:{{ \App\Models\Setting::get('contact_phone') }}" class="contact-card-link">{{ \App\Models\Setting::get('contact_phone') }}</a>
+                                @if(\App\Models\Setting::get('emergency_contact'))
+                                    <a href="tel:{{ \App\Models\Setting::get('emergency_contact') }}" class="contact-card-link">{{ \App\Models\Setting::get('emergency_contact') }}</a>
+                                @endif
                             </div>
-                            <p class="contact-card-description">متاح من 8 صباحاً إلى 6 مساءً</p>
+                            <p class="contact-card-description">{{ \App\Models\Setting::get('business_hours', 'متاح من 8 صباحاً إلى 6 مساءً') }}</p>
                         </div>
                     </div>
                     
@@ -210,8 +229,10 @@
                         <div class="contact-card-content">
                             <h4 class="contact-card-title">راسلنا</h4>
                             <div class="contact-card-links">
-                                <a href="mailto:info@infinitywear.sa" class="contact-card-link">info@infinitywear.sa</a>
-                                <a href="mailto:sales@infinitywear.sa" class="contact-card-link">sales@infinitywear.sa</a>
+                                <a href="mailto:{{ \App\Models\Setting::get('contact_email') }}" class="contact-card-link">{{ \App\Models\Setting::get('contact_email') }}</a>
+                                @if(\App\Models\Setting::get('support_email'))
+                                    <a href="mailto:{{ \App\Models\Setting::get('support_email') }}" class="contact-card-link">{{ \App\Models\Setting::get('support_email') }}</a>
+                                @endif
                             </div>
                             <p class="contact-card-description">نرد خلال 24 ساعة</p>
                         </div>
@@ -224,7 +245,7 @@
                         <div class="contact-card-content">
                             <h4 class="contact-card-title">واتساب</h4>
                             <div class="contact-card-links">
-                                <a href="https://wa.me/966501234567" target="_blank" class="contact-card-link">+966 50 123 4567</a>
+                                <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', \App\Models\Setting::get('whatsapp_number')) }}" target="_blank" class="contact-card-link">{{ \App\Models\Setting::get('whatsapp_number') }}</a>
                             </div>
                             <p class="contact-card-description">تواصل مباشر وسريع</p>
                         </div>
@@ -238,12 +259,7 @@
                             <h4 class="contact-card-title">ساعات العمل</h4>
                             <div class="contact-working-hours">
                                 <div class="contact-hour-item">
-                                    <span class="contact-hour-day">الأحد - الخميس</span>
-                                    <span class="contact-hour-time">8:00 ص - 6:00 م</span>
-                                </div>
-                                <div class="contact-hour-item">
-                                    <span class="contact-hour-day">الجمعة - السبت</span>
-                                    <span class="contact-hour-time closed">مغلق</span>
+                                    <span class="contact-hour-day">{{ \App\Models\Setting::get('business_hours', 'الأحد - الخميس: 8:00 ص - 6:00 م') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -343,4 +359,48 @@
 @section('scripts')
 <script src="{{ asset('js/infinity-home.js') }}"></script>
 <script src="{{ asset('js/contact-page.js') }}"></script>
+
+<script>
+// Push Notifications for Contact Page
+document.addEventListener('DOMContentLoaded', function() {
+    const enableButton = document.getElementById('enableNotifications');
+    const statusDiv = document.getElementById('notificationStatus');
+    
+    if (enableButton && window.pushNotificationManager) {
+        // Check current subscription status
+        window.pushNotificationManager.getSubscriptionStatus().then(function(status) {
+            if (status.isSubscribed) {
+                enableButton.innerHTML = '<i class="fas fa-bell-slash"></i> إلغاء';
+                enableButton.className = 'btn btn-sm btn-outline-danger';
+                statusDiv.style.display = 'block';
+            } else if (status.permission === 'denied') {
+                enableButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> مرفوض';
+                enableButton.className = 'btn btn-sm btn-outline-warning';
+                enableButton.disabled = true;
+            }
+        });
+        
+        // Handle button click
+        enableButton.addEventListener('click', async function() {
+            if (this.innerHTML.includes('إلغاء')) {
+                // Unsubscribe
+                const success = await window.pushNotificationManager.unsubscribe();
+                if (success) {
+                    this.innerHTML = '<i class="fas fa-bell"></i> تفعيل';
+                    this.className = 'btn btn-sm btn-outline-primary';
+                    statusDiv.style.display = 'none';
+                }
+            } else {
+                // Subscribe
+                const success = await window.pushNotificationManager.subscribe('admin');
+                if (success) {
+                    this.innerHTML = '<i class="fas fa-bell-slash"></i> إلغاء';
+                    this.className = 'btn btn-sm btn-outline-danger';
+                    statusDiv.style.display = 'block';
+                }
+            }
+        });
+    }
+});
+</script>
 @endsection

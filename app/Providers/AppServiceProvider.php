@@ -21,5 +21,6 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register view composers
         view()->composer('*', \App\View\Composers\SettingsComposer::class);
+        view()->composer('partials.importer-sidebar', \App\View\Composers\ImporterSidebarComposer::class);
     }
 }

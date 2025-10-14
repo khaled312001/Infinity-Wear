@@ -134,71 +134,137 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="site_logo" class="form-label">
+                                        <label class="form-label">
                                             <i class="fas fa-image me-2 text-primary"></i>
                                             شعار الموقع
                                         </label>
-                                        <input type="file" 
-                                               class="form-control" 
-                                               id="site_logo" 
-                                               name="site_logo" 
-                                               accept="image/*">
-                                        <div class="form-text">الحد الأقصى: 2MB، الصيغ المدعومة: JPG, PNG, SVG, WebP, AVIF</div>
                                         
-                                        @if(isset($settings['site_logo']) && $settings['site_logo'])
-                                            <div class="mt-2">
-                                                <small class="text-muted">الشعار الحالي:</small>
-                                                <div class="mt-1">
-                                                    <img src="{{ asset('storage/' . $settings['site_logo']) }}" 
-                                                         alt="الشعار الحالي" 
-                                                         class="img-thumbnail" 
-                                                         style="max-width: 150px; max-height: 80px;"
-                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                    <div style="display: none; color: #dc3545; font-size: 0.875rem;">
-                                                        <i class="fas fa-exclamation-triangle me-1"></i>
-                                                        لا يمكن تحميل الشعار الحالي
+                                        <!-- منطقة رفع الشعار -->
+                                        <div class="logo-upload-area" id="logoUploadArea">
+                                            <div class="upload-content">
+                                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                                <p class="mb-2">اسحب وأفلت الشعار هنا أو</p>
+                                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('logoFile').click()">
+                                                    <i class="fas fa-folder-open me-2"></i>
+                                                    اختر ملف
+                                                </button>
+                                                <input type="file" id="logoFile" accept="image/*" style="display: none;">
+                                                <div class="form-text mt-2">الحد الأقصى: 2MB، الصيغ المدعومة: JPG, PNG, SVG, WebP, AVIF</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- معاينة الشعار -->
+                                        <div id="logoPreview" class="mt-3" style="display: none;">
+                                            <div class="d-flex align-items-center">
+                                                <img id="previewImage" src="" alt="معاينة الشعار" class="img-thumbnail me-3" style="max-width: 150px; max-height: 80px;">
+                                                <div>
+                                                    <h6 id="previewFileName" class="mb-1"></h6>
+                                                    <small id="previewFileSize" class="text-muted"></small>
+                                                    <div class="mt-2">
+                                                        <button type="button" class="btn btn-success btn-sm" onclick="uploadLogo()">
+                                                            <i class="fas fa-upload me-1"></i>
+                                                            رفع الشعار
+                                                        </button>
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm ms-2" onclick="cancelLogoUpload()">
+                                                            <i class="fas fa-times me-1"></i>
+                                                            إلغاء
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                        @else
-                                            <div class="mt-2">
-                                                <small class="text-muted">لا يوجد شعار محفوظ حالياً</small>
+                                        </div>
+                                        
+                                        <!-- الشعار الحالي -->
+                                        <div id="currentLogo" class="mt-3">
+                                            <small class="text-muted">الشعار الحالي:</small>
+                                            <div class="mt-1">
+                                                <img id="currentLogoImage" src="{{ \App\Helpers\SiteSettingsHelper::getLogoUrl() }}" 
+                                                     alt="الشعار الحالي" 
+                                                     class="img-thumbnail" 
+                                                     style="max-width: 150px; max-height: 80px;"
+                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                <div style="display: none; color: #dc3545; font-size: 0.875rem;">
+                                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                                    لا يوجد شعار محفوظ حالياً
+                                                </div>
                                             </div>
-                                        @endif
+                                            <div class="mt-2">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteLogo()">
+                                                    <i class="fas fa-trash me-1"></i>
+                                                    حذف الشعار
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- رسائل الحالة -->
+                                        <div id="logoMessages" class="mt-3"></div>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="site_favicon" class="form-label">
+                                        <label class="form-label">
                                             <i class="fas fa-star me-2 text-primary"></i>
                                             أيقونة الموقع (Favicon)
                                         </label>
-                                        <input type="file" 
-                                               class="form-control" 
-                                               id="site_favicon" 
-                                               name="site_favicon" 
-                                               accept="image/*">
-                                        <div class="form-text">الحد الأقصى: 1MB، الحجم المفضل: 32x32px أو 16x16px</div>
                                         
-                                        @if(isset($settings['site_favicon']) && $settings['site_favicon'])
-                                            <div class="mt-2">
-                                                <small class="text-muted">الأيقونة الحالية:</small>
-                                                <div class="mt-1">
-                                                    <img src="{{ asset('storage/' . $settings['site_favicon']) }}" 
-                                                         alt="الأيقونة الحالية" 
-                                                         class="img-thumbnail" 
-                                                         style="max-width: 32px; max-height: 32px;"
-                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                    <div style="display: none; color: #dc3545; font-size: 0.875rem;">
-                                                        <i class="fas fa-exclamation-triangle me-1"></i>
-                                                        لا يمكن تحميل الأيقونة الحالية
+                                        <!-- منطقة رفع أيقونة الموقع -->
+                                        <div class="favicon-upload-area" id="faviconUploadArea">
+                                            <div class="upload-content">
+                                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                                <p class="mb-2">اسحب وأفلت أيقونة الموقع هنا أو</p>
+                                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('faviconFile').click()">
+                                                    <i class="fas fa-folder-open me-2"></i>
+                                                    اختر ملف
+                                                </button>
+                                                <input type="file" id="faviconFile" accept="image/*" style="display: none;">
+                                                <div class="form-text mt-2">الحد الأقصى: 1MB، الحجم المفضل: 32x32px أو 16x16px</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- معاينة أيقونة الموقع -->
+                                        <div id="faviconPreview" class="mt-3" style="display: none;">
+                                            <div class="d-flex align-items-center">
+                                                <img id="faviconPreviewImage" src="" alt="معاينة أيقونة الموقع" class="img-thumbnail me-3" style="max-width: 32px; max-height: 32px;">
+                                                <div>
+                                                    <h6 id="faviconPreviewFileName" class="mb-1"></h6>
+                                                    <small id="faviconPreviewFileSize" class="text-muted"></small>
+                                                    <div class="mt-2">
+                                                        <button type="button" class="btn btn-success btn-sm" onclick="uploadFavicon()">
+                                                            <i class="fas fa-upload me-1"></i>
+                                                            رفع الأيقونة
+                                                        </button>
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm ms-2" onclick="cancelFaviconUpload()">
+                                                            <i class="fas fa-times me-1"></i>
+                                                            إلغاء
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                        @else
-                                            <div class="mt-2">
-                                                <small class="text-muted">لا توجد أيقونة محفوظة حالياً</small>
+                                        </div>
+                                        
+                                        <!-- أيقونة الموقع الحالية -->
+                                        <div id="currentFavicon" class="mt-3">
+                                            <small class="text-muted">الأيقونة الحالية:</small>
+                                            <div class="mt-1">
+                                                <img id="currentFaviconImage" src="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}" 
+                                                     alt="الأيقونة الحالية" 
+                                                     class="img-thumbnail" 
+                                                     style="max-width: 32px; max-height: 32px;"
+                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                <div style="display: none; color: #dc3545; font-size: 0.875rem;">
+                                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                                    لا يوجد أيقونة محفوظة حالياً
+                                                </div>
                                             </div>
-                                        @endif
+                                            <div class="mt-2">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteFavicon()">
+                                                    <i class="fas fa-trash me-1"></i>
+                                                    حذف الأيقونة
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- رسائل الحالة -->
+                                        <div id="faviconMessages" class="mt-3"></div>
                                     </div>
 
                                     <div class="col-md-4">
@@ -236,6 +302,14 @@
                                         </select>
                                     </div>
                                 </div>
+                                
+                                <!-- زر حفظ الإعدادات العامة -->
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary" onclick="updateGeneralSettings()">
+                                        <i class="fas fa-save me-2"></i>
+                                        حفظ الإعدادات العامة
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- معلومات الاتصال -->
@@ -268,7 +342,7 @@
                                                class="form-control @error('contact_phone') is-invalid @enderror" 
                                                id="contact_phone" 
                                                name="contact_phone" 
-                                               value="{{ old('contact_phone', $settings['contact_phone'] ?? '+966 50 123 4567') }}" 
+                                               value="{{ old('contact_phone', $settings['contact_phone'] ?? '+966500982394') }}" 
                                                required>
                                         @error('contact_phone')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -284,7 +358,31 @@
                                                class="form-control" 
                                                id="whatsapp_number" 
                                                name="whatsapp_number" 
-                                               value="{{ old('whatsapp_number', '+966 50 123 4567') }}">
+                                               value="{{ old('whatsapp_number', '+966500982394') }}">
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label for="whatsapp_message" class="form-label">
+                                            <i class="fas fa-comment me-2 text-primary"></i>
+                                            رسالة الواتساب الافتراضية
+                                        </label>
+                                        <textarea class="form-control" 
+                                                  id="whatsapp_message" 
+                                                  name="whatsapp_message" 
+                                                  rows="3"
+                                                  placeholder="مرحباً، أريد الاستفسار عن خدماتكم...">{{ old('whatsapp_message', 'مرحباً، أريد الاستفسار عن خدماتكم في الملابس الرياضية والزي الموحد') }}</textarea>
+                                        <div class="form-text">الرسالة التي تظهر عند الضغط على زر الواتساب العائم</div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="whatsapp_floating_enabled" name="whatsapp_floating_enabled" checked>
+                                            <label class="form-check-label" for="whatsapp_floating_enabled">
+                                                <i class="fab fa-whatsapp me-2 text-success"></i>
+                                                تفعيل زر الواتساب العائم
+                                            </label>
+                                        </div>
+                                        <div class="form-text">إظهار زر الواتساب العائم في جميع صفحات الموقع</div>
                                     </div>
 
                                     <div class="col-md-6">
@@ -338,6 +436,14 @@
                                                name="emergency_contact" 
                                                value="{{ old('emergency_contact', '+966 50 987 6543') }}">
                                     </div>
+                                </div>
+                                
+                                <!-- زر حفظ معلومات الاتصال -->
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary" onclick="updateContactSettings()">
+                                        <i class="fas fa-save me-2"></i>
+                                        حفظ معلومات الاتصال
+                                    </button>
                                 </div>
                             </div>
 
@@ -434,6 +540,14 @@
                                                placeholder="https://tiktok.com/@youraccount">
                                     </div>
                                 </div>
+                                
+                                <!-- زر حفظ وسائل التواصل الاجتماعي -->
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary" onclick="updateSocialSettings()">
+                                        <i class="fas fa-save me-2"></i>
+                                        حفظ وسائل التواصل الاجتماعي
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- إعدادات النظام -->
@@ -529,6 +643,14 @@
                                                max="1440">
                                     </div>
                                 </div>
+                                
+                                <!-- زر حفظ إعدادات النظام -->
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary" onclick="updateSystemSettings()">
+                                        <i class="fas fa-save me-2"></i>
+                                        حفظ إعدادات النظام
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- الصيانة -->
@@ -541,7 +663,7 @@
                                             </div>
                                             <h6>تنظيف الملفات المؤقتة</h6>
                                             <p class="text-muted">حذف الملفات المؤقتة وذاكرة التخزين المؤقت</p>
-                                            <button type="button" class="btn btn-warning" onclick="clearCache()">
+                                            <button type="button" class="btn btn-warning" onclick="clearSystemCache()">
                                                 <i class="fas fa-trash me-2"></i>
                                                 تنظيف الآن
                                             </button>
@@ -623,7 +745,7 @@
                                     <i class="fas fa-eye me-2"></i>
                                     معاينة
                                 </button>
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" onclick="console.log('تم الضغط على زر الحفظ')">
                                     <i class="fas fa-save me-2"></i>
                                     حفظ الإعدادات
                                 </button>
@@ -695,11 +817,67 @@
             font-size: 0.875rem;
             margin-bottom: 1.5rem;
         }
+
+        /* منطقة رفع الشعار */
+        .logo-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .logo-upload-area:hover {
+            border-color: var(--primary-color);
+            background: #e3f2fd;
+        }
+
+        .logo-upload-area.dragover {
+            border-color: var(--primary-color);
+            background: #e3f2fd;
+            transform: scale(1.02);
+        }
+
+        .upload-content {
+            pointer-events: none;
+        }
+
+        /* منطقة رفع أيقونة الموقع */
+        .favicon-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .favicon-upload-area:hover {
+            border-color: var(--primary-color);
+            background: #e3f2fd;
+        }
+
+        .favicon-upload-area.dragover {
+            border-color: var(--primary-color);
+            background: #e3f2fd;
+            transform: scale(1.02);
+        }
     </style>
 @endpush
 
 @push('scripts')
     <script>
+        // متغيرات الشعار
+        let selectedLogoFile = null;
+
+        // تسجيل تحميل الصفحة
+        console.log('=== تم تحميل صفحة الإعدادات ===');
+        console.log('النموذج موجود:', document.getElementById('settingsForm') ? 'نعم' : 'لا');
+        console.log('منطقة رفع الشعار موجودة:', document.getElementById('logoUploadArea') ? 'نعم' : 'لا');
+        
         function resetForm() {
             if (confirm('هل أنت متأكد من إعادة تعيين جميع الإعدادات؟')) {
                 document.getElementById('settingsForm').reset();
@@ -866,88 +1044,535 @@
             });
         });
 
-        // معاينة الصور عند اختيارها
-        document.getElementById('site_logo').addEventListener('change', function(e) {
+        // دوال الشعار
+        function uploadLogo() {
+            if (!selectedLogoFile) {
+                showLogoMessage('يرجى اختيار ملف أولاً', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('logo', selectedLogoFile);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+            // إظهار حالة التحميل
+            showLogoMessage('جاري رفع الشعار...', 'info');
+
+            fetch('{{ route("admin.logo.upload") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showLogoMessage(data.message, 'success');
+                    // تحديث الشعار الحالي
+                    document.getElementById('currentLogoImage').src = data.logo_url;
+                    // إخفاء المعاينة
+                    cancelLogoUpload();
+                } else {
+                    showLogoMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showLogoMessage('حدث خطأ أثناء رفع الشعار', 'error');
+            });
+        }
+
+        function deleteLogo() {
+            if (!confirm('هل أنت متأكد من حذف الشعار؟')) {
+                return;
+            }
+
+            fetch('{{ route("admin.logo.delete") }}', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showLogoMessage(data.message, 'success');
+                    // إخفاء الشعار الحالي
+                    document.getElementById('currentLogoImage').style.display = 'none';
+                    document.getElementById('currentLogoImage').nextElementSibling.style.display = 'block';
+                } else {
+                    showLogoMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showLogoMessage('حدث خطأ أثناء حذف الشعار', 'error');
+            });
+        }
+
+        function cancelLogoUpload() {
+            selectedLogoFile = null;
+            document.getElementById('logoFile').value = '';
+            document.getElementById('logoPreview').style.display = 'none';
+            document.getElementById('logoUploadArea').style.display = 'block';
+        }
+
+        function showLogoMessage(message, type) {
+            const messagesDiv = document.getElementById('logoMessages');
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 'alert-info';
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                        type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            
+            messagesDiv.innerHTML = `
+                <div class="alert ${alertClass} alert-dismissible fade show">
+                    <i class="fas ${icon} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            // إخفاء الرسالة بعد 5 ثوان
+            setTimeout(() => {
+                const alert = messagesDiv.querySelector('.alert');
+                if (alert) {
+                    alert.classList.remove('show');
+                    setTimeout(() => alert.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        // معالجة اختيار ملف الشعار
+        document.getElementById('logoFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                // التحقق من حجم الملف
-                if (file.size > 2 * 1024 * 1024) { // 2MB
-                    alert('حجم الملف كبير جداً. الحد الأقصى 2MB');
-                    this.value = '';
-                    return;
-                }
-                
-                // التحقق من نوع الملف
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif'];
-                if (!allowedTypes.includes(file.type)) {
-                    alert('نوع الملف غير مدعوم. يرجى اختيار صورة بصيغة JPG, PNG, SVG, WebP, أو AVIF');
-                    this.value = '';
-                    return;
-                }
-                
-                // معاينة الصورة
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.createElement('div');
-                    preview.className = 'mt-2';
-                    preview.innerHTML = `
-                        <small class="text-success">معاينة الشعار الجديد:</small>
-                        <div class="mt-1">
-                            <img src="${e.target.result}" alt="معاينة الشعار" class="img-thumbnail" style="max-width: 150px; max-height: 80px;">
-                        </div>
-                    `;
-                    
-                    // إزالة المعاينة السابقة إن وجدت
-                    const oldPreview = document.querySelector('#site_logo').parentNode.querySelector('.preview');
-                    if (oldPreview) {
-                        oldPreview.remove();
-                    }
-                    
-                    preview.className += ' preview';
-                    document.querySelector('#site_logo').parentNode.appendChild(preview);
-                };
-                reader.readAsDataURL(file);
+                handleLogoFile(file);
             }
         });
 
-        document.getElementById('site_favicon').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
+        // معالجة السحب والإفلات
+        const uploadArea = document.getElementById('logoUploadArea');
+        
+        uploadArea.addEventListener('click', function() {
+            document.getElementById('logoFile').click();
+        });
+
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleLogoFile(files[0]);
+            }
+        });
+
+        function handleLogoFile(file) {
+            console.log('تم اختيار ملف:', file);
+            
+            // التحقق من حجم الملف
+            if (file.size > 2 * 1024 * 1024) { // 2MB
+                showLogoMessage('حجم الملف كبير جداً. الحد الأقصى 2MB', 'error');
+                return;
+            }
+            
+            // التحقق من نوع الملف
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif'];
+            if (!allowedTypes.includes(file.type)) {
+                showLogoMessage('نوع الملف غير مدعوم. يرجى اختيار صورة بصيغة JPG, PNG, SVG, WebP, أو AVIF', 'error');
+                return;
+            }
+            
+            // حفظ الملف المختار
+            selectedLogoFile = file;
+            
+            // إظهار المعاينة
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('previewFileName').textContent = file.name;
+                document.getElementById('previewFileSize').textContent = formatFileSize(file.size);
+                
+                document.getElementById('logoUploadArea').style.display = 'none';
+                document.getElementById('logoPreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // دوال الإعدادات العامة
+        function updateGeneralSettings() {
+            const formData = new FormData();
+            formData.append('site_name', document.getElementById('site_name').value);
+            formData.append('site_tagline', document.getElementById('site_tagline').value);
+            formData.append('site_description', document.getElementById('site_description').value);
+            formData.append('default_language', document.getElementById('default_language').value);
+            formData.append('default_currency', document.getElementById('default_currency').value);
+            formData.append('timezone', document.getElementById('timezone').value);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+            showMessage('جاري تحديث الإعدادات العامة...', 'info');
+
+            fetch('{{ route("admin.settings.general") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('حدث خطأ أثناء تحديث الإعدادات', 'error');
+            });
+        }
+
+        // دوال معلومات الاتصال
+        function updateContactSettings() {
+            const formData = new FormData();
+            formData.append('contact_email', document.getElementById('contact_email').value);
+            formData.append('contact_phone', document.getElementById('contact_phone').value);
+            formData.append('whatsapp_number', document.getElementById('whatsapp_number').value);
+            formData.append('whatsapp_message', document.getElementById('whatsapp_message').value);
+            formData.append('whatsapp_floating_enabled', document.getElementById('whatsapp_floating_enabled').checked ? '1' : '0');
+            formData.append('support_email', document.getElementById('support_email').value);
+            formData.append('address', document.getElementById('address').value);
+            formData.append('business_hours', document.getElementById('business_hours').value);
+            formData.append('emergency_contact', document.getElementById('emergency_contact').value);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+            showMessage('جاري تحديث معلومات الاتصال...', 'info');
+
+            fetch('{{ route("admin.settings.contact") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('حدث خطأ أثناء تحديث معلومات الاتصال', 'error');
+            });
+        }
+
+        // دوال وسائل التواصل الاجتماعي
+        function updateSocialSettings() {
+            const formData = new FormData();
+            formData.append('facebook_url', document.getElementById('facebook_url').value);
+            formData.append('twitter_url', document.getElementById('twitter_url').value);
+            formData.append('instagram_url', document.getElementById('instagram_url').value);
+            formData.append('linkedin_url', document.getElementById('linkedin_url').value);
+            formData.append('youtube_url', document.getElementById('youtube_url').value);
+            formData.append('tiktok_url', document.getElementById('tiktok_url').value);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+            showMessage('جاري تحديث وسائل التواصل الاجتماعي...', 'info');
+
+            fetch('{{ route("admin.settings.social") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('حدث خطأ أثناء تحديث وسائل التواصل', 'error');
+            });
+        }
+
+        // دوال إعدادات النظام
+        function updateSystemSettings() {
+            const formData = new FormData();
+            formData.append('enable_registration', document.getElementById('enable_registration').checked ? '1' : '0');
+            formData.append('email_verification', document.getElementById('email_verification').checked ? '1' : '0');
+            formData.append('maintenance_mode', document.getElementById('maintenance_mode').checked ? '1' : '0');
+            formData.append('debug_mode', document.getElementById('debug_mode').checked ? '1' : '0');
+            formData.append('backup_frequency', document.getElementById('backup_frequency').value);
+            formData.append('log_level', document.getElementById('log_level').value);
+            formData.append('session_timeout', document.getElementById('session_timeout').value);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+            showMessage('جاري تحديث إعدادات النظام...', 'info');
+
+            fetch('{{ route("admin.settings.system") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('حدث خطأ أثناء تحديث إعدادات النظام', 'error');
+            });
+        }
+
+        // دالة عرض الرسائل العامة
+        function showMessage(message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 'alert-info';
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                        type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+                     style="top: 20px; right: 20px; z-index: 9999; min-width: 350px; max-width: 500px;">
+                    <i class="fas ${icon} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', alertHtml);
+            
+            setTimeout(() => {
+                const alert = document.querySelector('.alert');
+                if (alert) {
+                    alert.classList.remove('show');
+                    setTimeout(() => alert.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        // دالة تنظيف الكاش
+        function clearSystemCache() {
+            if (!confirm('هل تريد تنظيف جميع الملفات المؤقتة؟')) {
+                return;
+            }
+
+            fetch('{{ route("admin.settings.clear-cache") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('حدث خطأ أثناء تنظيف الكاش', 'error');
+            });
+        }
+
+        // تم حذف الكود القديم لأيقونة الموقع - الآن يستخدم النظام الجديد
+
+        // متغيرات أيقونة الموقع
+        let selectedFaviconFile = null;
+
+        // دوال أيقونة الموقع
+        function uploadFavicon() {
+            if (!selectedFaviconFile) {
+                showFaviconMessage('يرجى اختيار ملف أولاً', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('favicon', selectedFaviconFile);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+            // إظهار حالة التحميل
+            showFaviconMessage('جاري رفع أيقونة الموقع...', 'info');
+
+            fetch('{{ route("admin.favicon.upload") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showFaviconMessage(data.message, 'success');
+                    // تحديث أيقونة الموقع الحالية
+                    document.getElementById('currentFaviconImage').src = data.favicon_url;
+                    // إخفاء المعاينة
+                    cancelFaviconUpload();
+                } else {
+                    showFaviconMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showFaviconMessage('حدث خطأ أثناء رفع أيقونة الموقع: ' + error.message, 'error');
+            });
+        }
+
+        function deleteFavicon() {
+            if (!confirm('هل أنت متأكد من حذف أيقونة الموقع؟')) {
+                return;
+            }
+
+            showFaviconMessage('جاري حذف أيقونة الموقع...', 'info');
+
+            fetch('{{ route("admin.favicon.delete") }}', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showFaviconMessage(data.message, 'success');
+                    // إخفاء أيقونة الموقع الحالية
+                    document.getElementById('currentFaviconImage').style.display = 'none';
+                    document.getElementById('currentFaviconImage').nextElementSibling.style.display = 'block';
+                } else {
+                    showFaviconMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showFaviconMessage('حدث خطأ أثناء حذف أيقونة الموقع: ' + error.message, 'error');
+            });
+        }
+
+        function cancelFaviconUpload() {
+            selectedFaviconFile = null;
+            document.getElementById('faviconFile').value = '';
+            document.getElementById('faviconUploadArea').style.display = 'block';
+            document.getElementById('faviconPreview').style.display = 'none';
+            clearFaviconMessages();
+        }
+
+        function showFaviconMessage(message, type) {
+            const messagesDiv = document.getElementById('faviconMessages');
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 
+                              type === 'info' ? 'alert-info' : 'alert-secondary';
+            
+            messagesDiv.innerHTML = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+        }
+
+        function clearFaviconMessages() {
+            document.getElementById('faviconMessages').innerHTML = '';
+        }
+
+        // إعداد drag & drop لأيقونة الموقع
+        document.addEventListener('DOMContentLoaded', function() {
+            const faviconUploadArea = document.getElementById('faviconUploadArea');
+            const faviconFileInput = document.getElementById('faviconFile');
+
+            // التحقق من وجود العناصر قبل إضافة event listeners
+            if (faviconUploadArea && faviconFileInput) {
+                // النقر على منطقة الرفع
+                faviconUploadArea.addEventListener('click', function() {
+                    faviconFileInput.click();
+                });
+
+                // تغيير الملف
+                faviconFileInput.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        handleFaviconFile(this.files[0]);
+                    }
+                });
+
+                // drag & drop events
+                faviconUploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('dragover');
+                });
+
+                faviconUploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                });
+
+                faviconUploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        handleFaviconFile(files[0]);
+                    }
+                });
+            }
+
+            function handleFaviconFile(file) {
+                console.log('تم اختيار ملف أيقونة الموقع:', file);
+                
                 // التحقق من حجم الملف
                 if (file.size > 1 * 1024 * 1024) { // 1MB
-                    alert('حجم الملف كبير جداً. الحد الأقصى 1MB');
-                    this.value = '';
+                    showFaviconMessage('حجم الملف كبير جداً. الحد الأقصى 1MB', 'error');
                     return;
                 }
                 
                 // التحقق من نوع الملف
                 const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif'];
                 if (!allowedTypes.includes(file.type)) {
-                    alert('نوع الملف غير مدعوم. يرجى اختيار صورة بصيغة JPG, PNG, SVG, WebP, أو AVIF');
-                    this.value = '';
+                    showFaviconMessage('نوع الملف غير مدعوم. يرجى اختيار صورة بصيغة JPG, PNG, SVG, WebP, أو AVIF', 'error');
                     return;
                 }
                 
-                // معاينة الصورة
+                // حفظ الملف المختار
+                selectedFaviconFile = file;
+                
+                // إظهار المعاينة
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const preview = document.createElement('div');
-                    preview.className = 'mt-2';
-                    preview.innerHTML = `
-                        <small class="text-success">معاينة الأيقونة الجديدة:</small>
-                        <div class="mt-1">
-                            <img src="${e.target.result}" alt="معاينة الأيقونة" class="img-thumbnail" style="max-width: 32px; max-height: 32px;">
-                        </div>
-                    `;
+                    document.getElementById('faviconPreviewImage').src = e.target.result;
+                    document.getElementById('faviconPreviewFileName').textContent = file.name;
+                    document.getElementById('faviconPreviewFileSize').textContent = formatFileSize(file.size);
                     
-                    // إزالة المعاينة السابقة إن وجدت
-                    const oldPreview = document.querySelector('#site_favicon').parentNode.querySelector('.preview');
-                    if (oldPreview) {
-                        oldPreview.remove();
-                    }
-                    
-                    preview.className += ' preview';
-                    document.querySelector('#site_favicon').parentNode.appendChild(preview);
+                    document.getElementById('faviconUploadArea').style.display = 'none';
+                    document.getElementById('faviconPreview').style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             }

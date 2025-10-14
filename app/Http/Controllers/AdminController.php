@@ -441,6 +441,16 @@ class AdminController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
     
+    /**
+     * عرض تفاصيل طلب واحد
+     */
+    public function showOrder($id)
+    {
+        $order = ImporterOrder::with(['importer', 'importer.user'])->findOrFail($id);
+        
+        return view('admin.orders.show', compact('order'));
+    }
+    
     
     // The dashboardUpdated method has been merged into the dashboard method
 
@@ -642,7 +652,9 @@ class AdminController extends Controller
         Log::info('Settings update request received', [
             'has_site_logo' => $request->hasFile('site_logo'),
             'has_site_favicon' => $request->hasFile('site_favicon'),
-            'all_files' => $request->allFiles()
+            'all_files' => $request->allFiles(),
+            'site_logo_valid' => $request->hasFile('site_logo') ? $request->file('site_logo')->isValid() : false,
+            'site_logo_size' => $request->hasFile('site_logo') ? $request->file('site_logo')->getSize() : 0
         ]);
 
         $validatedData = $request->validate([
@@ -690,8 +702,16 @@ class AdminController extends Controller
             if ($request->hasFile('site_logo')) {
                 $logoFile = $request->file('site_logo');
                 
+                Log::info('Processing site_logo file', [
+                    'file_name' => $logoFile->getClientOriginalName(),
+                    'file_size' => $logoFile->getSize(),
+                    'file_mime' => $logoFile->getMimeType(),
+                    'is_valid' => $logoFile->isValid()
+                ]);
+                
                 // Additional validation
                 if (!$logoFile->isValid()) {
+                    Log::error('Invalid logo file uploaded');
                     return redirect()->route('admin.settings')
                         ->with('error', 'ملف الشعار غير صالح');
                 }
@@ -700,10 +720,16 @@ class AdminController extends Controller
                 $oldLogo = \App\Models\Setting::get('site_logo');
                 if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
                     Storage::disk('public')->delete($oldLogo);
+                    Log::info('Deleted old logo', ['old_logo' => $oldLogo]);
                 }
                 
                 $logoPath = $logoFile->store('settings', 'public');
                 $validatedData['site_logo'] = $logoPath;
+                
+                Log::info('Logo saved successfully', [
+                    'logo_path' => $logoPath,
+                    'full_url' => asset('storage/' . $logoPath)
+                ]);
             }
 
             if ($request->hasFile('site_favicon')) {
@@ -737,6 +763,9 @@ class AdminController extends Controller
             // Clear cache
             \App\Models\Setting::clearCache();
             \App\Helpers\SiteSettingsHelper::clearCache();
+            
+            // مسح كاش Laravel العام
+            \Illuminate\Support\Facades\Cache::flush();
 
             // Update environment file for critical settings
             $this->updateEnvironmentFile($validatedData);

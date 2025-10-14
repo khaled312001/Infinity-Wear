@@ -13,57 +13,9 @@ use Illuminate\Support\Facades\Storage;
     <!-- Home Page Responsive CSS -->
     <link href="{{ asset('css/home-responsive.css') }}" rel="stylesheet">
     
-    <!-- Loading Screen Styles -->
-    <style>
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 952%;
-            height: 952%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 952%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
-
-        .loading-spinner {
-            text-align: center;
-            color: white;
-        }
-
-        .spinner-ring {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin: 0 auto 1rem;
-        }
-
-        .spinner-text {
-            font-size: 1.5rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
 @endsection
 
 @section('content')
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-spinner">
-            <div class="spinner-ring"></div>
-            <div class="spinner-text">إنفينيتي وير</div>
-        </div>
-    </div>
 
     <!-- Hero Section -->
     <section id="home" class="infinity-hero">
@@ -644,7 +596,7 @@ use Illuminate\Support\Facades\Storage;
                         </div>
                         <div class="infinity-contact-details">
                             <h3>عنواننا</h3>
-                            <p>الرياض، حي النخيل<br>المملكة العربية السعودية</p>
+                            <p>{{ \App\Models\Setting::get('address', 'الرياض، حي النخيل، المملكة العربية السعودية') }}</p>
                         </div>
                     </div>
 
@@ -654,7 +606,7 @@ use Illuminate\Support\Facades\Storage;
                         </div>
                         <div class="infinity-contact-details">
                             <h3>الهاتف</h3>
-                            <p>+966 50 123 4567<br>+966 11 234 5678</p>
+                            <p>{{ \App\Models\Setting::get('contact_phone') }}</p>
                         </div>
                     </div>
 
@@ -664,7 +616,7 @@ use Illuminate\Support\Facades\Storage;
                         </div>
                         <div class="infinity-contact-details">
                             <h3>البريد الإلكتروني</h3>
-                            <p>info@infinitywear.sa<br>sales@infinitywear.sa</p>
+                            <p>{{ \App\Models\Setting::get('support_email', 'info@worldtripagency.com') }}</p>
                         </div>
                     </div>
 
@@ -674,13 +626,14 @@ use Illuminate\Support\Facades\Storage;
                         </div>
                         <div class="infinity-contact-details">
                             <h3>ساعات العمل</h3>
-                            <p>الأحد - الخميس: 8:00 ص - 6:00 م<br>الجمعة - السبت: مغلق</p>
+                            <p>{{ \App\Models\Setting::get('business_hours', 'الأحد - الخميس: 8:00 ص - 6:00 م') }}</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="infinity-contact-form-container" style="width: 100%;">
                     <form class="infinity-contact-form" id="contactForm">
+                        @csrf
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="name">الاسم الكامل *</label>
@@ -719,6 +672,23 @@ use Illuminate\Support\Facades\Storage;
                             <label for="message">الرسالة *</label>
                             <textarea id="message" name="message" rows="5" required placeholder="اكتب رسالتك هنا..."></textarea>
                         </div>
+
+                        <!-- Push Notifications Toggle -->
+                        <div class="push-notifications-toggle" style="margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-bell" style="color: #007bff;"></i>
+                                    <span style="font-size: 14px; color: #495057;">تفعيل الإشعارات للرد السريع</span>
+                                </div>
+                                <button type="button" id="enableNotificationsHome" class="btn btn-sm btn-outline-primary" style="font-size: 12px;">
+                                    <i class="fas fa-bell"></i> تفعيل
+                                </button>
+                            </div>
+                            <div id="notificationStatusHome" style="margin-top: 8px; font-size: 12px; color: #6c757d; display: none;">
+                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                <span>الإشعارات مفعلة - ستتلقى إشعار عند الرد</span>
+                            </div>
+                        </div>
         
                         <button type="submit" class="btn btn-primary btn-full">
                             <i class="fas fa-paper-plane"></i>
@@ -746,6 +716,46 @@ use Illuminate\Support\Facades\Storage;
                 this.src = '{{ asset("images/default-image.png") }}';
             });
         });
+
+        // Push Notifications for Home Page
+        const enableButton = document.getElementById('enableNotificationsHome');
+        const statusDiv = document.getElementById('notificationStatusHome');
+        
+        if (enableButton && window.pushNotificationManager) {
+            // Check current subscription status
+            window.pushNotificationManager.getSubscriptionStatus().then(function(status) {
+                if (status.isSubscribed) {
+                    enableButton.innerHTML = '<i class="fas fa-bell-slash"></i> إلغاء';
+                    enableButton.className = 'btn btn-sm btn-outline-danger';
+                    statusDiv.style.display = 'block';
+                } else if (status.permission === 'denied') {
+                    enableButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> مرفوض';
+                    enableButton.className = 'btn btn-sm btn-outline-warning';
+                    enableButton.disabled = true;
+                }
+            });
+            
+            // Handle button click
+            enableButton.addEventListener('click', async function() {
+                if (this.innerHTML.includes('إلغاء')) {
+                    // Unsubscribe
+                    const success = await window.pushNotificationManager.unsubscribe();
+                    if (success) {
+                        this.innerHTML = '<i class="fas fa-bell"></i> تفعيل';
+                        this.className = 'btn btn-sm btn-outline-primary';
+                        statusDiv.style.display = 'none';
+                    }
+                } else {
+                    // Subscribe
+                    const success = await window.pushNotificationManager.subscribe('admin');
+                    if (success) {
+                        this.innerHTML = '<i class="fas fa-bell-slash"></i> إلغاء';
+                        this.className = 'btn btn-sm btn-outline-danger';
+                        statusDiv.style.display = 'block';
+                    }
+                }
+            });
+        }
     });
     </script>
 @endsection

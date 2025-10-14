@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'redirect.dashboard' => \App\Http\Middleware\RedirectBasedOnUserType::class,
             'maintenance' => \App\Http\Middleware\MaintenanceMode::class,
             'admin.auth' => \App\Http\Middleware\CheckAdminAuth::class,
+            'refresh.csrf' => \App\Http\Middleware\RefreshCsrfToken::class,
+            'user.permission' => \App\Http\Middleware\CheckUserTypePermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

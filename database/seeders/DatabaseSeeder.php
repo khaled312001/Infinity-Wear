@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             ComprehensiveDataSeeder::class,
             HomePageSeeder::class,
             MarketingSalesUsersSeeder::class,
+            UserTypePermissionsSeeder::class,
         ]);
     }
 }

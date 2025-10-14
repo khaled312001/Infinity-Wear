@@ -23,8 +23,8 @@ class SettingsSeeder extends Seeder
             
             // Contact Information
             'contact_email' => 'info@infinitywear.com',
-            'contact_phone' => '+966 50 123 4567',
-            'whatsapp_number' => '+966 50 123 4567',
+            'contact_phone' => '+966500982394',
+            'whatsapp_number' => '+966500982394',
             'support_email' => 'support@infinitywear.com',
             'address' => 'المملكة العربية السعودية، الرياض، حي النخيل، شارع الملك فهد',
             'business_hours' => 'الأحد - الخميس: 8:00 ص - 6:00 م',

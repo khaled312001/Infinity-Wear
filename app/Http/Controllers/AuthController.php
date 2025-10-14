@@ -12,13 +12,15 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
+        // Regenerate session to ensure fresh CSRF token
+        request()->session()->regenerate();
         return view('auth.login');
     }
 
     public function login(Request $request)
     {
         // Debug: Log all request data
-        \Log::info('Customer login request data', $request->all());
+        \Log::info('Login request data', $request->all());
         
         try {
             $credentials = $request->validate([
@@ -26,22 +28,34 @@ class AuthController extends Controller
                 'password' => 'required',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Customer validation failed', $e->errors());
+            \Log::error('Validation failed', $e->errors());
             throw $e;
         }
 
         // Debug logging
-        \Log::info('Customer login attempt', [
+        \Log::info('Login attempt', [
             'email' => $credentials['email']
         ]);
 
-        // Customer login only
+        // Attempt login for all user types
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
             // Redirect to appropriate dashboard based on user type
             $user = Auth::user();
-            \Log::info('Customer login successful', ['user_id' => $user->id, 'user_type' => $user->user_type]);
+            \Log::info('Login successful', ['user_id' => $user->id, 'user_type' => $user->user_type]);
+            
+            // Special handling for importer users
+            if ($user->user_type === 'importer') {
+                // Check if importer profile exists
+                $importer = \App\Models\Importer::where('user_id', $user->id)->first();
+                if (!$importer) {
+                    \Log::info('Importer profile not found, redirecting to form', ['user_id' => $user->id]);
+                    return redirect()->route('importers.form')
+                        ->with('info', 'يرجى إكمال بيانات المستورد أولاً');
+                }
+            }
+            
             return redirect()->route($user->getDashboardRoute());
         }
 
