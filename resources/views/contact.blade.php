@@ -179,7 +179,7 @@
                 <div class="contact-map-container">
                     <div class="contact-map-header">
                         <h3 class="contact-map-title">موقعنا</h3>
-                        <p class="contact-map-subtitle">{{ \App\Models\Setting::get('address', 'الرياض، المملكة العربية السعودية') }}</p>
+                        <p class="contact-map-subtitle">{{ \App\Models\Setting::get('address', 'مكة المكرمة  - شارع الستين ') }}</p>
                     </div>
                     <div class="contact-map-wrapper">
                         <div class="contact-map-placeholder">
@@ -194,7 +194,7 @@
                         <div class="contact-map-overlay">
                             <div class="contact-map-info">
                                 <h4>العنوان</h4>
-                                <p>{{ \App\Models\Setting::get('address', 'شارع الملك فهد، حي النخيل، الرياض، المملكة العربية السعودية') }}</p>
+                                <p>{{ \App\Models\Setting::get('address', 'شارع الملك فهد، حي النخيل، مكة المكرمة  - شارع الستين ') }}</p>
                                 <button class="contact-btn contact-btn-primary">
                                     <i class="fas fa-external-link-alt"></i>
                                     فتح في خرائط جوجل

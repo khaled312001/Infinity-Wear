@@ -752,7 +752,7 @@
                             allowfullscreen="" 
                             loading="lazy" 
                             referrerpolicy="no-referrer-when-downgrade"
-                            title="موقع إنفينيتي وير على الخريطة - الرياض، المملكة العربية السعودية">
+                            title="موقع إنفينيتي وير على الخريطة - مكة المكرمة  - شارع الستين ">
                         </iframe>
                         
                         <!-- OpenStreetMap as fallback -->
@@ -762,7 +762,7 @@
                             width="100%" 
                             height="400" 
                             style="border:0; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none;" 
-                            title="موقع إنفينيتي وير على الخريطة - الرياض، المملكة العربية السعودية">
+                            title="موقع إنفينيتي وير على الخريطة - مكة المكرمة  - شارع الستين ">
                         </iframe>
                         
                         <div class="map-overlay">
