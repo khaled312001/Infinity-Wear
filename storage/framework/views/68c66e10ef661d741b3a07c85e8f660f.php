@@ -82,11 +82,46 @@
 
                     <!-- Navigation Menu -->
                     <ul class="nav-menu">
-                        <li><a href="<?php echo e(route('home')); ?>" class="nav-link<?php echo e(request()->routeIs('home') ? ' active' : ''); ?>">الرئيسية</a></li>
-                        <li><a href="<?php echo e(route('about')); ?>" class="nav-link<?php echo e(request()->routeIs('about') ? ' active' : ''); ?>">من نحن</a></li>
-                        <li><a href="<?php echo e(route('services')); ?>" class="nav-link<?php echo e(request()->routeIs('services') ? ' active' : ''); ?>">خدماتنا</a></li>
-                        <li><a href="<?php echo e(route('portfolio.index')); ?>" class="nav-link<?php echo e(request()->routeIs('portfolio.index') ? ' active' : ''); ?>">أعمالنا</a></li>
-                        <li><a href="<?php echo e(route('contact.index')); ?>" class="nav-link<?php echo e(request()->routeIs('contact.index') ? ' active' : ''); ?>">تواصل معنا</a></li>
+                        <li>
+                            <a href="<?php echo e(route('home')); ?>" class="nav-link<?php echo e(request()->routeIs('home') ? ' active' : ''); ?>">
+                                <div class="nav-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <span class="nav-text">الرئيسية</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo e(route('about')); ?>" class="nav-link<?php echo e(request()->routeIs('about') ? ' active' : ''); ?>">
+                                <div class="nav-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <span class="nav-text">من نحن</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo e(route('services')); ?>" class="nav-link<?php echo e(request()->routeIs('services') ? ' active' : ''); ?>">
+                                <div class="nav-icon">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <span class="nav-text">خدماتنا</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo e(route('portfolio.index')); ?>" class="nav-link<?php echo e(request()->routeIs('portfolio.index') ? ' active' : ''); ?>">
+                                <div class="nav-icon">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <span class="nav-text">أعمالنا</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo e(route('contact.index')); ?>" class="nav-link<?php echo e(request()->routeIs('contact.index') ? ' active' : ''); ?>">
+                                <div class="nav-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <span class="nav-text">تواصل معنا</span>
+                            </a>
+                        </li>
                     </ul>
 
                     <!-- Mobile Menu Toggle Button -->
@@ -135,32 +170,42 @@
         <nav class="sidebar-nav">
             <div class="sidebar-nav-item">
                 <a href="<?php echo e(route('home')); ?>" class="sidebar-nav-link<?php echo e(request()->routeIs('home') ? ' active' : ''); ?>">
-                    <i class="fas fa-home"></i>
-                    الرئيسية
+                    <div class="sidebar-nav-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <span class="sidebar-nav-text">الرئيسية</span>
                 </a>
             </div>
             <div class="sidebar-nav-item">
                 <a href="<?php echo e(route('about')); ?>" class="sidebar-nav-link<?php echo e(request()->routeIs('about') ? ' active' : ''); ?>">
-                    <i class="fas fa-info-circle"></i>
-                    من نحن
+                    <div class="sidebar-nav-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <span class="sidebar-nav-text">من نحن</span>
                 </a>
             </div>
             <div class="sidebar-nav-item">
                 <a href="<?php echo e(route('services')); ?>" class="sidebar-nav-link<?php echo e(request()->routeIs('services') ? ' active' : ''); ?>">
-                    <i class="fas fa-cogs"></i>
-                    خدماتنا
+                    <div class="sidebar-nav-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <span class="sidebar-nav-text">خدماتنا</span>
                 </a>
             </div>
             <div class="sidebar-nav-item">
                 <a href="<?php echo e(route('portfolio.index')); ?>" class="sidebar-nav-link<?php echo e(request()->routeIs('portfolio.index') ? ' active' : ''); ?>">
-                    <i class="fas fa-briefcase"></i>
-                    أعمالنا
+                    <div class="sidebar-nav-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <span class="sidebar-nav-text">أعمالنا</span>
                 </a>
             </div>
             <div class="sidebar-nav-item">
                 <a href="<?php echo e(route('contact.index')); ?>" class="sidebar-nav-link<?php echo e(request()->routeIs('contact.index') ? ' active' : ''); ?>">
-                    <i class="fas fa-envelope"></i>
-                    تواصل معنا
+                    <div class="sidebar-nav-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <span class="sidebar-nav-text">تواصل معنا</span>
                 </a>
             </div>
         </nav>
