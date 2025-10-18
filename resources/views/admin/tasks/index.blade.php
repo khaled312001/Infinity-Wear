@@ -147,7 +147,7 @@
                                     <div class="column-title">
                                         <i class="{{ $column->column_icon }}" style="color: {{ $column->column_color }}"></i>
                                         <span>{{ $column->name }}</span>
-                                        <span class="task-count">{{ $column->active_tasks_count }}</span>
+                                        <span class="task-count">{{ $column->tasks->count() }}</span>
                                     </div>
                                     <div class="column-actions">
                                         <button class="btn btn-sm btn-outline-primary" onclick="addTask({{ $column->id }})">
@@ -174,6 +174,17 @@
                                             @if($task->description)
                                                 <div class="task-description">{{ Str::limit($task->description, 100) }}</div>
                                             @endif
+
+                                            <div class="task-meta">
+                                                <span class="priority-badge priority-{{ $task->priority }}">
+                                                    {{ ucfirst($task->priority) }}
+                                                </span>
+                                                @if($task->progress_percentage > 0)
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: {{ $task->progress_percentage }}%"></div>
+                                                    </div>
+                                                @endif
+                                            </div>
 
                                             @if($task->labels && count($task->labels) > 0)
                                                 <div class="task-labels">
