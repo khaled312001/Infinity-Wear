@@ -339,16 +339,16 @@ class TaskController extends Controller
     {
         try {
             return [
-                'admins' => Admin::select('id', 'name', 'email')->get(),
-                'marketing' => MarketingTeam::select('id', 'name', 'email')->get(),
-                'sales' => SalesTeam::select('id', 'name', 'email')->get()
+                'admins' => Admin::select('id', 'name', 'email')->get()->toArray(),
+                'marketing' => MarketingTeam::select('id', 'name', 'email')->get()->toArray(),
+                'sales' => SalesTeam::select('id', 'name', 'email')->get()->toArray()
             ];
         } catch (\Exception $e) {
             \Log::warning('Failed to load users for sales task assignment: ' . $e->getMessage());
             return [
-                'admins' => collect(),
-                'marketing' => collect(),
-                'sales' => collect()
+                'admins' => [],
+                'marketing' => [],
+                'sales' => []
             ];
         }
     }
