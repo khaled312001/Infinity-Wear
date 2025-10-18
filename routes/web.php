@@ -59,9 +59,7 @@ Route::get('/importer/dashboard', function () {
     return view('demo.importer-dashboard');
 })->name('importer.demo');
 
-Route::get('/sales/dashboard', function () {
-    return view('demo.sales-dashboard');
-})->name('sales.dashboard');
+// Demo route removed - using proper authenticated route below
 
 Route::get('/marketing/dashboard', function () {
     return view('demo.marketing-dashboard');

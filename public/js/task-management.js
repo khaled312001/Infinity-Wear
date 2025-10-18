@@ -897,3 +897,9 @@ function exportFilteredTasks() {
         window.taskManagement.exportFilteredTasks();
     }
 }
+
+function deleteTask(taskId) {
+    if (window.taskManagement) {
+        window.taskManagement.deleteTask(taskId);
+    }
+}

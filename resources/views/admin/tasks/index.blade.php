@@ -341,11 +341,14 @@
                                                 @endif
 
                                                 <div class="task-actions">
-                                                    <button class="btn btn-sm btn-outline-primary" onclick="viewTask({{ $task->id }})">
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="viewTask({{ $task->id }})" title="عرض">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
-                                                    <button class="btn btn-sm btn-outline-secondary" onclick="editTask({{ $task->id }})">
+                                                    <button class="btn btn-sm btn-outline-secondary" onclick="editTask({{ $task->id }})" title="تعديل">
                                                         <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteTask({{ $task->id }})" title="حذف">
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
                                             </div>
