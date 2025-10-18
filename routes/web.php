@@ -794,6 +794,11 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
         Route::get('/', [App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('index')->middleware('user.permission:permissions_management');
         Route::put('/', [App\Http\Controllers\Admin\PermissionController::class, 'update'])->name('update')->middleware('user.permission:permissions_management');
         Route::post('/reset', [App\Http\Controllers\Admin\PermissionController::class, 'reset'])->name('reset')->middleware('user.permission:permissions_management');
+        
+        // Role management routes
+        Route::post('/roles', [App\Http\Controllers\Admin\PermissionController::class, 'storeRole'])->name('store-role')->middleware('user.permission:permissions_management');
+        Route::put('/roles/{role}', [App\Http\Controllers\Admin\PermissionController::class, 'updateRole'])->name('update-role')->middleware('user.permission:permissions_management');
+        Route::delete('/roles/{role}', [App\Http\Controllers\Admin\PermissionController::class, 'destroyRole'])->name('destroy-role')->middleware('user.permission:permissions_management');
     });
     
     // إدارة رسائل التواصل

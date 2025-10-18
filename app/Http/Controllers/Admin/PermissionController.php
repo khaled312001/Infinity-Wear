@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,141 +15,39 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        // Define available permissions for each user type based on actual sidebar pages
-        $permissions = [
-            'admin' => [
-                // الرئيسية
-                'dashboard' => 'الوصول للوحة التحكم',
-                'notifications' => 'الإشعارات',
-                'contacts' => 'رسائل التواصل',
-                'whatsapp' => 'رسائل الواتساب',
-                
-                // إدارة المحتوى
-                'services_management' => 'إدارة الخدمات',
-                'portfolio_management' => 'معرض الأعمال',
-                'testimonials_management' => 'التقييمات',
-                
-                // إدارة المستوردين
-                'importers_management' => 'المستوردين',
-                'importers_orders' => 'طلبات المستوردين',
-                
-                // إدارة المهام
-                'tasks_management' => 'المهام',
-                
-                // إدارة المالية
-                'finance_dashboard' => 'لوحة المالية',
-                'finance_transactions' => 'المعاملات المالية',
-                'finance_reports' => 'التقارير المالية',
-                
-                // إدارة الفرق
-                'marketing_team_management' => 'فريق التسويق',
-                'sales_team_management' => 'فريق المبيعات',
-                
-                // إدارة العملاء
-                'customer_notes' => 'ملاحظات العملاء',
-                
-                // إدارة النظام
-                'reports' => 'التقارير',
-                'settings' => 'الإعدادات',
-                'permissions_management' => 'الأدوار والصلاحيات',
-                'admins_management' => 'إدارة المديرين',
-                'profile' => 'الملف الشخصي'
-            ],
-            'importer' => [
-                // الرئيسية
-                'dashboard' => 'الوصول للوحة التحكم',
-                
-                // إدارة الطلبات
-                'orders' => 'طلباتي',
-                'tracking' => 'تتبع الشحنات',
-                'invoices' => 'الفواتير',
-                
-                // إدارة الحساب
-                'profile' => 'الملف الشخصي',
-                'payment_methods' => 'طرق الدفع',
-                'notifications' => 'الإشعارات',
-                
-                // الدعم والمساعدة
-                'help' => 'المساعدة',
-                'support' => 'الدعم الفني',
-                'contact' => 'التواصل معنا'
-            ],
-            'sales' => [
-                // الرئيسية
-                'dashboard' => 'الوصول للوحة التحكم',
-                
-                // إدارة الطلبات
-                'orders' => 'طلبات العملاء',
-                'importer_orders' => 'طلبات المستوردين',
-                
-                // إدارة المستوردين
-                'importers' => 'المستوردين',
-                
-                // إدارة المهام
-                'tasks' => 'المهام',
-                
-                // إدارة التواصل
-                'contacts' => 'جهات الاتصال',
-                
-                // التقارير
-                'reports' => 'التقارير',
-                
-                // إدارة الحساب
-                'profile' => 'الملف الشخصي'
-            ],
-            'marketing' => [
-                // الرئيسية
-                'dashboard' => 'الوصول للوحة التحكم',
-                
-                // إدارة المحتوى
-                'portfolio' => 'معرض الأعمال',
-                'testimonials' => 'التقييمات',
-                
-                // إدارة المهام
-                'tasks' => 'المهام',
-                
-                // إدارة التواصل
-                'contacts' => 'جهات الاتصال',
-                
-                // إدارة الحساب
-                'profile' => 'الملف الشخصي'
-            ]
-        ];
+        // Get permissions grouped by user type
+        $permissionsByUserType = Permission::where('is_active', true)
+            ->orderBy('user_type')
+            ->orderBy('module')
+            ->orderBy('display_name')
+            ->get()
+            ->groupBy('user_type');
 
-        // Get current permissions from database (if exists)
+        // Get roles with their permissions
+        $roles = Role::with('permissions')->get();
+
+        // Get current user type permissions from database
         $currentPermissions = $this->getCurrentPermissions();
 
-        return view('admin.permissions.index', compact('permissions', 'currentPermissions'));
+        return view('admin.permissions.index', compact('permissionsByUserType', 'roles', 'currentPermissions'));
     }
 
     /**
-     * Update permissions for user types
+     * Update permissions for roles
      */
     public function update(Request $request)
     {
         $request->validate([
-            'permissions' => 'required|array',
-            'permissions.*' => 'array'
+            'role_permissions' => 'required|array',
+            'role_permissions.*' => 'array'
         ]);
 
         try {
             DB::beginTransaction();
 
-            // Clear existing permissions
-            DB::table('user_type_permissions')->truncate();
-
-            // Insert new permissions
-            foreach ($request->permissions as $userType => $userPermissions) {
-                foreach ($userPermissions as $permission => $enabled) {
-                    if ($enabled) {
-                        DB::table('user_type_permissions')->insert([
-                            'user_type' => $userType,
-                            'permission' => $permission,
-                            'created_at' => now(),
-                            'updated_at' => now()
-                        ]);
-                    }
-                }
+            foreach ($request->role_permissions as $roleId => $permissionIds) {
+                $role = Role::findOrFail($roleId);
+                $role->permissions()->sync($permissionIds);
             }
 
             DB::commit();
@@ -168,16 +68,19 @@ class PermissionController extends Controller
     private function getCurrentPermissions()
     {
         try {
-            $permissions = DB::table('user_type_permissions')
-                ->select('user_type', 'permission')
+            // Get role permissions
+            $rolePermissions = DB::table('role_permissions')
+                ->join('roles', 'role_permissions.role_id', '=', 'roles.id')
+                ->join('permissions', 'role_permissions.permission_id', '=', 'permissions.id')
+                ->select('roles.name as role_name', 'permissions.name as permission_name')
                 ->get()
-                ->groupBy('user_type')
+                ->groupBy('role_name')
                 ->map(function ($group) {
-                    return $group->pluck('permission')->toArray();
+                    return $group->pluck('permission_name')->toArray();
                 })
                 ->toArray();
 
-            return $permissions;
+            return $rolePermissions;
         } catch (\Exception $e) {
             // If table doesn't exist, return empty array
             return [];
@@ -192,44 +95,8 @@ class PermissionController extends Controller
         try {
             DB::beginTransaction();
 
-            // Clear existing permissions
-            DB::table('user_type_permissions')->truncate();
-
-            // Set default permissions based on actual sidebar pages
-            $defaultPermissions = [
-                'admin' => [
-                    'dashboard', 'notifications', 'contacts', 'whatsapp',
-                    'services_management', 'portfolio_management', 'testimonials_management',
-                    'importers_management', 'importers_orders', 'tasks_management',
-                    'finance_dashboard', 'finance_transactions', 'finance_reports',
-                    'marketing_team_management', 'sales_team_management', 'customer_notes',
-                    'reports', 'settings', 'permissions_management', 'admins_management', 'profile'
-                ],
-                'importer' => [
-                    'dashboard', 'orders', 'tracking', 'invoices',
-                    'profile', 'payment_methods', 'notifications',
-                    'help', 'support', 'contact'
-                ],
-                'sales' => [
-                    'dashboard', 'orders', 'importer_orders', 'importers',
-                    'tasks', 'contacts', 'reports', 'profile'
-                ],
-                'marketing' => [
-                    'dashboard', 'portfolio', 'testimonials', 'tasks',
-                    'contacts', 'profile'
-                ]
-            ];
-
-            foreach ($defaultPermissions as $userType => $permissions) {
-                foreach ($permissions as $permission) {
-                    DB::table('user_type_permissions')->insert([
-                        'user_type' => $userType,
-                        'permission' => $permission,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-                }
-            }
+            // Run the seeder to reset permissions
+            $this->call(DashboardPermissionsSeeder::class);
 
             DB::commit();
 
@@ -240,6 +107,106 @@ class PermissionController extends Controller
             DB::rollBack();
             return redirect()->route('admin.permissions.index')
                 ->with('error', 'حدث خطأ أثناء إعادة تعيين الصلاحيات: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Create a new role
+     */
+    public function storeRole(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:roles',
+            'display_name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'permissions' => 'array'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $role = Role::create([
+                'name' => $request->name,
+                'display_name' => $request->display_name,
+                'description' => $request->description,
+                'is_active' => true
+            ]);
+
+            if ($request->permissions) {
+                $role->permissions()->sync($request->permissions);
+            }
+
+            DB::commit();
+
+            return redirect()->route('admin.permissions.index')
+                ->with('success', 'تم إنشاء الدور بنجاح');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('admin.permissions.index')
+                ->with('error', 'حدث خطأ أثناء إنشاء الدور: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update a role
+     */
+    public function updateRole(Request $request, $id)
+    {
+        $request->validate([
+            'display_name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'permissions' => 'array'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $role = Role::findOrFail($id);
+            $role->update([
+                'display_name' => $request->display_name,
+                'description' => $request->description
+            ]);
+
+            if ($request->has('permissions')) {
+                $role->permissions()->sync($request->permissions);
+            }
+
+            DB::commit();
+
+            return redirect()->route('admin.permissions.index')
+                ->with('success', 'تم تحديث الدور بنجاح');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('admin.permissions.index')
+                ->with('error', 'حدث خطأ أثناء تحديث الدور: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Delete a role
+     */
+    public function destroyRole($id)
+    {
+        try {
+            $role = Role::findOrFail($id);
+            
+            // Check if role is being used
+            if ($role->admins()->count() > 0 || $role->users()->count() > 0) {
+                return redirect()->route('admin.permissions.index')
+                    ->with('error', 'لا يمكن حذف هذا الدور لأنه مستخدم حالياً');
+            }
+
+            $role->permissions()->detach();
+            $role->delete();
+
+            return redirect()->route('admin.permissions.index')
+                ->with('success', 'تم حذف الدور بنجاح');
+
+        } catch (\Exception $e) {
+            return redirect()->route('admin.permissions.index')
+                ->with('error', 'حدث خطأ أثناء حذف الدور: ' . $e->getMessage());
         }
     }
 }
