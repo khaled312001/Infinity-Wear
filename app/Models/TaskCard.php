@@ -11,6 +11,8 @@ class TaskCard extends Model
 {
     use HasFactory;
 
+    protected $table = 'tasks';
+
     protected $fillable = [
         'title',
         'description',
