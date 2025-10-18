@@ -16,10 +16,16 @@ class Setting extends Model
      */
     public static function get($key, $default = null)
     {
-        return Cache::remember("setting.{$key}", 3600, function () use ($key, $default) {
-            $setting = static::where('key', $key)->first();
-            return $setting ? $setting->value : $default;
-        });
+        try {
+            return Cache::remember("setting.{$key}", 3600, function () use ($key, $default) {
+                $setting = static::where('key', $key)->first();
+                return $setting ? $setting->value : $default;
+            });
+        } catch (\Exception $e) {
+            // If database is unavailable, return default value
+            \Log::warning("Database unavailable for setting {$key}, using default: " . $e->getMessage());
+            return $default;
+        }
     }
 
     /**
@@ -65,9 +71,15 @@ class Setting extends Model
      */
     public static function getAll()
     {
-        return Cache::remember('settings.all', 3600, function () {
-            return static::pluck('value', 'key')->toArray();
-        });
+        try {
+            return Cache::remember('settings.all', 3600, function () {
+                return static::pluck('value', 'key')->toArray();
+            });
+        } catch (\Exception $e) {
+            // If database is unavailable, return empty array
+            \Log::warning("Database unavailable for settings, returning empty array: " . $e->getMessage());
+            return [];
+        }
     }
 
     /**
