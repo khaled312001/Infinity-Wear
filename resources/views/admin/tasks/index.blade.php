@@ -138,8 +138,10 @@
     <div class="task-boards-container">
         <!-- حاوي الأعمدة الرئيسي -->
         <div class="columns-container" id="main-columns-container">
-            @foreach($boards as $board)
-                @foreach($board->columns as $column)
+            @if($boards->count() > 0)
+                @foreach($boards as $board)
+                    @if($board->columns->count() > 0)
+                        @foreach($board->columns as $column)
                             <div class="task-column" data-column-id="{{ $column->id }}" data-board-id="{{ $board->id }}">
                                 <div class="column-header">
                                     <div class="column-title">
@@ -220,8 +222,24 @@
                                     @endforeach
                                 </div>
                             </div>
+                        @endforeach
+                    @else
+                        <div class="col-12 text-center py-5">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                لا توجد أعمدة في هذه اللوحة
+                            </div>
+                        </div>
+                    @endif
                 @endforeach
-            @endforeach
+            @else
+                <div class="col-12 text-center py-5">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        لا توجد لوحات مهام. <a href="#" onclick="createBoard()">أنشئ لوحة جديدة</a>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 
