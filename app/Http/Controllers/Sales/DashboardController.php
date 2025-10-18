@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Importer;
 use App\Models\ImporterOrder;
-use App\Models\Task;
+use App\Models\TaskCard;
 use App\Models\Transaction;
 use App\Models\Contact;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +43,7 @@ class DashboardController extends Controller
             ->get();
 
         // المهام المرتبطة بالمبيعات
-        $tasks = Task::where('department', 'sales')
+        $tasks = TaskCard::where('department', 'sales')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -151,14 +151,14 @@ class DashboardController extends Controller
 
     public function tasks()
     {
-        $tasks = Task::where('department', 'sales')
+        $tasks = TaskCard::where('department', 'sales')
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
         return view('sales.tasks.index', compact('tasks'));
     }
 
-    public function updateTaskStatus(Request $request, Task $task)
+    public function updateTaskStatus(Request $request, TaskCard $task)
     {
         $user = Auth::user();
         

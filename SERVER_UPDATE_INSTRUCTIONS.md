@@ -8,12 +8,14 @@ database/migrations/2025_10_18_184847_fix_department_column_in_tasks_table.php
 database/migrations/2025_10_18_184909_fix_remaining_columns_in_tasks_table.php
 ```
 
-### 2. ملفات Controller المحدثة:
+### 2. ملفات Controller المحدثة (مع إصلاح مشكلة Authentication):
 ```
 app/Http/Controllers/Admin/TaskManagementController.php
 app/Http/Controllers/Marketing/TaskController.php
 app/Http/Controllers/Sales/TaskController.php
 ```
+
+**ملاحظة مهمة:** تم إصلاح مشكلة `created_by` التي كانت تسبب خطأ `Column 'created_by' cannot be null`
 
 ### 3. ملفات Middleware المحدثة:
 ```

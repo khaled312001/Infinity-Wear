@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Marketing;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Task;
+use App\Models\TaskCard;
 use App\Models\PortfolioItem;
 use App\Models\Testimonial;
 use App\Models\SectionContent;
@@ -22,7 +22,7 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         // المهام المرتبطة بالتسويق
-        $tasks = Task::where('department', 'marketing')
+        $tasks = TaskCard::where('department', 'marketing')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -238,14 +238,14 @@ class DashboardController extends Controller
 
     public function tasks()
     {
-        $tasks = Task::where('department', 'marketing')
+        $tasks = TaskCard::where('department', 'marketing')
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
         return view('marketing.tasks.index', compact('tasks'));
     }
 
-    public function updateTaskStatus(Request $request, Task $task)
+    public function updateTaskStatus(Request $request, TaskCard $task)
     {
         $user = Auth::user();
         

@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Admin;
 use App\Models\Order;
 use App\Models\Importer;
-use App\Models\Task;
+use App\Models\TaskCard;
 use App\Models\Transaction;
 use App\Models\ImporterOrder;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +26,7 @@ class DashboardController extends Controller
             'total_users' => User::count(),
             'total_employees' => 0, // Employee table doesn't exist yet
             'total_importers' => Importer::count(),
-            'total_tasks' => Task::count(),
+            'total_tasks' => TaskCard::count(),
             'total_transactions' => Transaction::count(),
             'total_importer_orders' => ImporterOrder::count(),
         ];
@@ -62,7 +62,7 @@ class DashboardController extends Controller
             ->get();
 
         // المهام المعلقة
-        $pendingTasks = Task::with(['assignedTo', 'importer'])
+        $pendingTasks = TaskCard::with(['assignedUser', 'board'])
             ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->limit(10)
@@ -80,7 +80,7 @@ class DashboardController extends Controller
             ->get();
 
         // إحصائيات المهام حسب الأولوية
-        $taskStats = Task::select('priority', DB::raw('count(*) as count'))
+        $taskStats = TaskCard::select('priority', DB::raw('count(*) as count'))
             ->groupBy('priority')
             ->get();
 
@@ -154,17 +154,17 @@ class DashboardController extends Controller
 
     public function tasks()
     {
-        $tasks = Task::with(['assignedAdmin', 'createdByAdmin'])
+        $tasks = TaskCard::with(['assignedUser', 'creator'])
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
         // إحصائيات المهام
         $stats = [
-            'total' => Task::count(),
-            'pending' => Task::where('status', 'pending')->count(),
-            'in_progress' => Task::where('status', 'in_progress')->count(),
-            'completed' => Task::where('status', 'completed')->count(),
-            'overdue' => Task::where('due_date', '<', now())
+            'total' => TaskCard::count(),
+            'pending' => TaskCard::where('status', 'pending')->count(),
+            'in_progress' => TaskCard::where('status', 'in_progress')->count(),
+            'completed' => TaskCard::where('status', 'completed')->count(),
+            'overdue' => TaskCard::where('due_date', '<', now())
                 ->where('status', '!=', 'completed')
                 ->count(),
         ];

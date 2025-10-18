@@ -7,7 +7,7 @@ use App\Models\Importer;
 use App\Models\ImporterOrder;
 use App\Models\MarketingTeam;
 use App\Models\SalesTeam;
-use App\Models\Task;
+use App\Models\TaskCard;
 use App\Models\PortfolioItem;
 use App\Models\Testimonial;
 use App\Models\User;
@@ -48,9 +48,9 @@ class AdminController extends Controller
         $monthlyProfit = Transaction::getMonthlyProfit();
         
         // إحصائيات المهام
-        $totalTasks = Task::count();
-        $pendingTasks = Task::where('status', '!=', 'completed')->count();
-        $overdueTasks = Task::where('due_date', '<', now())
+        $totalTasks = TaskCard::count();
+        $pendingTasks = TaskCard::where('status', '!=', 'completed')->count();
+        $overdueTasks = TaskCard::where('due_date', '<', now())
                            ->where('status', '!=', 'completed')
                            ->count();
         
@@ -72,7 +72,7 @@ class AdminController extends Controller
         ];
         
         // إحصائيات المهام المتأخرة
-        $overdueTasks = Task::where('status', '!=', 'completed')
+        $overdueTasks = TaskCard::where('status', '!=', 'completed')
                           ->where('due_date', '<', now())
                           ->count();
         
@@ -94,7 +94,7 @@ class AdminController extends Controller
         
         
         // المهام العاجلة
-        $urgentTasks = Task::where('status', '!=', 'completed')
+        $urgentTasks = TaskCard::where('status', '!=', 'completed')
                          ->where('priority', 'high')
                          ->orderBy('due_date')
                          ->take(5)
@@ -155,7 +155,7 @@ class AdminController extends Controller
         }
         
         // أحدث المهام
-        $recentTasks = Task::latest()->take(3)->get();
+        $recentTasks = TaskCard::latest()->take(3)->get();
         foreach ($recentTasks as $task) {
             $activities->push([
                 'type' => 'task',
@@ -241,9 +241,9 @@ class AdminController extends Controller
                 'total_users' => User::count(),
                 'total_importers' => Importer::count(),
                 'monthly_revenue' => Transaction::getMonthlyRevenue(),
-                'total_tasks' => Task::count(),
-                'pending_tasks' => Task::where('status', '!=', 'completed')->count(),
-                'overdue_tasks' => Task::where('status', '!=', 'completed')
+                'total_tasks' => TaskCard::count(),
+                'pending_tasks' => TaskCard::where('status', '!=', 'completed')->count(),
+                'overdue_tasks' => TaskCard::where('status', '!=', 'completed')
                                    ->where('due_date', '<', now())
                                    ->count(),
             ];
@@ -483,7 +483,7 @@ class AdminController extends Controller
         ->toArray();
 
         // تقارير المهام حسب القسم
-        $tasksByDepartment = Task::select(
+        $tasksByDepartment = TaskCard::select(
             'department',
             DB::raw('COUNT(*) as total'),
             DB::raw('SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) as completed')
@@ -1002,18 +1002,18 @@ class AdminController extends Controller
 
         // إحصائيات المهام
         $taskStats = [
-            'total' => Task::where('assigned_to', $member->admin_id)
+            'total' => TaskCard::where('assigned_to', $member->admin_id)
                 ->where('department', 'marketing')
                 ->count(),
-            'completed' => Task::where('assigned_to', $member->admin_id)
+            'completed' => TaskCard::where('assigned_to', $member->admin_id)
                 ->where('department', 'marketing')
                 ->where('status', 'completed')
                 ->count(),
-            'pending' => Task::where('assigned_to', $member->admin_id)
+            'pending' => TaskCard::where('assigned_to', $member->admin_id)
                 ->where('department', 'marketing')
                 ->where('status', '!=', 'completed')
                 ->count(),
-            'overdue' => Task::where('assigned_to', $member->admin_id)
+            'overdue' => TaskCard::where('assigned_to', $member->admin_id)
                 ->where('department', 'marketing')
                 ->where('status', '!=', 'completed')
                 ->where('due_date', '<', now())
@@ -1037,7 +1037,7 @@ class AdminController extends Controller
             'due_date' => 'required|date|after_or_equal:today',
         ]);
 
-        $task = Task::create([
+        $task = TaskCard::create([
             'title' => $request->title,
             'description' => $request->description,
             'assigned_to' => $member->admin_id,
@@ -1175,14 +1175,14 @@ class AdminController extends Controller
 
         // إحصائيات المهام
         $taskStats = [
-            'total' => Task::where('assigned_to', $member->admin_id)
+            'total' => TaskCard::where('assigned_to', $member->admin_id)
                 ->where('department', 'sales')
                 ->count(),
-            'completed' => Task::where('assigned_to', $member->admin_id)
+            'completed' => TaskCard::where('assigned_to', $member->admin_id)
                 ->where('department', 'sales')
                 ->where('status', 'completed')
                 ->count(),
-            'pending' => Task::where('assigned_to', $member->admin_id)
+            'pending' => TaskCard::where('assigned_to', $member->admin_id)
                 ->where('department', 'sales')
                 ->where('status', '!=', 'completed')
                 ->count(),
@@ -1253,7 +1253,7 @@ class AdminController extends Controller
             'due_date' => 'required|date|after_or_equal:today',
         ]);
 
-        $task = Task::create([
+        $task = TaskCard::create([
             'title' => $request->title,
             'description' => $request->description,
             'assigned_to' => $member->admin_id,
