@@ -18,5 +18,5 @@
   <path d="M330,280 L345,295 L370,265" stroke="white" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   
   <!-- Arabic Text -->
-  <text x="250" y="70" font-family="Cairo, Arial" font-size="24" text-anchor="middle" fill="#1e3a8a" font-weight="bold">تسجيل كمستورد</text>
+  <text x="250" y="70" font-family="Cairo, Arial" font-size="24" text-anchor="middle" fill="#1e3a8a" font-weight="bold">أطلب الآن</text>
 </svg>

@@ -10,174 +10,6 @@
 <script src="{{ asset('js/multi-step-form.js') }}"></script>
 @endpush
 
-<style>
-/* Multi-step Form Styles - Inline for immediate loading */
-.form-step {
-    display: none !important;
-    opacity: 0;
-    visibility: hidden;
-}
-
-.form-step.active {
-    display: block !important;
-    opacity: 1;
-    visibility: visible;
-}
-
-.form-step:not(.active) {
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    overflow: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.step-item.active .step-circle {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-color: #667eea;
-    transform: scale(1.15);
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-}
-
-.step-1 {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: white !important;
-    border-color: #667eea !important;
-}
-
-.step-2 {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
-    color: white !important;
-    border-color: #28a745 !important;
-}
-
-.step-3 {
-    background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%) !important;
-    color: white !important;
-    border-color: #17a2b8 !important;
-}
-
-.step-4 {
-    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%) !important;
-    color: white !important;
-    border-color: #ffc107 !important;
-}
-</style>
-
-<script>
-// Multi-step Form JavaScript - Inline for immediate loading
-document.addEventListener('DOMContentLoaded', function() {
-    let currentStep = 1;
-    const totalSteps = 4;
-    
-    // Elements
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const submitBtn = document.getElementById('submitBtn');
-    
-    // Business type change handler
-    const businessTypeSelect = document.getElementById('business_type');
-    const otherBusinessTypeDiv = document.getElementById('other_business_type_div');
-    
-    if (businessTypeSelect) {
-        businessTypeSelect.addEventListener('change', function() {
-            if (this.value === 'other') {
-                otherBusinessTypeDiv.style.display = 'block';
-                otherBusinessTypeDiv.querySelector('input').required = true;
-            } else {
-                otherBusinessTypeDiv.style.display = 'none';
-                otherBusinessTypeDiv.querySelector('input').required = false;
-            }
-        });
-    }
-    
-    // Design option change handler
-    const designOptions = document.querySelectorAll('.design-option');
-    const designDetails = document.querySelectorAll('.design-detail');
-    
-    designOptions.forEach(option => {
-        option.addEventListener('change', function() {
-            const selectedOption = this.value;
-            
-            // Hide all design details
-            designDetails.forEach(detail => {
-                detail.style.display = 'none';
-            });
-            
-            // Show selected design detail
-            const selectedDetail = document.getElementById(`design_${selectedOption}_detail`);
-            if (selectedDetail) {
-                selectedDetail.style.display = 'block';
-            }
-        });
-    });
-    
-    // Password toggle
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    
-    if (togglePassword && passwordInput) {
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.querySelector('i').classList.toggle('fa-eye');
-            this.querySelector('i').classList.toggle('fa-eye-slash');
-        });
-    }
-    
-    // Navigation functions
-    function showStep(step) {
-        // Hide all steps first
-        document.querySelectorAll('.form-step').forEach((stepElement) => {
-            stepElement.classList.remove('active');
-            stepElement.style.display = 'none';
-        });
-        
-        // Show current step
-        const currentStepElement = document.getElementById(`step${step}`);
-        if (currentStepElement) {
-            currentStepElement.classList.add('active');
-            currentStepElement.style.display = 'block';
-        }
-        
-        // Update step indicators
-        document.querySelectorAll('.step-item').forEach((item, index) => {
-            item.classList.toggle('active', index + 1 === step);
-            item.classList.toggle('completed', index + 1 < step);
-        });
-        
-        // Update navigation buttons
-        prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
-        nextBtn.style.display = step === totalSteps ? 'none' : 'inline-block';
-        submitBtn.style.display = step === totalSteps ? 'inline-block' : 'none';
-    }
-    
-    function nextStep() {
-        if (currentStep < totalSteps) {
-            currentStep++;
-            showStep(currentStep);
-        }
-    }
-    
-    function prevStep() {
-        if (currentStep > 1) {
-            currentStep--;
-            showStep(currentStep);
-        }
-    }
-    
-    // Event listeners
-    if (nextBtn) nextBtn.addEventListener('click', nextStep);
-    if (prevBtn) prevBtn.addEventListener('click', prevStep);
-    
-    // Initialize
-    showStep(currentStep);
-});
-</script>
-
 @section('content')
 <!-- قسم العنوان الرئيسي -->
 <section class="hero-section hero-inner-section bg-light py-5 mb-5">
@@ -203,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <!-- Header -->
                     <div class="card-header bg-gradient-primary text-white text-center py-4">
                         <h3 class="mb-0 fw-bold">
-                            <i class="fas fa-shopping-cart me-2"></i>
+                            <i class="fas fa-user-plus me-2"></i>
                             استمارة طلب ملابس مخصصة
                         </h3>
                         <p class="mb-0 mt-2 opacity-75">مرحباً بك في عالم الملابس المميزة</p>
@@ -516,53 +348,168 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </div>
                                     
                                     <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="name" class="form-label fw-semibold">
-                                                الاسم الكامل <span class="text-danger">*</span>
+                                        <div class="col-12 mb-4">
+                                            <label for="requirements" class="form-label fw-semibold">
+                                                متطلبات الطلب <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" class="form-control form-control-lg" id="name" name="name" 
-                                                   value="{{ old('name') }}" required>
-                                            <div class="invalid-feedback"></div>
-                                        </div>
-                                        
-                                        <div class="col-md-6 mb-3">
-                                            <label for="email" class="form-label fw-semibold">
-                                                البريد الإلكتروني <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="email" class="form-control form-control-lg" id="email" name="email" 
-                                                   value="{{ old('email') }}" required>
-                                            <div class="invalid-feedback"></div>
-                                        </div>
-                                        
-                                        <div class="col-md-6 mb-3">
-                                            <label for="phone" class="form-label fw-semibold">
-                                                رقم الهاتف <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="text" class="form-control form-control-lg" id="phone" name="phone" 
-                                                   value="{{ old('phone') }}" required>
-                                            <div class="invalid-feedback"></div>
-                                        </div>
-                                        
-                                        <div class="col-md-6 mb-3">
-                                            <label for="password" class="form-label fw-semibold">
-                                                كلمة المرور <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="input-group">
-                                                <input type="password" class="form-control form-control-lg" id="password" name="password" required>
-                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
+                                            <textarea class="form-control form-control-lg" id="requirements" name="requirements" 
+                                                      rows="4" required placeholder="يرجى وصف احتياجاتك من الملابس بالتفصيل...">{{ old('requirements') }}</textarea>
+                                            <div class="form-text">
+                                                <i class="fas fa-lightbulb me-1 text-warning"></i>
+                                                مثال: تيشرتات رياضية أزرق، شورتات بيضاء، أحجام مختلفة، شعار النادي
                                             </div>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         
                                         <div class="col-md-6 mb-3">
-                                            <label for="password_confirmation" class="form-label fw-semibold">
-                                                تأكيد كلمة المرور <span class="text-danger">*</span>
+                                            <label for="quantity" class="form-label fw-semibold">
+                                                الكمية المطلوبة <span class="text-danger">*</span>
                                             </label>
-                                            <input type="password" class="form-control form-control-lg" id="password_confirmation" 
-                                                   name="password_confirmation" required>
+                                            <input type="number" class="form-control form-control-lg" id="quantity" name="quantity" 
+                                                   value="{{ old('quantity', 100) }}" min="100" required>
+                                            <div class="form-text">الحد الأدنى 100 قطعة</div>
                                             <div class="invalid-feedback"></div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">
+                                                طريقة تحديد التصميم <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="design-options">
+                                                <div class="row">
+                                                    <div class="col-md-4 mb-3">
+                                                        <div class="design-option-card" data-option="text">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input design-option" type="radio" 
+                                                                       name="design_option" id="design_option_text" value="text" 
+                                                                       {{ old('design_option') == 'text' ? 'checked' : '' }} checked>
+                                                                <label class="form-check-label w-100" for="design_option_text">
+                                                                    <div class="text-center p-3">
+                                                                        <i class="fas fa-font fa-2x text-primary mb-2"></i>
+                                                                        <div class="fw-semibold">وصف نصي</div>
+                                                                        <small class="text-muted">اكتب وصف التصميم</small>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="col-md-4 mb-3">
+                                                        <div class="design-option-card" data-option="upload">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input design-option" type="radio" 
+                                                                       name="design_option" id="design_option_upload" value="upload" 
+                                                                       {{ old('design_option') == 'upload' ? 'checked' : '' }}>
+                                                                <label class="form-check-label w-100" for="design_option_upload">
+                                                                    <div class="text-center p-3">
+                                                                        <i class="fas fa-upload fa-2x text-success mb-2"></i>
+                                                                        <div class="fw-semibold">رفع ملف</div>
+                                                                        <small class="text-muted">ارفع تصميمك</small>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="col-md-4 mb-3">
+                                                        <div class="design-option-card" data-option="template">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input design-option" type="radio" 
+                                                                       name="design_option" id="design_option_template" value="template" 
+                                                                       {{ old('design_option') == 'template' ? 'checked' : '' }}>
+                                                                <label class="form-check-label w-100" for="design_option_template">
+                                                                    <div class="text-center p-3">
+                                                                        <i class="fas fa-cube fa-2x text-info mb-2"></i>
+                                                                        <div class="fw-semibold">قالب جاهز</div>
+                                                                        <small class="text-muted">اختر من القوالب</small>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Design Details based on selection -->
+                                        <div class="col-12" id="design_details">
+                                            <!-- Text Design -->
+                                            <div class="design-detail" id="design_text_detail" style="display: block;">
+                                                <div class="mb-3">
+                                                    <label for="design_details_text" class="form-label fw-semibold">
+                                                        وصف التصميم <span class="text-danger">*</span>
+                                                    </label>
+                                                    <textarea class="form-control form-control-lg" id="design_details_text" 
+                                                              name="design_details_text" rows="4" 
+                                                              placeholder="مثال: زي رياضي أزرق مع خطوط بيضاء على الجانبين، شعار النادي على الصدر، واسم اللاعب على الظهر">{{ old('design_details_text') }}</textarea>
+                                                    <div class="form-text">
+                                                        <i class="fas fa-lightbulb me-1"></i>
+                                                        كن مفصلاً قدر الإمكان لضمان الحصول على التصميم المطلوب
+                                                    </div>
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Upload Design -->
+                                            <div class="design-detail" id="design_upload_detail" style="display: none;">
+                                                <div class="mb-3">
+                                                    <label for="design_file" class="form-label fw-semibold">
+                                                        ملف التصميم <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="file" class="form-control form-control-lg" id="design_file" 
+                                                           name="design_file" accept="image/*,application/pdf,.psd,.ai,.eps">
+                                                    <div class="form-text">
+                                                        <i class="fas fa-info-circle me-1"></i>
+                                                        الصيغ المدعومة: JPG, PNG, PDF, PSD, AI, EPS
+                                                    </div>
+                                                    <div class="invalid-feedback"></div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="design_upload_notes" class="form-label fw-semibold">ملاحظات إضافية</label>
+                                                    <textarea class="form-control form-control-lg" id="design_upload_notes" 
+                                                              name="design_upload_notes" rows="3" 
+                                                              placeholder="أي ملاحظات إضافية حول التصميم...">{{ old('design_upload_notes') }}</textarea>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Template Design -->
+                                            <div class="design-detail" id="design_template_detail" style="display: none;">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">اختر القالب</label>
+                                                    <div class="row">
+                                                        <div class="col-md-4 mb-3">
+                                                            <div class="template-card">
+                                                                <input type="radio" class="form-check-input" name="template_selected" 
+                                                                       id="template1" value="template1">
+                                                                <label for="template1" class="w-100">
+                                                                    <img src="{{ asset('images/template1.jpg') }}" class="img-fluid rounded" alt="قالب 1">
+                                                                    <div class="text-center mt-2 fw-semibold">قالب رياضي كلاسيكي</div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <div class="template-card">
+                                                                <input type="radio" class="form-check-input" name="template_selected" 
+                                                                       id="template2" value="template2">
+                                                                <label for="template2" class="w-100">
+                                                                    <img src="{{ asset('images/template2.jpg') }}" class="img-fluid rounded" alt="قالب 2">
+                                                                    <div class="text-center mt-2 fw-semibold">قالب عصري</div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 mb-3">
+                                                            <div class="template-card">
+                                                                <input type="radio" class="form-check-input" name="template_selected" 
+                                                                       id="template3" value="template3">
+                                                                <label for="template3" class="w-100">
+                                                                    <img src="{{ asset('images/template3.jpg') }}" class="img-fluid rounded" alt="قالب 3">
+                                                                    <div class="text-center mt-2 fw-semibold">قالب احترافي</div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -572,7 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="form-step" id="step4">
                                 <div class="step-content p-4">
                                     <div class="step-header text-center mb-4">
-                                        <h4 class="text-warning fw-bold">
+                                        <h4 class="text-primary fw-bold">
                                             <i class="fas fa-check-circle me-2"></i>
                                             المرحلة الرابعة: تأكيد البيانات
                                         </h4>
@@ -584,23 +531,20 @@ document.addEventListener('DOMContentLoaded', function() {
                                             <div class="col-md-6">
                                                 <div class="summary-card mb-4">
                                                     <h5 class="card-title text-primary">
-                                                        <i class="fas fa-shopping-cart me-2"></i>
-                                                        تفاصيل الطلب
+                                                        <i class="fas fa-user me-2"></i>
+                                                        المعلومات الشخصية
                                                     </h5>
                                                     <div class="summary-content">
-                                                        <p><strong>الكمية المطلوبة:</strong> <span id="summary_quantity">-</span> قطعة</p>
-                                                        <p><strong>طريقة التصميم:</strong> <span id="summary_design_option">-</span></p>
-                                                        <p><strong>متطلبات الطلب:</strong></p>
-                                                        <div class="bg-light p-3 rounded">
-                                                            <span id="summary_requirements">-</span>
-                                                        </div>
+                                                        <p><strong>الاسم:</strong> <span id="summary_name">-</span></p>
+                                                        <p><strong>البريد الإلكتروني:</strong> <span id="summary_email">-</span></p>
+                                                        <p><strong>رقم الهاتف:</strong> <span id="summary_phone">-</span></p>
                                                     </div>
                                                 </div>
                                             </div>
                                             
                                             <div class="col-md-6">
                                                 <div class="summary-card mb-4">
-                                                    <h5 class="card-title text-success">
+                                                    <h5 class="card-title text-primary">
                                                         <i class="fas fa-building me-2"></i>
                                                         معلومات الشركة
                                                     </h5>
@@ -614,14 +558,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                             
                                             <div class="col-12">
                                                 <div class="summary-card mb-4">
-                                                    <h5 class="card-title text-info">
-                                                        <i class="fas fa-user me-2"></i>
-                                                        المعلومات الشخصية
+                                                    <h5 class="card-title text-primary">
+                                                        <i class="fas fa-shopping-cart me-2"></i>
+                                                        تفاصيل الطلب
                                                     </h5>
                                                     <div class="summary-content">
-                                                        <p><strong>الاسم:</strong> <span id="summary_name">-</span></p>
-                                                        <p><strong>البريد الإلكتروني:</strong> <span id="summary_email">-</span></p>
-                                                        <p><strong>رقم الهاتف:</strong> <span id="summary_phone">-</span></p>
+                                                        <p><strong>الكمية المطلوبة:</strong> <span id="summary_quantity">-</span> قطعة</p>
+                                                        <p><strong>طريقة التصميم:</strong> <span id="summary_design_option">-</span></p>
+                                                        <p><strong>متطلبات الطلب:</strong></p>
+                                                        <div class="bg-light p-3 rounded">
+                                                            <span id="summary_requirements">-</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -702,5 +649,6 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
+
 
 @endsection

@@ -1,14 +1,14 @@
-@extends('layouts.app')
 
-@section('title', 'أطلب الآن - Infinity Wear')
 
-@push('styles')
-<link href="{{ asset('css/multi-step-form.css') }}" rel="stylesheet">
-@endpush
+<?php $__env->startSection('title', 'أطلب الآن - Infinity Wear'); ?>
 
-@push('scripts')
-<script src="{{ asset('js/multi-step-form.js') }}"></script>
-@endpush
+<?php $__env->startPush('styles'); ?>
+<link href="<?php echo e(asset('css/multi-step-form.css')); ?>" rel="stylesheet">
+<?php $__env->stopPush(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+<script src="<?php echo e(asset('js/multi-step-form.js')); ?>"></script>
+<?php $__env->stopPush(); ?>
 
 <style>
 /* Multi-step Form Styles - Inline for immediate loading */
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- قسم العنوان الرئيسي -->
 <section class="hero-section hero-inner-section bg-light py-5 mb-5">
     <div class="container">
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p class="lead mb-4">اطلب ملابسك المخصصة واستفد من خدماتنا المميزة في توريد الملابس بالجملة</p>
             </div>
             <div class="col-lg-6 text-center">
-                <img src="{{ asset('images/importer-register.svg') }}" alt="أطلب الآن" class="img-fluid" style="max-height: 300px;">
+                <img src="<?php echo e(asset('images/importer-register.svg')); ?>" alt="أطلب الآن" class="img-fluid" style="max-height: 300px;">
             </div>
         </div>
     </div>
@@ -210,15 +210,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     
                     <div class="card-body p-0">
-                        @if ($errors->any())
+                        <?php if($errors->any()): ?>
                             <div class="alert alert-danger m-4">
                                 <ul class="mb-0">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
+                                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <li><?php echo e($error); ?></li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </ul>
                             </div>
-                        @endif
+                        <?php endif; ?>
 
                         <!-- Dynamic Progress Bar -->
                         <div class="progress-container bg-light p-4">
@@ -253,8 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
 
-                        <form action="{{ route('importers.submit') }}" method="POST" class="needs-validation" enctype="multipart/form-data" id="multiStepForm">
-                            @csrf
+                        <form action="<?php echo e(route('importers.submit')); ?>" method="POST" class="needs-validation" enctype="multipart/form-data" id="multiStepForm">
+                            <?php echo csrf_field(); ?>
                             
                             <!-- Step 1: Order Details -->
                             <div class="form-step active" id="step1">
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 متطلبات الطلب <span class="text-danger">*</span>
                                             </label>
                                             <textarea class="form-control form-control-lg" id="requirements" name="requirements" 
-                                                      rows="4" required placeholder="يرجى وصف احتياجاتك من الملابس بالتفصيل...">{{ old('requirements') }}</textarea>
+                                                      rows="4" required placeholder="يرجى وصف احتياجاتك من الملابس بالتفصيل..."><?php echo e(old('requirements')); ?></textarea>
                                             <div class="form-text">
                                                 <i class="fas fa-lightbulb me-1 text-warning"></i>
                                                 مثال: تيشرتات رياضية أزرق، شورتات بيضاء، أحجام مختلفة، شعار النادي
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 الكمية المطلوبة <span class="text-danger">*</span>
                                             </label>
                                             <input type="number" class="form-control form-control-lg" id="quantity" name="quantity" 
-                                                   value="{{ old('quantity', 100) }}" min="100" required>
+                                                   value="<?php echo e(old('quantity', 100)); ?>" min="100" required>
                                             <div class="form-text">الحد الأدنى 100 قطعة</div>
                                             <div class="invalid-feedback"></div>
                                         </div>
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                             <div class="form-check">
                                                                 <input class="form-check-input design-option" type="radio" 
                                                                        name="design_option" id="design_option_text" value="text" 
-                                                                       {{ old('design_option') == 'text' ? 'checked' : '' }} checked>
+                                                                       <?php echo e(old('design_option') == 'text' ? 'checked' : ''); ?> checked>
                                                                 <label class="form-check-label w-100" for="design_option_text">
                                                                     <div class="text-center p-3">
                                                                         <i class="fas fa-font fa-2x text-primary mb-2"></i>
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                             <div class="form-check">
                                                                 <input class="form-check-input design-option" type="radio" 
                                                                        name="design_option" id="design_option_upload" value="upload" 
-                                                                       {{ old('design_option') == 'upload' ? 'checked' : '' }}>
+                                                                       <?php echo e(old('design_option') == 'upload' ? 'checked' : ''); ?>>
                                                                 <label class="form-check-label w-100" for="design_option_upload">
                                                                     <div class="text-center p-3">
                                                                         <i class="fas fa-upload fa-2x text-success mb-2"></i>
@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                             <div class="form-check">
                                                                 <input class="form-check-input design-option" type="radio" 
                                                                        name="design_option" id="design_option_template" value="template" 
-                                                                       {{ old('design_option') == 'template' ? 'checked' : '' }}>
+                                                                       <?php echo e(old('design_option') == 'template' ? 'checked' : ''); ?>>
                                                                 <label class="form-check-label w-100" for="design_option_template">
                                                                     <div class="text-center p-3">
                                                                         <i class="fas fa-cube fa-2x text-info mb-2"></i>
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                     </label>
                                                     <textarea class="form-control form-control-lg" id="design_details_text" 
                                                               name="design_details_text" rows="4" 
-                                                              placeholder="مثال: زي رياضي أزرق مع خطوط بيضاء على الجانبين، شعار النادي على الصدر، واسم اللاعب على الظهر">{{ old('design_details_text') }}</textarea>
+                                                              placeholder="مثال: زي رياضي أزرق مع خطوط بيضاء على الجانبين، شعار النادي على الصدر، واسم اللاعب على الظهر"><?php echo e(old('design_details_text')); ?></textarea>
                                                     <div class="form-text">
                                                         <i class="fas fa-lightbulb me-1"></i>
                                                         كن مفصلاً قدر الإمكان لضمان الحصول على التصميم المطلوب
@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                     <label for="design_upload_notes" class="form-label fw-semibold">ملاحظات إضافية</label>
                                                     <textarea class="form-control form-control-lg" id="design_upload_notes" 
                                                               name="design_upload_notes" rows="3" 
-                                                              placeholder="أي ملاحظات إضافية حول التصميم...">{{ old('design_upload_notes') }}</textarea>
+                                                              placeholder="أي ملاحظات إضافية حول التصميم..."><?php echo e(old('design_upload_notes')); ?></textarea>
                                                 </div>
                                             </div>
                                             
@@ -402,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                                 <input type="radio" class="form-check-input" name="template_selected" 
                                                                        id="template1" value="template1">
                                                                 <label for="template1" class="w-100">
-                                                                    <img src="{{ asset('images/template1.jpg') }}" class="img-fluid rounded" alt="قالب 1">
+                                                                    <img src="<?php echo e(asset('images/template1.jpg')); ?>" class="img-fluid rounded" alt="قالب 1">
                                                                     <div class="text-center mt-2 fw-semibold">قالب رياضي كلاسيكي</div>
                                                                 </label>
                                                             </div>
@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                                 <input type="radio" class="form-check-input" name="template_selected" 
                                                                        id="template2" value="template2">
                                                                 <label for="template2" class="w-100">
-                                                                    <img src="{{ asset('images/template2.jpg') }}" class="img-fluid rounded" alt="قالب 2">
+                                                                    <img src="<?php echo e(asset('images/template2.jpg')); ?>" class="img-fluid rounded" alt="قالب 2">
                                                                     <div class="text-center mt-2 fw-semibold">قالب عصري</div>
                                                                 </label>
                                                             </div>
@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                                 <input type="radio" class="form-check-input" name="template_selected" 
                                                                        id="template3" value="template3">
                                                                 <label for="template3" class="w-100">
-                                                                    <img src="{{ asset('images/template3.jpg') }}" class="img-fluid rounded" alt="قالب 3">
+                                                                    <img src="<?php echo e(asset('images/template3.jpg')); ?>" class="img-fluid rounded" alt="قالب 3">
                                                                     <div class="text-center mt-2 fw-semibold">قالب احترافي</div>
                                                                 </label>
                                                             </div>
@@ -452,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 اسم الشركة/المؤسسة <span class="text-danger">*</span>
                                             </label>
                                             <input type="text" class="form-control form-control-lg" id="company_name" 
-                                                   name="company_name" value="{{ old('company_name') }}" required>
+                                                   name="company_name" value="<?php echo e(old('company_name')); ?>" required>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         
@@ -462,11 +462,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                             </label>
                                             <select class="form-select form-select-lg" id="business_type" name="business_type" required>
                                                 <option value="" selected disabled>اختر نوع النشاط</option>
-                                                <option value="academy" {{ old('business_type') == 'academy' ? 'selected' : '' }}>أكاديمية رياضية</option>
-                                                <option value="school" {{ old('business_type') == 'school' ? 'selected' : '' }}>مدرسة</option>
-                                                <option value="store" {{ old('business_type') == 'store' ? 'selected' : '' }}>متجر ملابس</option>
-                                                <option value="hospital" {{ old('business_type') == 'hospital' ? 'selected' : '' }}>مستشفى</option>
-                                                <option value="other" {{ old('business_type') == 'other' ? 'selected' : '' }}>أخرى</option>
+                                                <option value="academy" <?php echo e(old('business_type') == 'academy' ? 'selected' : ''); ?>>أكاديمية رياضية</option>
+                                                <option value="school" <?php echo e(old('business_type') == 'school' ? 'selected' : ''); ?>>مدرسة</option>
+                                                <option value="store" <?php echo e(old('business_type') == 'store' ? 'selected' : ''); ?>>متجر ملابس</option>
+                                                <option value="hospital" <?php echo e(old('business_type') == 'hospital' ? 'selected' : ''); ?>>مستشفى</option>
+                                                <option value="other" <?php echo e(old('business_type') == 'other' ? 'selected' : ''); ?>>أخرى</option>
                                             </select>
                                             <div class="invalid-feedback"></div>
                                         </div>
@@ -476,28 +476,28 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 نوع النشاط (آخر) <span class="text-danger">*</span>
                                             </label>
                                             <input type="text" class="form-control form-control-lg" id="business_type_other" 
-                                                   name="business_type_other" value="{{ old('business_type_other') }}">
+                                                   name="business_type_other" value="<?php echo e(old('business_type_other')); ?>">
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         
                                         <div class="col-md-6 mb-3">
                                             <label for="address" class="form-label fw-semibold">العنوان</label>
                                             <input type="text" class="form-control form-control-lg" id="address" name="address" 
-                                                   value="{{ old('address') }}">
+                                                   value="<?php echo e(old('address')); ?>">
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         
                                         <div class="col-md-6 mb-3">
                                             <label for="city" class="form-label fw-semibold">المدينة</label>
                                             <input type="text" class="form-control form-control-lg" id="city" name="city" 
-                                                   value="{{ old('city') }}">
+                                                   value="<?php echo e(old('city')); ?>">
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         
                                         <div class="col-md-6 mb-3">
                                             <label for="country" class="form-label fw-semibold">الدولة</label>
                                             <input type="text" class="form-control form-control-lg" id="country" name="country" 
-                                                   value="{{ old('country', 'المملكة العربية السعودية') }}">
+                                                   value="<?php echo e(old('country', 'المملكة العربية السعودية')); ?>">
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
@@ -521,7 +521,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 الاسم الكامل <span class="text-danger">*</span>
                                             </label>
                                             <input type="text" class="form-control form-control-lg" id="name" name="name" 
-                                                   value="{{ old('name') }}" required>
+                                                   value="<?php echo e(old('name')); ?>" required>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         
@@ -530,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 البريد الإلكتروني <span class="text-danger">*</span>
                                             </label>
                                             <input type="email" class="form-control form-control-lg" id="email" name="email" 
-                                                   value="{{ old('email') }}" required>
+                                                   value="<?php echo e(old('email')); ?>" required>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         
@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 رقم الهاتف <span class="text-danger">*</span>
                                             </label>
                                             <input type="text" class="form-control form-control-lg" id="phone" name="phone" 
-                                                   value="{{ old('phone') }}" required>
+                                                   value="<?php echo e(old('phone')); ?>" required>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         
@@ -703,4 +703,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH F:\infinity\Infinity-Wear\resources\views/importers/form.blade.php ENDPATH**/ ?>

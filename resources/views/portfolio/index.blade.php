@@ -6,18 +6,126 @@ use Illuminate\Support\Facades\Storage;
 
 @section('title', 'معرض أعمالنا - Infinity Wear')
 
+@section('styles')
+<style>
+/* تصميم محسن لصفحة معرض الأعمال */
+.portfolio-hero-section {
+    min-height: 80vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.portfolio-hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="portfolioPattern" width="50" height="50" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23portfolioPattern)"/></svg>');
+    pointer-events: none;
+}
+
+.portfolio-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+}
+
+.portfolio-hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    animation: slideInFromTop 1s ease-out;
+}
+
+.portfolio-hero-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+    animation: slideInFromBottom 1s ease-out 0.3s both;
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInFromBottom {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* تحسين تصميم بطاقات المعرض */
+.portfolio-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.portfolio-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.portfolio-card .card-img-top {
+    border-radius: 15px 15px 0 0;
+    height: 250px;
+    object-fit: cover;
+}
+
+.portfolio-card .card-title {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.portfolio-card .card-text {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* تحسين التجاوب */
+@media (max-width: 768px) {
+    .portfolio-hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .portfolio-hero-subtitle {
+        font-size: 1.1rem;
+    }
+}
+</style>
+@endsection
+
 @section('content')
 <!-- قسم العنوان الرئيسي -->
-<section class="hero-section hero-inner-section bg-light py-5 mb-5">
+<section class="portfolio-hero-section">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 text-center text-lg-end">
-                <h1 class="display-4 fw-bold mb-3">معرض أعمالنا</h1>
-                <p class="lead mb-4">نفخر بتقديم مجموعة متنوعة من الأعمال المميزة التي قمنا بتنفيذها لعملائنا</p>
-            </div>
-            <div class="col-lg-6 text-center">
-                <img src="{{ asset('images/portfolio/portfolio-hero.svg') }}" alt="معرض الأعمال" class="img-fluid" style="max-height: 300px;">
-            </div>
+        <div class="portfolio-hero-content">
+            <h1 class="portfolio-hero-title">معرض أعمالنا</h1>
+            <p class="portfolio-hero-subtitle">نفخر بتقديم مجموعة متنوعة من الأعمال المميزة التي قمنا بتنفيذها لعملائنا</p>
         </div>
     </div>
 </section>

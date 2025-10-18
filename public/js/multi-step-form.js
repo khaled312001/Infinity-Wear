@@ -1,0 +1,480 @@
+/**
+ * Multi-Step Form Handler
+ * Enhanced JavaScript for Infinity Wear Importer Registration Form
+ */
+
+class MultiStepForm {
+    constructor() {
+        this.currentStep = 1;
+        this.totalSteps = 4;
+        this.formData = {};
+        this.init();
+    }
+
+    init() {
+        this.bindEvents();
+        this.initializeForm();
+        this.setupValidation();
+    }
+
+    bindEvents() {
+        // Navigation buttons
+        document.getElementById('nextBtn').addEventListener('click', () => this.nextStep());
+        document.getElementById('prevBtn').addEventListener('click', () => this.prevStep());
+        
+        // Form submission
+        document.getElementById('multiStepForm').addEventListener('submit', (e) => this.handleSubmit(e));
+        
+        // Business type change
+        document.getElementById('business_type').addEventListener('change', (e) => this.handleBusinessTypeChange(e));
+        
+        // Design option changes
+        document.querySelectorAll('.design-option').forEach(option => {
+            option.addEventListener('change', (e) => this.handleDesignOptionChange(e));
+        });
+        
+        // Password toggle
+        document.getElementById('togglePassword').addEventListener('click', () => this.togglePassword());
+        
+        // Real-time validation
+        document.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('blur', () => this.validateField(field));
+            field.addEventListener('input', () => this.clearFieldError(field));
+        });
+        
+        // Terms agreement
+        document.getElementById('terms_agreement').addEventListener('change', () => this.handleTermsChange());
+    }
+
+    initializeForm() {
+        // Hide all steps initially
+        document.querySelectorAll('.form-step').forEach((stepElement) => {
+            stepElement.style.display = 'none';
+            stepElement.classList.remove('active');
+        });
+        
+        this.showStep(this.currentStep);
+        this.updateProgressBar();
+    }
+
+    showStep(step) {
+        // Hide all steps first
+        document.querySelectorAll('.form-step').forEach((stepElement) => {
+            stepElement.classList.remove('active');
+            stepElement.style.display = 'none';
+        });
+        
+        // Show current step
+        const currentStepElement = document.getElementById(`step${step}`);
+        if (currentStepElement) {
+            currentStepElement.classList.add('active');
+            currentStepElement.style.display = 'block';
+        }
+        
+        // Update step indicators
+        document.querySelectorAll('.step-item').forEach((item, index) => {
+            item.classList.toggle('active', index + 1 === step);
+            item.classList.toggle('completed', index + 1 < step);
+        });
+        
+        // Update navigation buttons
+        this.updateNavigationButtons(step);
+        
+        // Update progress bar
+        this.updateProgressBar(step);
+        
+        // Update summary if on confirmation step
+        if (step === 4) {
+            this.updateSummary();
+        }
+        
+        // Add animation
+        this.animateStepTransition(step);
+    }
+
+    updateNavigationButtons(step) {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
+        nextBtn.style.display = step === this.totalSteps ? 'none' : 'inline-block';
+        submitBtn.style.display = step === this.totalSteps ? 'inline-block' : 'none';
+    }
+
+    updateProgressBar(step = this.currentStep) {
+        const progress = (step / this.totalSteps) * 100;
+        const progressContainer = document.querySelector('.progress-container');
+        
+        if (progressContainer) {
+            progressContainer.style.setProperty('--progress', `${progress}%`);
+            progressContainer.classList.add('animate');
+            
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                progressContainer.classList.remove('animate');
+            }, 500);
+        }
+    }
+
+    animateStepTransition(step) {
+        const currentStepElement = document.getElementById(`step${step}`);
+        if (currentStepElement) {
+            currentStepElement.style.animation = 'none';
+            currentStepElement.offsetHeight; // Trigger reflow
+            currentStepElement.style.animation = 'slideInRight 0.6s ease-out';
+        }
+    }
+
+    nextStep() {
+        if (this.validateStep(this.currentStep)) {
+            this.saveStepData(this.currentStep);
+            
+            if (this.currentStep < this.totalSteps) {
+                this.currentStep++;
+                this.showStep(this.currentStep);
+                this.scrollToTop();
+            }
+        } else {
+            this.showValidationErrors();
+        }
+    }
+
+    prevStep() {
+        if (this.currentStep > 1) {
+            this.currentStep--;
+            this.showStep(this.currentStep);
+            this.scrollToTop();
+        }
+    }
+
+    validateStep(step) {
+        let isValid = true;
+        const currentStepElement = document.getElementById(`step${step}`);
+        const requiredFields = currentStepElement.querySelectorAll('input[required], select[required], textarea[required]');
+        
+        // Clear previous errors
+        this.clearStepErrors(step);
+        
+        // Validate required fields
+        requiredFields.forEach(field => {
+            if (!this.validateField(field)) {
+                isValid = false;
+            }
+        });
+        
+        // Step-specific validation
+        if (step === 1) {
+            isValid = this.validatePasswordMatch() && isValid;
+        } else if (step === 3) {
+            isValid = this.validateDesignOption() && isValid;
+        }
+        
+        return isValid;
+    }
+
+    validateField(field) {
+        const value = field.value.trim();
+        let isValid = true;
+        let errorMessage = '';
+        
+        // Required field validation
+        if (field.hasAttribute('required') && !value) {
+            errorMessage = 'هذا الحقل مطلوب';
+            isValid = false;
+        }
+        
+        // Email validation
+        if (field.type === 'email' && value && !this.isValidEmail(value)) {
+            errorMessage = 'يرجى إدخال بريد إلكتروني صحيح';
+            isValid = false;
+        }
+        
+        // Phone validation
+        if (field.name === 'phone' && value && !this.isValidPhone(value)) {
+            errorMessage = 'يرجى إدخال رقم هاتف صحيح';
+            isValid = false;
+        }
+        
+        // Quantity validation
+        if (field.name === 'quantity' && value && (parseInt(value) < 100)) {
+            errorMessage = 'الحد الأدنى للكمية هو 100 قطعة';
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            this.showFieldError(field, errorMessage);
+        } else {
+            this.clearFieldError(field);
+        }
+        
+        return isValid;
+    }
+
+    validatePasswordMatch() {
+        const password = document.getElementById('password').value;
+        const passwordConfirmation = document.getElementById('password_confirmation').value;
+        
+        if (password !== passwordConfirmation) {
+            this.showFieldError(document.getElementById('password_confirmation'), 'كلمة المرور غير متطابقة');
+            return false;
+        }
+        
+        return true;
+    }
+
+    validateDesignOption() {
+        const designOption = document.querySelector('input[name="design_option"]:checked');
+        
+        if (!designOption) {
+            this.showStepError(3, 'يرجى اختيار طريقة تحديد التصميم');
+            return false;
+        }
+        
+        return true;
+    }
+
+    isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    isValidPhone(phone) {
+        const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+        return phoneRegex.test(phone);
+    }
+
+    showFieldError(field, message) {
+        field.classList.add('is-invalid');
+        const feedback = field.parentNode.querySelector('.invalid-feedback') || 
+                        field.parentNode.parentNode.querySelector('.invalid-feedback');
+        
+        if (feedback) {
+            feedback.textContent = message;
+            feedback.style.display = 'block';
+        }
+    }
+
+    clearFieldError(field) {
+        field.classList.remove('is-invalid');
+        const feedback = field.parentNode.querySelector('.invalid-feedback') || 
+                        field.parentNode.parentNode.querySelector('.invalid-feedback');
+        
+        if (feedback) {
+            feedback.style.display = 'none';
+        }
+    }
+
+    clearStepErrors(step) {
+        const currentStepElement = document.getElementById(`step${step}`);
+        const invalidFields = currentStepElement.querySelectorAll('.is-invalid');
+        
+        invalidFields.forEach(field => {
+            this.clearFieldError(field);
+        });
+    }
+
+    showStepError(step, message) {
+        const currentStepElement = document.getElementById(`step${step}`);
+        let errorAlert = currentStepElement.querySelector('.step-error-alert');
+        
+        if (!errorAlert) {
+            errorAlert = document.createElement('div');
+            errorAlert.className = 'alert alert-danger step-error-alert';
+            currentStepElement.querySelector('.step-content').insertBefore(errorAlert, currentStepElement.querySelector('.step-content').firstChild);
+        }
+        
+        errorAlert.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>${message}`;
+        errorAlert.style.display = 'block';
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            errorAlert.style.display = 'none';
+        }, 5000);
+    }
+
+    showValidationErrors() {
+        this.showStepError(this.currentStep, 'يرجى تصحيح الأخطاء قبل المتابعة');
+    }
+
+    handleBusinessTypeChange(e) {
+        const otherDiv = document.getElementById('other_business_type_div');
+        const otherInput = document.getElementById('business_type_other');
+        
+        if (e.target.value === 'other') {
+            otherDiv.style.display = 'block';
+            otherInput.required = true;
+        } else {
+            otherDiv.style.display = 'none';
+            otherInput.required = false;
+            otherInput.value = '';
+        }
+    }
+
+    handleDesignOptionChange(e) {
+        const selectedOption = e.target.value;
+        const designDetails = document.querySelectorAll('.design-detail');
+        
+        // Hide all design details
+        designDetails.forEach(detail => {
+            detail.style.display = 'none';
+        });
+        
+        // Show selected design detail
+        const selectedDetail = document.getElementById(`design_${selectedOption}_detail`);
+        if (selectedDetail) {
+            selectedDetail.style.display = 'block';
+        }
+        
+        // Add visual feedback
+        this.highlightDesignOption(e.target);
+    }
+
+    highlightDesignOption(selectedInput) {
+        // Remove previous highlights
+        document.querySelectorAll('.design-option-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // Highlight selected option
+        const selectedCard = selectedInput.closest('.design-option-card');
+        if (selectedCard) {
+            selectedCard.classList.add('selected');
+        }
+    }
+
+    togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleButton = document.getElementById('togglePassword');
+        const icon = toggleButton.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    handleTermsChange() {
+        const termsCheckbox = document.getElementById('terms_agreement');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        if (termsCheckbox.checked) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('disabled');
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('disabled');
+        }
+    }
+
+    saveStepData(step) {
+        const currentStepElement = document.getElementById(`step${step}`);
+        const inputs = currentStepElement.querySelectorAll('input, select, textarea');
+        
+        inputs.forEach(input => {
+            if (input.type === 'radio' || input.type === 'checkbox') {
+                if (input.checked) {
+                    this.formData[input.name] = input.value;
+                }
+            } else {
+                this.formData[input.name] = input.value;
+            }
+        });
+    }
+
+    updateSummary() {
+        // Order details (step 1)
+        document.getElementById('summary_quantity').textContent = this.formData.quantity || '-';
+        const designOption = document.querySelector('input[name="design_option"]:checked');
+        const designOptionText = designOption ? designOption.nextElementSibling.querySelector('.fw-semibold').textContent : '-';
+        document.getElementById('summary_design_option').textContent = designOptionText;
+        document.getElementById('summary_requirements').textContent = this.formData.requirements || '-';
+        
+        // Company info (step 2)
+        document.getElementById('summary_company').textContent = this.formData.company_name || '-';
+        const businessTypeSelect = document.getElementById('business_type');
+        const businessTypeText = businessTypeSelect.options[businessTypeSelect.selectedIndex]?.text || '-';
+        document.getElementById('summary_business_type').textContent = businessTypeText;
+        document.getElementById('summary_city').textContent = this.formData.city || '-';
+        
+        // Personal info (step 3)
+        document.getElementById('summary_name').textContent = this.formData.name || '-';
+        document.getElementById('summary_email').textContent = this.formData.email || '-';
+        document.getElementById('summary_phone').textContent = this.formData.phone || '-';
+    }
+
+    handleSubmit(e) {
+        if (!this.validateStep(this.currentStep)) {
+            e.preventDefault();
+            this.showValidationErrors();
+            return;
+        }
+        
+        // Show loading state
+        this.showLoadingState();
+        
+        // Save all form data
+        for (let i = 1; i <= this.totalSteps; i++) {
+            this.saveStepData(i);
+        }
+    }
+
+    showLoadingState() {
+        const submitBtn = document.getElementById('submitBtn');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الطلب...';
+        submitBtn.disabled = true;
+        submitBtn.classList.add('loading');
+        
+        // Reset after 3 seconds (in case of error)
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('loading');
+        }, 3000);
+    }
+
+    scrollToTop() {
+        const formContainer = document.querySelector('.card');
+        if (formContainer) {
+            formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+}
+
+// Initialize the form when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    new MultiStepForm();
+});
+
+// Add some utility functions
+window.MultiStepFormUtils = {
+    // Function to go to specific step (useful for debugging)
+    goToStep: function(step) {
+        if (window.multiStepForm) {
+            window.multiStepForm.currentStep = step;
+            window.multiStepForm.showStep(step);
+        }
+    },
+    
+    // Function to get form data
+    getFormData: function() {
+        return window.multiStepForm ? window.multiStepForm.formData : {};
+    },
+    
+    // Function to validate specific step
+    validateStep: function(step) {
+        return window.multiStepForm ? window.multiStepForm.validateStep(step) : false;
+    }
+};
+
+// Make the form instance globally available for debugging
+window.addEventListener('load', function() {
+    window.multiStepForm = new MultiStepForm();
+});
