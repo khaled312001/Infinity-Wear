@@ -12,8 +12,12 @@ use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\FaviconController;
+use App\Http\Controllers\HealthController;
 use Illuminate\Support\Facades\Log;
 
+// Health check routes
+Route::get('/health', [HealthController::class, 'index']);
+Route::get('/health/database', [HealthController::class, 'database']);
 
 // Test settings page
 Route::get('/test-settings', function () {

@@ -37,31 +37,62 @@ class AuthController extends Controller
             'email' => $credentials['email']
         ]);
 
-        // Attempt login for all user types
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            
-            // Redirect to appropriate dashboard based on user type
-            $user = Auth::user();
-            \Log::info('Login successful', ['user_id' => $user->id, 'user_type' => $user->user_type]);
-            
-            // Special handling for importer users
-            if ($user->user_type === 'importer') {
-                // Check if importer profile exists
-                $importer = \App\Models\Importer::where('user_id', $user->id)->first();
-                if (!$importer) {
-                    \Log::info('Importer profile not found, redirecting to form', ['user_id' => $user->id]);
-                    return redirect()->route('importers.form')
-                        ->with('info', 'يرجى إكمال بيانات المستورد أولاً');
+        try {
+            // Attempt login for all user types
+            if (Auth::attempt($credentials)) {
+                $request->session()->regenerate();
+                
+                // Redirect to appropriate dashboard based on user type
+                $user = Auth::user();
+                \Log::info('Login successful', ['user_id' => $user->id, 'user_type' => $user->user_type]);
+                
+                // Special handling for importer users
+                if ($user->user_type === 'importer') {
+                    try {
+                        // Check if importer profile exists
+                        $importer = \App\Models\Importer::where('user_id', $user->id)->first();
+                        if (!$importer) {
+                            \Log::info('Importer profile not found, redirecting to form', ['user_id' => $user->id]);
+                            return redirect()->route('importers.form')
+                                ->with('info', 'يرجى إكمال بيانات المستورد أولاً');
+                        }
+                    } catch (\Exception $e) {
+                        \Log::warning('Database unavailable for importer check, proceeding with login: ' . $e->getMessage());
+                        // Continue with login even if importer check fails
+                    }
                 }
+                
+                return redirect()->route($user->getDashboardRoute());
+            }
+
+            return back()->withErrors([
+                'email' => 'البيانات المدخلة غير صحيحة.',
+            ])->onlyInput('email');
+            
+        } catch (\Illuminate\Database\QueryException $e) {
+            if (strpos($e->getMessage(), 'max_connections_per_hour') !== false) {
+                \Log::error('Database connection limit exceeded during login', [
+                    'email' => $credentials['email'],
+                    'error' => $e->getMessage()
+                ]);
+                
+                return back()->withErrors([
+                    'email' => 'خدمة تسجيل الدخول غير متاحة مؤقتاً. يرجى المحاولة لاحقاً.',
+                ])->with('error', 'تم تجاوز حد الاتصالات بقاعدة البيانات. يرجى المحاولة بعد ساعة واحدة.');
             }
             
-            return redirect()->route($user->getDashboardRoute());
+            // Re-throw other database exceptions
+            throw $e;
+        } catch (\Exception $e) {
+            \Log::error('Unexpected error during login', [
+                'email' => $credentials['email'],
+                'error' => $e->getMessage()
+            ]);
+            
+            return back()->withErrors([
+                'email' => 'حدث خطأ غير متوقع. يرجى المحاولة لاحقاً.',
+            ])->with('error', 'خطأ في النظام. يرجى المحاولة لاحقاً.');
         }
-
-        return back()->withErrors([
-            'email' => 'البيانات المدخلة غير صحيحة.',
-        ])->onlyInput('email');
     }
 
     public function showRegisterForm()
