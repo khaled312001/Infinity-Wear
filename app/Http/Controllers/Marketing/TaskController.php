@@ -17,14 +17,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $marketingMember = MarketingTeam::where('admin_id', Auth::id())->first();
-        if (!$marketingMember) {
-            abort(403, 'ليس لديك صلاحية للوصول لهذه الصفحة');
-        }
-
         // جلب المهام المخصصة لفريق التسويق
-        $tasks = TaskCard::where('assigned_to', $marketingMember->id)
-            ->where('assigned_to_type', 'marketing')
+        $tasks = TaskCard::where('department', 'marketing')
             ->where('is_archived', false)
             ->with(['column', 'board'])
             ->orderBy('created_at', 'desc')
@@ -82,8 +76,7 @@ class TaskController extends Controller
             $request->comment,
             Auth::id(),
             Auth::user()->name ?? 'فريق التسويق',
-            'marketing',
-            $request->is_internal ?? false
+            'marketing'
         );
 
         return response()->json([
@@ -97,14 +90,14 @@ class TaskController extends Controller
      */
     private function authorizeTaskAccess(TaskCard $task)
     {
-        $marketingMember = MarketingTeam::where('admin_id', Auth::id())->first();
-        if (!$marketingMember) {
+        // التحقق من أن المهمة مرتبطة بالتسويق
+        if ($task->department !== 'marketing') {
             abort(403, 'ليس لديك صلاحية للوصول لهذه المهمة');
         }
 
         // يمكن للفريق الوصول للمهام المخصصة له أو المهام العامة
-        $canAccess = $task->assigned_to === $marketingMember->id && $task->assigned_to_type === 'marketing'
-                  || $task->created_by === $marketingMember->id && $task->created_by_type === 'marketing'
+        $canAccess = $task->assigned_to === Auth::id() && $task->assigned_to_type === 'marketing'
+                  || $task->created_by === Auth::id() && $task->created_by_type === 'marketing'
                   || $task->board->board_type === 'general'
                   || $task->board->board_type === 'marketing';
 
