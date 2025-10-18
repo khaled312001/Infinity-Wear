@@ -569,7 +569,7 @@ Route::middleware(['auth', 'user.type:importer'])->prefix('importers')->name('im
 
 // لوحة تحكم فريق التسويق
 Route::middleware(['auth', 'user.type:marketing'])->prefix('marketing')->name('marketing.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\Marketing\DashboardController::class, 'index'])->name('dashboard')->middleware('user.permission:dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\Marketing\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/portfolio', [App\Http\Controllers\Marketing\DashboardController::class, 'portfolio'])->name('portfolio')->middleware('user.permission:portfolio');
     Route::get('/portfolio/create', [App\Http\Controllers\Marketing\DashboardController::class, 'createPortfolio'])->name('portfolio.create')->middleware('user.permission:portfolio');
     Route::post('/portfolio', [App\Http\Controllers\Marketing\DashboardController::class, 'storePortfolio'])->name('portfolio.store')->middleware('user.permission:portfolio');
@@ -607,7 +607,7 @@ Route::middleware(['auth', 'user.type:marketing'])->prefix('marketing')->name('m
 
 // لوحة تحكم فريق المبيعات
 Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\Sales\DashboardController::class, 'index'])->name('dashboard')->middleware('user.permission:dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\Sales\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/orders', [App\Http\Controllers\Sales\DashboardController::class, 'orders'])->name('orders')->middleware('user.permission:orders');
     Route::get('/orders/{order}', [App\Http\Controllers\Sales\DashboardController::class, 'showOrder'])->name('orders.show')->middleware('user.permission:orders');
     Route::put('/orders/{order}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateOrderStatus'])->name('orders.update-status')->middleware('user.permission:orders');
