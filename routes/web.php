@@ -61,9 +61,7 @@ Route::get('/importer/dashboard', function () {
 
 // Demo route removed - using proper authenticated route below
 
-Route::get('/marketing/dashboard', function () {
-    return view('demo.marketing-dashboard');
-})->name('marketing.dashboard');
+// Demo route removed - using proper authenticated route below
 
 // الصفحة الرئيسية الجديدة
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
