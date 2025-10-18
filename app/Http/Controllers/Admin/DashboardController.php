@@ -62,7 +62,7 @@ class DashboardController extends Controller
             ->get();
 
         // المهام المعلقة
-        $pendingTasks = TaskCard::with(['assignedUser', 'board'])
+        $pendingTasks = TaskCard::with(['assignedAdmin', 'assignedMarketing', 'assignedSales', 'createdByAdmin', 'createdByMarketing', 'createdBySales', 'board'])
             ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->limit(10)
@@ -154,7 +154,7 @@ class DashboardController extends Controller
 
     public function tasks()
     {
-        $tasks = TaskCard::with(['assignedUser', 'creator'])
+        $tasks = TaskCard::with(['assignedAdmin', 'assignedMarketing', 'assignedSales', 'createdByAdmin', 'createdByMarketing', 'createdBySales'])
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 

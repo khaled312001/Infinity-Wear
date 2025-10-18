@@ -61,11 +61,11 @@ Route::get('/importer/dashboard', function () {
 
 Route::get('/sales/dashboard', function () {
     return view('demo.sales-dashboard');
-})->name('sales.demo');
+})->name('sales.dashboard');
 
 Route::get('/marketing/dashboard', function () {
     return view('demo.marketing-dashboard');
-})->name('marketing.demo');
+})->name('marketing.dashboard');
 
 // الصفحة الرئيسية الجديدة
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

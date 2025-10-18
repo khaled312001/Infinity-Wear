@@ -8,14 +8,21 @@ database/migrations/2025_10_18_184847_fix_department_column_in_tasks_table.php
 database/migrations/2025_10_18_184909_fix_remaining_columns_in_tasks_table.php
 ```
 
-### 2. ملفات Controller المحدثة (مع إصلاح مشكلة Authentication):
+### 2. ملفات Controller المحدثة (مع إصلاح مشكلة Authentication و Task Model):
 ```
 app/Http/Controllers/Admin/TaskManagementController.php
 app/Http/Controllers/Marketing/TaskController.php
 app/Http/Controllers/Sales/TaskController.php
+app/Http/Controllers/Admin/DashboardController.php
+app/Http/Controllers/AdminController.php
+app/Http/Controllers/Marketing/DashboardController.php
+app/Http/Controllers/Sales/DashboardController.php
 ```
 
-**ملاحظة مهمة:** تم إصلاح مشكلة `created_by` التي كانت تسبب خطأ `Column 'created_by' cannot be null`
+**ملاحظات مهمة:**
+- تم إصلاح مشكلة `created_by` التي كانت تسبب خطأ `Column 'created_by' cannot be null`
+- تم إصلاح مشكلة `Task` model التي كانت تسبب خطأ `No such file or directory`
+- تم إصلاح مشكلة `assignedUser` relationship التي كانت تسبب خطأ `Call to undefined relationship`
 
 ### 3. ملفات Middleware المحدثة:
 ```

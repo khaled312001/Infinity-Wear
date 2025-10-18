@@ -153,7 +153,7 @@ class TaskManagementController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'تم إنشاء المهمة بنجاح',
-                'task' => $task->load(['assignedUser', 'creator'])
+                'task' => $task->load(['assignedAdmin', 'createdByAdmin'])
             ]);
         } catch (\Exception $e) {
             Log::error('Task creation error: ' . $e->getMessage());
@@ -212,7 +212,7 @@ class TaskManagementController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'تم تحديث المهمة بنجاح',
-            'task' => $task->load(['assignedUser', 'creator'])
+            'task' => $task->load(['assignedAdmin', 'createdByAdmin'])
         ]);
     }
 

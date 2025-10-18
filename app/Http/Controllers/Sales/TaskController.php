@@ -101,7 +101,7 @@ class TaskController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'تم إنشاء المهمة بنجاح',
-            'task' => $task->load(['assignedUser', 'creator'])
+            'task' => $task->load(['assignedSales', 'createdBySales'])
         ]);
     }
 
@@ -144,7 +144,7 @@ class TaskController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'تم تحديث المهمة بنجاح',
-            'task' => $task->load(['assignedUser', 'creator'])
+            'task' => $task->load(['assignedSales', 'createdBySales'])
         ]);
     }
 

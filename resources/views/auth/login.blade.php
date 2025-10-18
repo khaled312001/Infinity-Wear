@@ -308,7 +308,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" id="loginForm">
+                <form method="POST" action="{{ route('sales.login.post') }}" id="loginForm">
                     @csrf
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     
