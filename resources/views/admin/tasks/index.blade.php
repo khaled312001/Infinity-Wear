@@ -274,7 +274,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="boardType" class="form-label">نوع اللوحة</label>
-                            <select class="form-select" id="boardType" name="board_type" required>
+                            <select class="form-select" id="boardType" name="type" required>
                                 <option value="general">عام</option>
                                 <option value="marketing">تسويق</option>
                                 <option value="sales">مبيعات</option>
@@ -423,6 +423,7 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/task-management.css') }}?v={{ time() }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @endpush
 
 @push('scripts')

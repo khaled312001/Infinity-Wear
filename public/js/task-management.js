@@ -117,12 +117,16 @@ class TaskManagement {
             const response = await fetch('/admin/tasks/board', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
                 },
-                body: JSON.stringify(Object.fromEntries(formData))
+                body: formData
             });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const result = await response.json();
             
             if (result.success) {
@@ -134,7 +138,11 @@ class TaskManagement {
             }
         } catch (error) {
             console.error('Error creating board:', error);
-            this.showAlert('error', 'حدث خطأ أثناء إنشاء اللوحة');
+            if (error.message.includes('JSON')) {
+                this.showAlert('error', 'خطأ في استجابة الخادم. يرجى المحاولة مرة أخرى.');
+            } else {
+                this.showAlert('error', 'حدث خطأ أثناء إنشاء اللوحة: ' + error.message);
+            }
         }
     }
 

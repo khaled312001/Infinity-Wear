@@ -257,8 +257,21 @@ class TaskCard extends Model
             return 0;
         }
 
-        $completed = collect($this->checklist)->where('completed', true)->count();
-        $total = count($this->checklist);
+        // التأكد من أن checklist هو array
+        $checklist = $this->checklist;
+        
+        // إذا كان string، نحوله إلى array
+        if (is_string($checklist)) {
+            $checklist = json_decode($checklist, true);
+        }
+        
+        // إذا لم يكن array أو كان فارغاً
+        if (!is_array($checklist) || empty($checklist)) {
+            return 0;
+        }
+
+        $completed = collect($checklist)->where('completed', true)->count();
+        $total = count($checklist);
         
         return $total > 0 ? round(($completed / $total) * 100) : 0;
     }
@@ -396,5 +409,29 @@ class TaskCard extends Model
             'completed_at' => null,
             'progress_percentage' => $this->getProgressPercentageAttribute()
         ]);
+    }
+
+    /**
+     * Boot the model
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // التأكد من أن JSON fields محفوظة بشكل صحيح
+        static::saving(function ($model) {
+            $jsonFields = ['labels', 'attachments', 'checklist', 'time_logs', 'comments', 'tags', 'custom_fields'];
+            
+            foreach ($jsonFields as $field) {
+                if (isset($model->attributes[$field]) && is_string($model->attributes[$field])) {
+                    $decoded = json_decode($model->attributes[$field], true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $model->attributes[$field] = json_encode($decoded);
+                    } else {
+                        $model->attributes[$field] = json_encode([]);
+                    }
+                }
+            }
+        });
     }
 }

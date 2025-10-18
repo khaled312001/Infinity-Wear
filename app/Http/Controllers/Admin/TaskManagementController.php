@@ -72,7 +72,7 @@ class TaskManagementController extends Controller
         $board = TaskBoard::createWithDefaultColumns([
             'name' => $request->name,
             'description' => $request->description,
-            'board_type' => $request->board_type,
+            'type' => $request->type,
             'created_by' => Auth::id(),
             'color' => $request->color ?? '#007bff',
             'icon' => $request->icon ?? 'fas fa-tasks',
