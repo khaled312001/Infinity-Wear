@@ -461,12 +461,12 @@ class AdminController extends Controller
     {
         // تقارير المبيعات حسب الشهر
         $monthlySales = ImporterOrder::select(
-            DB::raw('strftime("%m", created_at) as month'),
-            DB::raw('strftime("%Y", created_at) as year'),
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('YEAR(created_at) as year'),
             DB::raw('SUM(final_cost) as total')
         )
         ->where('status', 'completed')
-        ->whereRaw('strftime("%Y", created_at) >= ?', [now()->subYear()->year])
+        ->whereRaw('YEAR(created_at) >= ?', [now()->subYear()->year])
         ->groupBy('year', 'month')
         ->orderBy('year')
         ->orderBy('month')
