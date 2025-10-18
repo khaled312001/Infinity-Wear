@@ -54,11 +54,12 @@ class TaskController extends Controller
             $boards = collect();
             $users = collect();
             $stats = [
-                'total' => 0,
-                'pending' => 0,
-                'in_progress' => 0,
-                'completed' => 0,
-                'overdue' => 0
+                'total_tasks' => 0,
+                'completed_tasks' => 0,
+                'in_progress_tasks' => 0,
+                'pending_tasks' => 0,
+                'overdue_tasks' => 0,
+                'urgent_tasks' => 0
             ];
             
             return view('sales.tasks.index', compact('boards', 'users', 'stats'))

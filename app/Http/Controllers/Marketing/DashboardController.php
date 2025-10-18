@@ -19,20 +19,21 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        // المهام المرتبطة بالتسويق
-        $tasks = TaskCard::where('department', 'marketing')
-            ->orderBy('created_at', 'desc')
-            ->get();
+            // المهام المرتبطة بالتسويق
+            $tasks = TaskCard::where('department', 'marketing')
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        // إحصائيات المهام
-        $taskStats = [
-            'total' => $tasks->count(),
-            'pending' => $tasks->where('status', 'pending')->count(),
-            'in_progress' => $tasks->where('status', 'in_progress')->count(),
-            'completed' => $tasks->where('status', 'completed')->count(),
-        ];
+            // إحصائيات المهام
+            $taskStats = [
+                'total' => $tasks->count(),
+                'pending' => $tasks->where('status', 'pending')->count(),
+                'in_progress' => $tasks->where('status', 'in_progress')->count(),
+                'completed' => $tasks->where('status', 'completed')->count(),
+            ];
 
         // المهام العاجلة
         $urgentTasks = $tasks->where('priority', 'urgent')
@@ -133,6 +134,64 @@ class DashboardController extends Controller
             'contentStats',
             'recentActivity'
         ));
+        
+        } catch (\Exception $e) {
+            \Log::error('Marketing dashboard error: ' . $e->getMessage());
+            
+            // Return empty data if database is unavailable
+            $user = Auth::user();
+            $tasks = collect();
+            $taskStats = [
+                'total' => 0,
+                'pending' => 0,
+                'in_progress' => 0,
+                'completed' => 0,
+            ];
+            $urgentTasks = collect();
+            $marketingContent = [
+                'portfolio_items' => 0,
+                'testimonials' => 0,
+                'hero_sliders' => 0,
+                'home_sections' => 0,
+            ];
+            $whatsappStats = [
+                'total_messages' => 0,
+                'outbound_messages' => 0,
+                'inbound_messages' => 0,
+                'today_messages' => 0,
+            ];
+            $contactStats = [
+                'total_contacts' => 0,
+                'new_contacts' => 0,
+                'read_contacts' => 0,
+                'replied_contacts' => 0,
+                'closed_contacts' => 0,
+                'today_contacts' => 0,
+            ];
+            $recentPortfolio = collect();
+            $recentTestimonials = collect();
+            $recentSliders = collect();
+            $contentStats = [
+                'total_sections' => 0,
+                'active_sections' => 0,
+            ];
+            $recentActivity = collect();
+            
+            return view('marketing.dashboard', compact(
+                'user',
+                'tasks',
+                'taskStats',
+                'urgentTasks',
+                'marketingContent',
+                'whatsappStats',
+                'contactStats',
+                'recentPortfolio',
+                'recentTestimonials',
+                'recentSliders',
+                'contentStats',
+                'recentActivity'
+            ))->with('error', 'لا يمكن تحميل البيانات حالياً. يرجى المحاولة لاحقاً.');
+        }
     }
 
     public function portfolio()
