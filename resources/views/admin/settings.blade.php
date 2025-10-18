@@ -745,9 +745,9 @@
                                     <i class="fas fa-eye me-2"></i>
                                     معاينة
                                 </button>
-                                <button type="submit" class="btn btn-primary" onclick="console.log('تم الضغط على زر الحفظ')">
+                                <button type="button" class="btn btn-primary" onclick="updateAllSettings()">
                                     <i class="fas fa-save me-2"></i>
-                                    حفظ الإعدادات
+                                    حفظ جميع الإعدادات
                                 </button>
                             </div>
                         </div>
@@ -1242,6 +1242,45 @@
             .then(response => response.json())
             .then(data => {
                 showMessage(data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    // تحديث الصفحة بعد 2 ثانية
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('حدث خطأ أثناء تحديث الإعدادات', 'error');
+            });
+        }
+
+        // دالة تحديث جميع الإعدادات
+        function updateAllSettings() {
+            const form = document.getElementById('settingsForm');
+            const formData = new FormData(form);
+            
+            showMessage('جاري تحديث جميع الإعدادات...', 'info');
+
+            fetch('{{ route("admin.settings.update") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then(data => {
+                showMessage('تم تحديث جميع الإعدادات بنجاح!', 'success');
+                // تحديث الصفحة بعد 2 ثانية
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -1577,5 +1616,71 @@
                 reader.readAsDataURL(file);
             }
         });
+
+        // دالة إظهار الرسائل
+        function showMessage(message, type = 'info') {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 
+                              type === 'warning' ? 'alert-warning' : 'alert-info';
+            
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+                     style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                   type === 'error' ? 'exclamation-circle' : 
+                                   type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', alertHtml);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                const alert = document.querySelector('.alert:last-of-type');
+                if (alert) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+
+        // دالة معاينة الإعدادات
+        function previewSettings() {
+            const siteName = document.getElementById('site_name').value;
+            const siteTagline = document.getElementById('site_tagline').value;
+            const siteDescription = document.getElementById('site_description').value;
+            
+            const previewHtml = `
+                <div class="modal fade" id="previewModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">معاينة الإعدادات</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h3>${siteName}</h3>
+                                <p class="text-muted">${siteTagline}</p>
+                                <p>${siteDescription}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // إزالة المعاينة السابقة إذا كانت موجودة
+            const existingModal = document.getElementById('previewModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            document.body.insertAdjacentHTML('beforeend', previewHtml);
+            const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+            modal.show();
+        }
     </script>
 @endpush

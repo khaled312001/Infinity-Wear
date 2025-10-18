@@ -586,8 +586,6 @@ Route::middleware(['auth', 'user.type:marketing'])->prefix('marketing')->name('m
     Route::get('/testimonials/{testimonial}/edit', [App\Http\Controllers\Marketing\DashboardController::class, 'editTestimonial'])->name('testimonials.edit')->middleware('user.permission:testimonials');
     Route::put('/testimonials/{testimonial}', [App\Http\Controllers\Marketing\DashboardController::class, 'updateTestimonial'])->name('testimonials.update')->middleware('user.permission:testimonials');
     Route::delete('/testimonials/{testimonial}', [App\Http\Controllers\Marketing\DashboardController::class, 'destroyTestimonial'])->name('testimonials.destroy')->middleware('user.permission:testimonials');
-    Route::get('/tasks', [App\Http\Controllers\Marketing\DashboardController::class, 'tasks'])->name('tasks')->middleware('user.permission:tasks');
-    Route::put('/tasks/{task}/status', [App\Http\Controllers\Marketing\DashboardController::class, 'updateTaskStatus'])->name('tasks.update-status')->middleware('user.permission:tasks');
     Route::get('/contacts', [App\Http\Controllers\Marketing\DashboardController::class, 'contacts'])->name('contacts')->middleware('user.permission:contacts');
     Route::get('/contacts/{contact}', [App\Http\Controllers\Marketing\DashboardController::class, 'showContact'])->name('contacts.show')->middleware('user.permission:contacts');
     Route::put('/contacts/{contact}', [App\Http\Controllers\Marketing\DashboardController::class, 'updateContact'])->name('contacts.update')->middleware('user.permission:contacts');
@@ -596,6 +594,19 @@ Route::middleware(['auth', 'user.type:marketing'])->prefix('marketing')->name('m
     Route::patch('/contacts/{contact}/mark-closed', [App\Http\Controllers\Marketing\DashboardController::class, 'markContactAsClosed'])->name('contacts.mark-closed')->middleware('user.permission:contacts');
     Route::get('/profile', [App\Http\Controllers\Marketing\DashboardController::class, 'profile'])->name('profile')->middleware('user.permission:profile');
     Route::put('/profile', [App\Http\Controllers\Marketing\DashboardController::class, 'updateProfile'])->name('profile.update')->middleware('user.permission:profile');
+    
+    // إدارة المهام لفريق التسويق
+    Route::prefix('tasks')->name('tasks.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Marketing\TaskController::class, 'index'])->name('index')->middleware('user.permission:tasks');
+        Route::post('/', [App\Http\Controllers\Marketing\TaskController::class, 'createTask'])->name('create')->middleware('user.permission:tasks');
+        Route::put('/{task}', [App\Http\Controllers\Marketing\TaskController::class, 'updateTask'])->name('update')->middleware('user.permission:tasks');
+        Route::post('/{task}/move', [App\Http\Controllers\Marketing\TaskController::class, 'moveTask'])->name('move')->middleware('user.permission:tasks');
+        Route::post('/{task}/comment', [App\Http\Controllers\Marketing\TaskController::class, 'addComment'])->name('comment')->middleware('user.permission:tasks');
+        Route::post('/{task}/attachment', [App\Http\Controllers\Marketing\TaskController::class, 'addAttachment'])->name('attachment')->middleware('user.permission:tasks');
+        Route::post('/{task}/checklist', [App\Http\Controllers\Marketing\TaskController::class, 'addChecklistItem'])->name('checklist')->middleware('user.permission:tasks');
+        Route::put('/{task}/checklist', [App\Http\Controllers\Marketing\TaskController::class, 'updateChecklistItem'])->name('update-checklist')->middleware('user.permission:tasks');
+        Route::post('/{task}/time-log', [App\Http\Controllers\Marketing\TaskController::class, 'addTimeLog'])->name('time-log')->middleware('user.permission:tasks');
+    });
 });
 
 // لوحة تحكم فريق المبيعات
@@ -610,8 +621,6 @@ Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')-
     Route::get('/importers', [App\Http\Controllers\Sales\DashboardController::class, 'importers'])->name('importers')->middleware('user.permission:importers');
     Route::get('/importers/{importer}', [App\Http\Controllers\Sales\DashboardController::class, 'showImporter'])->name('importers.show')->middleware('user.permission:importers');
     Route::put('/importers/{importer}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateImporterStatus'])->name('importers.update-status')->middleware('user.permission:importers');
-    Route::get('/tasks', [App\Http\Controllers\Sales\DashboardController::class, 'tasks'])->name('tasks')->middleware('user.permission:tasks');
-    Route::put('/tasks/{task}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateTaskStatus'])->name('tasks.update-status')->middleware('user.permission:tasks');
     Route::get('/contacts', [App\Http\Controllers\Sales\DashboardController::class, 'contacts'])->name('contacts')->middleware('user.permission:contacts');
     Route::get('/contacts/{id}', [App\Http\Controllers\Sales\DashboardController::class, 'showContact'])->name('contacts.show')->middleware('user.permission:contacts');
     Route::put('/contacts/{id}', [App\Http\Controllers\Sales\DashboardController::class, 'updateContact'])->name('contacts.update')->middleware('user.permission:contacts');
@@ -630,6 +639,19 @@ Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')-
     
     Route::get('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'profile'])->name('profile')->middleware('user.permission:profile');
     Route::put('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'updateProfile'])->name('profile.update')->middleware('user.permission:profile');
+    
+    // إدارة المهام لفريق المبيعات
+    Route::prefix('tasks')->name('tasks.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Sales\TaskController::class, 'index'])->name('index')->middleware('user.permission:tasks');
+        Route::post('/', [App\Http\Controllers\Sales\TaskController::class, 'createTask'])->name('create')->middleware('user.permission:tasks');
+        Route::put('/{task}', [App\Http\Controllers\Sales\TaskController::class, 'updateTask'])->name('update')->middleware('user.permission:tasks');
+        Route::post('/{task}/move', [App\Http\Controllers\Sales\TaskController::class, 'moveTask'])->name('move')->middleware('user.permission:tasks');
+        Route::post('/{task}/comment', [App\Http\Controllers\Sales\TaskController::class, 'addComment'])->name('comment')->middleware('user.permission:tasks');
+        Route::post('/{task}/attachment', [App\Http\Controllers\Sales\TaskController::class, 'addAttachment'])->name('attachment')->middleware('user.permission:tasks');
+        Route::post('/{task}/checklist', [App\Http\Controllers\Sales\TaskController::class, 'addChecklistItem'])->name('checklist')->middleware('user.permission:tasks');
+        Route::put('/{task}/checklist', [App\Http\Controllers\Sales\TaskController::class, 'updateChecklistItem'])->name('update-checklist')->middleware('user.permission:tasks');
+        Route::post('/{task}/time-log', [App\Http\Controllers\Sales\TaskController::class, 'addTimeLog'])->name('time-log')->middleware('user.permission:tasks');
+    });
 });
 
 
@@ -638,9 +660,24 @@ Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')-
 Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard')->middleware('user.permission:dashboard');
     Route::get('/employees', [App\Http\Controllers\Admin\DashboardController::class, 'employees'])->name('employees');
-    Route::get('/tasks', [App\Http\Controllers\Admin\DashboardController::class, 'tasks'])->name('tasks')->middleware('user.permission:tasks_management');
     Route::get('/reports', [App\Http\Controllers\Admin\DashboardController::class, 'reports'])->name('reports')->middleware('user.permission:reports');
     Route::get('/settings', [App\Http\Controllers\Admin\DashboardController::class, 'settings'])->name('settings')->middleware('user.permission:settings');
+    
+    // إدارة المهام الجديدة
+    Route::prefix('tasks')->name('tasks.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\TaskManagementController::class, 'index'])->name('index')->middleware('user.permission:tasks_management');
+        Route::post('/board', [App\Http\Controllers\Admin\TaskManagementController::class, 'createBoard'])->name('create-board')->middleware('user.permission:tasks_management');
+        Route::post('/', [App\Http\Controllers\Admin\TaskManagementController::class, 'createTask'])->name('create')->middleware('user.permission:tasks_management');
+        Route::put('/{task}', [App\Http\Controllers\Admin\TaskManagementController::class, 'updateTask'])->name('update')->middleware('user.permission:tasks_management');
+        Route::delete('/{task}', [App\Http\Controllers\Admin\TaskManagementController::class, 'deleteTask'])->name('delete')->middleware('user.permission:tasks_management');
+        Route::post('/{task}/move', [App\Http\Controllers\Admin\TaskManagementController::class, 'moveTask'])->name('move')->middleware('user.permission:tasks_management');
+        Route::post('/{task}/comment', [App\Http\Controllers\Admin\TaskManagementController::class, 'addComment'])->name('comment')->middleware('user.permission:tasks_management');
+        Route::post('/{task}/attachment', [App\Http\Controllers\Admin\TaskManagementController::class, 'addAttachment'])->name('attachment')->middleware('user.permission:tasks_management');
+        Route::post('/{task}/checklist', [App\Http\Controllers\Admin\TaskManagementController::class, 'addChecklistItem'])->name('checklist')->middleware('user.permission:tasks_management');
+        Route::put('/{task}/checklist', [App\Http\Controllers\Admin\TaskManagementController::class, 'updateChecklistItem'])->name('update-checklist')->middleware('user.permission:tasks_management');
+        Route::post('/{task}/time-log', [App\Http\Controllers\Admin\TaskManagementController::class, 'addTimeLog'])->name('time-log')->middleware('user.permission:tasks_management');
+        Route::post('/{task}/toggle-archive', [App\Http\Controllers\Admin\TaskManagementController::class, 'toggleArchive'])->name('toggle-archive')->middleware('user.permission:tasks_management');
+    });
     Route::get('/api/dashboard-stats', [AdminController::class, 'getDashboardStats'])->name('api.dashboard-stats');
     
     // إدارة المحتوى الشاملة
@@ -756,27 +793,6 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     Route::put('/sales/{id}/target', [AdminController::class, 'updateSalesTarget'])->name('sales.update-target')->middleware('user.permission:sales_team_management');
     Route::put('/sales/{id}/disable', [AdminController::class, 'disableSalesMember'])->name('sales.disable')->middleware('user.permission:sales_team_management');
     
-    // إدارة المهام
-    Route::prefix('tasks')->name('tasks.')->group(function () {
-        Route::get('/', [App\Http\Controllers\TaskController::class, 'index'])->name('index')->middleware('user.permission:tasks_management');
-        Route::get('/create', [App\Http\Controllers\TaskController::class, 'create'])->name('create')->middleware('user.permission:tasks_management');
-        Route::post('/', [App\Http\Controllers\TaskController::class, 'store'])->name('store')->middleware('user.permission:tasks_management');
-        Route::get('/{task}', [App\Http\Controllers\TaskController::class, 'show'])->name('show')->middleware('user.permission:tasks_management');
-        Route::get('/{task}/edit', [App\Http\Controllers\TaskController::class, 'edit'])->name('edit')->middleware('user.permission:tasks_management');
-        Route::put('/{task}', [App\Http\Controllers\TaskController::class, 'update'])->name('update')->middleware('user.permission:tasks_management');
-        Route::delete('/{task}', [App\Http\Controllers\TaskController::class, 'destroy'])->name('destroy')->middleware('user.permission:tasks_management');
-        Route::put('/{task}/status', [App\Http\Controllers\TaskController::class, 'updateStatus'])->name('update-status')->middleware('user.permission:tasks_management');
-        
-        // مسارات Kanban الجديدة
-        Route::post('/{task}/position', [App\Http\Controllers\TaskController::class, 'updatePosition'])->name('update-position')->middleware('user.permission:tasks_management');
-        Route::post('/{task}/comment', [App\Http\Controllers\TaskController::class, 'addComment'])->name('add-comment')->middleware('user.permission:tasks_management');
-        Route::post('/{task}/checklist', [App\Http\Controllers\TaskController::class, 'addChecklistItem'])->name('add-checklist')->middleware('user.permission:tasks_management');
-        Route::put('/{task}/checklist', [App\Http\Controllers\TaskController::class, 'updateChecklistItem'])->name('update-checklist')->middleware('user.permission:tasks_management');
-        Route::post('/{task}/time-log', [App\Http\Controllers\TaskController::class, 'addTimeLog'])->name('add-time-log')->middleware('user.permission:tasks_management');
-        
-        // مسارات اللوحات
-        Route::post('/board', [App\Http\Controllers\TaskController::class, 'createBoard'])->name('create-board')->middleware('user.permission:tasks_management');
-    });
     
     // معرض الأعمال
     Route::get('/portfolio', [AdminController::class, 'portfolio'])->name('portfolio.index')->middleware('user.permission:portfolio_management');
@@ -820,8 +836,8 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     Route::patch('contacts/{contact}/mark-closed', [App\Http\Controllers\Admin\ContactController::class, 'markAsClosed'])->name('contacts.mark-closed')->middleware('user.permission:contacts');
     
     // الإعدادات
-    Route::get('/settings', [AdminController::class, 'settings'])->name('settings')->middleware('user.permission:settings');
-    Route::put('/settings', [AdminController::class, 'updateSettings'])->name('settings.update')->middleware('user.permission:settings');
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+    Route::put('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
     
     // إدارة الشعار
     Route::post('/logo/upload', [App\Http\Controllers\LogoController::class, 'uploadLogo'])->name('logo.upload');

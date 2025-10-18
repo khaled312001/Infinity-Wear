@@ -173,32 +173,24 @@
                 </form>
             </div>
             
-            <!-- Map & Contact Info -->
+            <!-- Contact Image & Contact Info -->
             <div class="contact-info-section">
-                <!-- Interactive Map -->
-                <div class="contact-map-container">
-                    <div class="contact-map-header">
-                        <h3 class="contact-map-title">موقعنا</h3>
-                        <p class="contact-map-subtitle">{{ \App\Models\Setting::get('address', 'مكة المكرمة  - شارع الستين ') }}</p>
+                <!-- Contact Us Image -->
+                <div class="contact-image-container">
+                    <div class="contact-image-header">
+                        <h3 class="contact-image-title">تواصل معنا</h3>
+                        <p class="contact-image-subtitle">{{ \App\Models\Setting::get('address', 'مكة المكرمة  - شارع الستين ') }}</p>
                     </div>
-                    <div class="contact-map-wrapper">
-                        <div class="contact-map-placeholder">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <h4>موقعنا على الخريطة</h4>
-                            <p>{{ \App\Models\Setting::get('address', 'شارع الملك فهد، حي النخيل، الرياض') }}</p>
-                            <button class="contact-btn contact-btn-primary">
-                                <i class="fas fa-directions"></i>
-                                احصل على الاتجاهات
-                            </button>
-                        </div>
-                        <div class="contact-map-overlay">
-                            <div class="contact-map-info">
+                    <div class="contact-image-wrapper">
+                        <img src="{{ asset('images/hero/contact-hero.svg') }}" alt="تواصل معنا - Infinity Wear" class="contact-us-image">
+                        <div class="contact-image-overlay">
+                            <div class="contact-image-info">
                                 <h4>العنوان</h4>
                                 <p>{{ \App\Models\Setting::get('address', 'شارع الملك فهد، حي النخيل، مكة المكرمة  - شارع الستين ') }}</p>
-                                <button class="contact-btn contact-btn-primary">
-                                    <i class="fas fa-external-link-alt"></i>
-                                    فتح في خرائط جوجل
-                                </button>
+                                <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', \App\Models\Setting::get('whatsapp_number')) }}" target="_blank" class="contact-btn contact-btn-primary">
+                                    <i class="fab fa-whatsapp"></i>
+                                    تواصل معنا عبر واتساب
+                                </a>
                             </div>
                         </div>
                     </div>

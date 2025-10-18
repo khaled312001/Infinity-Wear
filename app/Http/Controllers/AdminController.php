@@ -640,6 +640,38 @@ class AdminController extends Controller
     public function settings()
     {
         $settings = \App\Models\Setting::getAll();
+        
+        // إضافة إعدادات افتراضية إذا لم تكن موجودة
+        $defaultSettings = [
+            'site_name' => 'Infinity Wear',
+            'site_tagline' => 'مؤسسة الزي اللامحدود',
+            'site_description' => 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية',
+            'contact_email' => 'info@infinitywearsa.com',
+            'contact_phone' => '+966501234567',
+            'address' => 'الرياض، المملكة العربية السعودية',
+            'default_language' => 'ar',
+            'default_currency' => 'SAR',
+            'timezone' => 'Asia/Riyadh',
+            'enable_registration' => '1',
+            'email_verification' => '1',
+            'maintenance_mode' => '0',
+            'facebook_url' => '',
+            'twitter_url' => '',
+            'instagram_url' => '',
+            'linkedin_url' => '',
+            'youtube_url' => '',
+            'tiktok_url' => '',
+            'whatsapp_number' => '',
+            'support_email' => '',
+            'business_hours' => 'السبت - الخميس: 8:00 ص - 6:00 م',
+            'emergency_contact' => '',
+            'site_logo' => '',
+            'site_favicon' => ''
+        ];
+        
+        // دمج الإعدادات الموجودة مع الافتراضية
+        $settings = array_merge($defaultSettings, $settings);
+        
         return view('admin.settings', compact('settings'));
     }
 

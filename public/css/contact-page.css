@@ -469,8 +469,8 @@
     gap: 2rem;
 }
 
-/* الخريطة */
-.contact-map-container {
+/* صورة التواصل */
+.contact-image-container {
     background: var(--contact-bg-primary);
     border-radius: var(--contact-border-radius-2xl);
     overflow: hidden;
@@ -479,62 +479,44 @@
     position: relative;
 }
 
-.contact-map-header {
+.contact-image-header {
     padding: 2rem 2rem 1rem;
     text-align: center;
     background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(245, 158, 11, 0.05) 100%);
 }
 
-.contact-map-title {
+.contact-image-title {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--contact-text-primary);
     margin-bottom: 0.5rem;
 }
 
-.contact-map-subtitle {
+.contact-image-subtitle {
     color: var(--contact-text-secondary);
     font-size: 1rem;
 }
 
-.contact-map-wrapper {
+.contact-image-wrapper {
     position: relative;
     height: 300px;
     background: var(--contact-bg-secondary);
+    overflow: hidden;
 }
 
-.contact-map-placeholder {
+.contact-us-image {
+    width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 2rem;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(245, 158, 11, 0.05) 100%);
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
 }
 
-.contact-map-placeholder i {
-    font-size: 3rem;
-    color: var(--contact-primary);
-    margin-bottom: 1rem;
-    opacity: 0.7;
+.contact-image-wrapper:hover .contact-us-image {
+    transform: scale(1.05);
 }
 
-.contact-map-placeholder h4 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--contact-text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.contact-map-placeholder p {
-    color: var(--contact-text-secondary);
-    margin-bottom: 1.5rem;
-    font-size: 1rem;
-}
-
-.contact-map-overlay {
+.contact-image-overlay {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -548,25 +530,25 @@
     z-index: 10;
 }
 
-.contact-map-info {
+.contact-image-info {
     text-align: right;
 }
 
-.contact-map-info h4 {
+.contact-image-info h4 {
     color: var(--contact-primary);
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
 
-.contact-map-info p {
+.contact-image-info p {
     color: var(--contact-text-secondary);
     font-size: 0.875rem;
     margin-bottom: 1rem;
     line-height: 1.5;
 }
 
-.contact-map-info .contact-btn {
+.contact-image-info .contact-btn {
     width: 100%;
     justify-content: center;
     font-size: 0.8rem;

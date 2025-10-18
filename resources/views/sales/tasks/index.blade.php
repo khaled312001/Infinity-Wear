@@ -1,370 +1,357 @@
-@extends('layouts.sales-dashboard')
+@extends('layouts.dashboard')
 
-@section('title', 'لوحة المهام - فريق المبيعات')
-@section('dashboard-title', 'لوحة المهام')
+@section('title', 'إدارة المهام - المبيعات')
+@section('dashboard-title', 'إدارة المهام')
 @section('page-title', 'لوحة المهام')
-@section('page-subtitle', 'إدارة وتتبع مهام فريق المبيعات بنظام Trello')
+@section('page-subtitle', 'نظام إدارة المهام لفريق المبيعات')
+
+@section('page-actions')
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTaskModal">
+            <i class="fas fa-plus me-2"></i>
+            مهمة جديدة
+        </button>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fas fa-filter me-2"></i>
+                تصفية
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" onclick="filterTasks('all')">جميع المهام</a></li>
+                <li><a class="dropdown-item" href="#" onclick="filterTasks('my')">مهامي</a></li>
+                <li><a class="dropdown-item" href="#" onclick="filterTasks('urgent')">عاجلة</a></li>
+                <li><a class="dropdown-item" href="#" onclick="filterTasks('overdue')">متأخرة</a></li>
+            </ul>
+        </div>
+    </div>
+@endsection
 
 @section('content')
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fas fa-check-circle me-2"></i>
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="fas fa-exclamation-circle me-2"></i>
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
-<!-- إحصائيات سريعة -->
-<div class="row g-4 mb-4">
-    <div class="col-lg-3 col-md-6">
-        <div class="sales-stats-card">
-            <div class="d-flex align-items-center">
-                <div class="sales-stats-icon primary">
-                    <i class="fas fa-tasks"></i>
-                </div>
-                <div class="ms-3">
-                    <h3 class="mb-0">{{ $tasks->total() }}</h3>
-                    <p class="mb-0 text-muted">إجمالي المهام</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="sales-stats-card">
-            <div class="d-flex align-items-center">
-                <div class="sales-stats-icon warning">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div class="ms-3">
-                    <h3 class="mb-0">{{ $tasks->where('status', 'pending')->count() }}</h3>
-                    <p class="mb-0 text-muted">معلقة</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="sales-stats-card">
-            <div class="d-flex align-items-center">
-                <div class="sales-stats-icon info">
-                    <i class="fas fa-play"></i>
-                </div>
-                <div class="ms-3">
-                    <h3 class="mb-0">{{ $tasks->where('status', 'in_progress')->count() }}</h3>
-                    <p class="mb-0 text-muted">قيد التنفيذ</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="sales-stats-card">
-            <div class="d-flex align-items-center">
-                <div class="sales-stats-icon success">
-                    <i class="fas fa-check"></i>
-                </div>
-                <div class="ms-3">
-                    <h3 class="mb-0">{{ $tasks->where('status', 'completed')->count() }}</h3>
-                    <p class="mb-0 text-muted">مكتملة</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- لوحة Trello للمبيعات -->
-<div class="sales-kanban-board">
-    <div class="row g-4">
-        <!-- عمود المهام المعلقة -->
-        <div class="col-lg-4">
-            <div class="sales-kanban-column" data-status="pending">
-                <div class="sales-kanban-header">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-clock me-2 text-warning"></i>
-                            <h6 class="mb-0">معلقة</h6>
-                        </div>
-                        <span class="sales-badge bg-warning">{{ $tasks->where('status', 'pending')->count() }}</span>
+    <!-- إحصائيات سريعة -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stats-card h-100">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon primary me-3">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">{{ $stats['total_tasks'] }}</h3>
+                        <p class="text-muted mb-0">إجمالي المهام</p>
                     </div>
                 </div>
-                <div class="sales-kanban-body" data-status="pending">
-                    @foreach($tasks->where('status', 'pending') as $task)
-                        <div class="sales-task-card" data-task-id="{{ $task->id }}" data-status="pending" draggable="true">
-                            <div class="sales-task-header">
-                                <h6 class="sales-task-title">{{ $task->title }}</h6>
-                                <div class="sales-task-actions">
-                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#salesTaskModal{{ $task->id }}">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="sales-task-content">
-                                <p class="sales-task-description">{{ Str::limit($task->description, 80) }}</p>
-                                <div class="sales-task-meta">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">
-                                            <i class="fas fa-user me-1"></i>
-                                            @if($task->assigned_to && $task->assignedTo && $task->assignedTo->user)
-                                                {{ $task->assignedTo->user->name }}
-                                            @else
-                                                غير محدد
-                                            @endif
-                                        </small>
-                                        @if($task->priority === 'high')
-                                            <span class="sales-badge bg-danger">عاجل</span>
-                                        @elseif($task->priority === 'medium')
-                                            <span class="sales-badge bg-warning">متوسط</span>
-                                        @elseif($task->priority === 'low')
-                                            <span class="sales-badge bg-success">منخفض</span>
-                                        @endif
-                                    </div>
-                                    @if($task->due_date)
-                                        <small class="text-muted d-block mt-2">
-                                            <i class="fas fa-calendar me-1"></i>
-                                            {{ $task->due_date->format('Y-m-d') }}
-                                        </small>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stats-card h-100">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon success me-3">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">{{ $stats['completed_tasks'] }}</h3>
+                        <p class="text-muted mb-0">مكتملة</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- عمود المهام قيد التنفيذ -->
-        <div class="col-lg-4">
-            <div class="sales-kanban-column" data-status="in_progress">
-                <div class="sales-kanban-header">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-play me-2 text-info"></i>
-                            <h6 class="mb-0">قيد التنفيذ</h6>
-                        </div>
-                        <span class="sales-badge bg-info">{{ $tasks->where('status', 'in_progress')->count() }}</span>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stats-card h-100">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon warning me-3">
+                        <i class="fas fa-clock"></i>
                     </div>
-                </div>
-                <div class="sales-kanban-body" data-status="in_progress">
-                    @foreach($tasks->where('status', 'in_progress') as $task)
-                        <div class="sales-task-card" data-task-id="{{ $task->id }}" data-status="in_progress" draggable="true">
-                            <div class="sales-task-header">
-                                <h6 class="sales-task-title">{{ $task->title }}</h6>
-                                <div class="sales-task-actions">
-                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#salesTaskModal{{ $task->id }}">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="sales-task-content">
-                                <p class="sales-task-description">{{ Str::limit($task->description, 80) }}</p>
-                                <div class="sales-task-meta">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">
-                                            <i class="fas fa-user me-1"></i>
-                                            @if($task->assigned_to && $task->assignedTo && $task->assignedTo->user)
-                                                {{ $task->assignedTo->user->name }}
-                                            @else
-                                                غير محدد
-                                            @endif
-                                        </small>
-                                        @if($task->priority === 'high')
-                                            <span class="sales-badge bg-danger">عاجل</span>
-                                        @elseif($task->priority === 'medium')
-                                            <span class="sales-badge bg-warning">متوسط</span>
-                                        @elseif($task->priority === 'low')
-                                            <span class="sales-badge bg-success">منخفض</span>
-                                        @endif
-                                    </div>
-                                    @if($task->due_date)
-                                        <small class="text-muted d-block mt-2">
-                                            <i class="fas fa-calendar me-1"></i>
-                                            {{ $task->due_date->format('Y-m-d') }}
-                                        </small>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+                    <div>
+                        <h3 class="mb-0">{{ $stats['in_progress_tasks'] }}</h3>
+                        <p class="text-muted mb-0">قيد التنفيذ</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- عمود المهام المكتملة -->
-        <div class="col-lg-4">
-            <div class="sales-kanban-column" data-status="completed">
-                <div class="sales-kanban-header">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-check me-2 text-success"></i>
-                            <h6 class="mb-0">مكتملة</h6>
-                        </div>
-                        <span class="sales-badge bg-success">{{ $tasks->where('status', 'completed')->count() }}</span>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stats-card h-100">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon info me-3">
+                        <i class="fas fa-pause-circle"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">{{ $stats['pending_tasks'] }}</h3>
+                        <p class="text-muted mb-0">معلقة</p>
                     </div>
                 </div>
-                <div class="sales-kanban-body" data-status="completed">
-                    @foreach($tasks->where('status', 'completed') as $task)
-                        <div class="sales-task-card" data-task-id="{{ $task->id }}" data-status="completed" draggable="true">
-                            <div class="sales-task-header">
-                                <h6 class="sales-task-title">{{ $task->title }}</h6>
-                                <div class="sales-task-actions">
-                                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#salesTaskModal{{ $task->id }}">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="sales-task-content">
-                                <p class="sales-task-description">{{ Str::limit($task->description, 80) }}</p>
-                                <div class="sales-task-meta">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">
-                                            <i class="fas fa-user me-1"></i>
-                                            @if($task->assigned_to && $task->assignedTo && $task->assignedTo->user)
-                                                {{ $task->assignedTo->user->name }}
-                                            @else
-                                                غير محدد
-                                            @endif
-                                        </small>
-                                        @if($task->priority === 'high')
-                                            <span class="sales-badge bg-danger">عاجل</span>
-                                        @elseif($task->priority === 'medium')
-                                            <span class="sales-badge bg-warning">متوسط</span>
-                                        @elseif($task->priority === 'low')
-                                            <span class="sales-badge bg-success">منخفض</span>
-                                        @endif
-                                    </div>
-                                    @if($task->due_date)
-                                        <small class="text-muted d-block mt-2">
-                                            <i class="fas fa-calendar me-1"></i>
-                                            {{ $task->due_date->format('Y-m-d') }}
-                                        </small>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stats-card h-100">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon danger me-3">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">{{ $stats['overdue_tasks'] }}</h3>
+                        <p class="text-muted mb-0">متأخرة</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stats-card h-100">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon danger me-3">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">{{ $stats['urgent_tasks'] }}</h3>
+                        <p class="text-muted mb-0">عاجلة</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-@if($tasks->count() === 0)
-    <div class="text-center py-5">
-        <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
-        <h5 class="text-muted">لا توجد مهام حالياً</h5>
-        <p class="text-muted">لم يتم تعيين أي مهام لفريق المبيعات بعد</p>
-    </div>
-@endif
+    <!-- لوحات المهام -->
+    <div class="task-boards-container">
+        @foreach($boards as $board)
+            <div class="task-board" data-board-id="{{ $board->id }}">
+                <div class="board-header">
+                    <div class="board-title">
+                        <i class="{{ $board->board_icon }}" style="color: {{ $board->board_color }}"></i>
+                        <h4>{{ $board->name }}</h4>
+                        <span class="badge bg-secondary">{{ $board->board_type_label }}</span>
+                    </div>
+                </div>
 
-<!-- Modal for Task Details -->
-@foreach($tasks as $task)
-<div class="modal fade" id="salesTaskModal{{ $task->id }}" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-tasks me-2"></i>
-                    {{ $task->title }}
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="board-content">
+                    <div class="columns-container" id="board-{{ $board->id }}-columns">
+                        @foreach($board->columns as $column)
+                            <div class="task-column" data-column-id="{{ $column->id }}" data-board-id="{{ $board->id }}">
+                                <div class="column-header">
+                                    <div class="column-title">
+                                        <i class="{{ $column->column_icon }}" style="color: {{ $column->column_color }}"></i>
+                                        <span>{{ $column->name }}</span>
+                                        <span class="task-count">{{ $column->active_tasks_count }}</span>
+                                    </div>
+                                    <div class="column-actions">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="addTask({{ $column->id }})">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="column-content" id="column-{{ $column->id }}-tasks">
+                                    @foreach($column->tasks as $task)
+                                        <div class="task-card" data-task-id="{{ $task->id }}" draggable="true">
+                                            <div class="task-header">
+                                                <div class="task-priority priority-{{ $task->priority }}"></div>
+                                                @if($task->is_urgent)
+                                                    <i class="fas fa-fire text-danger"></i>
+                                                @endif
+                                                @if($task->is_overdue)
+                                                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                                                @endif
+                                            </div>
+                                            
+                                            <div class="task-title">{{ $task->title }}</div>
+                                            
+                                            @if($task->description)
+                                                <div class="task-description">{{ Str::limit($task->description, 100) }}</div>
+                                            @endif
+
+                                            @if($task->labels && count($task->labels) > 0)
+                                                <div class="task-labels">
+                                                    @foreach($task->labels as $label)
+                                                        <span class="label" style="background-color: {{ $label['color'] ?? '#6c757d' }}">
+                                                            {{ $label['name'] }}
+                                                        </span>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+
+                                            @if($task->checklist && count($task->checklist) > 0)
+                                                <div class="task-progress">
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: {{ $task->progress_percentage }}%"></div>
+                                                    </div>
+                                                    <small class="text-muted">{{ $task->progress_percentage }}%</small>
+                                                </div>
+                                            @endif
+
+                                            <div class="task-footer">
+                                                @if($task->assignedUser)
+                                                    <div class="assigned-user">
+                                                        <i class="fas fa-user"></i>
+                                                        {{ $task->assignedUser->name }}
+                                                    </div>
+                                                @endif
+                                                
+                                                @if($task->due_date)
+                                                    <div class="due-date {{ $task->is_overdue ? 'overdue' : ($task->is_due_soon ? 'due-soon' : '') }}">
+                                                        <i class="fas fa-calendar"></i>
+                                                        {{ $task->due_date->format('Y-m-d') }}
+                                                    </div>
+                                                @endif
+
+                                                <div class="task-actions">
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="viewTask({{ $task->id }})">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-secondary" onclick="editTask({{ $task->id }})">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6>تفاصيل المهمة</h6>
-                        <p class="text-muted">{{ $task->description }}</p>
+        @endforeach
+    </div>
+
+    <!-- Modal إنشاء مهمة جديدة -->
+    <div class="modal fade" id="createTaskModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إنشاء مهمة جديدة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="createTaskForm">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="taskTitle" class="form-label">عنوان المهمة</label>
+                                    <input type="text" class="form-control" id="taskTitle" name="title" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="taskPriority" class="form-label">الأولوية</label>
+                                    <select class="form-select" id="taskPriority" name="priority" required>
+                                        <option value="low">منخفضة</option>
+                                        <option value="medium" selected>متوسطة</option>
+                                        <option value="high">عالية</option>
+                                        <option value="urgent">عاجلة</option>
+                                        <option value="critical">حرجة</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <h6 class="mt-3">الأولوية</h6>
-                        @switch($task->priority)
-                            @case('urgent')
-                                <span class="sales-badge bg-danger">عاجل</span>
-                                @break
-                            @case('high')
-                                <span class="sales-badge bg-warning">عالي</span>
-                                @break
-                            @case('medium')
-                                <span class="sales-badge bg-info">متوسط</span>
-                                @break
-                            @case('low')
-                                <span class="sales-badge bg-success">منخفض</span>
-                                @break
-                        @endswitch
-                    </div>
-                    <div class="col-md-6">
-                        <h6>معلومات إضافية</h6>
-                        <ul class="list-unstyled">
-                            <li><strong>الحالة:</strong> 
-                                @switch($task->status)
-                                    @case('pending')
-                                        <span class="sales-badge bg-warning">معلقة</span>
-                                        @break
-                                    @case('in_progress')
-                                        <span class="sales-badge bg-info">قيد التنفيذ</span>
-                                        @break
-                                    @case('completed')
-                                        <span class="sales-badge bg-success">مكتملة</span>
-                                        @break
-                                @endswitch
-                            </li>
-                            <li><strong>تاريخ الإنشاء:</strong> {{ $task->created_at->format('Y-m-d H:i') }}</li>
-                            @if($task->due_date)
-                                <li><strong>تاريخ الاستحقاق:</strong> {{ \Carbon\Carbon::parse($task->due_date)->format('Y-m-d H:i') }}</li>
-                            @endif
-                            @if($task->completed_at)
-                                <li><strong>تاريخ الإكمال:</strong> {{ \Carbon\Carbon::parse($task->completed_at)->format('Y-m-d H:i') }}</li>
-                            @endif
-                        </ul>
-                    </div>
-                </div>
-                
-                @if($task->notes)
-                    <div class="mt-3">
-                        <h6>ملاحظات</h6>
-                        <div class="alert alert-info">
-                            {{ $task->notes }}
+                        <div class="mb-3">
+                            <label for="taskDescription" class="form-label">الوصف</label>
+                            <textarea class="form-control" id="taskDescription" name="description" rows="3"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="taskBoard" class="form-label">اللوحة</label>
+                                    <select class="form-select" id="taskBoard" name="board_id" required>
+                                        @foreach($boards as $board)
+                                            <option value="{{ $board->id }}">{{ $board->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="taskColumn" class="form-label">العمود</label>
+                                    <select class="form-select" id="taskColumn" name="column_id" required>
+                                        @foreach($boards->first()->columns ?? [] as $column)
+                                            <option value="{{ $column->id }}">{{ $column->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="taskDueDate" class="form-label">تاريخ الاستحقاق</label>
+                                    <input type="date" class="form-control" id="taskDueDate" name="due_date">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="taskAssignedTo" class="form-label">تعيين إلى</label>
+                                    <select class="form-select" id="taskAssignedTo" name="assigned_to">
+                                        <option value="">اختر شخص</option>
+                                        @foreach($users['admins'] as $admin)
+                                            <option value="{{ $admin->id }}" data-type="admin">{{ $admin->name }}</option>
+                                        @endforeach
+                                        @foreach($users['marketing'] as $marketing)
+                                            <option value="{{ $marketing->id }}" data-type="marketing">{{ $marketing->name }} (تسويق)</option>
+                                        @endforeach
+                                        @foreach($users['sales'] as $sales)
+                                            <option value="{{ $sales->id }}" data-type="sales">{{ $sales->name }} (مبيعات)</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="taskEstimatedHours" class="form-label">الساعات المتوقعة</label>
+                                    <input type="number" class="form-control" id="taskEstimatedHours" name="estimated_hours" step="0.5" min="0">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="taskColor" class="form-label">اللون</label>
+                                    <input type="color" class="form-control form-control-color" id="taskColor" name="color">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                @endif
-            </div>
-            <div class="modal-footer">
-                @if($task->status !== 'completed')
-                    <form action="{{ route('sales.tasks.update-status', $task) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('PUT')
-                        <div class="d-flex gap-2">
-                            @if($task->status === 'pending')
-                                <input type="hidden" name="status" value="in_progress">
-                                <button type="submit" class="btn btn-info">
-                                    <i class="fas fa-play me-2"></i>بدء التنفيذ
-                                </button>
-                            @endif
-                            @if($task->status === 'in_progress')
-                                <input type="hidden" name="status" value="completed">
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-check me-2"></i>إكمال المهمة
-                                </button>
-                            @endif
-                        </div>
-                    </form>
-                @endif
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">إنشاء المهمة</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</div>
-@endforeach
 @endsection
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('css/sales-kanban.css') }}">
-@endsection
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/task-management.css') }}">
+@endpush
 
-@section('scripts')
-<script src="{{ asset('js/sales-kanban.js') }}"></script>
-@endsection
+@push('scripts')
+<script src="{{ asset('js/task-management.js') }}"></script>
+<script>
+    // تهيئة النظام
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeTaskManagement();
+    });
+</script>
+@endpush
