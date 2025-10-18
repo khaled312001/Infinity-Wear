@@ -54,6 +54,10 @@
         <i class="fas fa-chart-bar me-2"></i>
         التقارير
     </a>
+    <a href="{{ route('sales.marketing-reports.index') }}" class="nav-link {{ request()->routeIs('sales.marketing-reports*') ? 'active' : '' }}">
+        <i class="fas fa-file-alt me-2"></i>
+        تقارير المندوبين التسويقيين
+    </a>
 </div>
 
 <!-- إدارة الحساب -->

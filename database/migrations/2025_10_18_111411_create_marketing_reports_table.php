@@ -69,8 +69,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            // Foreign keys
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            // Foreign keys - commented out for now due to constraint issues
+            // $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             
             // Indexes
             $table->index(['representative_name', 'created_at']);

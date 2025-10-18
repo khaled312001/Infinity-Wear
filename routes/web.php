@@ -616,6 +616,18 @@ Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')-
     Route::get('/contacts/{id}', [App\Http\Controllers\Sales\DashboardController::class, 'showContact'])->name('contacts.show')->middleware('user.permission:contacts');
     Route::put('/contacts/{id}', [App\Http\Controllers\Sales\DashboardController::class, 'updateContact'])->name('contacts.update')->middleware('user.permission:contacts');
     Route::get('/reports', [App\Http\Controllers\Sales\DashboardController::class, 'reports'])->name('reports')->middleware('user.permission:reports');
+    
+    // تقارير المندوبين التسويقيين
+    Route::get('/marketing-reports', [App\Http\Controllers\Sales\MarketingReportController::class, 'index'])->name('marketing-reports.index')->middleware('user.permission:marketing_reports');
+    Route::get('/marketing-reports/create', [App\Http\Controllers\Sales\MarketingReportController::class, 'create'])->name('marketing-reports.create')->middleware('user.permission:marketing_reports');
+    Route::post('/marketing-reports', [App\Http\Controllers\Sales\MarketingReportController::class, 'store'])->name('marketing-reports.store')->middleware('user.permission:marketing_reports');
+    Route::get('/marketing-reports/{marketingReport}', [App\Http\Controllers\Sales\MarketingReportController::class, 'show'])->name('marketing-reports.show')->middleware('user.permission:marketing_reports');
+    Route::get('/marketing-reports/{marketingReport}/edit', [App\Http\Controllers\Sales\MarketingReportController::class, 'edit'])->name('marketing-reports.edit')->middleware('user.permission:marketing_reports');
+    Route::put('/marketing-reports/{marketingReport}', [App\Http\Controllers\Sales\MarketingReportController::class, 'update'])->name('marketing-reports.update')->middleware('user.permission:marketing_reports');
+    Route::delete('/marketing-reports/{marketingReport}', [App\Http\Controllers\Sales\MarketingReportController::class, 'destroy'])->name('marketing-reports.destroy')->middleware('user.permission:marketing_reports');
+    Route::patch('/marketing-reports/{marketingReport}/status', [App\Http\Controllers\Sales\MarketingReportController::class, 'updateStatus'])->name('marketing-reports.update-status')->middleware('user.permission:marketing_reports');
+    Route::get('/marketing-reports-export', [App\Http\Controllers\Sales\MarketingReportController::class, 'export'])->name('marketing-reports.export')->middleware('user.permission:marketing_reports');
+    
     Route::get('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'profile'])->name('profile')->middleware('user.permission:profile');
     Route::put('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'updateProfile'])->name('profile.update')->middleware('user.permission:profile');
 });
