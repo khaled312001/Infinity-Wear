@@ -24,7 +24,17 @@ class TaskController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('marketing.tasks.index', compact('tasks'));
+        // حساب الإحصائيات
+        $stats = [
+            'total_tasks' => $tasks->count(),
+            'completed_tasks' => $tasks->where('status', 'completed')->count(),
+            'pending_tasks' => $tasks->where('status', 'pending')->count(),
+            'in_progress_tasks' => $tasks->where('status', 'in_progress')->count(),
+            'overdue_tasks' => $tasks->where('due_date', '<', now())->where('status', '!=', 'completed')->count(),
+            'urgent_tasks' => $tasks->where('priority', 'high')->where('status', '!=', 'completed')->count(),
+        ];
+
+        return view('marketing.tasks.index', compact('tasks', 'stats'));
     }
 
     /**
