@@ -35,7 +35,11 @@ class PortfolioItem extends Model
         if ($this->image) {
             // إذا كان المسار يحتوي على 'images/portfolio/' فهو في storage/app/public/
             if (strpos($this->image, 'images/portfolio/') === 0) {
-                return \Storage::url($this->image);
+                // جرب أولاً الرابط الرمزي
+                $storageUrl = \Storage::url($this->image);
+                // إذا فشل، جرب النسخة في public
+                $publicUrl = asset('images/' . $this->image);
+                return $publicUrl; // استخدم النسخة في public كبديل آمن
             }
             // إذا كان المسار يحتوي على 'portfolio/' فهو في public/images/portfolio/
             if (strpos($this->image, 'portfolio/') === 0) {
@@ -60,7 +64,8 @@ class PortfolioItem extends Model
             return array_map(function($image) {
                 // إذا كان المسار يحتوي على 'images/portfolio/' فهو في storage/app/public/
                 if (strpos($image, 'images/portfolio/') === 0) {
-                    return \Storage::url($image);
+                    // استخدم النسخة في public كبديل آمن
+                    return asset('images/' . $image);
                 }
                 // إذا كان المسار يحتوي على 'portfolio/' فهو في public/images/portfolio/
                 if (strpos($image, 'portfolio/') === 0) {
