@@ -71,13 +71,13 @@ class DashboardController extends Controller
         $monthlyPerformance = [
             'tasks_completed' => Task::where('assigned_to', $user->id)
                 ->where('status', 'completed')
-                ->whereMonth('completed_at', Carbon::now()->month)
-                ->whereYear('completed_at', Carbon::now()->year)
+                ->whereRaw('strftime("%m", completed_at) = ?', [str_pad(Carbon::now()->month, 2, '0', STR_PAD_LEFT)])
+                ->whereRaw('strftime("%Y", completed_at) = ?', [Carbon::now()->year])
                 ->count(),
             'hours_worked' => Task::where('assigned_to', $user->id)
                 ->where('status', 'completed')
-                ->whereMonth('completed_at', Carbon::now()->month)
-                ->whereYear('completed_at', Carbon::now()->year)
+                ->whereRaw('strftime("%m", completed_at) = ?', [str_pad(Carbon::now()->month, 2, '0', STR_PAD_LEFT)])
+                ->whereRaw('strftime("%Y", completed_at) = ?', [Carbon::now()->year])
                 ->sum('actual_hours'),
         ];
 

@@ -280,7 +280,7 @@ class FinanceController extends Controller
         $year = $request->get('year', Carbon::now()->year);
         
         // جلب البيانات
-        $transactions = Transaction::whereYear('transaction_date', $year)
+        $transactions = Transaction::whereRaw('strftime("%Y", transaction_date) = ?', [$year])
             ->orderBy('transaction_date', 'desc')
             ->get();
 

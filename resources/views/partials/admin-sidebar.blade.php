@@ -59,6 +59,10 @@
         <i class="fas fa-tasks me-2"></i>
         المهام
     </a>
+    <a href="{{ route('admin.company-plans.index') }}" class="nav-link {{ request()->routeIs('admin.company-plans*') ? 'active' : '' }}">
+        <i class="fas fa-chart-line me-2"></i>
+        خطط الشركة
+    </a>
 </div>
 
 <!-- إدارة المالية -->

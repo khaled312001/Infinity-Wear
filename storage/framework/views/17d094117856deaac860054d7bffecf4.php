@@ -1,5 +1,3 @@
-
-
 <?php
 use Illuminate\Support\Facades\Storage;
 ?>
@@ -607,7 +605,7 @@ use Illuminate\Support\Facades\Storage;
                         </div>
                         <div class="infinity-contact-details">
                             <h3>الهاتف</h3>
-                            <p><?php echo e(\App\Models\Setting::get('contact_phone')); ?><br><?php echo e(\App\Models\Setting::get('emergency_contact', '+966 11 234 5678')); ?></p>
+                            <p><?php echo e(\App\Models\Setting::get('contact_phone')); ?></p>
                         </div>
                     </div>
 
@@ -617,7 +615,7 @@ use Illuminate\Support\Facades\Storage;
                         </div>
                         <div class="infinity-contact-details">
                             <h3>البريد الإلكتروني</h3>
-                            <p><?php echo e(\App\Models\Setting::get('contact_email')); ?><br><?php echo e(\App\Models\Setting::get('support_email', 'sales@infinitywear.sa')); ?></p>
+                            <p><?php echo e(\App\Models\Setting::get('support_email', 'info@worldtripagency.com')); ?></p>
                         </div>
                     </div>
 

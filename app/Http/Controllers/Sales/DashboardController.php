@@ -31,8 +31,8 @@ class DashboardController extends Controller
             'total_importer_orders' => $importerOrders->count(),
             'total_importer_revenue' => $importerOrders->where('status', '!=', 'cancelled')->sum('final_cost'),
             'monthly_importer_revenue' => ImporterOrder::where('status', '!=', 'cancelled')
-                ->whereMonth('created_at', Carbon::now()->month)
-                ->whereYear('created_at', Carbon::now()->year)
+                ->whereRaw('strftime("%m", created_at) = ?', [str_pad(Carbon::now()->month, 2, '0', STR_PAD_LEFT)])
+                ->whereRaw('strftime("%Y", created_at) = ?', [Carbon::now()->year])
                 ->sum('final_cost'),
         ];
 
@@ -65,10 +65,10 @@ class DashboardController extends Controller
 
         // إحصائيات المبيعات الشهرية (طلبات المستوردين)
         $monthlySales = ImporterOrder::select(
-            DB::raw('MONTH(created_at) as month'),
+            DB::raw('strftime("%m", created_at) as month'),
             DB::raw('SUM(final_cost) as total')
         )
-        ->whereYear('created_at', Carbon::now()->year)
+        ->whereRaw('strftime("%Y", created_at) = ?', [Carbon::now()->year])
         ->where('status', '!=', 'cancelled')
         ->groupBy('month')
         ->orderBy('month')
@@ -192,11 +192,11 @@ class DashboardController extends Controller
     {
         // تقارير المبيعات
         $monthlyReport = Order::select(
-            DB::raw('MONTH(created_at) as month'),
+            DB::raw('strftime("%m", created_at) as month'),
             DB::raw('COUNT(*) as orders_count'),
             DB::raw('SUM(total) as total_revenue')
         )
-        ->whereYear('created_at', Carbon::now()->year)
+        ->whereRaw('strftime("%Y", created_at) = ?', [Carbon::now()->year])
         ->where('status', '!=', 'cancelled')
         ->groupBy('month')
         ->orderBy('month')

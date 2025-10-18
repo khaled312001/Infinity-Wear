@@ -36,7 +36,7 @@ class DashboardController extends Controller
             DB::raw('MONTH(created_at) as month'),
             DB::raw('COUNT(*) as total')
         )
-        ->whereYear('created_at', Carbon::now()->year)
+        ->whereRaw('YEAR(created_at) = ?', [Carbon::now()->year])
         ->groupBy('month')
         ->orderBy('month')
         ->get();
@@ -46,10 +46,12 @@ class DashboardController extends Controller
             'total_income' => Transaction::where('type', 'income')->sum('amount'),
             'total_expenses' => Transaction::where('type', 'expense')->sum('amount'),
             'monthly_income' => Transaction::where('type', 'income')
-                ->whereMonth('transaction_date', Carbon::now()->month)
+                ->whereRaw('MONTH(transaction_date) = ?', [Carbon::now()->month])
+                ->whereRaw('YEAR(transaction_date) = ?', [Carbon::now()->year])
                 ->sum('amount'),
             'monthly_expenses' => Transaction::where('type', 'expense')
-                ->whereMonth('transaction_date', Carbon::now()->month)
+                ->whereRaw('MONTH(transaction_date) = ?', [Carbon::now()->month])
+                ->whereRaw('YEAR(transaction_date) = ?', [Carbon::now()->year])
                 ->sum('amount'),
         ];
 

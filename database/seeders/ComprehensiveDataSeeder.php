@@ -134,11 +134,8 @@ class ComprehensiveDataSeeder extends Seeder
     {
         $importers = [];
         $businessTypes = ['academy', 'school', 'store', 'hospital', 'other'];
-        $experienceLevels = ['beginner', 'intermediate', 'advanced'];
-        $expectedVolumes = ['small', 'medium', 'large'];
-        $designPreferences = ['classic', 'modern', 'custom'];
-        $budgetRanges = ['low', 'medium', 'high'];
         $cities = ['الرياض', 'جدة', 'مكة', 'المدينة', 'الدمام', 'الخبر', 'الظهران', 'الطائف', 'بريدة', 'تبوك'];
+        $statuses = ['new', 'contacted', 'qualified', 'proposal', 'negotiation', 'closed_won', 'closed_lost'];
 
         for ($i = 1; $i <= 30; $i++) {
             $importers[] = [
@@ -149,12 +146,8 @@ class ComprehensiveDataSeeder extends Seeder
                 'address' => 'شارع ' . $i . '، حي ' . rand(1, 20),
                 'city' => $cities[array_rand($cities)],
                 'business_type' => $businessTypes[array_rand($businessTypes)],
-                'experience_level' => $experienceLevels[array_rand($experienceLevels)],
-                'expected_volume' => $expectedVolumes[array_rand($expectedVolumes)],
-                'design_preference' => $designPreferences[array_rand($designPreferences)],
-                'budget_range' => $budgetRanges[array_rand($budgetRanges)],
-                'additional_info' => 'معلومات إضافية للمستورد رقم ' . $i,
-                'status' => ['pending', 'approved', 'rejected'][array_rand(['pending', 'approved', 'rejected'])],
+                'notes' => 'ملاحظات مهمة للمستورد رقم ' . $i,
+                'status' => $statuses[array_rand($statuses)],
                 'created_at' => Carbon::now()->subDays(rand(1, 200)),
                 'updated_at' => Carbon::now()->subDays(rand(1, 30)),
             ];
@@ -266,23 +259,6 @@ class ComprehensiveDataSeeder extends Seeder
                 'created_by' => $admins->random()->id,
                 'importer_id' => rand(0, 1) ? $importers->random()->id : null,
                 'department' => $departments[array_rand($departments)],
-                'board_id' => $boards->random()->id,
-                'column_status' => $columns[array_rand($columns)],
-                'position' => $i,
-                'labels' => json_encode(['مهم', 'عاجل', 'متابعة']),
-                'attachments' => json_encode([]),
-                'checklist' => json_encode([
-                    ['id' => 1, 'text' => 'الخطوة الأولى', 'completed' => rand(0, 1)],
-                    ['id' => 2, 'text' => 'الخطوة الثانية', 'completed' => rand(0, 1)],
-                ]),
-                'estimated_hours' => rand(1, 40),
-                'actual_hours' => rand(0, 50),
-                'started_at' => rand(0, 1) ? Carbon::now()->subDays(rand(1, 30)) : null,
-                'completed_at' => rand(0, 1) ? Carbon::now()->subDays(rand(1, 10)) : null,
-                'time_logs' => json_encode([]),
-                'comments' => json_encode([]),
-                'color' => '#3b82f6',
-                'is_archived' => rand(0, 1),
                 'created_at' => Carbon::now()->subDays(rand(1, 120)),
                 'updated_at' => Carbon::now()->subDays(rand(1, 15)),
             ];
@@ -361,8 +337,8 @@ class ComprehensiveDataSeeder extends Seeder
                 'admin_id' => Admin::first()->id,
                 'position' => 'مدير المبيعات المحلية',
                 'region' => 'الرياض',
-                'target' => 100000,
-                'achieved' => 85000,
+                'target' => 100000.00,
+                'achieved' => 85000.00,
                 'phone' => '+966501234567',
                 'avatar' => '/images/avatars/sales1.jpg',
                 'is_active' => true,
@@ -371,8 +347,8 @@ class ComprehensiveDataSeeder extends Seeder
                 'admin_id' => Admin::skip(1)->first()->id,
                 'position' => 'مدير المبيعات الدولية',
                 'region' => 'الخليج',
-                'target' => 200000,
-                'achieved' => 180000,
+                'target' => 200000.00,
+                'achieved' => 180000.00,
                 'phone' => '+966502345678',
                 'avatar' => '/images/avatars/sales2.jpg',
                 'is_active' => true,
@@ -436,19 +412,27 @@ class ComprehensiveDataSeeder extends Seeder
         // إنشاء أقسام الصفحة الرئيسية
         $sections = [
             [
+                'name' => 'من نحن',
                 'title' => 'من نحن',
                 'subtitle' => 'شركة رائدة في مجال الأزياء الموحدة',
-                'content' => 'نحن شركة متخصصة في تصميم وتصنيع الأزياء الموحدة للشركات والمؤسسات',
-                'image_url' => '/images/sections/about.jpg',
-                'order' => 1,
+                'description' => 'نحن شركة متخصصة في تصميم وتصنيع الأزياء الموحدة للشركات والمؤسسات',
+                'section_type' => 'about',
+                'layout_type' => 'container',
+                'background_color' => '#f8f9fa',
+                'text_color' => '#333333',
+                'sort_order' => 1,
                 'is_active' => true,
             ],
             [
+                'name' => 'خدماتنا',
                 'title' => 'خدماتنا',
                 'subtitle' => 'خدمات شاملة ومتنوعة',
-                'content' => 'نقدم مجموعة واسعة من الخدمات في مجال الأزياء الموحدة',
-                'image_url' => '/images/sections/services.jpg',
-                'order' => 2,
+                'description' => 'نقدم مجموعة واسعة من الخدمات في مجال الأزياء الموحدة',
+                'section_type' => 'services',
+                'layout_type' => 'grid_3',
+                'background_color' => '#ffffff',
+                'text_color' => '#333333',
+                'sort_order' => 2,
                 'is_active' => true,
             ],
         ];
@@ -464,67 +448,64 @@ class ComprehensiveDataSeeder extends Seeder
                 SectionContent::create([
                     'home_section_id' => $section->id,
                     'title' => 'عنوان ' . $i,
-                    'content' => 'محتوى مفصل للقسم ' . $i,
-                    'image_url' => '/images/sections/content' . $i . '.jpg',
-                    'order' => $i,
+                    'subtitle' => 'عنوان فرعي ' . $i,
+                    'description' => 'محتوى مفصل للقسم ' . $i,
+                    'content_type' => 'card',
+                    'image' => '/images/sections/content' . $i . '.jpg',
+                    'button_text' => 'اقرأ المزيد',
+                    'button_link' => '/details/' . $i,
+                    'button_style' => 'primary',
+                    'sort_order' => $i,
                     'is_active' => true,
                 ]);
             }
         }
-
-        // إنشاء شريط التمرير
-        $sliders = [
-            [
-                'title' => 'مرحباً بكم في Infinity Wear',
-                'subtitle' => 'أزياء موحدة بجودة عالية',
-                'description' => 'نحن نقدم أفضل الأزياء الموحدة للشركات والمؤسسات',
-                'image_url' => '/images/slider/slider1.jpg',
-                'button_text' => 'اكتشف المزيد',
-                'button_url' => '/services',
-                'order' => 1,
-                'is_active' => true,
-            ],
-            [
-                'title' => 'جودة لا تضاهى',
-                'subtitle' => 'أفضل المواد والخامات',
-                'description' => 'نستخدم أفضل المواد والخامات لضمان الجودة العالية',
-                'image_url' => '/images/slider/slider2.jpg',
-                'button_text' => 'شاهد أعمالنا',
-                'button_url' => '/portfolio',
-                'order' => 2,
-                'is_active' => true,
-            ],
-        ];
-
-        // Hero sliders seeding removed
     }
 
     private function createCompanyPlans()
     {
         $plans = [
             [
-                'name' => 'الخطة الأساسية',
+                'title' => 'الخطة الأساسية',
                 'description' => 'خطة مناسبة للشركات الصغيرة',
-                'price' => 5000,
-                'duration_months' => 12,
-                'features' => json_encode(['تصميم أساسي', 'طباعة عادية', 'خدمة عملاء']),
-                'is_active' => true,
+                'type' => 'annual',
+                'status' => 'active',
+                'start_date' => Carbon::now()->subMonths(6),
+                'end_date' => Carbon::now()->addMonths(6),
+                'objectives' => json_encode(['زيادة المبيعات', 'تحسين الجودة', 'توسيع السوق']),
+                'strengths' => json_encode(['فريق متميز', 'جودة عالية', 'أسعار مناسبة']),
+                'weaknesses' => json_encode(['محدودية التسويق', 'قلة الموارد']),
+                'opportunities' => json_encode(['سوق متنامي', 'طلب متزايد']),
+                'threats' => json_encode(['منافسة شديدة', 'تغيرات اقتصادية']),
+                'strategies' => json_encode(['تطوير المنتجات', 'تحسين التسويق']),
+                'action_items' => json_encode(['تدريب الفريق', 'تطوير الموقع']),
+                'budget' => 50000.00,
+                'actual_cost' => 45000.00,
+                'progress_percentage' => 75,
+                'notes' => 'خطة ناجحة ومتقدمة بشكل جيد',
+                'created_by' => Admin::first()->id,
+                'assigned_to' => Admin::first()->id,
             ],
             [
-                'name' => 'الخطة المتقدمة',
+                'title' => 'الخطة المتقدمة',
                 'description' => 'خطة شاملة للشركات المتوسطة',
-                'price' => 10000,
-                'duration_months' => 12,
-                'features' => json_encode(['تصميم متقدم', 'طباعة عالية الجودة', 'خدمة عملاء متميزة', 'توصيل مجاني']),
-                'is_active' => true,
-            ],
-            [
-                'name' => 'الخطة المميزة',
-                'description' => 'خطة شاملة للشركات الكبيرة',
-                'price' => 20000,
-                'duration_months' => 12,
-                'features' => json_encode(['تصميم مخصص', 'طباعة فاخرة', 'خدمة عملاء 24/7', 'توصيل مجاني', 'ضمان الجودة']),
-                'is_active' => true,
+                'type' => 'annual',
+                'status' => 'active',
+                'start_date' => Carbon::now()->subMonths(3),
+                'end_date' => Carbon::now()->addMonths(9),
+                'objectives' => json_encode(['توسيع النطاق', 'زيادة الأرباح', 'تطوير الخدمات']),
+                'strengths' => json_encode(['خبرة واسعة', 'موارد كافية', 'شبكة علاقات']),
+                'weaknesses' => json_encode(['تعقيد العمليات', 'تكاليف عالية']),
+                'opportunities' => json_encode(['شراكات جديدة', 'تقنيات متطورة']),
+                'threats' => json_encode(['تقلبات السوق', 'منافسة دولية']),
+                'strategies' => json_encode(['الابتكار', 'الشراكات الاستراتيجية']),
+                'action_items' => json_encode(['تطوير التقنيات', 'تدريب متقدم']),
+                'budget' => 100000.00,
+                'actual_cost' => 75000.00,
+                'progress_percentage' => 60,
+                'notes' => 'خطة متقدمة تحتاج لمتابعة مستمرة',
+                'created_by' => Admin::first()->id,
+                'assigned_to' => Admin::skip(1)->first()->id,
             ],
         ];
 
@@ -538,14 +519,21 @@ class ComprehensiveDataSeeder extends Seeder
         $notes = [];
         $users = User::all();
         $admins = Admin::all();
+        $noteTypes = ['marketing', 'sales', 'general'];
+        $priorities = ['low', 'medium', 'high'];
+        $statuses = ['active', 'archived', 'deleted'];
 
         for ($i = 1; $i <= 30; $i++) {
             $notes[] = [
-                'user_id' => $users->random()->id,
-                'admin_id' => $admins->random()->id,
-                'note' => 'ملاحظة مهمة للعميل رقم ' . $i . ' - يفضل التواصل في المساء',
-                'type' => ['general', 'complaint', 'suggestion', 'compliment'][array_rand(['general', 'complaint', 'suggestion', 'compliment'])],
-                'is_archived' => rand(0, 1),
+                'customer_id' => $users->random()->id,
+                'added_by' => $admins->random()->id,
+                'note_type' => $noteTypes[array_rand($noteTypes)],
+                'title' => 'ملاحظة مهمة للعميل رقم ' . $i,
+                'content' => 'ملاحظة مهمة للعميل رقم ' . $i . ' - يفضل التواصل في المساء',
+                'priority' => $priorities[array_rand($priorities)],
+                'status' => $statuses[array_rand($statuses)],
+                'tags' => json_encode(['مهم', 'متابعة', 'عميل مميز']),
+                'follow_up_date' => rand(0, 1) ? Carbon::now()->addDays(rand(1, 30)) : null,
                 'created_at' => Carbon::now()->subDays(rand(1, 60)),
                 'updated_at' => Carbon::now()->subDays(rand(1, 10)),
             ];
@@ -558,16 +546,30 @@ class ComprehensiveDataSeeder extends Seeder
     {
         $messages = [];
         $phoneNumbers = ['+966501234567', '+966502345678', '+966503456789', '+966504567890', '+966505678901'];
-        $types = ['incoming', 'outgoing'];
+        $directions = ['inbound', 'outbound'];
         $statuses = ['sent', 'delivered', 'read', 'failed'];
+        $messageTypes = ['text', 'image', 'document', 'audio', 'video'];
+        $contactTypes = ['importer', 'marketing', 'sales', 'customer', 'external'];
+        $admins = Admin::all();
 
         for ($i = 1; $i <= 50; $i++) {
             $messages[] = [
-                'phone_number' => $phoneNumbers[array_rand($phoneNumbers)],
-                'message' => 'رسالة واتساب رقم ' . $i . ' - مرحباً، كيف يمكنني مساعدتك؟',
-                'type' => $types[array_rand($types)],
+                'message_id' => 'msg_' . $i . '_' . time(),
+                'from_number' => $phoneNumbers[array_rand($phoneNumbers)],
+                'to_number' => $phoneNumbers[array_rand($phoneNumbers)],
+                'contact_name' => 'جهة اتصال ' . $i,
+                'message_content' => 'رسالة واتساب رقم ' . $i . ' - مرحباً، كيف يمكنني مساعدتك؟',
+                'message_type' => $messageTypes[array_rand($messageTypes)],
+                'direction' => $directions[array_rand($directions)],
                 'status' => $statuses[array_rand($statuses)],
                 'sent_at' => Carbon::now()->subDays(rand(1, 30)),
+                'delivered_at' => rand(0, 1) ? Carbon::now()->subDays(rand(1, 29)) : null,
+                'read_at' => rand(0, 1) ? Carbon::now()->subDays(rand(1, 28)) : null,
+                'media_url' => rand(0, 1) ? json_encode(['url' => 'https://example.com/media' . $i . '.jpg']) : null,
+                'sent_by' => rand(0, 1) ? $admins->random()->id : null,
+                'contact_id' => rand(0, 1) ? rand(1, 50) : null,
+                'contact_type' => $contactTypes[array_rand($contactTypes)],
+                'is_archived' => rand(0, 1),
                 'created_at' => Carbon::now()->subDays(rand(1, 30)),
                 'updated_at' => Carbon::now()->subDays(rand(1, 5)),
             ];

@@ -38,8 +38,8 @@ class AdminController extends Controller
         
         // إحصائيات المستخدمين والتصاميم
         $totalUsers = User::count();
-        $newUsersThisMonth = User::whereMonth('created_at', now()->month)
-                                ->whereYear('created_at', now()->year)
+        $newUsersThisMonth = User::whereRaw('strftime("%m", created_at) = ?', [str_pad(now()->month, 2, '0', STR_PAD_LEFT)])
+                                ->whereRaw('strftime("%Y", created_at) = ?', [now()->year])
                                 ->count();
         
         // الإيرادات الشهرية من المعاملات
@@ -178,13 +178,13 @@ class AdminController extends Controller
         $lastMonth = now()->subMonth()->month;
         
         // مقارنة الطلبات
-        $currentMonthOrders = ImporterOrder::whereMonth('created_at', $currentMonth)->count();
-        $lastMonthOrders = ImporterOrder::whereMonth('created_at', $lastMonth)->count();
+        $currentMonthOrders = ImporterOrder::whereRaw('strftime("%m", created_at) = ?', [str_pad($currentMonth, 2, '0', STR_PAD_LEFT)])->count();
+        $lastMonthOrders = ImporterOrder::whereRaw('strftime("%m", created_at) = ?', [str_pad($lastMonth, 2, '0', STR_PAD_LEFT)])->count();
         $ordersGrowth = $lastMonthOrders > 0 ? (($currentMonthOrders - $lastMonthOrders) / $lastMonthOrders) * 100 : 0;
         
         // مقارنة المستوردين
-        $currentMonthImporters = Importer::whereMonth('created_at', $currentMonth)->count();
-        $lastMonthImporters = Importer::whereMonth('created_at', $lastMonth)->count();
+        $currentMonthImporters = Importer::whereRaw('strftime("%m", created_at) = ?', [str_pad($currentMonth, 2, '0', STR_PAD_LEFT)])->count();
+        $lastMonthImporters = Importer::whereRaw('strftime("%m", created_at) = ?', [str_pad($lastMonth, 2, '0', STR_PAD_LEFT)])->count();
         $importersGrowth = $lastMonthImporters > 0 ? (($currentMonthImporters - $lastMonthImporters) / $lastMonthImporters) * 100 : 0;
         
         // مقارنة الإيرادات
@@ -216,8 +216,8 @@ class AdminController extends Controller
             $months[] = $date->format('M');
             
             
-            $importersData[] = Importer::whereMonth('created_at', $date->month)
-                                     ->whereYear('created_at', $date->year)
+            $importersData[] = Importer::whereRaw('strftime("%m", created_at) = ?', [str_pad($date->month, 2, '0', STR_PAD_LEFT)])
+                                     ->whereRaw('strftime("%Y", created_at) = ?', [$date->year])
                                      ->count();
             
             $revenueData[] = Transaction::getMonthlyRevenue($date->year, $date->month);
@@ -461,12 +461,12 @@ class AdminController extends Controller
     {
         // تقارير المبيعات حسب الشهر
         $monthlySales = ImporterOrder::select(
-            DB::raw('MONTH(created_at) as month'),
-            DB::raw('YEAR(created_at) as year'),
+            DB::raw('strftime("%m", created_at) as month'),
+            DB::raw('strftime("%Y", created_at) as year'),
             DB::raw('SUM(final_cost) as total')
         )
         ->where('status', 'completed')
-        ->whereYear('created_at', '>=', now()->subYear()->year)
+        ->whereRaw('strftime("%Y", created_at) >= ?', [now()->subYear()->year])
         ->groupBy('year', 'month')
         ->orderBy('year')
         ->orderBy('month')
