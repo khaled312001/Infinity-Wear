@@ -574,83 +574,83 @@ Route::middleware(['auth', 'user.type:importer'])->prefix('importers')->name('im
 // لوحة تحكم فريق التسويق
 Route::middleware(['auth', 'user.type:marketing'])->prefix('marketing')->name('marketing.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Marketing\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/portfolio', [App\Http\Controllers\Marketing\DashboardController::class, 'portfolio'])->name('portfolio')->middleware('user.permission:portfolio');
-    Route::get('/portfolio/create', [App\Http\Controllers\Marketing\DashboardController::class, 'createPortfolio'])->name('portfolio.create')->middleware('user.permission:portfolio');
-    Route::post('/portfolio', [App\Http\Controllers\Marketing\DashboardController::class, 'storePortfolio'])->name('portfolio.store')->middleware('user.permission:portfolio');
-    Route::get('/portfolio/{portfolioItem}/edit', [App\Http\Controllers\Marketing\DashboardController::class, 'editPortfolio'])->name('portfolio.edit')->middleware('user.permission:portfolio');
-    Route::put('/portfolio/{portfolioItem}', [App\Http\Controllers\Marketing\DashboardController::class, 'updatePortfolio'])->name('portfolio.update')->middleware('user.permission:portfolio');
-    Route::delete('/portfolio/{portfolioItem}', [App\Http\Controllers\Marketing\DashboardController::class, 'destroyPortfolio'])->name('portfolio.destroy')->middleware('user.permission:portfolio');
-    Route::get('/testimonials', [App\Http\Controllers\Marketing\DashboardController::class, 'testimonials'])->name('testimonials')->middleware('user.permission:testimonials');
-    Route::get('/testimonials/create', [App\Http\Controllers\Marketing\DashboardController::class, 'createTestimonial'])->name('testimonials.create')->middleware('user.permission:testimonials');
-    Route::post('/testimonials', [App\Http\Controllers\Marketing\DashboardController::class, 'storeTestimonial'])->name('testimonials.store')->middleware('user.permission:testimonials');
-    Route::get('/testimonials/{testimonial}/edit', [App\Http\Controllers\Marketing\DashboardController::class, 'editTestimonial'])->name('testimonials.edit')->middleware('user.permission:testimonials');
-    Route::put('/testimonials/{testimonial}', [App\Http\Controllers\Marketing\DashboardController::class, 'updateTestimonial'])->name('testimonials.update')->middleware('user.permission:testimonials');
-    Route::delete('/testimonials/{testimonial}', [App\Http\Controllers\Marketing\DashboardController::class, 'destroyTestimonial'])->name('testimonials.destroy')->middleware('user.permission:testimonials');
-    Route::get('/contacts', [App\Http\Controllers\Marketing\DashboardController::class, 'contacts'])->name('contacts')->middleware('user.permission:contacts');
-    Route::get('/contacts/{contact}', [App\Http\Controllers\Marketing\DashboardController::class, 'showContact'])->name('contacts.show')->middleware('user.permission:contacts');
-    Route::put('/contacts/{contact}', [App\Http\Controllers\Marketing\DashboardController::class, 'updateContact'])->name('contacts.update')->middleware('user.permission:contacts');
-    Route::patch('/contacts/{contact}/mark-read', [App\Http\Controllers\Marketing\DashboardController::class, 'markContactAsRead'])->name('contacts.mark-read')->middleware('user.permission:contacts');
-    Route::patch('/contacts/{contact}/mark-replied', [App\Http\Controllers\Marketing\DashboardController::class, 'markContactAsReplied'])->name('contacts.mark-replied')->middleware('user.permission:contacts');
-    Route::patch('/contacts/{contact}/mark-closed', [App\Http\Controllers\Marketing\DashboardController::class, 'markContactAsClosed'])->name('contacts.mark-closed')->middleware('user.permission:contacts');
-    Route::get('/profile', [App\Http\Controllers\Marketing\DashboardController::class, 'profile'])->name('profile')->middleware('user.permission:profile');
-    Route::put('/profile', [App\Http\Controllers\Marketing\DashboardController::class, 'updateProfile'])->name('profile.update')->middleware('user.permission:profile');
+    Route::get('/portfolio', [App\Http\Controllers\Marketing\DashboardController::class, 'portfolio'])->name('portfolio');
+    Route::get('/portfolio/create', [App\Http\Controllers\Marketing\DashboardController::class, 'createPortfolio'])->name('portfolio.create');
+    Route::post('/portfolio', [App\Http\Controllers\Marketing\DashboardController::class, 'storePortfolio'])->name('portfolio.store');
+    Route::get('/portfolio/{portfolioItem}/edit', [App\Http\Controllers\Marketing\DashboardController::class, 'editPortfolio'])->name('portfolio.edit');
+    Route::put('/portfolio/{portfolioItem}', [App\Http\Controllers\Marketing\DashboardController::class, 'updatePortfolio'])->name('portfolio.update');
+    Route::delete('/portfolio/{portfolioItem}', [App\Http\Controllers\Marketing\DashboardController::class, 'destroyPortfolio'])->name('portfolio.destroy');
+    Route::get('/testimonials', [App\Http\Controllers\Marketing\DashboardController::class, 'testimonials'])->name('testimonials');
+    Route::get('/testimonials/create', [App\Http\Controllers\Marketing\DashboardController::class, 'createTestimonial'])->name('testimonials.create');
+    Route::post('/testimonials', [App\Http\Controllers\Marketing\DashboardController::class, 'storeTestimonial'])->name('testimonials.store');
+    Route::get('/testimonials/{testimonial}/edit', [App\Http\Controllers\Marketing\DashboardController::class, 'editTestimonial'])->name('testimonials.edit');
+    Route::put('/testimonials/{testimonial}', [App\Http\Controllers\Marketing\DashboardController::class, 'updateTestimonial'])->name('testimonials.update');
+    Route::delete('/testimonials/{testimonial}', [App\Http\Controllers\Marketing\DashboardController::class, 'destroyTestimonial'])->name('testimonials.destroy');
+    Route::get('/contacts', [App\Http\Controllers\Marketing\DashboardController::class, 'contacts'])->name('contacts');
+    Route::get('/contacts/{contact}', [App\Http\Controllers\Marketing\DashboardController::class, 'showContact'])->name('contacts.show');
+    Route::put('/contacts/{contact}', [App\Http\Controllers\Marketing\DashboardController::class, 'updateContact'])->name('contacts.update');
+    Route::patch('/contacts/{contact}/mark-read', [App\Http\Controllers\Marketing\DashboardController::class, 'markContactAsRead'])->name('contacts.mark-read');
+    Route::patch('/contacts/{contact}/mark-replied', [App\Http\Controllers\Marketing\DashboardController::class, 'markContactAsReplied'])->name('contacts.mark-replied');
+    Route::patch('/contacts/{contact}/mark-closed', [App\Http\Controllers\Marketing\DashboardController::class, 'markContactAsClosed'])->name('contacts.mark-closed');
+    Route::get('/profile', [App\Http\Controllers\Marketing\DashboardController::class, 'profile'])->name('profile');
+    Route::put('/profile', [App\Http\Controllers\Marketing\DashboardController::class, 'updateProfile'])->name('profile.update');
     
     // إدارة المهام لفريق التسويق
     Route::prefix('tasks')->name('tasks.')->group(function () {
-        Route::get('/', [App\Http\Controllers\Marketing\TaskController::class, 'index'])->name('index')->middleware('user.permission:tasks');
-        Route::post('/', [App\Http\Controllers\Marketing\TaskController::class, 'createTask'])->name('create')->middleware('user.permission:tasks');
-        Route::put('/{task}', [App\Http\Controllers\Marketing\TaskController::class, 'updateTask'])->name('update')->middleware('user.permission:tasks');
-        Route::post('/{task}/move', [App\Http\Controllers\Marketing\TaskController::class, 'moveTask'])->name('move')->middleware('user.permission:tasks');
-        Route::post('/{task}/comment', [App\Http\Controllers\Marketing\TaskController::class, 'addComment'])->name('comment')->middleware('user.permission:tasks');
-        Route::post('/{task}/attachment', [App\Http\Controllers\Marketing\TaskController::class, 'addAttachment'])->name('attachment')->middleware('user.permission:tasks');
-        Route::post('/{task}/checklist', [App\Http\Controllers\Marketing\TaskController::class, 'addChecklistItem'])->name('checklist')->middleware('user.permission:tasks');
-        Route::put('/{task}/checklist', [App\Http\Controllers\Marketing\TaskController::class, 'updateChecklistItem'])->name('update-checklist')->middleware('user.permission:tasks');
-        Route::post('/{task}/time-log', [App\Http\Controllers\Marketing\TaskController::class, 'addTimeLog'])->name('time-log')->middleware('user.permission:tasks');
+        Route::get('/', [App\Http\Controllers\Marketing\TaskController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Marketing\TaskController::class, 'createTask'])->name('create');
+        Route::put('/{task}', [App\Http\Controllers\Marketing\TaskController::class, 'updateTask'])->name('update');
+        Route::post('/{task}/move', [App\Http\Controllers\Marketing\TaskController::class, 'moveTask'])->name('move');
+        Route::post('/{task}/comment', [App\Http\Controllers\Marketing\TaskController::class, 'addComment'])->name('comment');
+        Route::post('/{task}/attachment', [App\Http\Controllers\Marketing\TaskController::class, 'addAttachment'])->name('attachment');
+        Route::post('/{task}/checklist', [App\Http\Controllers\Marketing\TaskController::class, 'addChecklistItem'])->name('checklist');
+        Route::put('/{task}/checklist', [App\Http\Controllers\Marketing\TaskController::class, 'updateChecklistItem'])->name('update-checklist');
+        Route::post('/{task}/time-log', [App\Http\Controllers\Marketing\TaskController::class, 'addTimeLog'])->name('time-log');
     });
 });
 
 // لوحة تحكم فريق المبيعات
 Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Sales\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/orders', [App\Http\Controllers\Sales\DashboardController::class, 'orders'])->name('orders')->middleware('user.permission:orders');
-    Route::get('/orders/{order}', [App\Http\Controllers\Sales\DashboardController::class, 'showOrder'])->name('orders.show')->middleware('user.permission:orders');
-    Route::put('/orders/{order}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateOrderStatus'])->name('orders.update-status')->middleware('user.permission:orders');
-    Route::get('/importer-orders', [App\Http\Controllers\Sales\DashboardController::class, 'importerOrders'])->name('importer-orders')->middleware('user.permission:importer_orders');
-    Route::get('/importer-orders/{order}', [App\Http\Controllers\Sales\DashboardController::class, 'showImporterOrder'])->name('importer-orders.show')->middleware('user.permission:importer_orders');
-    Route::put('/importer-orders/{order}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateImporterOrderStatus'])->name('importer-orders.update-status')->middleware('user.permission:importer_orders');
-    Route::get('/importers', [App\Http\Controllers\Sales\DashboardController::class, 'importers'])->name('importers')->middleware('user.permission:importers');
-    Route::get('/importers/{importer}', [App\Http\Controllers\Sales\DashboardController::class, 'showImporter'])->name('importers.show')->middleware('user.permission:importers');
-    Route::put('/importers/{importer}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateImporterStatus'])->name('importers.update-status')->middleware('user.permission:importers');
-    Route::get('/contacts', [App\Http\Controllers\Sales\DashboardController::class, 'contacts'])->name('contacts')->middleware('user.permission:contacts');
-    Route::get('/contacts/{id}', [App\Http\Controllers\Sales\DashboardController::class, 'showContact'])->name('contacts.show')->middleware('user.permission:contacts');
-    Route::put('/contacts/{id}', [App\Http\Controllers\Sales\DashboardController::class, 'updateContact'])->name('contacts.update')->middleware('user.permission:contacts');
-    Route::get('/reports', [App\Http\Controllers\Sales\DashboardController::class, 'reports'])->name('reports')->middleware('user.permission:reports');
+    Route::get('/orders', [App\Http\Controllers\Sales\DashboardController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [App\Http\Controllers\Sales\DashboardController::class, 'showOrder'])->name('orders.show');
+    Route::put('/orders/{order}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateOrderStatus'])->name('orders.update-status');
+    Route::get('/importer-orders', [App\Http\Controllers\Sales\DashboardController::class, 'importerOrders'])->name('importer-orders');
+    Route::get('/importer-orders/{order}', [App\Http\Controllers\Sales\DashboardController::class, 'showImporterOrder'])->name('importer-orders.show');
+    Route::put('/importer-orders/{order}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateImporterOrderStatus'])->name('importer-orders.update-status');
+    Route::get('/importers', [App\Http\Controllers\Sales\DashboardController::class, 'importers'])->name('importers');
+    Route::get('/importers/{importer}', [App\Http\Controllers\Sales\DashboardController::class, 'showImporter'])->name('importers.show');
+    Route::put('/importers/{importer}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateImporterStatus'])->name('importers.update-status');
+    Route::get('/contacts', [App\Http\Controllers\Sales\DashboardController::class, 'contacts'])->name('contacts');
+    Route::get('/contacts/{id}', [App\Http\Controllers\Sales\DashboardController::class, 'showContact'])->name('contacts.show');
+    Route::put('/contacts/{id}', [App\Http\Controllers\Sales\DashboardController::class, 'updateContact'])->name('contacts.update');
+    Route::get('/reports', [App\Http\Controllers\Sales\DashboardController::class, 'reports'])->name('reports');
     
     // تقارير المندوبين التسويقيين
-    Route::get('/marketing-reports', [App\Http\Controllers\Sales\MarketingReportController::class, 'index'])->name('marketing-reports.index')->middleware('user.permission:marketing_reports');
-    Route::get('/marketing-reports/create', [App\Http\Controllers\Sales\MarketingReportController::class, 'create'])->name('marketing-reports.create')->middleware('user.permission:marketing_reports');
-    Route::post('/marketing-reports', [App\Http\Controllers\Sales\MarketingReportController::class, 'store'])->name('marketing-reports.store')->middleware('user.permission:marketing_reports');
-    Route::get('/marketing-reports/{marketingReport}', [App\Http\Controllers\Sales\MarketingReportController::class, 'show'])->name('marketing-reports.show')->middleware('user.permission:marketing_reports');
-    Route::get('/marketing-reports/{marketingReport}/edit', [App\Http\Controllers\Sales\MarketingReportController::class, 'edit'])->name('marketing-reports.edit')->middleware('user.permission:marketing_reports');
-    Route::put('/marketing-reports/{marketingReport}', [App\Http\Controllers\Sales\MarketingReportController::class, 'update'])->name('marketing-reports.update')->middleware('user.permission:marketing_reports');
-    Route::delete('/marketing-reports/{marketingReport}', [App\Http\Controllers\Sales\MarketingReportController::class, 'destroy'])->name('marketing-reports.destroy')->middleware('user.permission:marketing_reports');
-    Route::patch('/marketing-reports/{marketingReport}/status', [App\Http\Controllers\Sales\MarketingReportController::class, 'updateStatus'])->name('marketing-reports.update-status')->middleware('user.permission:marketing_reports');
-    Route::get('/marketing-reports-export', [App\Http\Controllers\Sales\MarketingReportController::class, 'export'])->name('marketing-reports.export')->middleware('user.permission:marketing_reports');
+    Route::get('/marketing-reports', [App\Http\Controllers\Sales\MarketingReportController::class, 'index'])->name('marketing-reports.index');
+    Route::get('/marketing-reports/create', [App\Http\Controllers\Sales\MarketingReportController::class, 'create'])->name('marketing-reports.create');
+    Route::post('/marketing-reports', [App\Http\Controllers\Sales\MarketingReportController::class, 'store'])->name('marketing-reports.store');
+    Route::get('/marketing-reports/{marketingReport}', [App\Http\Controllers\Sales\MarketingReportController::class, 'show'])->name('marketing-reports.show');
+    Route::get('/marketing-reports/{marketingReport}/edit', [App\Http\Controllers\Sales\MarketingReportController::class, 'edit'])->name('marketing-reports.edit');
+    Route::put('/marketing-reports/{marketingReport}', [App\Http\Controllers\Sales\MarketingReportController::class, 'update'])->name('marketing-reports.update');
+    Route::delete('/marketing-reports/{marketingReport}', [App\Http\Controllers\Sales\MarketingReportController::class, 'destroy'])->name('marketing-reports.destroy');
+    Route::patch('/marketing-reports/{marketingReport}/status', [App\Http\Controllers\Sales\MarketingReportController::class, 'updateStatus'])->name('marketing-reports.update-status');
+    Route::get('/marketing-reports-export', [App\Http\Controllers\Sales\MarketingReportController::class, 'export'])->name('marketing-reports.export');
     
-    Route::get('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'profile'])->name('profile')->middleware('user.permission:profile');
-    Route::put('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'updateProfile'])->name('profile.update')->middleware('user.permission:profile');
+    Route::get('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'profile'])->name('profile');
+    Route::put('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'updateProfile'])->name('profile.update');
     
     // إدارة المهام لفريق المبيعات
     Route::prefix('tasks')->name('tasks.')->group(function () {
-        Route::get('/', [App\Http\Controllers\Sales\TaskController::class, 'index'])->name('index')->middleware('user.permission:tasks');
-        Route::post('/', [App\Http\Controllers\Sales\TaskController::class, 'createTask'])->name('create')->middleware('user.permission:tasks');
-        Route::put('/{task}', [App\Http\Controllers\Sales\TaskController::class, 'updateTask'])->name('update')->middleware('user.permission:tasks');
-        Route::post('/{task}/move', [App\Http\Controllers\Sales\TaskController::class, 'moveTask'])->name('move')->middleware('user.permission:tasks');
-        Route::post('/{task}/comment', [App\Http\Controllers\Sales\TaskController::class, 'addComment'])->name('comment')->middleware('user.permission:tasks');
-        Route::post('/{task}/attachment', [App\Http\Controllers\Sales\TaskController::class, 'addAttachment'])->name('attachment')->middleware('user.permission:tasks');
-        Route::post('/{task}/checklist', [App\Http\Controllers\Sales\TaskController::class, 'addChecklistItem'])->name('checklist')->middleware('user.permission:tasks');
-        Route::put('/{task}/checklist', [App\Http\Controllers\Sales\TaskController::class, 'updateChecklistItem'])->name('update-checklist')->middleware('user.permission:tasks');
-        Route::post('/{task}/time-log', [App\Http\Controllers\Sales\TaskController::class, 'addTimeLog'])->name('time-log')->middleware('user.permission:tasks');
+        Route::get('/', [App\Http\Controllers\Sales\TaskController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Sales\TaskController::class, 'createTask'])->name('create');
+        Route::put('/{task}', [App\Http\Controllers\Sales\TaskController::class, 'updateTask'])->name('update');
+        Route::post('/{task}/move', [App\Http\Controllers\Sales\TaskController::class, 'moveTask'])->name('move');
+        Route::post('/{task}/comment', [App\Http\Controllers\Sales\TaskController::class, 'addComment'])->name('comment');
+        Route::post('/{task}/attachment', [App\Http\Controllers\Sales\TaskController::class, 'addAttachment'])->name('attachment');
+        Route::post('/{task}/checklist', [App\Http\Controllers\Sales\TaskController::class, 'addChecklistItem'])->name('checklist');
+        Route::put('/{task}/checklist', [App\Http\Controllers\Sales\TaskController::class, 'updateChecklistItem'])->name('update-checklist');
+        Route::post('/{task}/time-log', [App\Http\Controllers\Sales\TaskController::class, 'addTimeLog'])->name('time-log');
     });
 });
 

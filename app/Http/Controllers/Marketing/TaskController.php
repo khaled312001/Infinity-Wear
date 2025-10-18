@@ -23,28 +23,47 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $boards = TaskBoard::with(['columns.tasks' => function($query) {
-            $query->where('is_archived', false)->orderBy('sort_order');
-        }])
-        ->where('is_active', true)
-        ->where(function($query) {
-            $query->where('board_type', 'marketing')
-                  ->orWhere('board_type', 'general')
-                  ->orWhere(function($q) {
-                      $q->where('team_type', 'marketing')
-                        ->where('team_id', Auth::id());
-                  });
-        })
-        ->orderBy('sort_order')
-        ->get();
+        try {
+            $boards = TaskBoard::with(['columns.tasks' => function($query) {
+                $query->where('is_archived', false)->orderBy('sort_order');
+            }])
+            ->where('is_active', true)
+            ->where(function($query) {
+                $query->where('board_type', 'marketing')
+                      ->orWhere('board_type', 'general')
+                      ->orWhere(function($q) {
+                          $q->where('team_type', 'marketing')
+                            ->where('team_id', Auth::id());
+                      });
+            })
+            ->orderBy('sort_order')
+            ->get();
 
-        // جلب المستخدمين المتاحين للتعيين
-        $users = $this->getAvailableUsers();
+            // جلب المستخدمين المتاحين للتعيين
+            $users = $this->getAvailableUsers();
 
-        // إحصائيات المهام
-        $stats = $this->getTaskStats();
+            // إحصائيات المهام
+            $stats = $this->getTaskStats();
 
-        return view('marketing.tasks.index', compact('boards', 'users', 'stats'));
+            return view('marketing.tasks.index', compact('boards', 'users', 'stats'));
+            
+        } catch (\Exception $e) {
+            \Log::error('Marketing tasks index error: ' . $e->getMessage());
+            
+            // Return empty data if database is unavailable
+            $boards = collect();
+            $users = collect();
+            $stats = [
+                'total' => 0,
+                'pending' => 0,
+                'in_progress' => 0,
+                'completed' => 0,
+                'overdue' => 0
+            ];
+            
+            return view('marketing.tasks.index', compact('boards', 'users', 'stats'))
+                ->with('error', 'لا يمكن تحميل المهام حالياً. يرجى المحاولة لاحقاً.');
+        }
     }
 
     /**
@@ -317,11 +336,20 @@ class TaskController extends Controller
      */
     private function getAvailableUsers()
     {
-        return [
-            'admins' => Admin::select('id', 'name', 'email')->get(),
-            'marketing' => MarketingTeam::select('id', 'name', 'email')->get(),
-            'sales' => SalesTeam::select('id', 'name', 'email')->get()
-        ];
+        try {
+            return [
+                'admins' => Admin::select('id', 'name', 'email')->get(),
+                'marketing' => MarketingTeam::select('id', 'name', 'email')->get(),
+                'sales' => SalesTeam::select('id', 'name', 'email')->get()
+            ];
+        } catch (\Exception $e) {
+            \Log::warning('Failed to load users for task assignment: ' . $e->getMessage());
+            return [
+                'admins' => collect(),
+                'marketing' => collect(),
+                'sales' => collect()
+            ];
+        }
     }
 
     /**
@@ -329,25 +357,37 @@ class TaskController extends Controller
      */
     private function getTaskStats()
     {
-        $marketingTasks = TaskCard::where('is_archived', false)
-            ->where(function($query) {
-                $query->where('assigned_to', Auth::id())
-                      ->where('assigned_to_type', 'marketing')
-                      ->orWhere('created_by', Auth::id())
-                      ->where('created_by_type', 'marketing');
-            });
+        try {
+            $marketingTasks = TaskCard::where('is_archived', false)
+                ->where(function($query) {
+                    $query->where('assigned_to', Auth::id())
+                          ->where('assigned_to_type', 'marketing')
+                          ->orWhere('created_by', Auth::id())
+                          ->where('created_by_type', 'marketing');
+                });
 
-        return [
-            'total_tasks' => $marketingTasks->count(),
-            'completed_tasks' => $marketingTasks->where('status', 'completed')->count(),
-            'in_progress_tasks' => $marketingTasks->where('status', 'in_progress')->count(),
-            'pending_tasks' => $marketingTasks->where('status', 'pending')->count(),
-            'overdue_tasks' => $marketingTasks->where('due_date', '<', now())
-                ->where('status', '!=', 'completed')
-                ->count(),
-            'urgent_tasks' => $marketingTasks->where('priority', 'urgent')
-                ->where('status', '!=', 'completed')
-                ->count()
-        ];
+            return [
+                'total_tasks' => $marketingTasks->count(),
+                'completed_tasks' => $marketingTasks->where('status', 'completed')->count(),
+                'in_progress_tasks' => $marketingTasks->where('status', 'in_progress')->count(),
+                'pending_tasks' => $marketingTasks->where('status', 'pending')->count(),
+                'overdue_tasks' => $marketingTasks->where('due_date', '<', now())
+                    ->where('status', '!=', 'completed')
+                    ->count(),
+                'urgent_tasks' => $marketingTasks->where('priority', 'urgent')
+                    ->where('status', '!=', 'completed')
+                    ->count()
+            ];
+        } catch (\Exception $e) {
+            \Log::warning('Failed to load task stats: ' . $e->getMessage());
+            return [
+                'total_tasks' => 0,
+                'completed_tasks' => 0,
+                'in_progress_tasks' => 0,
+                'pending_tasks' => 0,
+                'overdue_tasks' => 0,
+                'urgent_tasks' => 0
+            ];
+        }
     }
 }

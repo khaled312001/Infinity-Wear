@@ -19,33 +19,34 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        // طلبات المستوردين فقط
-        $importerOrders = ImporterOrder::orderBy('created_at', 'desc')->get();
-        $importers = Importer::orderBy('created_at', 'desc')->get();
+            // طلبات المستوردين فقط
+            $importerOrders = ImporterOrder::orderBy('created_at', 'desc')->get();
+            $importers = Importer::orderBy('created_at', 'desc')->get();
 
-        // إحصائيات المبيعات (المستوردين فقط)
-        $salesStats = [
-            'total_importers' => $importers->count(),
-            'total_importer_orders' => $importerOrders->count(),
-            'total_importer_revenue' => $importerOrders->where('status', '!=', 'cancelled')->sum('final_cost'),
-            'monthly_importer_revenue' => ImporterOrder::where('status', '!=', 'cancelled')
-                ->whereRaw('strftime("%m", created_at) = ?', [str_pad(Carbon::now()->month, 2, '0', STR_PAD_LEFT)])
-                ->whereRaw('strftime("%Y", created_at) = ?', [Carbon::now()->year])
-                ->sum('final_cost'),
-        ];
+            // إحصائيات المبيعات (المستوردين فقط)
+            $salesStats = [
+                'total_importers' => $importers->count(),
+                'total_importer_orders' => $importerOrders->count(),
+                'total_importer_revenue' => $importerOrders->where('status', '!=', 'cancelled')->sum('final_cost'),
+                'monthly_importer_revenue' => ImporterOrder::where('status', '!=', 'cancelled')
+                    ->whereRaw('strftime("%m", created_at) = ?', [str_pad(Carbon::now()->month, 2, '0', STR_PAD_LEFT)])
+                    ->whereRaw('strftime("%Y", created_at) = ?', [Carbon::now()->year])
+                    ->sum('final_cost'),
+            ];
 
-        // المستوردين الجدد
-        $newImporters = Importer::where('status', 'new')
-            ->orderBy('created_at', 'desc')
-            ->limit(10)
-            ->get();
+            // المستوردين الجدد
+            $newImporters = Importer::where('status', 'new')
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get();
 
-        // المهام المرتبطة بالمبيعات
-        $tasks = TaskCard::where('department', 'sales')
-            ->orderBy('created_at', 'desc')
-            ->get();
+            // المهام المرتبطة بالمبيعات
+            $tasks = TaskCard::where('department', 'sales')
+                ->orderBy('created_at', 'desc')
+                ->get();
 
         // إحصائيات المهام
         $taskStats = [
@@ -123,6 +124,49 @@ class DashboardController extends Controller
             'importerStats',
             'recentActivity'
         ));
+        
+        } catch (\Exception $e) {
+            \Log::error('Sales dashboard error: ' . $e->getMessage());
+            
+            // Return empty data if database is unavailable
+            $user = Auth::user();
+            $importerOrders = collect();
+            $importers = collect();
+            $salesStats = [
+                'total_importers' => 0,
+                'total_importer_orders' => 0,
+                'total_importer_revenue' => 0,
+                'monthly_importer_revenue' => 0,
+            ];
+            $newImporters = collect();
+            $tasks = collect();
+            $taskStats = [
+                'total' => 0,
+                'pending' => 0,
+                'in_progress' => 0,
+                'completed' => 0,
+            ];
+            $urgentTasks = collect();
+            $recentImporterOrders = collect();
+            $monthlySales = collect();
+            $importerStats = collect();
+            $recentActivity = collect();
+            
+            return view('sales.dashboard', compact(
+                'user',
+                'importerOrders',
+                'importers',
+                'salesStats',
+                'newImporters',
+                'tasks',
+                'taskStats',
+                'urgentTasks',
+                'recentImporterOrders',
+                'monthlySales',
+                'importerStats',
+                'recentActivity'
+            ))->with('error', 'لا يمكن تحميل البيانات حالياً. يرجى المحاولة لاحقاً.');
+        }
     }
 
     public function orders()
