@@ -74,7 +74,7 @@ class ServicesController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('services', $imageName, 'public');
+            $imagePath = $image->storeAs('images/services', $imageName, 'public');
             $validated['image'] = $imagePath;
         }
 
@@ -140,7 +140,7 @@ class ServicesController extends Controller
 
             $image = $request->file('image');
             $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('services', $imageName, 'public');
+            $imagePath = $image->storeAs('images/services', $imageName, 'public');
             $validated['image'] = $imagePath;
         }
 

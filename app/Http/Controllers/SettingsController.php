@@ -210,7 +210,7 @@ class SettingsController extends Controller
             }
 
             // حفظ الفافيكون الجديد
-            $faviconPath = $faviconFile->store('favicons', 'public');
+            $faviconPath = $faviconFile->store('settings', 'public');
             Setting::set('site_favicon', $faviconPath);
             
             Setting::clearCache();
