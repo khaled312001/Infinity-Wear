@@ -33,7 +33,16 @@ class Service extends Model
     public function getImageUrlAttribute()
     {
         if ($this->image) {
-            return asset('storage/' . $this->image);
+            // إذا كان المسار يحتوي على 'sections/' فهو في public/images/sections/
+            if (strpos($this->image, 'sections/') === 0) {
+                return asset('images/' . $this->image);
+            }
+            // إذا كان المسار يحتوي على 'images/' فهو في public/images/
+            if (strpos($this->image, 'images/') === 0) {
+                return asset($this->image);
+            }
+            // إذا كان المسار لا يحتوي على 'images/' أضف 'images/' إليه
+            return asset('images/' . $this->image);
         }
         return asset('images/default-service.jpg');
     }
