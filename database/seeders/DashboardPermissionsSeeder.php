@@ -85,6 +85,27 @@ class DashboardPermissionsSeeder extends Seeder
                 'user_type' => 'admin'
             ],
             [
+                'name' => 'tasks.edit',
+                'display_name' => 'تعديل المهام',
+                'description' => 'تعديل جميع تفاصيل المهام',
+                'module' => 'tasks',
+                'user_type' => 'admin'
+            ],
+            [
+                'name' => 'tasks.delete',
+                'display_name' => 'حذف المهام',
+                'description' => 'حذف المهام',
+                'module' => 'tasks',
+                'user_type' => 'admin'
+            ],
+            [
+                'name' => 'tasks.create',
+                'display_name' => 'إنشاء المهام',
+                'description' => 'إنشاء مهام جديدة',
+                'module' => 'tasks',
+                'user_type' => 'admin'
+            ],
+            [
                 'name' => 'admin.company-plans',
                 'display_name' => 'خطط الشركة',
                 'description' => 'إدارة خطط الشركة',
@@ -226,6 +247,20 @@ class DashboardPermissionsSeeder extends Seeder
                 'module' => 'sales',
                 'user_type' => 'sales'
             ],
+            [
+                'name' => 'sales.tasks',
+                'display_name' => 'المهام',
+                'description' => 'عرض وإدارة المهام',
+                'module' => 'sales',
+                'user_type' => 'sales'
+            ],
+            [
+                'name' => 'sales.tasks.move',
+                'display_name' => 'نقل المهام',
+                'description' => 'نقل المهام بين الأعمدة فقط',
+                'module' => 'sales',
+                'user_type' => 'sales'
+            ],
 
             // صلاحيات التسويق
             [
@@ -253,6 +288,13 @@ class DashboardPermissionsSeeder extends Seeder
                 'name' => 'marketing.tasks',
                 'display_name' => 'المهام',
                 'description' => 'عرض وإدارة المهام',
+                'module' => 'marketing',
+                'user_type' => 'marketing'
+            ],
+            [
+                'name' => 'marketing.tasks.move',
+                'display_name' => 'نقل المهام',
+                'description' => 'نقل المهام بين الأعمدة فقط',
                 'module' => 'marketing',
                 'user_type' => 'marketing'
             ],

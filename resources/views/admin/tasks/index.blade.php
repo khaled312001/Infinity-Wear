@@ -344,12 +344,16 @@
                                                     <button class="btn btn-sm btn-outline-primary" onclick="viewTask({{ $task->id }})" title="عرض">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
-                                                    <button class="btn btn-sm btn-outline-secondary" onclick="editTask({{ $task->id }})" title="تعديل">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteTask({{ $task->id }})" title="حذف">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    @if(auth()->guard('admin')->user()->hasPermission('tasks.edit'))
+                                                        <button class="btn btn-sm btn-outline-secondary" onclick="editTask({{ $task->id }})" title="تعديل">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    @endif
+                                                    @if(auth()->guard('admin')->user()->hasPermission('tasks.delete'))
+                                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteTask({{ $task->id }})" title="حذف">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -564,15 +568,198 @@
 
     <!-- Modal تعديل المهمة -->
     <div class="modal fade" id="editTaskModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">تعديل المهمة</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="editTaskForm">
+                <form id="editTaskForm" onsubmit="event.preventDefault(); saveTaskEdit();">
                     <div class="modal-body" id="editTaskContent">
-                        <!-- سيتم تحميل نموذج التعديل هنا -->
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="editTaskTitle" class="form-label">عنوان المهمة</label>
+                                    <input type="text" class="form-control" id="editTaskTitle" name="title" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="editTaskPriority" class="form-label">الأولوية</label>
+                                    <select class="form-select" id="editTaskPriority" name="priority" required>
+                                        <option value="low">منخفضة</option>
+                                        <option value="medium">متوسطة</option>
+                                        <option value="high">عالية</option>
+                                        <option value="urgent">عاجلة</option>
+                                        <option value="critical">حرجة</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="editTaskDescription" class="form-label">الوصف</label>
+                            <textarea class="form-control" id="editTaskDescription" name="description" rows="4"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editTaskBoard" class="form-label">اللوحة</label>
+                                    <select class="form-select" id="editTaskBoard" name="board_id" required>
+                                        @foreach($boards as $board)
+                                            <option value="{{ $board->id }}">{{ $board->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editTaskColumn" class="form-label">العمود</label>
+                                    <select class="form-select" id="editTaskColumn" name="column_id" required>
+                                        <!-- سيتم تحميل الأعمدة ديناميكياً -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editTaskStatus" class="form-label">الحالة</label>
+                                    <select class="form-select" id="editTaskStatus" name="status">
+                                        <option value="pending">معلقة</option>
+                                        <option value="in_progress">قيد التنفيذ</option>
+                                        <option value="completed">مكتملة</option>
+                                        <option value="cancelled">ملغية</option>
+                                        <option value="on_hold">معلقة</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editTaskDueDate" class="form-label">تاريخ الاستحقاق</label>
+                                    <input type="date" class="form-control" id="editTaskDueDate" name="due_date">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editTaskAssignedTo" class="form-label">تعيين إلى</label>
+                                    <select class="form-select" id="editTaskAssignedTo" name="assigned_to">
+                                        <option value="">اختر شخص</option>
+                                        @foreach($users['admins'] as $admin)
+                                            <option value="{{ $admin->id }}" data-type="admin">{{ $admin->name }}</option>
+                                        @endforeach
+                                        @foreach($users['marketing'] as $marketing)
+                                            <option value="{{ $marketing->id }}" data-type="marketing">{{ $marketing->name }} (تسويق)</option>
+                                        @endforeach
+                                        @foreach($users['sales'] as $sales)
+                                            <option value="{{ $sales->id }}" data-type="sales">{{ $sales->name }} (مبيعات)</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editTaskEstimatedHours" class="form-label">الساعات المتوقعة</label>
+                                    <input type="number" class="form-control" id="editTaskEstimatedHours" name="estimated_hours" step="0.5" min="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editTaskColor" class="form-label">اللون</label>
+                                    <input type="color" class="form-control form-control-color" id="editTaskColor" name="color">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editTaskProgress" class="form-label">نسبة الإنجاز (%)</label>
+                                    <input type="number" class="form-control" id="editTaskProgress" name="progress_percentage" min="0" max="100">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">العلامات</label>
+                                    <div class="d-flex flex-wrap gap-2" id="editTaskLabels">
+                                        <!-- سيتم تحميل العلامات ديناميكياً -->
+                                    </div>
+                                    <div class="input-group mt-2">
+                                        <input type="text" class="form-control" id="editTaskNewLabel" placeholder="أضف علامة جديدة">
+                                        <button type="button" class="btn btn-outline-primary" onclick="addTaskLabel()">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">الوسوم</label>
+                                    <div class="d-flex flex-wrap gap-2" id="editTaskTags">
+                                        <!-- سيتم تحميل الوسوم ديناميكياً -->
+                                    </div>
+                                    <div class="input-group mt-2">
+                                        <input type="text" class="form-control" id="editTaskNewTag" placeholder="أضف وسم جديد">
+                                        <button type="button" class="btn btn-outline-primary" onclick="addTaskTag()">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="editTaskUrgent" name="is_urgent">
+                                <label class="form-check-label" for="editTaskUrgent">
+                                    مهمة عاجلة
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- قسم التعليقات -->
+                        <div class="mb-3">
+                            <label class="form-label">التعليقات</label>
+                            <div id="editTaskComments" class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+                                <!-- سيتم تحميل التعليقات ديناميكياً -->
+                            </div>
+                            <div class="mt-2">
+                                <textarea class="form-control" id="editTaskNewComment" placeholder="أضف تعليق جديد..." rows="2"></textarea>
+                                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="addTaskComment()">إضافة تعليق</button>
+                            </div>
+                        </div>
+
+                        <!-- قسم المرفقات -->
+                        <div class="mb-3">
+                            <label class="form-label">المرفقات</label>
+                            <div id="editTaskAttachments" class="border rounded p-3">
+                                <!-- سيتم تحميل المرفقات ديناميكياً -->
+                            </div>
+                            <div class="mt-2">
+                                <input type="file" class="form-control" id="editTaskNewAttachment" multiple>
+                                <button type="button" class="btn btn-sm btn-success mt-2" onclick="addTaskAttachment()">إضافة مرفق</button>
+                            </div>
+                        </div>
+
+                        <!-- قسم القائمة المرجعية -->
+                        <div class="mb-3">
+                            <label class="form-label">القائمة المرجعية</label>
+                            <div id="editTaskChecklist" class="border rounded p-3">
+                                <!-- سيتم تحميل القائمة المرجعية ديناميكياً -->
+                            </div>
+                            <div class="mt-2">
+                                <input type="text" class="form-control" id="editTaskNewChecklistItem" placeholder="أضف عنصر جديد للقائمة المرجعية">
+                                <button type="button" class="btn btn-sm btn-info mt-2" onclick="addTaskChecklistItem()">إضافة عنصر</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
@@ -586,6 +773,7 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/task-management.css') }}?v={{ time() }}">
+<link rel="stylesheet" href="{{ asset('css/task-edit-modal.css') }}?v={{ time() }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @endpush
 

@@ -181,6 +181,17 @@ class TaskManagementController extends Controller
      */
     public function updateTask(Request $request, TaskCard $task)
     {
+        // التحقق من الصلاحيات
+        $user = Auth::guard('admin')->user();
+        $canEdit = $this->canEditTask($user, $task);
+        
+        if (!$canEdit) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ليس لديك صلاحية لتعديل هذه المهمة'
+            ], 403);
+        }
+
         $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string|max:2000',
@@ -192,14 +203,26 @@ class TaskManagementController extends Controller
             'labels' => 'nullable|array',
             'tags' => 'nullable|array',
             'estimated_hours' => 'nullable|numeric|min:0',
-            'color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/'
+            'color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'progress_percentage' => 'nullable|integer|min:0|max:100',
+            'is_urgent' => 'nullable|boolean',
+            'board_id' => 'sometimes|exists:task_boards,id',
+            'column_id' => 'sometimes|exists:task_columns,id'
         ]);
 
-        $task->update($request->only([
+        $updateData = $request->only([
             'title', 'description', 'priority', 'status', 'due_date',
             'assigned_to', 'assigned_to_type', 'labels', 'tags',
-            'estimated_hours', 'color'
-        ]));
+            'estimated_hours', 'color', 'progress_percentage', 'is_urgent'
+        ]);
+
+        // إذا تم تغيير اللوحة أو العمود
+        if ($request->has('board_id') || $request->has('column_id')) {
+            $updateData['board_id'] = $request->board_id;
+            $updateData['column_id'] = $request->column_id;
+        }
+
+        $task->update($updateData);
 
         // إذا تم تحديث الحالة إلى مكتملة
         if ($request->status === 'completed' && !$task->completed_at) {
@@ -207,6 +230,11 @@ class TaskManagementController extends Controller
                 'completed_at' => now(),
                 'progress_percentage' => 100
             ]);
+        }
+
+        // إرسال إشعار للمستخدم المكلف
+        if ($task->assigned_to && $task->assigned_to_type) {
+            $this->notifyAssignedUser($task);
         }
 
         return response()->json([
@@ -221,6 +249,17 @@ class TaskManagementController extends Controller
      */
     public function deleteTask(TaskCard $task)
     {
+        // التحقق من الصلاحيات
+        $user = Auth::guard('admin')->user();
+        $canDelete = $this->canDeleteTask($user, $task);
+        
+        if (!$canDelete) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ليس لديك صلاحية لحذف هذه المهمة'
+            ], 403);
+        }
+
         $task->delete();
 
         return response()->json([
@@ -234,6 +273,17 @@ class TaskManagementController extends Controller
      */
     public function moveTask(Request $request, TaskCard $task)
     {
+        // التحقق من الصلاحيات
+        $user = Auth::guard('admin')->user();
+        $canMove = $this->canMoveTask($user, $task);
+        
+        if (!$canMove) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ليس لديك صلاحية لنقل هذه المهمة'
+            ], 403);
+        }
+
         $request->validate([
             'column_id' => 'required|exists:task_columns,id',
             'position' => 'nullable|integer|min:1'
@@ -243,6 +293,11 @@ class TaskManagementController extends Controller
         $newPosition = $request->position ?? ($targetColumn->active_tasks_count + 1);
 
         $task->moveToColumn($targetColumn, $newPosition);
+
+        // إرسال إشعار للمستخدم المكلف
+        if ($task->assigned_to && $task->assigned_to_type) {
+            $this->notifyAssignedUser($task);
+        }
 
         return response()->json([
             'success' => true,
@@ -450,5 +505,126 @@ class TaskManagementController extends Controller
                 ->where('is_archived', false)
                 ->count()
         ];
+    }
+
+    /**
+     * التحقق من صلاحية تعديل المهمة
+     */
+    private function canEditTask($user, TaskCard $task)
+    {
+        // الأدمن يمكنه تعديل جميع المهام
+        if ($user->hasPermission('tasks.edit')) {
+            return true;
+        }
+
+        // المستخدم يمكنه تعديل المهام المخصصة له فقط
+        if ($task->assigned_to == $user->id && $task->assigned_to_type == 'admin') {
+            return true;
+        }
+
+        // منشئ المهمة يمكنه تعديلها
+        if ($task->created_by == $user->id && $task->created_by_type == 'admin') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * التحقق من صلاحية حذف المهمة
+     */
+    private function canDeleteTask($user, TaskCard $task)
+    {
+        // الأدمن يمكنه حذف جميع المهام
+        if ($user->hasPermission('tasks.delete')) {
+            return true;
+        }
+
+        // منشئ المهمة يمكنه حذفها
+        if ($task->created_by == $user->id && $task->created_by_type == 'admin') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * التحقق من صلاحية نقل المهمة
+     */
+    private function canMoveTask($user, TaskCard $task)
+    {
+        // الأدمن يمكنه نقل جميع المهام
+        if ($user->hasPermission('tasks.edit')) {
+            return true;
+        }
+
+        // المستخدم المكلف يمكنه نقل المهمة
+        if ($task->assigned_to == $user->id && $task->assigned_to_type == 'admin') {
+            return true;
+        }
+
+        // منشئ المهمة يمكنه نقلها
+        if ($task->created_by == $user->id && $task->created_by_type == 'admin') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * إرسال إشعار للمستخدم المكلف
+     */
+    private function notifyAssignedUser(TaskCard $task)
+    {
+        try {
+            // إرسال إشعار للمستخدم المكلف
+            if ($task->assigned_to && $task->assigned_to_type) {
+                $assignedUser = $this->getAssignedUser($task);
+                if ($assignedUser) {
+                    // إرسال إشعار في قاعدة البيانات
+                    $this->createTaskNotification($task, $assignedUser);
+                    
+                    // إرسال إشعار فوري (إذا كان متاحاً)
+                    $this->sendRealTimeNotification($task, $assignedUser);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Error sending task notification: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * الحصول على المستخدم المكلف
+     */
+    private function getAssignedUser(TaskCard $task)
+    {
+        switch ($task->assigned_to_type) {
+            case 'admin':
+                return Admin::find($task->assigned_to);
+            case 'marketing':
+                return MarketingTeam::find($task->assigned_to);
+            case 'sales':
+                return SalesTeam::find($task->assigned_to);
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * إنشاء إشعار في قاعدة البيانات
+     */
+    private function createTaskNotification(TaskCard $task, $assignedUser)
+    {
+        // يمكن إضافة جدول إشعارات هنا
+        // Notification::create([...]);
+    }
+
+    /**
+     * إرسال إشعار فوري
+     */
+    private function sendRealTimeNotification(TaskCard $task, $assignedUser)
+    {
+        // يمكن إضافة إرسال إشعار فوري هنا
+        // WebSocket, Pusher, etc.
     }
 }

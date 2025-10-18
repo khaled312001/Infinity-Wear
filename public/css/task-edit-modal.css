@@ -1,0 +1,340 @@
+/* تنسيقات مودال تعديل المهام */
+.modal-xl {
+    max-width: 90%;
+}
+
+.task-edit-modal .modal-body {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.task-edit-modal .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.task-edit-modal .form-control,
+.task-edit-modal .form-select {
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.task-edit-modal .form-control:focus,
+.task-edit-modal .form-select:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* تنسيقات العلامات والوسوم */
+.task-labels,
+.task-tags {
+    min-height: 40px;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+}
+
+.task-labels .badge,
+.task-tags .badge {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    margin: 0.125rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.task-labels .badge:hover,
+.task-tags .badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* تنسيقات التعليقات */
+.task-comments {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+}
+
+.comment-item {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.comment-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.875rem;
+}
+
+.comment-date {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.comment-text {
+    margin-top: 0.25rem;
+    color: #495057;
+    line-height: 1.4;
+}
+
+/* تنسيقات المرفقات */
+.task-attachments {
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+}
+
+.attachment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.attachment-item:last-child {
+    border-bottom: none;
+}
+
+.attachment-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.attachment-info i {
+    color: #6c757d;
+    margin-right: 0.5rem;
+}
+
+.attachment-info a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.attachment-info a:hover {
+    text-decoration: underline;
+}
+
+.attachment-size {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 0.125rem;
+}
+
+/* تنسيقات القائمة المرجعية */
+.task-checklist {
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.checklist-item:last-child {
+    border-bottom: none;
+}
+
+.checklist-item .form-check-input {
+    margin-right: 0.75rem;
+}
+
+.checklist-item .form-check-label {
+    flex: 1;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+.checklist-item.completed .form-check-label {
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
+/* تنسيقات الأزرار */
+.task-edit-modal .btn {
+    border-radius: 0.375rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.task-edit-modal .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.task-edit-modal .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.task-edit-modal .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.task-edit-modal .btn-secondary:hover {
+    background-color: #545b62;
+    border-color: #545b62;
+}
+
+.task-edit-modal .btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.task-edit-modal .btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* تنسيقات الاستجابة */
+@media (max-width: 768px) {
+    .modal-xl {
+        max-width: 95%;
+        margin: 0.5rem;
+    }
+    
+    .task-edit-modal .modal-body {
+        max-height: 70vh;
+    }
+    
+    .task-edit-modal .row {
+        margin: 0;
+    }
+    
+    .task-edit-modal .col-md-6,
+    .task-edit-modal .col-md-8,
+    .task-edit-modal .col-md-4 {
+        padding: 0.25rem;
+    }
+}
+
+/* تنسيقات الحالة */
+.task-status-pending {
+    color: #ffc107;
+}
+
+.task-status-in-progress {
+    color: #17a2b8;
+}
+
+.task-status-completed {
+    color: #28a745;
+}
+
+.task-status-cancelled {
+    color: #dc3545;
+}
+
+.task-status-on-hold {
+    color: #6c757d;
+}
+
+/* تنسيقات الأولوية */
+.task-priority-low {
+    color: #28a745;
+}
+
+.task-priority-medium {
+    color: #ffc107;
+}
+
+.task-priority-high {
+    color: #fd7e14;
+}
+
+.task-priority-urgent {
+    color: #dc3545;
+}
+
+.task-priority-critical {
+    color: #6f42c1;
+}
+
+/* تنسيقات التقدم */
+.progress {
+    height: 0.5rem;
+    border-radius: 0.25rem;
+    background-color: #e9ecef;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: #007bff;
+    transition: width 0.3s ease;
+}
+
+/* تنسيقات الإشعارات */
+.task-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 500px;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideInRight 0.3s ease-out;
+}
+
+.task-notification.success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.task-notification.error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.task-notification.warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+}
+
+.task-notification.info {
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

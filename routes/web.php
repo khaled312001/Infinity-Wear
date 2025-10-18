@@ -780,6 +780,14 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     Route::post('/marketing/{id}/assign-task', [AdminController::class, 'assignTaskToMarketing'])->name('marketing.assign-task')->middleware('user.permission:marketing_team_management');
     Route::put('/marketing/{id}/disable', [AdminController::class, 'disableMarketingMember'])->name('marketing.disable')->middleware('user.permission:marketing_team_management');
     
+    // مهام فريق التسويق
+    Route::prefix('marketing/tasks')->name('marketing.tasks.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Marketing\TaskController::class, 'index'])->name('index');
+        Route::get('/{task}', [App\Http\Controllers\Marketing\TaskController::class, 'show'])->name('show');
+        Route::post('/{task}/move', [App\Http\Controllers\Marketing\TaskController::class, 'moveTask'])->name('move');
+        Route::post('/{task}/comment', [App\Http\Controllers\Marketing\TaskController::class, 'addComment'])->name('comment');
+    });
+    
     // التسويق بالبريد الإلكتروني
     Route::get('/email-marketing', [App\Http\Controllers\Admin\EmailMarketingController::class, 'index'])->name('email-marketing.index');
     Route::get('/email-marketing/create', [App\Http\Controllers\Admin\EmailMarketingController::class, 'create'])->name('email-marketing.create');
@@ -791,6 +799,14 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     Route::get('/sales/{id}', [AdminController::class, 'showSalesMember'])->name('sales.show')->middleware('user.permission:sales_team_management');
     Route::post('/sales/{id}/assign-task', [AdminController::class, 'assignTaskToSales'])->name('sales.assign-task')->middleware('user.permission:sales_team_management');
     Route::put('/sales/{id}/target', [AdminController::class, 'updateSalesTarget'])->name('sales.update-target')->middleware('user.permission:sales_team_management');
+    
+    // مهام فريق المبيعات
+    Route::prefix('sales/tasks')->name('sales.tasks.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Sales\TaskController::class, 'index'])->name('index');
+        Route::get('/{task}', [App\Http\Controllers\Sales\TaskController::class, 'show'])->name('show');
+        Route::post('/{task}/move', [App\Http\Controllers\Sales\TaskController::class, 'moveTask'])->name('move');
+        Route::post('/{task}/comment', [App\Http\Controllers\Sales\TaskController::class, 'addComment'])->name('comment');
+    });
     Route::put('/sales/{id}/disable', [AdminController::class, 'disableSalesMember'])->name('sales.disable')->middleware('user.permission:sales_team_management');
     
     

@@ -402,6 +402,9 @@ class TaskManagement {
 
     editTask(taskId) {
         console.log('Editing task:', taskId);
+        // حفظ معرف المهمة الحالية
+        window.currentEditingTask = { id: taskId };
+        
         // تحميل بيانات المهمة وتعديلها
         this.loadTaskData(taskId).then(taskData => {
             this.displayTaskEdit(taskData);
@@ -488,15 +491,454 @@ class TaskManagement {
     }
 
     displayTaskEdit(taskData) {
-        const content = document.getElementById('editTaskContent');
-        if (!content) return;
+        // ملء النموذج ببيانات المهمة
+        this.fillEditForm(taskData);
+        
+        // تحميل الأعمدة للوحة المحددة
+        this.loadColumnsForBoard(taskData.board_id);
+        
+        // تحميل التعليقات والمرفقات
+        this.loadTaskComments(taskData.id);
+        this.loadTaskAttachments(taskData.id);
+        this.loadTaskChecklist(taskData.id);
+    }
 
-        content.innerHTML = `
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="editTaskTitle" class="form-label">عنوان المهمة</label>
-                        <input type="text" class="form-control" id="editTaskTitle" name="title" value="${taskData.title}" required>
+    fillEditForm(taskData) {
+        // ملء الحقول الأساسية
+        document.getElementById('editTaskTitle').value = taskData.title || '';
+        document.getElementById('editTaskDescription').value = taskData.description || '';
+        document.getElementById('editTaskPriority').value = taskData.priority || 'medium';
+        document.getElementById('editTaskStatus').value = taskData.status || 'pending';
+        document.getElementById('editTaskDueDate').value = taskData.due_date || '';
+        document.getElementById('editTaskAssignedTo').value = taskData.assigned_to || '';
+        document.getElementById('editTaskEstimatedHours').value = taskData.estimated_hours || '';
+        document.getElementById('editTaskColor').value = taskData.color || '#007bff';
+        document.getElementById('editTaskProgress').value = taskData.progress_percentage || 0;
+        document.getElementById('editTaskUrgent').checked = taskData.is_urgent || false;
+        document.getElementById('editTaskBoard').value = taskData.board_id || '';
+
+        // ملء العلامات
+        this.displayTaskLabels(taskData.labels || []);
+        
+        // ملء الوسوم
+        this.displayTaskTags(taskData.tags || []);
+    }
+
+    loadColumnsForBoard(boardId) {
+        const columnSelect = document.getElementById('editTaskColumn');
+        if (!columnSelect) return;
+
+        // البحث عن الأعمدة للوحة المحددة
+        const boards = window.boardsData || [];
+        let columns = [];
+        
+        for (const board of boards) {
+            if (board.id == boardId) {
+                columns = board.columns || [];
+                break;
+            }
+        }
+
+        // ملء قائمة الأعمدة
+        columnSelect.innerHTML = '';
+        columns.forEach(column => {
+            const option = document.createElement('option');
+            option.value = column.id;
+            option.textContent = column.name;
+            columnSelect.appendChild(option);
+        });
+
+        // تحديد العمود الحالي
+        if (window.currentEditingTask) {
+            columnSelect.value = window.currentEditingTask.column_id || '';
+        }
+    }
+
+    displayTaskLabels(labels) {
+        const container = document.getElementById('editTaskLabels');
+        if (!container) return;
+
+        container.innerHTML = '';
+        labels.forEach(label => {
+            const labelElement = document.createElement('span');
+            labelElement.className = 'badge bg-secondary me-1 mb-1';
+            labelElement.style.backgroundColor = label.color || '#6c757d';
+            labelElement.innerHTML = `${label.name} <i class="fas fa-times ms-1" onclick="removeTaskLabel('${label.name}')"></i>`;
+            container.appendChild(labelElement);
+        });
+    }
+
+    displayTaskTags(tags) {
+        const container = document.getElementById('editTaskTags');
+        if (!container) return;
+
+        container.innerHTML = '';
+        tags.forEach(tag => {
+            const tagElement = document.createElement('span');
+            tagElement.className = 'badge bg-info me-1 mb-1';
+            tagElement.innerHTML = `${tag} <i class="fas fa-times ms-1" onclick="removeTaskTag('${tag}')"></i>`;
+            container.appendChild(tagElement);
+        });
+    }
+
+    async loadTaskComments(taskId) {
+        const container = document.getElementById('editTaskComments');
+        if (!container) return;
+
+        try {
+            const response = await fetch(`/admin/tasks/${taskId}/comments`);
+            const data = await response.json();
+            
+            container.innerHTML = '';
+            if (data.comments && data.comments.length > 0) {
+                data.comments.forEach(comment => {
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'border-bottom pb-2 mb-2';
+                    commentElement.innerHTML = `
+                        <div class="d-flex justify-content-between">
+                            <strong>${comment.author_name}</strong>
+                            <small class="text-muted">${comment.created_at}</small>
+                        </div>
+                        <p class="mb-0">${comment.comment}</p>
+                    `;
+                    container.appendChild(commentElement);
+                });
+            } else {
+                container.innerHTML = '<p class="text-muted">لا توجد تعليقات</p>';
+            }
+        } catch (error) {
+            console.error('Error loading comments:', error);
+            container.innerHTML = '<p class="text-muted">خطأ في تحميل التعليقات</p>';
+        }
+    }
+
+    async loadTaskAttachments(taskId) {
+        const container = document.getElementById('editTaskAttachments');
+        if (!container) return;
+
+        try {
+            const response = await fetch(`/admin/tasks/${taskId}/attachments`);
+            const data = await response.json();
+            
+            container.innerHTML = '';
+            if (data.attachments && data.attachments.length > 0) {
+                data.attachments.forEach(attachment => {
+                    const attachmentElement = document.createElement('div');
+                    attachmentElement.className = 'd-flex justify-content-between align-items-center border-bottom pb-2 mb-2';
+                    attachmentElement.innerHTML = `
+                        <div>
+                            <i class="fas fa-paperclip me-2"></i>
+                            <a href="/storage/${attachment.file_path}" target="_blank">${attachment.original_name}</a>
+                            <small class="text-muted d-block">${this.formatFileSize(attachment.file_size)}</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeTaskAttachment(${attachment.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    container.appendChild(attachmentElement);
+                });
+            } else {
+                container.innerHTML = '<p class="text-muted">لا توجد مرفقات</p>';
+            }
+        } catch (error) {
+            console.error('Error loading attachments:', error);
+            container.innerHTML = '<p class="text-muted">خطأ في تحميل المرفقات</p>';
+        }
+    }
+
+    async loadTaskChecklist(taskId) {
+        const container = document.getElementById('editTaskChecklist');
+        if (!container) return;
+
+        try {
+            const response = await fetch(`/admin/tasks/${taskId}/checklist`);
+            const data = await response.json();
+            
+            container.innerHTML = '';
+            if (data.checklist && data.checklist.length > 0) {
+                data.checklist.forEach((item, index) => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'form-check';
+                    itemElement.innerHTML = `
+                        <input class="form-check-input" type="checkbox" id="checklist_${index}" ${item.completed ? 'checked' : ''} 
+                               onchange="updateChecklistItem('${item.id}', this.checked)">
+                        <label class="form-check-label" for="checklist_${index}">
+                            ${item.text}
+                        </label>
+                    `;
+                    container.appendChild(itemElement);
+                });
+            } else {
+                container.innerHTML = '<p class="text-muted">لا توجد عناصر في القائمة المرجعية</p>';
+            }
+        } catch (error) {
+            console.error('Error loading checklist:', error);
+            container.innerHTML = '<p class="text-muted">خطأ في تحميل القائمة المرجعية</p>';
+        }
+    }
+
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // دوال مساعدة للتعامل مع المهام
+    addTaskLabel() {
+        const input = document.getElementById('editTaskNewLabel');
+        const labelName = input.value.trim();
+        if (!labelName) return;
+
+        const container = document.getElementById('editTaskLabels');
+        const labelElement = document.createElement('span');
+        labelElement.className = 'badge bg-secondary me-1 mb-1';
+        labelElement.style.backgroundColor = this.getRandomColor();
+        labelElement.innerHTML = `${labelName} <i class="fas fa-times ms-1" onclick="removeTaskLabel('${labelName}')"></i>`;
+        container.appendChild(labelElement);
+
+        input.value = '';
+    }
+
+    addTaskTag() {
+        const input = document.getElementById('editTaskNewTag');
+        const tagName = input.value.trim();
+        if (!tagName) return;
+
+        const container = document.getElementById('editTaskTags');
+        const tagElement = document.createElement('span');
+        tagElement.className = 'badge bg-info me-1 mb-1';
+        tagElement.innerHTML = `${tagName} <i class="fas fa-times ms-1" onclick="removeTaskTag('${tagName}')"></i>`;
+        container.appendChild(tagElement);
+
+        input.value = '';
+    }
+
+    removeTaskLabel(labelName) {
+        const labels = document.querySelectorAll('#editTaskLabels .badge');
+        labels.forEach(label => {
+            if (label.textContent.includes(labelName)) {
+                label.remove();
+            }
+        });
+    }
+
+    removeTaskTag(tagName) {
+        const tags = document.querySelectorAll('#editTaskTags .badge');
+        tags.forEach(tag => {
+            if (tag.textContent.includes(tagName)) {
+                tag.remove();
+            }
+        });
+    }
+
+    async addTaskComment() {
+        const input = document.getElementById('editTaskNewComment');
+        const comment = input.value.trim();
+        if (!comment) return;
+
+        const taskId = window.currentEditingTask?.id;
+        if (!taskId) return;
+
+        try {
+            const response = await fetch(`/admin/tasks/${taskId}/comment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ comment })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                this.loadTaskComments(taskId);
+                input.value = '';
+                this.showAlert('success', 'تم إضافة التعليق بنجاح');
+            } else {
+                this.showAlert('error', data.message || 'خطأ في إضافة التعليق');
+            }
+        } catch (error) {
+            console.error('Error adding comment:', error);
+            this.showAlert('error', 'خطأ في إضافة التعليق');
+        }
+    }
+
+    async addTaskAttachment() {
+        const input = document.getElementById('editTaskNewAttachment');
+        const files = input.files;
+        if (!files || files.length === 0) return;
+
+        const taskId = window.currentEditingTask?.id;
+        if (!taskId) return;
+
+        const formData = new FormData();
+        Array.from(files).forEach(file => {
+            formData.append('files[]', file);
+        });
+
+        try {
+            const response = await fetch(`/admin/tasks/${taskId}/attachment`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                this.loadTaskAttachments(taskId);
+                input.value = '';
+                this.showAlert('success', 'تم رفع المرفقات بنجاح');
+            } else {
+                this.showAlert('error', data.message || 'خطأ في رفع المرفقات');
+            }
+        } catch (error) {
+            console.error('Error adding attachment:', error);
+            this.showAlert('error', 'خطأ في رفع المرفقات');
+        }
+    }
+
+    async addTaskChecklistItem() {
+        const input = document.getElementById('editTaskNewChecklistItem');
+        const text = input.value.trim();
+        if (!text) return;
+
+        const taskId = window.currentEditingTask?.id;
+        if (!taskId) return;
+
+        try {
+            const response = await fetch(`/admin/tasks/${taskId}/checklist`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ text })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                this.loadTaskChecklist(taskId);
+                input.value = '';
+                this.showAlert('success', 'تم إضافة العنصر للقائمة المرجعية');
+            } else {
+                this.showAlert('error', data.message || 'خطأ في إضافة العنصر');
+            }
+        } catch (error) {
+            console.error('Error adding checklist item:', error);
+            this.showAlert('error', 'خطأ في إضافة العنصر');
+        }
+    }
+
+    getRandomColor() {
+        const colors = ['#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8', '#6f42c1', '#e83e8c', '#fd7e14'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    // دالة حفظ التعديلات
+    async saveTaskEdit() {
+        const taskId = window.currentEditingTask?.id;
+        if (!taskId) return;
+
+        const formData = new FormData(document.getElementById('editTaskForm'));
+        
+        // إضافة العلامات والوسوم
+        const labels = Array.from(document.querySelectorAll('#editTaskLabels .badge')).map(badge => ({
+            name: badge.textContent.replace(' ×', '').trim(),
+            color: badge.style.backgroundColor || '#6c757d'
+        }));
+        
+        const tags = Array.from(document.querySelectorAll('#editTaskTags .badge')).map(badge => 
+            badge.textContent.replace(' ×', '').trim()
+        );
+
+        formData.append('labels', JSON.stringify(labels));
+        formData.append('tags', JSON.stringify(tags));
+
+        try {
+            const response = await fetch(`/admin/tasks/${taskId}`, {
+                method: 'PUT',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                this.showAlert('success', 'تم حفظ التغييرات بنجاح');
+                this.hideModal('editTaskModal');
+                // إعادة تحميل الصفحة أو تحديث المهام
+                location.reload();
+            } else {
+                this.showAlert('error', data.message || 'خطأ في حفظ التغييرات');
+            }
+        } catch (error) {
+            console.error('Error saving task:', error);
+            this.showAlert('error', 'خطأ في حفظ التغييرات');
+        }
+    }
+}
+
+// دوال عامة للتعامل مع المهام
+window.taskManagement = new TaskManagement();
+
+// دوال مساعدة عامة
+function addTaskLabel() {
+    window.taskManagement.addTaskLabel();
+}
+
+function addTaskTag() {
+    window.taskManagement.addTaskTag();
+}
+
+function removeTaskLabel(labelName) {
+    window.taskManagement.removeTaskLabel(labelName);
+}
+
+function removeTaskTag(tagName) {
+    window.taskManagement.removeTaskTag(tagName);
+}
+
+function addTaskComment() {
+    window.taskManagement.addTaskComment();
+}
+
+function addTaskAttachment() {
+    window.taskManagement.addTaskAttachment();
+}
+
+function addTaskChecklistItem() {
+    window.taskManagement.addTaskChecklistItem();
+}
+
+function editTask(taskId) {
+    window.taskManagement.editTask(taskId);
+}
+
+function viewTask(taskId) {
+    window.taskManagement.viewTask(taskId);
+}
+
+function deleteTask(taskId) {
+    window.taskManagement.deleteTask(taskId);
+}
+
+function moveTask(taskId, columnId) {
+    window.taskManagement.moveTask(taskId, columnId);
+}
+
+function saveTaskEdit() {
+    window.taskManagement.saveTaskEdit();
+}
+
+// تهيئة النظام عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    window.taskManagement.initialize();
+});
                     </div>
                 </div>
                 <div class="col-md-6">
