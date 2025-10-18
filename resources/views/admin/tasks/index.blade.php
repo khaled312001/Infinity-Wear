@@ -136,27 +136,10 @@
 
     <!-- لوحات المهام -->
     <div class="task-boards-container">
-        @foreach($boards as $board)
-            <div class="task-board" data-board-id="{{ $board->id }}">
-                <div class="board-header">
-                    <div class="board-title">
-                        <i class="{{ $board->board_icon }}" style="color: {{ $board->board_color }}"></i>
-                        <h4>{{ $board->name }}</h4>
-                        <span class="badge bg-secondary">{{ $board->board_type_label }}</span>
-                    </div>
-                    <div class="board-actions">
-                        <button class="btn btn-sm btn-outline-primary" onclick="addColumn({{ $board->id }})">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="editBoard({{ $board->id }})">
-                            <i class="fas fa-cog"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="board-content">
-                    <div class="columns-container" id="board-{{ $board->id }}-columns">
-                        @foreach($board->columns as $column)
+        <!-- حاوي الأعمدة الرئيسي -->
+        <div class="columns-container" id="main-columns-container">
+            @foreach($boards as $board)
+                @foreach($board->columns as $column)
                             <div class="task-column" data-column-id="{{ $column->id }}" data-board-id="{{ $board->id }}">
                                 <div class="column-header">
                                     <div class="column-title">
@@ -237,11 +220,9 @@
                                     @endforeach
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        @endforeach
+                @endforeach
+            @endforeach
+        </div>
     </div>
 
     <!-- Modal إنشاء لوحة جديدة -->

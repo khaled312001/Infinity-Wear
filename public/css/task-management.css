@@ -89,6 +89,8 @@
     overflow-x: auto;
     padding-bottom: 1rem;
     min-height: 400px;
+    flex-wrap: nowrap;
+    align-items: flex-start;
 }
 
 /* العمود */
@@ -97,6 +99,7 @@
     border-radius: var(--border-radius);
     min-width: 300px;
     max-width: 300px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     transition: var(--transition);
