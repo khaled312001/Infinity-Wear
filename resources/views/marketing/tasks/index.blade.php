@@ -303,15 +303,35 @@
                                     <label for="taskAssignedTo" class="form-label">تعيين إلى</label>
                                     <select class="form-select" id="taskAssignedTo" name="assigned_to">
                                         <option value="">اختر شخص</option>
-                                        @foreach($users['admins'] as $admin)
-                                            <option value="{{ $admin->id }}" data-type="admin">{{ $admin->name }}</option>
-                                        @endforeach
-                                        @foreach($users['marketing'] as $marketing)
-                                            <option value="{{ $marketing->id }}" data-type="marketing">{{ $marketing->name }} (تسويق)</option>
-                                        @endforeach
-                                        @foreach($users['sales'] as $sales)
-                                            <option value="{{ $sales->id }}" data-type="sales">{{ $sales->name }} (مبيعات)</option>
-                                        @endforeach
+                                        @if(isset($users['admins']) && is_array($users['admins']))
+                                            @foreach($users['admins'] as $admin)
+                                                <option value="{{ $admin['id'] }}" data-type="admin">{{ $admin['name'] }}</option>
+                                            @endforeach
+                                        @elseif(isset($users['admins']) && is_object($users['admins']))
+                                            @foreach($users['admins'] as $admin)
+                                                <option value="{{ $admin->id }}" data-type="admin">{{ $admin->name }}</option>
+                                            @endforeach
+                                        @endif
+                                        
+                                        @if(isset($users['marketing']) && is_array($users['marketing']))
+                                            @foreach($users['marketing'] as $marketing)
+                                                <option value="{{ $marketing['id'] }}" data-type="marketing">{{ $marketing['name'] }} (تسويق)</option>
+                                            @endforeach
+                                        @elseif(isset($users['marketing']) && is_object($users['marketing']))
+                                            @foreach($users['marketing'] as $marketing)
+                                                <option value="{{ $marketing->id }}" data-type="marketing">{{ $marketing->name }} (تسويق)</option>
+                                            @endforeach
+                                        @endif
+                                        
+                                        @if(isset($users['sales']) && is_array($users['sales']))
+                                            @foreach($users['sales'] as $sales)
+                                                <option value="{{ $sales['id'] }}" data-type="sales">{{ $sales['name'] }} (مبيعات)</option>
+                                            @endforeach
+                                        @elseif(isset($users['sales']) && is_object($users['sales']))
+                                            @foreach($users['sales'] as $sales)
+                                                <option value="{{ $sales->id }}" data-type="sales">{{ $sales->name }} (مبيعات)</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>
