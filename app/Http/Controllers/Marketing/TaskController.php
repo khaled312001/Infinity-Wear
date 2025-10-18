@@ -67,6 +67,16 @@ class TaskController extends Controller
             'color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/'
         ]);
 
+        // التحقق من تسجيل الدخول
+        $userId = Auth::id();
+        if (!$userId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'المستخدم غير مسجل دخول',
+                'error' => 'unauthenticated'
+            ], 401);
+        }
+
         $column = TaskColumn::findOrFail($request->column_id);
         $sortOrder = $column->active_tasks_count + 1;
 
@@ -79,7 +89,7 @@ class TaskController extends Controller
             'due_date' => $request->due_date,
             'assigned_to' => $request->assigned_to,
             'assigned_to_type' => $request->assigned_to_type,
-            'created_by' => Auth::id(),
+            'created_by' => $userId,
             'created_by_type' => 'marketing',
             'sort_order' => $sortOrder,
             'labels' => $request->labels ?? [],

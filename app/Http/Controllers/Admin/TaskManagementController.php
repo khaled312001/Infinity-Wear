@@ -123,6 +123,12 @@ class TaskManagementController extends Controller
         }
 
         try {
+            // التحقق من تسجيل الدخول
+            $adminId = Auth::guard('admin')->id();
+            if (!$adminId) {
+                throw new \Exception('المستخدم غير مسجل دخول');
+            }
+
             $column = TaskColumn::findOrFail($request->column_id);
             $sortOrder = $column->active_tasks_count + 1;
 
@@ -135,7 +141,7 @@ class TaskManagementController extends Controller
                 'due_date' => $request->due_date,
                 'assigned_to' => $request->assigned_to,
                 'assigned_to_type' => $request->assigned_to_type,
-                'created_by' => Auth::id(),
+                'created_by' => $adminId,
                 'created_by_type' => 'admin',
                 'sort_order' => $sortOrder,
                 'labels' => $request->labels ?? [],
