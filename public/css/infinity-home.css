@@ -1,22 +1,22 @@
 /* ===== إنفينيتي وير - صفحة رئيسية احترافية ===== */
 
-/* متغيرات الألوان والخطوط */
+/* متغيرات الألوان والخطوط - ألوان مريحة للعين */
 :root {
-    --primary-color: #3498db;
-    --secondary-color: #7f8c8d;
-    --accent-color: #3498db;
-    --success-color: #27ae60;
-    --danger-color: #e74c3c;
-    --warning-color: #f39c12;
-    --info-color: #3498db;
-    --light-color: #ecf0f1;
-    --dark-color: #2c3e50;
+    --primary-color: #74b9ff;
+    --secondary-color: #a29bfe;
+    --accent-color: #fdcb6e;
+    --success-color: #00b894;
+    --danger-color: #e17055;
+    --warning-color: #fdcb6e;
+    --info-color: #74b9ff;
+    --light-color: #f8f9fa;
+    --dark-color: #2d3436;
 
     /* ألوان التدرج */
-    --gradient-primary: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-    --gradient-secondary: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-    --gradient-success: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-    --gradient-warning: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    --gradient-primary: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    --gradient-secondary: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+    --gradient-success: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+    --gradient-warning: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
 
     /* خطوط */
     --font-primary: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -50,7 +50,7 @@ body {
     font-family: var(--font-primary);
     line-height: 1.6;
     color: var(--dark-color);
-    background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     overflow-x: hidden;
 }
 
@@ -64,7 +64,7 @@ body {
 
 /* شريط العلوي */
 .header-top-bar {
-    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
     color: white;
     padding: 0.5rem 0;
     font-size: 0.875rem;
@@ -135,8 +135,8 @@ body {
 
 /* الشريط الرئيسي */
 .infinity-header {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
-    box-shadow: 0 2px 15px rgba(44, 62, 80, 0.15);
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 50%, #2d3436 100%);
+    box-shadow: 0 2px 15px rgba(45, 52, 54, 0.15);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -149,9 +149,9 @@ body {
 }
 
 .infinity-navbar.scrolled {
-    background: linear-gradient(135deg, rgba(44, 62, 80, 0.95) 0%, rgba(52, 73, 94, 0.95) 100%);
+    background: linear-gradient(135deg, rgba(45, 52, 54, 0.95) 0%, rgba(99, 110, 114, 0.95) 100%);
     backdrop-filter: blur(15px);
-    box-shadow: 0 4px 25px rgba(44, 62, 80, 0.25);
+    box-shadow: 0 4px 25px rgba(45, 52, 54, 0.25);
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -1133,11 +1133,11 @@ body {
     align-items: center;
     gap: 0.75rem;
     padding: 1rem;
-    background: linear-gradient(135deg, #ffffff 0%, #ecf0f1 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+    box-shadow: 0 2px 8px rgba(116, 185, 255, 0.08);
     transition: transform var(--transition-fast);
-    border: 1px solid rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(116, 185, 255, 0.1);
 }
 
 .feature-item:hover {
@@ -2335,13 +2335,13 @@ body {
     gap: 1.5rem;
     align-items: flex-start;
     padding: 2rem;
-    background: linear-gradient(135deg, #ffffff 0%, #ecf0f1 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(44, 62, 80, 0.08);
+    box-shadow: 0 10px 30px rgba(116, 185, 255, 0.08);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
-    border: 2px solid rgba(52, 152, 219, 0.1);
+    border: 2px solid rgba(116, 185, 255, 0.1);
 }
 
 .contact-card-item::before {

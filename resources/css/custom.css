@@ -2,14 +2,14 @@
 
 :root {
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
-  --primary-color: #1e3a8a;
-  --secondary-color: #3b82f6;
-  --accent-color: #60a5fa;
-  --dark-blue: #1e40af;
-  --light-blue: #dbeafe;
-  --header-glow: 0 0 20px 2px #60a5fa55;
-  --card-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  --hover-shadow: 0 15px 35px rgba(0,0,0,0.12);
+  --primary-color: #74b9ff;
+  --secondary-color: #a29bfe;
+  --accent-color: #fdcb6e;
+  --dark-blue: #0984e3;
+  --light-blue: #e3f2fd;
+  --header-glow: 0 0 20px 2px #74b9ff55;
+  --card-shadow: 0 10px 25px rgba(116, 185, 255, 0.08);
+  --hover-shadow: 0 15px 35px rgba(116, 185, 255, 0.12);
   --transition-fast: 0.3s ease;
   --transition-medium: 0.5s ease;
   --border-radius-sm: 8px;

@@ -752,32 +752,32 @@ use App\Models\Contact;
 }
 
 .quick-action-btn.btn-primary:hover {
-    border-color: #3b82f6;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border-color: #74b9ff;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
     color: white;
 }
 
 .quick-action-btn.btn-success:hover {
-    border-color: #10b981;
-    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #00b894;
+    background: linear-gradient(135deg, #00b894, #00a085);
     color: white;
 }
 
 .quick-action-btn.btn-warning:hover {
-    border-color: #f59e0b;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-color: #fdcb6e;
+    background: linear-gradient(135deg, #fdcb6e, #e17055);
     color: white;
 }
 
 .quick-action-btn.btn-info:hover {
-    border-color: #06b6d4;
-    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    border-color: #a29bfe;
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
     color: white;
 }
 
 .quick-action-btn.btn-secondary:hover {
-    border-color: #6b7280;
-    background: linear-gradient(135deg, #6b7280, #4b5563);
+    border-color: #636e72;
+    background: linear-gradient(135deg, #636e72, #2d3436);
     color: white;
 }
 
@@ -795,23 +795,23 @@ use App\Models\Contact;
 }
 
 .quick-action-btn.btn-primary .action-icon {
-    background: #3b82f6;
+    background: #74b9ff;
 }
 
 .quick-action-btn.btn-success .action-icon {
-    background: #10b981;
+    background: #00b894;
 }
 
 .quick-action-btn.btn-warning .action-icon {
-    background: #f59e0b;
+    background: #fdcb6e;
 }
 
 .quick-action-btn.btn-info .action-icon {
-    background: #06b6d4;
+    background: #a29bfe;
 }
 
 .quick-action-btn.btn-secondary .action-icon {
-    background: #6b7280;
+    background: #636e72;
 }
 
 .action-content h6 {

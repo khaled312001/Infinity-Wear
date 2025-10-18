@@ -129,7 +129,7 @@
     background-color: var(--dark-blue);
     border-color: var(--dark-blue);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(30, 58, 138, 0.2);
+    box-shadow: 0 5px 15px rgba(116, 185, 255, 0.2);
 }
 
 /* Importer Registration Form Specific Styles */

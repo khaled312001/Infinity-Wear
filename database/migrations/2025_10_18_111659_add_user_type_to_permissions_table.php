@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Skip this migration if user_type column already exists
+        if (Schema::hasColumn('permissions', 'user_type')) {
+            return;
+        }
+        
         Schema::table('permissions', function (Blueprint $table) {
             $table->string('user_type')->nullable()->after('module');
         });

@@ -201,12 +201,12 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="col-lg-10">
                 <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
                     <!-- Header -->
-                    <div class="card-header bg-gradient-primary text-white text-center py-4">
-                        <h3 class="mb-0 fw-bold">
+                    <div class="card-header bg-gradient-primary text-center py-4">
+                        <h3 class="mb-0 fw-bold custom-title-gold">
                             <i class="fas fa-shopping-cart me-2"></i>
                             استمارة طلب ملابس مخصصة
                         </h3>
-                        <p class="mb-0 mt-2 opacity-75">مرحباً بك في عالم الملابس المميزة</p>
+                        <p class="mb-0 mt-2 text-white opacity-75">مرحباً بك في عالم الملابس المميزة</p>
                     </div>
                     
                     <div class="card-body p-0">
@@ -704,3 +704,16 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 @endsection
+
+<style>
+.custom-title-gold {
+    color: #FFD700 !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 1.8rem;
+}
+
+.custom-title-gold:hover {
+    color: #FFA500 !important;
+    transition: color 0.3s ease;
+}
+</style>

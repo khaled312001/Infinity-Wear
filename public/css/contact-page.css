@@ -53,7 +53,7 @@
     font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: var(--contact-text-primary);
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
     min-height: 100vh;
 }
 

@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Skip this migration if user_id column already exists
+        if (Schema::hasColumn('notifications', 'user_id')) {
+            return;
+        }
+        
         Schema::table('notifications', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id')->nullable()->after('id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

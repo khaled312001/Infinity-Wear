@@ -32,15 +32,15 @@
     
     <style>
         :root {
-            --primary-color: #1e3a8a;
-            --secondary-color: #3b82f6;
-            --accent-color: #60a5fa;
-            --dark-color: #1e40af;
-            --light-color: #f8fafc;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --info-color: #3b82f6;
+            --primary-color: #74b9ff;
+            --secondary-color: #a29bfe;
+            --accent-color: #fdcb6e;
+            --dark-color: #0984e3;
+            --light-color: #f8f9fa;
+            --success-color: #00b894;
+            --warning-color: #fdcb6e;
+            --danger-color: #e17055;
+            --info-color: #74b9ff;
         }
 
         body {
@@ -310,7 +310,7 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.4);
         }
 
         .table-responsive {

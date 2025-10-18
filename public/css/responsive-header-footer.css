@@ -1,15 +1,15 @@
 /* ===== Responsive Header and Footer Styles ===== */
 
-/* CSS Variables for consistent theming */
+/* CSS Variables for consistent theming - Eye-friendly colors */
 :root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --secondary-gradient: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%);
-    --accent-color: #ffc107;
-    --text-light: rgba(255, 255, 255, 0.9);
-    --text-muted: rgba(255, 255, 255, 0.7);
-    --border-light: rgba(255, 255, 255, 0.1);
-    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.1);
-    --shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.2);
+    --primary-gradient: linear-gradient(135deg, #6b73ff 0%, #9b59b6 100%);
+    --secondary-gradient: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    --accent-color: #fdcb6e;
+    --text-light: rgba(255, 255, 255, 0.95);
+    --text-muted: rgba(255, 255, 255, 0.8);
+    --border-light: rgba(255, 255, 255, 0.15);
+    --shadow-soft: 0 4px 20px rgba(107, 115, 255, 0.15);
+    --shadow-strong: 0 8px 30px rgba(107, 115, 255, 0.25);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --border-radius: 12px;
     --border-radius-lg: 20px;
@@ -29,7 +29,7 @@
 }
 
 .infinity-navbar.scrolled {
-    background: rgba(102, 126, 234, 0.95) !important;
+    background: rgba(107, 115, 255, 0.92) !important;
     backdrop-filter: blur(15px);
     box-shadow: var(--shadow-strong);
 }
@@ -54,7 +54,7 @@
 .infinity-logo {
     width: 50px;
     height: 50px;
-    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -62,7 +62,7 @@
     font-size: 1.8rem;
     color: #ffffff;
     font-weight: 900;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 15px rgba(116, 185, 255, 0.4);
     transition: all 0.3s ease;
 }
 
@@ -74,8 +74,8 @@
 /* Logo hover effect */
 .infinity-brand .infinity-logo:hover {
     transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 6px 25px rgba(116, 185, 255, 0.6);
+    background: linear-gradient(135deg, #6b73ff 0%, #9b59b6 100%);
 }
 
 /* Mobile menu toggle button */
@@ -202,7 +202,7 @@
 .infinity-footer-logo .infinity-logo {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -210,7 +210,7 @@
     font-size: 2.2rem;
     color: #ffffff;
     font-weight: 900;
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 20px rgba(116, 185, 255, 0.4);
     transition: all 0.3s ease;
 }
 
@@ -431,7 +431,7 @@
 @media (max-width: 767px) {
     .infinity-navbar {
         padding: 0.75rem 0;
-        background: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%) !important;
+        background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%) !important;
     }
     
     .infinity-brand {
@@ -443,7 +443,7 @@
         width: 48px;
         height: 48px;
         font-size: 1.6rem;
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        box-shadow: 0 4px 15px rgba(116, 185, 255, 0.4);
     }
     
     .mobile-menu-toggle {
@@ -596,7 +596,7 @@
     right: 0;
     width: 320px;
     height: 100%;
-    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(180deg, #6b73ff 0%, #9b59b6 100%);
     backdrop-filter: blur(20px);
     z-index: 1050;
     transform: translateX(100%);
@@ -631,7 +631,7 @@
 .sidebar-logo .infinity-logo {
     width: 50px;
     height: 50px;
-    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -639,7 +639,7 @@
     font-size: 1.8rem;
     color: #ffffff;
     font-weight: 900;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 15px rgba(116, 185, 255, 0.4);
     transition: all 0.3s ease;
 }
 
