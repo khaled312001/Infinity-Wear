@@ -162,11 +162,22 @@ class DashboardController extends Controller
             'is_featured' => 'boolean',
         ]);
 
+        // معالجة الصورة الرئيسية
+        $imagePath = $request->file('image')->store('images/portfolio', 'public');
+
+        // معالجة معرض الصور
+        $gallery = [];
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $image) {
+                $gallery[] = $image->store('images/portfolio/gallery', 'public');
+            }
+        }
+
         $portfolio = PortfolioItem::create([
             'title' => $request->title,
             'description' => $request->description,
-            'image' => $request->file('image')->store('portfolio', 'public'),
-            'gallery' => $request->gallery ? json_encode($request->gallery) : null,
+            'image' => $imagePath,
+            'gallery' => $gallery,
             'client_name' => $request->client_name,
             'completion_date' => $request->completion_date,
             'category' => $request->category,

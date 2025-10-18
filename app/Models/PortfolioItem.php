@@ -33,6 +33,10 @@ class PortfolioItem extends Model
     public function getImageUrlAttribute()
     {
         if ($this->image) {
+            // إذا كان المسار يحتوي على 'images/portfolio/' فهو في storage/app/public/
+            if (strpos($this->image, 'images/portfolio/') === 0) {
+                return \Storage::url($this->image);
+            }
             // إذا كان المسار يحتوي على 'portfolio/' فهو في public/images/portfolio/
             if (strpos($this->image, 'portfolio/') === 0) {
                 return asset('images/' . $this->image);
@@ -54,9 +58,15 @@ class PortfolioItem extends Model
     {
         if ($this->gallery && is_array($this->gallery)) {
             return array_map(function($image) {
+                // إذا كان المسار يحتوي على 'images/portfolio/' فهو في storage/app/public/
+                if (strpos($image, 'images/portfolio/') === 0) {
+                    return \Storage::url($image);
+                }
+                // إذا كان المسار يحتوي على 'portfolio/' فهو في public/images/portfolio/
                 if (strpos($image, 'portfolio/') === 0) {
                     return asset('images/' . $image);
                 }
+                // إذا كان المسار يحتوي على 'images/' فهو في public/images/
                 if (strpos($image, 'images/') === 0) {
                     return asset($image);
                 }
