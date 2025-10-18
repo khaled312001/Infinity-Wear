@@ -151,13 +151,17 @@ class TaskManagementController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Task creation error: ' . $e->getMessage());
+            Log::error('Task creation error file: ' . $e->getFile() . ':' . $e->getLine());
+            Log::error('Task creation error trace: ' . $e->getTraceAsString());
+            Log::error('Task creation data: ' . json_encode($request->all()));
             
             // Handle errors for AJAX requests
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'حدث خطأ أثناء إنشاء المهمة. يرجى المحاولة مرة أخرى.',
-                    'error' => 'database_error'
+                    'error' => 'database_error',
+                    'debug' => config('app.debug') ? $e->getMessage() : null
                 ], 500);
             }
             
