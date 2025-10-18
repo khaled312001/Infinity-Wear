@@ -134,6 +134,126 @@
         </div>
     </div>
 
+    <!-- منطقة الفلتر المتقدم -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card advanced-filter">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-filter me-2"></i>
+                        فلتر متقدم
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="filterByUser" class="form-label">البحث بالاسم</label>
+                                <select class="form-select" id="filterByUser" onchange="applyAdvancedFilter()">
+                                    <option value="">جميع المستخدمين</option>
+                                    @if(isset($availableUsers))
+                                        <optgroup label="المديرين">
+                                            @foreach($availableUsers['admins'] as $admin)
+                                                <option value="admin_{{ $admin->id }}">{{ $admin->name }}</option>
+                                            @endforeach
+                                        </optgroup>
+                                        <optgroup label="فريق التسويق">
+                                            @foreach($availableUsers['marketing'] as $marketing)
+                                                <option value="marketing_{{ $marketing->id }}">{{ $marketing->name }}</option>
+                                            @endforeach
+                                        </optgroup>
+                                        <optgroup label="فريق المبيعات">
+                                            @foreach($availableUsers['sales'] as $sales)
+                                                <option value="sales_{{ $sales->id }}">{{ $sales->name }}</option>
+                                            @endforeach
+                                        </optgroup>
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="filterByDepartment" class="form-label">البحث بالقسم</label>
+                                <select class="form-select" id="filterByDepartment" onchange="applyAdvancedFilter()">
+                                    <option value="">جميع الأقسام</option>
+                                    <option value="general">عام</option>
+                                    <option value="marketing">تسويق</option>
+                                    <option value="sales">مبيعات</option>
+                                    <option value="admin">إدارة</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="filterByPriority" class="form-label">البحث بالأولوية</label>
+                                <select class="form-select" id="filterByPriority" onchange="applyAdvancedFilter()">
+                                    <option value="">جميع الأولويات</option>
+                                    <option value="low">منخفضة</option>
+                                    <option value="medium">متوسطة</option>
+                                    <option value="high">عالية</option>
+                                    <option value="urgent">عاجلة</option>
+                                    <option value="critical">حرجة</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="filterByStatus" class="form-label">البحث بالحالة</label>
+                                <select class="form-select" id="filterByStatus" onchange="applyAdvancedFilter()">
+                                    <option value="">جميع الحالات</option>
+                                    <option value="pending">معلقة</option>
+                                    <option value="in_progress">قيد التنفيذ</option>
+                                    <option value="completed">مكتملة</option>
+                                    <option value="cancelled">ملغية</option>
+                                    <option value="on_hold">معلقة</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="filterByKeyword" class="form-label">البحث بالكلمات المفتاحية</label>
+                                <input type="text" class="form-control" id="filterByKeyword" placeholder="ابحث في عنوان أو وصف المهمة..." onkeyup="applyAdvancedFilter()">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="filterByDateFrom" class="form-label">من تاريخ</label>
+                                <input type="date" class="form-control" id="filterByDateFrom" onchange="applyAdvancedFilter()">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="filterByDateTo" class="form-label">إلى تاريخ</label>
+                                <input type="date" class="form-control" id="filterByDateTo" onchange="applyAdvancedFilter()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="clearAdvancedFilter()">
+                                        <i class="fas fa-times me-1"></i>
+                                        مسح الفلتر
+                                    </button>
+                                    <button type="button" class="btn btn-outline-info" onclick="exportFilteredTasks()">
+                                        <i class="fas fa-download me-1"></i>
+                                        تصدير النتائج
+                                    </button>
+                                </div>
+                                <div>
+                                    <span class="badge bg-primary" id="filterResultsCount">0 نتيجة</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- لوحات المهام -->
     <div class="task-boards-container">
         <!-- حاوي الأعمدة الرئيسي -->

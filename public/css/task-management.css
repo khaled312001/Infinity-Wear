@@ -518,3 +518,99 @@
     50% { opacity: 0.7; }
     100% { opacity: 1; }
 }
+
+/* الفلتر المتقدم */
+.advanced-filter {
+    background: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+}
+
+.advanced-filter .card-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.advanced-filter .form-label {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+.advanced-filter .form-select,
+.advanced-filter .form-control {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.advanced-filter .form-select:focus,
+.advanced-filter .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.advanced-filter .btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.advanced-filter .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+#filterResultsCount {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+/* تحسينات للفلتر */
+.advanced-filter .row {
+    margin-bottom: 1rem;
+}
+
+.advanced-filter .row:last-child {
+    margin-bottom: 0;
+}
+
+.advanced-filter optgroup {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.advanced-filter optgroup option {
+    font-weight: normal;
+    color: var(--dark-color);
+}
+
+/* تأثيرات الفلتر */
+.task-card[style*="none"] {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.3s ease;
+}
+
+.task-column[style*="none"] {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.3s ease;
+}
+
+/* رسائل الفلتر */
+.filter-message {
+    text-align: center;
+    padding: 2rem;
+    color: var(--dark-color);
+    background: #f8f9fa;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+.filter-message i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}

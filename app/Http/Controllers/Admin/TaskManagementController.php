@@ -13,6 +13,7 @@ use App\Models\MarketingTeam;
 use App\Models\SalesTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -92,47 +93,77 @@ class TaskManagementController extends Controller
      */
     public function createTask(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string|max:2000',
-            'board_id' => 'required|exists:task_boards,id',
-            'column_id' => 'required|exists:task_columns,id',
-            'priority' => 'required|in:low,medium,high,urgent,critical',
-            'due_date' => 'nullable|date|after:today',
-            'assigned_to' => 'nullable|integer',
-            'assigned_to_type' => 'nullable|in:admin,marketing,sales',
-            'labels' => 'nullable|array',
-            'tags' => 'nullable|array',
-            'estimated_hours' => 'nullable|numeric|min:0',
-            'color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/'
-        ]);
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string|max:2000',
+                'board_id' => 'required|exists:task_boards,id',
+                'column_id' => 'required|exists:task_columns,id',
+                'priority' => 'required|in:low,medium,high,urgent,critical',
+                'due_date' => 'nullable|date|after:today',
+                'assigned_to' => 'nullable|integer',
+                'assigned_to_type' => 'nullable|in:admin,marketing,sales',
+                'labels' => 'nullable|array',
+                'tags' => 'nullable|array',
+                'estimated_hours' => 'nullable|numeric|min:0',
+                'color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation errors for AJAX requests
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'يرجى التحقق من البيانات المدخلة',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            
+            // Re-throw for regular requests to show validation errors
+            throw $e;
+        }
 
-        $column = TaskColumn::findOrFail($request->column_id);
-        $sortOrder = $column->active_tasks_count + 1;
+        try {
+            $column = TaskColumn::findOrFail($request->column_id);
+            $sortOrder = $column->active_tasks_count + 1;
 
-        $task = TaskCard::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'board_id' => $request->board_id,
-            'column_id' => $request->column_id,
-            'priority' => $request->priority,
-            'due_date' => $request->due_date,
-            'assigned_to' => $request->assigned_to,
-            'assigned_to_type' => $request->assigned_to_type,
-            'created_by' => Auth::id(),
-            'created_by_type' => 'admin',
-            'sort_order' => $sortOrder,
-            'labels' => $request->labels ?? [],
-            'tags' => $request->tags ?? [],
-            'estimated_hours' => $request->estimated_hours,
-            'color' => $request->color
-        ]);
+            $task = TaskCard::create([
+                'title' => $request->title,
+                'description' => $request->description,
+                'board_id' => $request->board_id,
+                'column_id' => $request->column_id,
+                'priority' => $request->priority,
+                'due_date' => $request->due_date,
+                'assigned_to' => $request->assigned_to,
+                'assigned_to_type' => $request->assigned_to_type,
+                'created_by' => Auth::id(),
+                'created_by_type' => 'admin',
+                'sort_order' => $sortOrder,
+                'labels' => $request->labels ?? [],
+                'tags' => $request->tags ?? [],
+                'estimated_hours' => $request->estimated_hours,
+                'color' => $request->color
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'تم إنشاء المهمة بنجاح',
-            'task' => $task->load(['assignedUser', 'creator'])
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'تم إنشاء المهمة بنجاح',
+                'task' => $task->load(['assignedUser', 'creator'])
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Task creation error: ' . $e->getMessage());
+            
+            // Handle errors for AJAX requests
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'حدث خطأ أثناء إنشاء المهمة. يرجى المحاولة مرة أخرى.',
+                    'error' => 'database_error'
+                ], 500);
+            }
+            
+            // Re-throw for regular requests
+            throw $e;
+        }
     }
 
     /**

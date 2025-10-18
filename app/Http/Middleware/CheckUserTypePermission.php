@@ -15,7 +15,7 @@ class CheckUserTypePermission
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @param  string  $permission
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function handle(Request $request, Closure $next, string $permission)
     {
@@ -26,6 +26,15 @@ class CheckUserTypePermission
 
         // Check if user is authenticated
         if (!Auth::check()) {
+            // Handle AJAX requests with JSON response
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'يجب تسجيل الدخول أولاً.',
+                    'error' => 'unauthenticated'
+                ], 401);
+            }
+            
             return redirect()->route('login');
         }
 
@@ -34,7 +43,16 @@ class CheckUserTypePermission
 
         // Check if user has permission for this page
         if (!$this->hasPermission($userType, $permission)) {
-            // Redirect to appropriate dashboard with error message
+            // Handle AJAX requests with JSON response
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'ليس لديك صلاحية للوصول إلى هذه الصفحة.',
+                    'error' => 'permission_denied'
+                ], 403);
+            }
+            
+            // Redirect to appropriate dashboard with error message for regular requests
             $dashboardRoute = $this->getDashboardRoute($userType);
             return redirect()->route($dashboardRoute)
                 ->with('error', 'ليس لديك صلاحية للوصول إلى هذه الصفحة.');

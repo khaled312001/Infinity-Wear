@@ -162,6 +162,7 @@ class TaskManagement {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
                 body: JSON.stringify(Object.fromEntries(formData))
@@ -178,7 +179,15 @@ class TaskManagement {
             }
         } catch (error) {
             console.error('Error creating task:', error);
-            this.showAlert('error', 'حدث خطأ أثناء إنشاء المهمة');
+            
+            // Handle different types of errors
+            if (error.message.includes('Unexpected token')) {
+                this.showAlert('error', 'حدث خطأ في استجابة الخادم. يرجى المحاولة مرة أخرى.');
+            } else if (error.message.includes('Failed to fetch')) {
+                this.showAlert('error', 'فشل في الاتصال بالخادم. يرجى التحقق من الاتصال بالإنترنت.');
+            } else {
+                this.showAlert('error', 'حدث خطأ أثناء إنشاء المهمة');
+            }
         }
     }
 
@@ -547,6 +556,208 @@ class TaskManagement {
         return labels[status] || status;
     }
 
+    // دوال الفلتر المتقدم
+    applyAdvancedFilter() {
+        const filters = this.getFilterValues();
+        const filteredTasks = this.filterTasks(filters);
+        this.displayFilteredTasks(filteredTasks);
+        this.updateFilterResultsCount(filteredTasks.length);
+    }
+
+    getFilterValues() {
+        return {
+            user: document.getElementById('filterByUser')?.value || '',
+            department: document.getElementById('filterByDepartment')?.value || '',
+            priority: document.getElementById('filterByPriority')?.value || '',
+            status: document.getElementById('filterByStatus')?.value || '',
+            keyword: document.getElementById('filterByKeyword')?.value || '',
+            dateFrom: document.getElementById('filterByDateFrom')?.value || '',
+            dateTo: document.getElementById('filterByDateTo')?.value || ''
+        };
+    }
+
+    filterTasks(filters) {
+        const boards = window.boardsData || [];
+        const allTasks = [];
+        
+        // جمع جميع المهام
+        boards.forEach(board => {
+            if (board.columns) {
+                board.columns.forEach(column => {
+                    if (column.tasks) {
+                        column.tasks.forEach(task => {
+                            allTasks.push({
+                                ...task,
+                                boardName: board.name,
+                                columnName: column.name
+                            });
+                        });
+                    }
+                });
+            }
+        });
+
+        // تطبيق الفلاتر
+        return allTasks.filter(task => {
+            // فلتر المستخدم
+            if (filters.user) {
+                const [userType, userId] = filters.user.split('_');
+                if (userType === 'admin' && task.assigned_to != userId) return false;
+                if (userType === 'marketing' && task.assigned_to != userId) return false;
+                if (userType === 'sales' && task.assigned_to != userId) return false;
+            }
+
+            // فلتر القسم
+            if (filters.department && task.department !== filters.department) {
+                return false;
+            }
+
+            // فلتر الأولوية
+            if (filters.priority && task.priority !== filters.priority) {
+                return false;
+            }
+
+            // فلتر الحالة
+            if (filters.status && task.status !== filters.status) {
+                return false;
+            }
+
+            // فلتر الكلمات المفتاحية
+            if (filters.keyword) {
+                const keyword = filters.keyword.toLowerCase();
+                const title = (task.title || '').toLowerCase();
+                const description = (task.description || '').toLowerCase();
+                if (!title.includes(keyword) && !description.includes(keyword)) {
+                    return false;
+                }
+            }
+
+            // فلتر التاريخ
+            if (filters.dateFrom || filters.dateTo) {
+                const taskDate = new Date(task.due_date || task.created_at);
+                if (filters.dateFrom) {
+                    const fromDate = new Date(filters.dateFrom);
+                    if (taskDate < fromDate) return false;
+                }
+                if (filters.dateTo) {
+                    const toDate = new Date(filters.dateTo);
+                    toDate.setHours(23, 59, 59, 999); // نهاية اليوم
+                    if (taskDate > toDate) return false;
+                }
+            }
+
+            return true;
+        });
+    }
+
+    displayFilteredTasks(filteredTasks) {
+        // إخفاء جميع المهام
+        const allTaskCards = document.querySelectorAll('.task-card');
+        allTaskCards.forEach(card => {
+            card.style.display = 'none';
+        });
+
+        // إظهار المهام المفلترة فقط
+        filteredTasks.forEach(task => {
+            const taskCard = document.querySelector(`[data-task-id="${task.id}"]`);
+            if (taskCard) {
+                taskCard.style.display = 'block';
+            }
+        });
+
+        // إخفاء الأعمدة الفارغة
+        const allColumns = document.querySelectorAll('.task-column');
+        allColumns.forEach(column => {
+            const visibleTasks = column.querySelectorAll('.task-card[style*="block"], .task-card:not([style*="none"])');
+            if (visibleTasks.length === 0) {
+                column.style.display = 'none';
+            } else {
+                column.style.display = 'block';
+            }
+        });
+    }
+
+    updateFilterResultsCount(count) {
+        const countElement = document.getElementById('filterResultsCount');
+        if (countElement) {
+            countElement.textContent = `${count} نتيجة`;
+        }
+    }
+
+    clearAdvancedFilter() {
+        // مسح جميع الفلاتر
+        document.getElementById('filterByUser').value = '';
+        document.getElementById('filterByDepartment').value = '';
+        document.getElementById('filterByPriority').value = '';
+        document.getElementById('filterByStatus').value = '';
+        document.getElementById('filterByKeyword').value = '';
+        document.getElementById('filterByDateFrom').value = '';
+        document.getElementById('filterByDateTo').value = '';
+
+        // إظهار جميع المهام
+        const allTaskCards = document.querySelectorAll('.task-card');
+        allTaskCards.forEach(card => {
+            card.style.display = 'block';
+        });
+
+        // إظهار جميع الأعمدة
+        const allColumns = document.querySelectorAll('.task-column');
+        allColumns.forEach(column => {
+            column.style.display = 'block';
+        });
+
+        // تحديث عداد النتائج
+        this.updateFilterResultsCount(allTaskCards.length);
+    }
+
+    exportFilteredTasks() {
+        const filters = this.getFilterValues();
+        const filteredTasks = this.filterTasks(filters);
+        
+        if (filteredTasks.length === 0) {
+            this.showAlert('warning', 'لا توجد مهام للتصدير');
+            return;
+        }
+
+        // إنشاء CSV
+        const csvContent = this.generateCSV(filteredTasks);
+        
+        // تحميل الملف
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `filtered_tasks_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        this.showAlert('success', 'تم تصدير المهام بنجاح');
+    }
+
+    generateCSV(tasks) {
+        const headers = ['المعرف', 'العنوان', 'الوصف', 'الأولوية', 'الحالة', 'القسم', 'اللوحة', 'العمود', 'تاريخ الاستحقاق'];
+        const csvRows = [headers.join(',')];
+        
+        tasks.forEach(task => {
+            const row = [
+                task.id,
+                `"${task.title || ''}"`,
+                `"${task.description || ''}"`,
+                this.getPriorityLabel(task.priority),
+                this.getStatusLabel(task.status),
+                task.department || '',
+                `"${task.boardName || ''}"`,
+                `"${task.columnName || ''}"`,
+                task.due_date || ''
+            ];
+            csvRows.push(row.join(','));
+        });
+        
+        return csvRows.join('\n');
+    }
+
     addTask(columnId) {
         console.log('Adding task to column:', columnId);
         // تنفيذ إضافة مهمة جديدة
@@ -657,5 +868,24 @@ function editTaskFromView() {
         if (taskId) {
             window.taskManagement.editTask(taskId);
         }
+    }
+}
+
+// دوال الفلتر المتقدم
+function applyAdvancedFilter() {
+    if (window.taskManagement) {
+        window.taskManagement.applyAdvancedFilter();
+    }
+}
+
+function clearAdvancedFilter() {
+    if (window.taskManagement) {
+        window.taskManagement.clearAdvancedFilter();
+    }
+}
+
+function exportFilteredTasks() {
+    if (window.taskManagement) {
+        window.taskManagement.exportFilteredTasks();
     }
 }
