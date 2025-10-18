@@ -462,7 +462,9 @@ class TaskManagementController extends Controller
     private function getAvailableUsers()
     {
         return [
-            'admins' => Admin::select('id', 'name', 'email')->get(),
+            'admins' => Admin::select('id', 'name', 'email', 'user_type')
+                ->where('is_active', 1)
+                ->get(),
             'marketing' => MarketingTeam::with('admin:id,name,email')
                 ->where('is_active', 1)
                 ->get()
@@ -470,7 +472,8 @@ class TaskManagementController extends Controller
                     return (object)[
                         'id' => $member->id,
                         'name' => $member->admin->name,
-                        'email' => $member->admin->email
+                        'email' => $member->admin->email,
+                        'user_type' => 'marketing'
                     ];
                 }),
             'sales' => SalesTeam::with('admin:id,name,email')
@@ -480,9 +483,14 @@ class TaskManagementController extends Controller
                     return (object)[
                         'id' => $member->id,
                         'name' => $member->admin->name,
-                        'email' => $member->admin->email
+                        'email' => $member->admin->email,
+                        'user_type' => 'sales'
                     ];
-                })
+                }),
+            'employees' => \App\Models\User::select('id', 'name', 'email', 'user_type')
+                ->where('user_type', 'employee')
+                ->where('is_active', 1)
+                ->get()
         ];
     }
 

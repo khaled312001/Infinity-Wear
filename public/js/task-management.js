@@ -935,10 +935,162 @@ function saveTaskEdit() {
     window.taskManagement.saveTaskEdit();
 }
 
-// تهيئة النظام عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
-    window.taskManagement.initialize();
-});
+    // تهيئة النظام عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        window.taskManagement.initialize();
+        initializeUserAssignmentSelects();
+    });
+
+    // تهيئة قوائم تعيين المستخدمين
+    function initializeUserAssignmentSelects() {
+        const selects = document.querySelectorAll('.user-assignment-select');
+        
+        selects.forEach(select => {
+            // إضافة بحث في القائمة
+            select.addEventListener('focus', function() {
+                this.style.fontSize = '14px';
+            });
+            
+            select.addEventListener('blur', function() {
+                this.style.fontSize = '16px';
+            });
+            
+            // إضافة تأثير بصري عند التغيير
+            select.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption.value) {
+                    this.style.borderColor = '#28a745';
+                    this.style.backgroundColor = '#f8fff9';
+                    
+                    // إظهار معلومات المستخدم المحدد
+                    showSelectedUserInfo(selectedOption);
+                } else {
+                    this.style.borderColor = '#ced4da';
+                    this.style.backgroundColor = '#fff';
+                    hideSelectedUserInfo();
+                }
+            });
+        });
+    }
+
+    // إظهار معلومات المستخدم المحدد
+    function showSelectedUserInfo(option) {
+        const userType = option.getAttribute('data-type');
+        const userName = option.textContent.split(' - ')[0];
+        const userEmail = option.textContent.split(' - ')[1];
+        
+        // إنشاء عنصر معلومات المستخدم
+        let infoElement = document.getElementById('selected-user-info');
+        if (!infoElement) {
+            infoElement = document.createElement('div');
+            infoElement.id = 'selected-user-info';
+            infoElement.className = 'selected-user-info mt-2 p-2 rounded';
+            infoElement.style.backgroundColor = '#e3f2fd';
+            infoElement.style.border = '1px solid #bbdefb';
+            infoElement.style.fontSize = '0.9rem';
+            
+            // إضافة العنصر بعد القائمة
+            const select = option.closest('select');
+            select.parentNode.appendChild(infoElement);
+        }
+        
+        // تحديد لون حسب نوع المستخدم
+        const colors = {
+            'admin': { bg: '#f8d7da', border: '#f5c6cb', text: '#721c24' },
+            'marketing': { bg: '#d1ecf1', border: '#bee5eb', text: '#0c5460' },
+            'sales': { bg: '#d4edda', border: '#c3e6cb', text: '#155724' },
+            'employee': { bg: '#e2e3e5', border: '#d6d8db', text: '#383d41' }
+        };
+        
+        const color = colors[userType] || colors['employee'];
+        infoElement.style.backgroundColor = color.bg;
+        infoElement.style.borderColor = color.border;
+        infoElement.style.color = color.text;
+        
+        // إضافة المحتوى
+        const typeLabels = {
+            'admin': '👑 الإدارة',
+            'marketing': '📈 التسويق',
+            'sales': '💰 المبيعات',
+            'employee': '👥 موظف'
+        };
+        
+        infoElement.innerHTML = `
+            <div class="d-flex align-items-center">
+                <span class="me-2">${typeLabels[userType] || '👤 مستخدم'}</span>
+                <div>
+                    <strong>${userName}</strong><br>
+                    <small>${userEmail}</small>
+                </div>
+            </div>
+        `;
+    }
+
+    // إخفاء معلومات المستخدم المحدد
+    function hideSelectedUserInfo() {
+        const infoElement = document.getElementById('selected-user-info');
+        if (infoElement) {
+            infoElement.remove();
+        }
+    }
+
+    // تبديل البحث المتقدم
+    function toggleUserSearch(searchInputId, selectId) {
+        const searchInput = document.getElementById(searchInputId);
+        const select = document.getElementById(selectId);
+        
+        if (searchInput.style.display === 'none') {
+            searchInput.style.display = 'block';
+            searchInput.focus();
+            initializeUserSearch(searchInput, select);
+        } else {
+            searchInput.style.display = 'none';
+            searchInput.value = '';
+            resetUserSelect(select);
+        }
+    }
+
+    // تهيئة البحث في المستخدمين
+    function initializeUserSearch(searchInput, select) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const options = select.querySelectorAll('option');
+            
+            options.forEach(option => {
+                const text = option.textContent.toLowerCase();
+                if (text.includes(searchTerm) || searchTerm === '') {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+            
+            // إخفاء/إظهار المجموعات حسب النتائج
+            const optgroups = select.querySelectorAll('optgroup');
+            optgroups.forEach(group => {
+                const visibleOptions = group.querySelectorAll('option[style*="block"], option:not([style*="none"])');
+                if (visibleOptions.length === 0 && searchTerm !== '') {
+                    group.style.display = 'none';
+                } else {
+                    group.style.display = 'block';
+                }
+            });
+        });
+    }
+
+    // إعادة تعيين قائمة المستخدمين
+    function resetUserSelect(select) {
+        const options = select.querySelectorAll('option');
+        const optgroups = select.querySelectorAll('optgroup');
+        
+        options.forEach(option => {
+            option.style.display = 'block';
+        });
+        
+        optgroups.forEach(group => {
+            group.style.display = 'block';
+        });
+    }
                     </div>
                 </div>
                 <div class="col-md-6">

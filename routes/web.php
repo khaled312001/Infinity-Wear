@@ -641,6 +641,7 @@ Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')-
     Route::put('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'updateProfile'])->name('profile.update');
     
     // إدارة المهام لفريق المبيعات
+    Route::get('/tasks', [App\Http\Controllers\Sales\TaskController::class, 'index'])->name('tasks');
     Route::prefix('tasks')->name('tasks.')->group(function () {
         Route::get('/', [App\Http\Controllers\Sales\TaskController::class, 'index'])->name('index');
         Route::post('/', [App\Http\Controllers\Sales\TaskController::class, 'createTask'])->name('create');

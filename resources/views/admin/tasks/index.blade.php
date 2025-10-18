@@ -507,18 +507,55 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="taskAssignedTo" class="form-label">تعيين إلى</label>
-                                    <select class="form-select" id="taskAssignedTo" name="assigned_to">
+                                    <div class="user-search-container">
+                                        <input type="text" class="form-control mb-2" id="taskUserSearch" placeholder="🔍 ابحث عن مستخدم..." style="display: none;">
+                                        <select class="form-select user-assignment-select" id="taskAssignedTo" name="assigned_to">
                                         <option value="">اختر شخص</option>
-                                        @foreach($users['admins'] as $admin)
-                                            <option value="{{ $admin->id }}" data-type="admin">{{ $admin->name }}</option>
-                                        @endforeach
-                                        @foreach($users['marketing'] as $marketing)
-                                            <option value="{{ $marketing->id }}" data-type="marketing">{{ $marketing->name }} (تسويق)</option>
-                                        @endforeach
-                                        @foreach($users['sales'] as $sales)
-                                            <option value="{{ $sales->id }}" data-type="sales">{{ $sales->name }} (مبيعات)</option>
-                                        @endforeach
-                                    </select>
+                                        
+                                        @if(isset($users['admins']) && count($users['admins']) > 0)
+                                            <optgroup label="👑 الإدارة">
+                                                @foreach($users['admins'] as $admin)
+                                                    <option value="{{ $admin->id }}" data-type="admin">
+                                                        {{ $admin->name }} - {{ $admin->email }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endif
+                                        
+                                        @if(isset($users['marketing']) && count($users['marketing']) > 0)
+                                            <optgroup label="📈 فريق التسويق">
+                                                @foreach($users['marketing'] as $marketing)
+                                                    <option value="{{ $marketing->id }}" data-type="marketing">
+                                                        {{ $marketing->name }} - {{ $marketing->email }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endif
+                                        
+                                        @if(isset($users['sales']) && count($users['sales']) > 0)
+                                            <optgroup label="💰 فريق المبيعات">
+                                                @foreach($users['sales'] as $sales)
+                                                    <option value="{{ $sales->id }}" data-type="sales">
+                                                        {{ $sales->name }} - {{ $sales->email }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endif
+                                        
+                                        @if(isset($users['employees']) && count($users['employees']) > 0)
+                                            <optgroup label="👥 الموظفين">
+                                                @foreach($users['employees'] as $employee)
+                                                    <option value="{{ $employee->id }}" data-type="employee">
+                                                        {{ $employee->name }} - {{ $employee->email }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endif
+                                        </select>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm mt-1" onclick="toggleUserSearch('taskUserSearch', 'taskAssignedTo')">
+                                            <i class="fas fa-search"></i> بحث متقدم
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -648,18 +685,55 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="editTaskAssignedTo" class="form-label">تعيين إلى</label>
-                                    <select class="form-select" id="editTaskAssignedTo" name="assigned_to">
+                                    <div class="user-search-container">
+                                        <input type="text" class="form-control mb-2" id="editTaskUserSearch" placeholder="🔍 ابحث عن مستخدم..." style="display: none;">
+                                        <select class="form-select user-assignment-select" id="editTaskAssignedTo" name="assigned_to">
                                         <option value="">اختر شخص</option>
-                                        @foreach($users['admins'] as $admin)
-                                            <option value="{{ $admin->id }}" data-type="admin">{{ $admin->name }}</option>
-                                        @endforeach
-                                        @foreach($users['marketing'] as $marketing)
-                                            <option value="{{ $marketing->id }}" data-type="marketing">{{ $marketing->name }} (تسويق)</option>
-                                        @endforeach
-                                        @foreach($users['sales'] as $sales)
-                                            <option value="{{ $sales->id }}" data-type="sales">{{ $sales->name }} (مبيعات)</option>
-                                        @endforeach
-                                    </select>
+                                        
+                                        @if(isset($users['admins']) && count($users['admins']) > 0)
+                                            <optgroup label="👑 الإدارة">
+                                                @foreach($users['admins'] as $admin)
+                                                    <option value="{{ $admin->id }}" data-type="admin">
+                                                        {{ $admin->name }} - {{ $admin->email }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endif
+                                        
+                                        @if(isset($users['marketing']) && count($users['marketing']) > 0)
+                                            <optgroup label="📈 فريق التسويق">
+                                                @foreach($users['marketing'] as $marketing)
+                                                    <option value="{{ $marketing->id }}" data-type="marketing">
+                                                        {{ $marketing->name }} - {{ $marketing->email }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endif
+                                        
+                                        @if(isset($users['sales']) && count($users['sales']) > 0)
+                                            <optgroup label="💰 فريق المبيعات">
+                                                @foreach($users['sales'] as $sales)
+                                                    <option value="{{ $sales->id }}" data-type="sales">
+                                                        {{ $sales->name }} - {{ $sales->email }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endif
+                                        
+                                        @if(isset($users['employees']) && count($users['employees']) > 0)
+                                            <optgroup label="👥 الموظفين">
+                                                @foreach($users['employees'] as $employee)
+                                                    <option value="{{ $employee->id }}" data-type="employee">
+                                                        {{ $employee->name }} - {{ $employee->email }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endif
+                                        </select>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm mt-1" onclick="toggleUserSearch('editTaskUserSearch', 'editTaskAssignedTo')">
+                                            <i class="fas fa-search"></i> بحث متقدم
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">

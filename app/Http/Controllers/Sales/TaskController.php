@@ -17,14 +17,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $salesMember = SalesTeam::where('admin_id', Auth::id())->first();
-        if (!$salesMember) {
-            abort(403, 'ليس لديك صلاحية للوصول لهذه الصفحة');
-        }
-
         // جلب المهام المخصصة لفريق المبيعات
-        $tasks = TaskCard::where('assigned_to', $salesMember->id)
-            ->where('assigned_to_type', 'sales')
+        $tasks = TaskCard::where('department', 'sales')
             ->where('is_archived', false)
             ->with(['column', 'board'])
             ->orderBy('created_at', 'desc')
@@ -82,8 +76,7 @@ class TaskController extends Controller
             $request->comment,
             Auth::id(),
             Auth::user()->name ?? 'فريق المبيعات',
-            'sales',
-            $request->is_internal ?? false
+            'sales'
         );
 
         return response()->json([
@@ -97,14 +90,14 @@ class TaskController extends Controller
      */
     private function authorizeTaskAccess(TaskCard $task)
     {
-        $salesMember = SalesTeam::where('admin_id', Auth::id())->first();
-        if (!$salesMember) {
+        // التحقق من أن المهمة مرتبطة بالمبيعات
+        if ($task->department !== 'sales') {
             abort(403, 'ليس لديك صلاحية للوصول لهذه المهمة');
         }
 
         // يمكن للفريق الوصول للمهام المخصصة له أو المهام العامة
-        $canAccess = $task->assigned_to === $salesMember->id && $task->assigned_to_type === 'sales'
-                  || $task->created_by === $salesMember->id && $task->created_by_type === 'sales'
+        $canAccess = $task->assigned_to === Auth::id() && $task->assigned_to_type === 'sales'
+                  || $task->created_by === Auth::id() && $task->created_by_type === 'sales'
                   || $task->board->board_type === 'general'
                   || $task->board->board_type === 'sales';
 
