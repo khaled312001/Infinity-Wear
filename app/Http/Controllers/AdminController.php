@@ -1307,19 +1307,27 @@ class AdminController extends Controller
 
         // معالجة الصورة الرئيسية
         $imagePath = $request->file('image')->store('images/portfolio', 'public');
+        
+        // نسخ الصورة إلى public/images/portfolio أيضاً
+        $publicImagePath = 'images/portfolio/' . basename($imagePath);
+        $request->file('image')->move(public_path('images/portfolio'), basename($imagePath));
 
         // معالجة معرض الصور
         $gallery = [];
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                $gallery[] = $image->store('images/portfolio/gallery', 'public');
+                $galleryPath = $image->store('images/portfolio/gallery', 'public');
+                // نسخ صورة المعرض إلى public أيضاً
+                $publicGalleryPath = 'images/portfolio/gallery/' . basename($galleryPath);
+                $image->move(public_path('images/portfolio/gallery'), basename($galleryPath));
+                $gallery[] = $publicGalleryPath;
             }
         }
 
         PortfolioItem::create([
             'title' => $request->title,
             'description' => $request->description,
-            'image' => $imagePath,
+            'image' => $publicImagePath, // استخدام المسار في public
             'gallery' => $gallery,
             'client_name' => $request->client_name,
             'completion_date' => $request->completion_date,
@@ -1428,9 +1436,16 @@ class AdminController extends Controller
             if ($portfolioItem->image && Storage::disk('public')->exists($portfolioItem->image)) {
                 Storage::disk('public')->delete($portfolioItem->image);
             }
+            
+            // حفظ الصورة في storage
             $imagePath = $request->file('image')->store('images/portfolio', 'public');
-            $data['image'] = $imagePath;
-            Log::info('Main image stored at: ' . $imagePath);
+            
+            // نسخ الصورة إلى public/images/portfolio أيضاً
+            $publicPath = 'images/portfolio/' . basename($imagePath);
+            $request->file('image')->move(public_path('images/portfolio'), basename($imagePath));
+            
+            $data['image'] = $publicPath; // استخدام المسار في public
+            Log::info('Main image stored at: ' . $imagePath . ' and copied to: ' . $publicPath);
         }
 
         // معالجة معرض الصور إذا تم تحميلها
@@ -1445,8 +1460,11 @@ class AdminController extends Controller
                 $gallery = $portfolioItem->gallery ?? [];
                 foreach ($validGalleryFiles as $image) {
                     $galleryPath = $image->store('images/portfolio/gallery', 'public');
-                    $gallery[] = $galleryPath;
-                    Log::info('Gallery image stored at: ' . $galleryPath);
+                    // نسخ صورة المعرض إلى public أيضاً
+                    $publicGalleryPath = 'images/portfolio/gallery/' . basename($galleryPath);
+                    $image->move(public_path('images/portfolio/gallery'), basename($galleryPath));
+                    $gallery[] = $publicGalleryPath;
+                    Log::info('Gallery image stored at: ' . $galleryPath . ' and copied to: ' . $publicGalleryPath);
                 }
                 $data['gallery'] = $gallery;
             }

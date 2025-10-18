@@ -164,19 +164,27 @@ class DashboardController extends Controller
 
         // معالجة الصورة الرئيسية
         $imagePath = $request->file('image')->store('images/portfolio', 'public');
+        
+        // نسخ الصورة إلى public/images/portfolio أيضاً
+        $publicImagePath = 'images/portfolio/' . basename($imagePath);
+        $request->file('image')->move(public_path('images/portfolio'), basename($imagePath));
 
         // معالجة معرض الصور
         $gallery = [];
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                $gallery[] = $image->store('images/portfolio/gallery', 'public');
+                $galleryPath = $image->store('images/portfolio/gallery', 'public');
+                // نسخ صورة المعرض إلى public أيضاً
+                $publicGalleryPath = 'images/portfolio/gallery/' . basename($galleryPath);
+                $image->move(public_path('images/portfolio/gallery'), basename($galleryPath));
+                $gallery[] = $publicGalleryPath;
             }
         }
 
         $portfolio = PortfolioItem::create([
             'title' => $request->title,
             'description' => $request->description,
-            'image' => $imagePath,
+            'image' => $publicImagePath, // استخدام المسار في public
             'gallery' => $gallery,
             'client_name' => $request->client_name,
             'completion_date' => $request->completion_date,
@@ -351,13 +359,21 @@ class DashboardController extends Controller
         $data = $request->except(['image', 'gallery']);
         
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('images/portfolio', 'public');
+            $imagePath = $request->file('image')->store('images/portfolio', 'public');
+            // نسخ الصورة إلى public/images/portfolio أيضاً
+            $publicImagePath = 'images/portfolio/' . basename($imagePath);
+            $request->file('image')->move(public_path('images/portfolio'), basename($imagePath));
+            $data['image'] = $publicImagePath;
         }
         
         if ($request->hasFile('gallery')) {
             $gallery = [];
             foreach ($request->file('gallery') as $file) {
-                $gallery[] = $file->store('images/portfolio/gallery', 'public');
+                $galleryPath = $file->store('images/portfolio/gallery', 'public');
+                // نسخ صورة المعرض إلى public أيضاً
+                $publicGalleryPath = 'images/portfolio/gallery/' . basename($galleryPath);
+                $file->move(public_path('images/portfolio/gallery'), basename($galleryPath));
+                $gallery[] = $publicGalleryPath;
             }
             $data['gallery'] = json_encode($gallery);
         }
