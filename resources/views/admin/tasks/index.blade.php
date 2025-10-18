@@ -186,7 +186,7 @@
                                                 @endif
                                             </div>
 
-                                            @if($task->labels && count($task->labels) > 0)
+                                            @if(count($task->labels) > 0)
                                                 <div class="task-labels">
                                                     @foreach($task->labels as $label)
                                                         <span class="label" style="background-color: {{ $label['color'] ?? '#6c757d' }}">
@@ -196,7 +196,7 @@
                                                 </div>
                                             @endif
 
-                                            @if($task->checklist && count($task->checklist) > 0)
+                                            @if(count($task->checklist) > 0)
                                                 <div class="task-progress">
                                                     <div class="progress">
                                                         <div class="progress-bar" style="width: {{ $task->progress_percentage }}%"></div>
