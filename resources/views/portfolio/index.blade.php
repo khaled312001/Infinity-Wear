@@ -142,11 +142,41 @@ use Illuminate\Support\Facades\Storage;
             @foreach($featuredItems as $item)
             <div class="col-md-4">
                 <div class="card portfolio-card h-100">
-                    <img src="{{ Storage::url($item->image) }}" class="card-img-top" alt="{{ $item->title }}">
+                    <img src="{{ $item->image_url }}" class="card-img-top" alt="{{ $item->title }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ $item->title }}</h5>
                         <p class="card-text text-muted">{{ $item->category }}</p>
                         <a href="{{ route('portfolio.show', $item->id) }}" class="btn btn-outline-primary">عرض التفاصيل</a>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<!-- قسم جميع الأعمال -->
+<section class="all-works py-5">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h2 class="fw-bold">جميع أعمالنا</h2>
+            <p class="text-muted">استكشف جميع مشاريعنا المتنوعة</p>
+        </div>
+        
+        <div class="row g-4">
+            @foreach($portfolioItems as $item)
+            <div class="col-md-4 col-lg-3">
+                <div class="card portfolio-card h-100">
+                    <img src="{{ $item->image_url }}" class="card-img-top" alt="{{ $item->title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $item->title }}</h5>
+                        <p class="card-text text-muted">{{ $item->category }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ route('portfolio.show', $item->id) }}" class="btn btn-sm btn-outline-primary">عرض التفاصيل</a>
+                            @if($item->is_featured)
+                                <span class="badge bg-warning">مميز</span>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>

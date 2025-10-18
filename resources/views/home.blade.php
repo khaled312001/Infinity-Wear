@@ -360,7 +360,7 @@ use Illuminate\Support\Facades\Storage;
 
 
             <div class="infinity-portfolio-grid">
-                @forelse($featuredPortfolio as $item)
+                @forelse($portfolioItems as $item)
                 <div class="portfolio-item" data-category="{{ $item->category }}">
                     <div class="portfolio-image">
                         @if($item->image)

@@ -3,15 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'لوحة التحكم') - Infinity Wear</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title><?php echo $__env->yieldContent('title', 'لوحة التحكم'); ?> - Infinity Wear</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo.png') }}">
-    <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo.svg') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo.png') }}">
+    <link rel="icon" type="image/x-icon" href="<?php echo e(asset('favicon.ico')); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo e(asset('images/logo.png')); ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo e(asset('images/logo.png')); ?>">
+    <link rel="icon" type="image/svg+xml" href="<?php echo e(asset('images/logo.svg')); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo e(asset('images/logo.png')); ?>">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1175,7 +1175,7 @@
         }
     </style>
 
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body class="admin-authenticated">
     <!-- Top Navigation -->
@@ -1183,7 +1183,7 @@
         <div class="container-fluid">
             <!-- Brand Section -->
             <div class="d-flex align-items-center">
-                <a class="navbar-brand d-flex align-items-center" href="{{ route('admin.dashboard') }}">
+                <a class="navbar-brand d-flex align-items-center" href="<?php echo e(route('admin.dashboard')); ?>">
                     <div class="brand-icon me-3">
                         <i class="fas fa-infinity text-primary"></i>
                     </div>
@@ -1208,7 +1208,7 @@
             <div class="d-flex align-items-center">
 
                 <!-- Website Link -->
-                <a href="{{ route('home') }}" target="_blank" class="btn btn-outline-success me-3" title="الذهاب للموقع الإلكتروني">
+                <a href="<?php echo e(route('home')); ?>" target="_blank" class="btn btn-outline-success me-3" title="الذهاب للموقع الإلكتروني">
                     <i class="fas fa-globe me-2"></i>
                     <span class="d-none d-md-inline">الموقع الإلكتروني</span>
                     <span class="d-md-none">الموقع</span>
@@ -1222,18 +1222,21 @@
                         </div>
                         <div class="user-info d-none d-md-block">
                             <div class="user-name">
-                                @if(Auth::guard('admin')->check())
-                                    {{ Auth::guard('admin')->user()->name }}
-                                @else
-                                    {{ Auth::user()->name }}
-                                @endif
+                                <?php if(Auth::guard('admin')->check()): ?>
+                                    <?php echo e(Auth::guard('admin')->user()->name); ?>
+
+                                <?php else: ?>
+                                    <?php echo e(Auth::user()->name); ?>
+
+                                <?php endif; ?>
                             </div>
                             <small class="user-role text-muted">
-                                @if(Auth::guard('admin')->check())
+                                <?php if(Auth::guard('admin')->check()): ?>
                                     مدير النظام
-                                @else
-                                    {{ Auth::user()->user_type_label }}
-                                @endif
+                                <?php else: ?>
+                                    <?php echo e(Auth::user()->user_type_label); ?>
+
+                                <?php endif; ?>
                             </small>
                         </div>
                     </button>
@@ -1245,32 +1248,36 @@
                                 </div>
                                 <div>
                                     <div class="fw-bold">
-                                        @if(Auth::guard('admin')->check())
-                                            {{ Auth::guard('admin')->user()->name }}
-                                        @else
-                                            {{ Auth::user()->name }}
-                                        @endif
+                                        <?php if(Auth::guard('admin')->check()): ?>
+                                            <?php echo e(Auth::guard('admin')->user()->name); ?>
+
+                                        <?php else: ?>
+                                            <?php echo e(Auth::user()->name); ?>
+
+                                        <?php endif; ?>
                                     </div>
                                     <small class="text-muted">
-                                        @if(Auth::guard('admin')->check())
-                                            {{ Auth::guard('admin')->user()->email }}
-                                        @else
-                                            {{ Auth::user()->email }}
-                                        @endif
+                                        <?php if(Auth::guard('admin')->check()): ?>
+                                            <?php echo e(Auth::guard('admin')->user()->email); ?>
+
+                                        <?php else: ?>
+                                            <?php echo e(Auth::user()->email); ?>
+
+                                        <?php endif; ?>
                                     </small>
                                 </div>
                             </div>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route((Auth::user()->user_type === 'importer' ? 'importers' : Auth::user()->user_type) . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
-                        @if(Auth::guard('admin')->check())
-                            <li><a class="dropdown-item" href="{{ route('admin.admin-settings') }}"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
-                        @endif
+                        <li><a class="dropdown-item" href="<?php echo e(Auth::guard('admin')->check() ? route('admin.profile') : route((Auth::user()->user_type === 'importer' ? 'importers' : Auth::user()->user_type) . '.profile')); ?>"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
+                        <?php if(Auth::guard('admin')->check()): ?>
+                            <li><a class="dropdown-item" href="<?php echo e(route('admin.admin-settings')); ?>"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
+                        <?php endif; ?>
                         <li><a class="dropdown-item" href="#" onclick="toggleDarkMode()"><i class="fas fa-moon me-2"></i>الوضع الليلي</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <form method="POST" action="{{ Auth::guard('admin')->check() ? route('admin.logout') : route('logout') }}" class="d-inline">
-                                @csrf
+                            <form method="POST" action="<?php echo e(Auth::guard('admin')->check() ? route('admin.logout') : route('logout')); ?>" class="d-inline">
+                                <?php echo csrf_field(); ?>
                                 <button type="submit" class="dropdown-item text-danger">
                                     <i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج
                                 </button>
@@ -1294,22 +1301,24 @@
         <div class="dropdown">
             <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                 <i class="fas fa-user-circle me-1"></i>
-                @if(Auth::guard('admin')->check())
-                    {{ Auth::guard('admin')->user()->name }}
-                @else
-                    {{ Auth::user()->name }}
-                @endif
+                <?php if(Auth::guard('admin')->check()): ?>
+                    <?php echo e(Auth::guard('admin')->user()->name); ?>
+
+                <?php else: ?>
+                    <?php echo e(Auth::user()->name); ?>
+
+                <?php endif; ?>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route((Auth::user()->user_type === 'importer' ? 'importers' : Auth::user()->user_type) . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
-                @if(Auth::guard('admin')->check())
-                    <li><a class="dropdown-item" href="{{ route('admin.admin-settings') }}"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
-                @endif
+                <li><a class="dropdown-item" href="<?php echo e(Auth::guard('admin')->check() ? route('admin.profile') : route((Auth::user()->user_type === 'importer' ? 'importers' : Auth::user()->user_type) . '.profile')); ?>"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
+                <?php if(Auth::guard('admin')->check()): ?>
+                    <li><a class="dropdown-item" href="<?php echo e(route('admin.admin-settings')); ?>"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
+                <?php endif; ?>
                 <li><a class="dropdown-item" href="#" onclick="toggleDarkMode()"><i class="fas fa-moon me-2"></i>الوضع الليلي</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                    <form method="POST" action="{{ Auth::guard('admin')->check() ? route('admin.logout') : route('logout') }}" class="d-inline">
-                        @csrf
+                    <form method="POST" action="<?php echo e(Auth::guard('admin')->check() ? route('admin.logout') : route('logout')); ?>" class="d-inline">
+                        <?php echo csrf_field(); ?>
                         <button type="submit" class="dropdown-item">
                             <i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج
                         </button>
@@ -1330,50 +1339,50 @@
                     <div class="p-3">
                         <h5 class="text-white mb-3">
                             <span class="infinity-logo me-2"></span>
-                            @if(Auth::guard('admin')->check())
+                            <?php if(Auth::guard('admin')->check()): ?>
                                 لوحة التحكم الإدارية
-                            @else
-                                @switch(Auth::user()->user_type)
-                                    @case('customer')
+                            <?php else: ?>
+                                <?php switch(Auth::user()->user_type):
+                                    case ('customer'): ?>
                                         لوحة تحكم العميل
-                                        @break
-                                    @case('importer')
+                                        <?php break; ?>
+                                    <?php case ('importer'): ?>
                                         لوحة تحكم المستورد
-                                        @break
-                                    @case('marketing')
+                                        <?php break; ?>
+                                    <?php case ('marketing'): ?>
                                         لوحة تحكم التسويق
-                                        @break
-                                    @case('sales')
+                                        <?php break; ?>
+                                    <?php case ('sales'): ?>
                                         لوحة تحكم المبيعات
-                                        @break
-                                    @default
+                                        <?php break; ?>
+                                    <?php default: ?>
                                         لوحة التحكم
-                                @endswitch
-                            @endif
+                                <?php endswitch; ?>
+                            <?php endif; ?>
                         </h5>
                     </div>
                     
                     <nav class="nav flex-column px-3">
-                        @if(Auth::guard('admin')->check())
-                            @include('partials.admin-sidebar')
-                        @else
-                            @switch(Auth::user()->user_type)
-                                @case('customer')
-                                    @include('partials.customer-sidebar')
-                                    @break
-                                @case('importer')
-                                    @include('partials.importer-sidebar')
-                                    @break
-                                @case('marketing')
-                                    @include('partials.marketing-sidebar')
-                                    @break
-                                @case('sales')
-                                    @include('partials.sales-sidebar')
-                                    @break
-                                @default
-                                    @include('partials.admin-sidebar')
-                            @endswitch
-                        @endif
+                        <?php if(Auth::guard('admin')->check()): ?>
+                            <?php echo $__env->make('partials.admin-sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                        <?php else: ?>
+                            <?php switch(Auth::user()->user_type):
+                                case ('customer'): ?>
+                                    <?php echo $__env->make('partials.customer-sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                                    <?php break; ?>
+                                <?php case ('importer'): ?>
+                                    <?php echo $__env->make('partials.importer-sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                                    <?php break; ?>
+                                <?php case ('marketing'): ?>
+                                    <?php echo $__env->make('partials.marketing-sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                                    <?php break; ?>
+                                <?php case ('sales'): ?>
+                                    <?php echo $__env->make('partials.sales-sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                                    <?php break; ?>
+                                <?php default: ?>
+                                    <?php echo $__env->make('partials.admin-sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                            <?php endswitch; ?>
+                        <?php endif; ?>
                     </nav>
                 </div>
             </div>
@@ -1384,33 +1393,35 @@
                     <!-- Page Header -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <h1 class="page-title">@yield('page-title', 'الرئيسية')</h1>
-                            <p class="page-subtitle">@yield('page-subtitle', 'مرحبا بك في لوحة التحكم')</p>
+                            <h1 class="page-title"><?php echo $__env->yieldContent('page-title', 'الرئيسية'); ?></h1>
+                            <p class="page-subtitle"><?php echo $__env->yieldContent('page-subtitle', 'مرحبا بك في لوحة التحكم'); ?></p>
                         </div>
                         <div>
-                            @yield('page-actions')
+                            <?php echo $__env->yieldContent('page-actions'); ?>
                         </div>
                     </div>
 
                     <!-- Alerts -->
-                    @if(session('success'))
+                    <?php if(session('success')): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <i class="fas fa-check-circle me-2"></i>
-                            {{ session('success') }}
+                            <?php echo e(session('success')); ?>
+
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                    @if(session('error'))
+                    <?php if(session('error')): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <i class="fas fa-exclamation-circle me-2"></i>
-                            {{ session('error') }}
+                            <?php echo e(session('error')); ?>
+
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Main Content -->
-                    @yield('content')
+                    <?php echo $__env->yieldContent('content'); ?>
                 </div>
             </div>
         </div>
@@ -1507,9 +1518,9 @@
                 return;
             }
 
-            console.log('Fetching notification stats from:', '{{ route("admin.notifications.stats") }}');
+            console.log('Fetching notification stats from:', '<?php echo e(route("admin.notifications.stats")); ?>');
             
-            fetch('{{ route("admin.notifications.stats") }}', {
+            fetch('<?php echo e(route("admin.notifications.stats")); ?>', {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -1774,6 +1785,6 @@
         // Dark mode toggle is handled by onclick attribute
     </script>
     
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
-</html>
+</html><?php /**PATH F:\infinity\Infinity-Wear\resources\views/layouts/dashboard.blade.php ENDPATH**/ ?>

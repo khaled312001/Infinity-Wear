@@ -51,24 +51,35 @@
         }
 
         .sidebar {
-            background: linear-gradient(135deg, var(--sales-color) 0%, var(--primary-color) 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            box-shadow: 2px 0 15px rgba(0,0,0,0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             padding: 12px 20px;
             margin: 2px 0;
             border-radius: 8px;
             transition: all 0.3s ease;
+            position: relative;
+            font-weight: 500;
         }
 
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
+        .sidebar .nav-link:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            color: #ffffff;
             transform: translateX(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            transform: translateX(-5px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            font-weight: 600;
         }
 
         .nav-group {
@@ -76,14 +87,17 @@
         }
 
         .nav-group-title {
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 600;
-            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 700;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 8px 20px;
-            margin-bottom: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            letter-spacing: 1.5px;
+            padding: 12px 20px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border-radius: 6px;
+            margin-top: 20px;
         }
 
         .nav-group .nav-link {
