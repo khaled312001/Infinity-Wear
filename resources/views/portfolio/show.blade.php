@@ -12,14 +12,14 @@ use Illuminate\Support\Facades\Storage;
     <div class="container">
         <div class="row mb-5">
             <div class="col-lg-8">
-                <img src="{{ Storage::url($portfolioItem->image) }}" alt="{{ $portfolioItem->title }}" class="img-fluid rounded main-image mb-4">
+                <img src="{{ $portfolioItem->image_url }}" alt="{{ $portfolioItem->title }}" class="img-fluid rounded main-image mb-4">
                 
                 @if($portfolioItem->gallery && count($portfolioItem->gallery) > 0)
                 <div class="row g-2 gallery-images">
-                    @foreach($portfolioItem->gallery as $image)
+                    @foreach($portfolioItem->gallery_urls as $imageUrl)
                     <div class="col-4 col-md-3">
-                        <a href="{{ Storage::url($image) }}" data-lightbox="portfolio-gallery">
-                            <img src="{{ Storage::url($image) }}" alt="{{ $portfolioItem->title }}" class="img-fluid rounded gallery-thumb">
+                        <a href="{{ $imageUrl }}" data-lightbox="portfolio-gallery">
+                            <img src="{{ $imageUrl }}" alt="{{ $portfolioItem->title }}" class="img-fluid rounded gallery-thumb">
                         </a>
                     </div>
                     @endforeach

@@ -182,7 +182,7 @@ use Illuminate\Support\Facades\Storage;
                                 <td>
                                     @if($item->image)
                                         <div class="portfolio-thumbnail">
-                                            <img src="{{ Storage::url($item->image) }}" alt="{{ $item->title }}" 
+                                            <img src="{{ $item->image_url }}" alt="{{ $item->title }}" 
                                                  class="img-thumbnail portfolio-thumbnail-image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
                                         </div>
                                     @else

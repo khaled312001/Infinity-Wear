@@ -364,7 +364,7 @@ use Illuminate\Support\Facades\Storage;
                 <div class="portfolio-item" data-category="{{ $item->category }}">
                     <div class="portfolio-image">
                         @if($item->image)
-                            <img src="{{ Storage::url($item->image) }}" alt="{{ $item->title }}" 
+                            <img src="{{ $item->image_url }}" alt="{{ $item->title }}" 
                                  class="portfolio-dynamic-image">
                         @else
                             <img src="{{ asset('images/default-image.png') }}" alt="{{ $item->title }}">

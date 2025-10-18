@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Storage;
                         @foreach($portfolio as $item)
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="card h-100">
-                                <img src="{{ Storage::url($item->image) }}" class="card-img-top" alt="{{ $item->title }}" style="height: 200px; object-fit: cover;">
+                                <img src="{{ $item->image_url }}" class="card-img-top" alt="{{ $item->title }}" style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
                                     <h6 class="card-title">{{ $item->title }}</h6>
                                     <p class="card-text text-muted">{{ Str::limit($item->description, 100) }}</p>
