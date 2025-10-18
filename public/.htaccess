@@ -14,10 +14,20 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Handle storage files (backup for symlink issues)
+    # Handle storage files - إصلاح مشكلة عرض الصور
     RewriteCond %{REQUEST_URI} ^/storage/(.*)$
     RewriteCond %{DOCUMENT_ROOT}/../storage/app/public/%1 -f
     RewriteRule ^storage/(.*)$ /../storage/app/public/$1 [L]
+    
+    # Handle images in public directory
+    RewriteCond %{REQUEST_URI} ^/images/(.*)$
+    RewriteCond %{DOCUMENT_ROOT}/images/%1 -f
+    RewriteRule ^images/(.*)$ /images/$1 [L]
+    
+    # Handle portfolio images specifically
+    RewriteCond %{REQUEST_URI} ^/images/portfolio/(.*)$
+    RewriteCond %{DOCUMENT_ROOT}/images/portfolio/%1 -f
+    RewriteRule ^images/portfolio/(.*)$ /images/portfolio/$1 [L]
     
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
