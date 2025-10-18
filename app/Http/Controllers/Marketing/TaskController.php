@@ -58,7 +58,7 @@ class TaskController extends Controller
             'board_id' => 'required|exists:task_boards,id',
             'column_id' => 'required|exists:task_columns,id',
             'priority' => 'required|in:low,medium,high,urgent,critical',
-            'due_date' => 'nullable|date|after:today',
+            'due_date' => 'nullable|date|after_or_equal:today',
             'assigned_to' => 'nullable|integer',
             'assigned_to_type' => 'nullable|in:admin,marketing,sales',
             'labels' => 'nullable|array',

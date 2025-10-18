@@ -7,15 +7,15 @@
 
 @section('page-actions')
     <div class="d-flex gap-2">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createBoardModal">
+        <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createBoardModal">
             <i class="fas fa-plus me-2"></i>
             لوحة جديدة
-        </button>
+        </button> -->
         <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createTaskModal">
             <i class="fas fa-tasks me-2"></i>
             مهمة جديدة
         </button>
-        <div class="dropdown">
+        <!-- <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                 <i class="fas fa-filter me-2"></i>
                 تصفية
@@ -26,7 +26,7 @@
                 <li><a class="dropdown-item" href="#" onclick="filterTasks('urgent')">عاجلة</a></li>
                 <li><a class="dropdown-item" href="#" onclick="filterTasks('overdue')">متأخرة</a></li>
             </ul>
-        </div>
+        </div> -->
     </div>
 @endsection
 

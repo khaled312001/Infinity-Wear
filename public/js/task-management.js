@@ -175,7 +175,15 @@ class TaskManagement {
                 this.closeModal('createTaskModal');
                 location.reload(); // إعادة تحميل الصفحة لعرض المهمة الجديدة
             } else {
-                this.showAlert('error', result.message || 'حدث خطأ أثناء إنشاء المهمة');
+                // عرض رسائل الخطأ التفصيلية
+                let errorMessage = result.message || 'حدث خطأ أثناء إنشاء المهمة';
+                
+                if (result.errors) {
+                    const errorDetails = Object.values(result.errors).flat().join('<br>');
+                    errorMessage += '<br><br>التفاصيل:<br>' + errorDetails;
+                }
+                
+                this.showAlert('error', errorMessage);
             }
         } catch (error) {
             console.error('Error creating task:', error);
