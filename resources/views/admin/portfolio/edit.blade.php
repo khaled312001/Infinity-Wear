@@ -90,7 +90,7 @@ use Illuminate\Support\Facades\Storage;
                             @if($portfolioItem->image)
                                 <div class="mt-2">
                                     <small class="text-muted">الصورة الحالية:</small><br>
-                                    <img src="{{ Storage::url($portfolioItem->image) }}" alt="Current image" 
+                                    <img src="{{ $portfolioItem->image_url }}" alt="Current image" 
                                          class="img-thumbnail portfolio-image" style="max-width: 200px; max-height: 200px;">
                                 </div>
                             @endif
@@ -113,10 +113,10 @@ use Illuminate\Support\Facades\Storage;
                             <div class="mb-3">
                                 <label class="form-label">الصور الحالية في المعرض</label>
                                 <div class="row">
-                                    @foreach($portfolioItem->gallery as $index => $galleryImage)
+                                    @foreach($portfolioItem->gallery_urls as $index => $galleryImageUrl)
                                         <div class="col-6 mb-2">
                                             <div class="position-relative">
-                                                <img src="{{ Storage::url($galleryImage) }}" alt="Gallery image" 
+                                                <img src="{{ $galleryImageUrl }}" alt="Gallery image" 
                                                      class="img-thumbnail portfolio-gallery-image" style="width: 100%; height: 80px; object-fit: cover;">
                                                 <div class="form-check position-absolute" style="top: 5px; right: 5px;">
                                                     <input class="form-check-input" type="checkbox" 

@@ -351,13 +351,13 @@ class DashboardController extends Controller
         $data = $request->except(['image', 'gallery']);
         
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('portfolio', 'public');
+            $data['image'] = $request->file('image')->store('images/portfolio', 'public');
         }
         
         if ($request->hasFile('gallery')) {
             $gallery = [];
             foreach ($request->file('gallery') as $file) {
-                $gallery[] = $file->store('portfolio/gallery', 'public');
+                $gallery[] = $file->store('images/portfolio/gallery', 'public');
             }
             $data['gallery'] = json_encode($gallery);
         }

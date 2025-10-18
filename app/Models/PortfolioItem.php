@@ -72,6 +72,7 @@ class PortfolioItem extends Model
                 if (strpos($image, 'images/') === 0) {
                     return asset($image);
                 }
+                // إذا كان المسار لا يحتوي على 'images/' أضف 'images/' إليه
                 return asset('images/' . $image);
             }, $this->gallery);
         }

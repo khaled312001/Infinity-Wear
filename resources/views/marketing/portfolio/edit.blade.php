@@ -84,7 +84,7 @@ use Illuminate\Support\Facades\Storage;
                     <div class="mb-3">
                         <label class="form-label">الصورة الحالية</label>
                         <div>
-                            <img src="{{ Storage::url($portfolioItem->image) }}" alt="{{ $portfolioItem->title }}" 
+                            <img src="{{ $portfolioItem->image_url }}" alt="{{ $portfolioItem->title }}" 
                                  class="img-thumbnail" style="max-width: 200px;">
                         </div>
                     </div>
