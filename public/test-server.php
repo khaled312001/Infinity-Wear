@@ -1,117 +1,98 @@
 <?php
-// سكريبت اختبار الخادم
-header('Content-Type: text/html; charset=utf-8');
+// اختبار حالة الخادم المباشر
+header('Content-Type: text/plain; charset=utf-8');
 
-echo "<h1>اختبار إعدادات الخادم</h1>";
+echo "=== اختبار حالة الخادم المباشر ===\n\n";
 
-echo "<h2>معلومات الخادم:</h2>";
-echo "<p>Server Software: " . $_SERVER['SERVER_SOFTWARE'] . "</p>";
-echo "<p>Document Root: " . $_SERVER['DOCUMENT_ROOT'] . "</p>";
-echo "<p>Script Name: " . $_SERVER['SCRIPT_NAME'] . "</p>";
-echo "<p>Request URI: " . $_SERVER['REQUEST_URI'] . "</p>";
+// 1. التحقق من إصدار PHP
+echo "1. إصدار PHP: " . PHP_VERSION . "\n";
 
-echo "<h2>فحص وجود الملفات:</h2>";
-$files = [
-    'logo.svg' => 'images/logo.svg',
-    'infinity-home.js' => 'js/infinity-home.js',
-    'home-responsive.js' => 'js/home-responsive.js',
-    'infinity-home.css' => 'css/infinity-home.css',
-    'sw.js' => 'sw.js',
-    'site.webmanifest' => 'site.webmanifest'
-];
-
-foreach ($files as $name => $path) {
-    $fullPath = __DIR__ . '/' . $path;
-    $exists = file_exists($fullPath);
-    $size = $exists ? filesize($fullPath) : 0;
-    $readable = $exists ? is_readable($fullPath) : false;
-    echo "<p><strong>$name</strong>: " . ($exists ? "✓ موجود ($size bytes)" : "✗ غير موجود") . 
-         ($readable ? " - قابل للقراءة" : " - غير قابل للقراءة") . "</p>";
-}
-
-echo "<h2>اختبار MIME Types:</h2>";
-$mimeTypes = [
-    'logo.svg' => 'image/svg+xml',
-    'infinity-home.js' => 'application/javascript',
-    'home-responsive.js' => 'application/javascript',
-    'infinity-home.css' => 'text/css',
-    'sw.js' => 'application/javascript',
-    'site.webmanifest' => 'application/manifest+json'
-];
-
-foreach ($mimeTypes as $file => $expectedMime) {
-    $path = __DIR__ . '/' . $file;
-    if (file_exists($path)) {
-        $actualMime = mime_content_type($path);
-        $status = ($actualMime === $expectedMime) ? "✓" : "✗";
-        echo "<p><strong>$file</strong>: $status المتوقع: $expectedMime، الفعلي: $actualMime</p>";
-    }
-}
-
-echo "<h2>اختبار الصلاحيات:</h2>";
-$dirs = ['images', 'js', 'css', 'storage'];
-foreach ($dirs as $dir) {
-    $path = __DIR__ . '/' . $dir;
-    if (is_dir($path)) {
-        $readable = is_readable($path);
-        $writable = is_writable($path);
-        echo "<p><strong>$dir/</strong>: " . ($readable ? "✓ قابل للقراءة" : "✗ غير قابل للقراءة") . 
-             " - " . ($writable ? "✓ قابل للكتابة" : "✗ غير قابل للكتابة") . "</p>";
-    }
-}
-
-echo "<h2>اختبار symlink:</h2>";
-$storageLink = __DIR__ . '/storage';
-if (is_link($storageLink)) {
-    $target = readlink($storageLink);
-    echo "<p>✓ symlink موجود: $storageLink -> $target</p>";
-} else {
-    echo "<p>✗ symlink غير موجود</p>";
-}
-
-echo "<h2>اختبار Laravel:</h2>";
-if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    require_once __DIR__ . '/../vendor/autoload.php';
+// 2. التحقق من اتصال قاعدة البيانات
+try {
+    $pdo = new PDO(
+        'mysql:host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_DATABASE'], 
+        $_ENV['DB_USERNAME'], 
+        $_ENV['DB_PASSWORD']
+    );
+    echo "✅ اتصال قاعدة البيانات: نجح\n";
     
-    try {
-        $app = require_once __DIR__ . '/../bootstrap/app.php';
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+    // 3. التحقق من وجود جدول المهام
+    $stmt = $pdo->query("SHOW TABLES LIKE 'tasks'");
+    if ($stmt->fetch()) {
+        echo "✅ جدول المهام: موجود\n";
         
-        echo "<p>✓ Laravel يعمل بشكل صحيح</p>";
-        echo "<p>APP_URL: " . config('app.url') . "</p>";
-        echo "<p>APP_ENV: " . config('app.env') . "</p>";
-        echo "<p>APP_DEBUG: " . (config('app.debug') ? 'true' : 'false') . "</p>";
+        // 4. التحقق من بنية الجدول
+        $stmt = $pdo->query("DESCRIBE tasks");
+        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        echo "<h3>اختبار asset helper:</h3>";
-        echo "<p>logo.svg: " . asset('images/logo.svg') . "</p>";
-        echo "<p>infinity-home.js: " . asset('js/infinity-home.js') . "</p>";
-        echo "<p>infinity-home.css: " . asset('css/infinity-home.css') . "</p>";
+        $requiredColumns = ['department', 'column_status', 'position', 'importer_id'];
+        $missingColumns = [];
         
-    } catch (Exception $e) {
-        echo "<p>✗ خطأ في Laravel: " . $e->getMessage() . "</p>";
+        foreach ($requiredColumns as $col) {
+            $found = false;
+            foreach ($columns as $column) {
+                if ($column['Field'] === $col) {
+                    $found = true;
+                    echo "✅ العمود '$col': موجود (" . $column['Type'] . ")\n";
+                    break;
+                }
+            }
+            if (!$found) {
+                $missingColumns[] = $col;
+                echo "❌ العمود '$col': مفقود\n";
+            }
+        }
+        
+        if (empty($missingColumns)) {
+            echo "\n✅ جميع الأعمدة المطلوبة موجودة\n";
+            
+            // 5. اختبار إدراج مهمة
+            echo "\n5. اختبار إنشاء مهمة:\n";
+            try {
+                $stmt = $pdo->prepare("INSERT INTO tasks (title, description, board_id, column_id, priority, assigned_to, assigned_to_type, created_by, created_by_type, sort_order, labels, tags, estimated_hours, color, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+                
+                $result = $stmt->execute([
+                    'Test Server Task',
+                    'Test Description',
+                    8,
+                    5,
+                    'medium',
+                    1,
+                    'admin',
+                    1,
+                    'admin',
+                    1,
+                    '[]',
+                    '[]',
+                    12,
+                    '#ff0000'
+                ]);
+                
+                if ($result) {
+                    $taskId = $pdo->lastInsertId();
+                    echo "✅ تم إنشاء مهمة تجريبية بنجاح (ID: $taskId)\n";
+                    
+                    // حذف المهمة التجريبية
+                    $pdo->prepare("DELETE FROM tasks WHERE id = ?")->execute([$taskId]);
+                    echo "✅ تم حذف المهمة التجريبية\n";
+                } else {
+                    echo "❌ فشل في إنشاء مهمة تجريبية\n";
+                }
+            } catch (Exception $e) {
+                echo "❌ خطأ في إنشاء المهمة: " . $e->getMessage() . "\n";
+            }
+        } else {
+            echo "\n❌ الأعمدة المفقودة: " . implode(', ', $missingColumns) . "\n";
+            echo "يجب تطبيق migrations الجديدة\n";
+        }
+        
+    } else {
+        echo "❌ جدول المهام: غير موجود\n";
     }
-} else {
-    echo "<p>✗ Laravel غير موجود</p>";
+    
+} catch (Exception $e) {
+    echo "❌ خطأ في اتصال قاعدة البيانات: " . $e->getMessage() . "\n";
 }
 
-echo "<h2>اختبار الوصول المباشر للملفات:</h2>";
-echo "<p><a href='logo.svg' target='_blank'>اختبار logo.svg</a></p>";
-echo "<p><a href='js/infinity-home.js' target='_blank'>اختبار infinity-home.js</a></p>";
-echo "<p><a href='css/infinity-home.css' target='_blank'>اختبار infinity-home.css</a></p>";
-echo "<p><a href='sw.js' target='_blank'>اختبار sw.js</a></p>";
-echo "<p><a href='site.webmanifest' target='_blank'>اختبار site.webmanifest</a></p>";
-
-echo "<h2>معلومات PHP:</h2>";
-echo "<p>PHP Version: " . phpversion() . "</p>";
-echo "<p>Loaded Extensions: " . implode(', ', get_loaded_extensions()) . "</p>";
-
-echo "<h2>إعدادات Apache:</h2>";
-if (function_exists('apache_get_modules')) {
-    $modules = apache_get_modules();
-    $required = ['mod_rewrite', 'mod_mime', 'mod_deflate'];
-    foreach ($required as $module) {
-        $status = in_array($module, $modules) ? "✓" : "✗";
-        echo "<p>$module: $status</p>";
-    }
-}
+echo "\n=== انتهاء الاختبار ===\n";
 ?>
