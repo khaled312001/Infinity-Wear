@@ -416,6 +416,12 @@
 @endpush
 
 @push('scripts')
+<script>
+    // تمرير البيانات من الخادم إلى JavaScript
+    window.boardsData = @json($boards);
+    window.availableUsers = @json($availableUsers);
+    window.taskStats = @json($taskStats);
+</script>
 <script src="{{ asset('js/task-management.js') }}"></script>
 <script>
     // تهيئة النظام

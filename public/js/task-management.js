@@ -270,7 +270,7 @@ class TaskManagement {
 
         // إضافة خيارات جديدة (يجب جلبها من الخادم)
         // هذا مثال بسيط - في التطبيق الحقيقي يجب جلب البيانات من الخادم
-        const boards = @json($boards);
+        const boards = window.boardsData || [];
         const selectedBoard = boards.find(board => board.id == boardId);
         
         if (selectedBoard && selectedBoard.columns) {
@@ -354,6 +354,12 @@ class TaskManagement {
             }
         }
     }
+
+    addColumn() {
+        // تنفيذ إضافة عمود جديد
+        console.log('Add column');
+        // يمكن إضافة منطق إضافة العمود هنا
+    }
 }
 
 // دوال مساعدة للاستخدام في HTML
@@ -388,6 +394,13 @@ function filterTasks(filter) {
     // تنفيذ تصفية المهام
     if (window.taskManagement) {
         window.taskManagement.filterTasks(filter);
+    }
+}
+
+function addColumn() {
+    // تنفيذ إضافة عمود جديد
+    if (window.taskManagement) {
+        window.taskManagement.addColumn();
     }
 }
 
