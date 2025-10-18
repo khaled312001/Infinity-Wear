@@ -147,9 +147,9 @@ body {
     padding: 1rem 0;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    background: linear-gradient(135deg, rgba(45, 52, 54, 0.1) 0%, rgba(99, 110, 114, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.15) 0%, rgba(162, 155, 254, 0.15) 100%);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(116, 185, 255, 0.2);
 }
 
 .infinity-navbar::before {
@@ -159,7 +159,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(116, 185, 255, 0.05) 0%, rgba(162, 155, 254, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.1) 0%, rgba(162, 155, 254, 0.1) 100%);
     opacity: 0;
     transition: opacity 0.4s ease;
     z-index: -1;
@@ -170,16 +170,16 @@ body {
 }
 
 .infinity-navbar.scrolled {
-    background: linear-gradient(135deg, rgba(45, 52, 54, 0.95) 0%, rgba(99, 110, 114, 0.95) 100%);
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.95) 0%, rgba(162, 155, 254, 0.95) 100%);
     backdrop-filter: blur(25px);
-    box-shadow: 0 8px 32px rgba(45, 52, 54, 0.3);
-    border-bottom: 1px solid rgba(116, 185, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(116, 185, 255, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     transform: translateY(0);
 }
 
 .infinity-navbar.scrolled::before {
     opacity: 1;
-    background: linear-gradient(135deg, rgba(116, 185, 255, 0.1) 0%, rgba(162, 155, 254, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(116, 185, 255, 0.1) 100%);
 }
 
 .infinity-navbar-content {
@@ -199,9 +199,9 @@ body {
     position: relative;
     padding: 0.5rem;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(116, 185, 255, 0.1) 100%);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .logo::before {
@@ -211,7 +211,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(116, 185, 255, 0.1) 0%, rgba(162, 155, 254, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.2) 0%, rgba(162, 155, 254, 0.2) 100%);
     border-radius: 12px;
     opacity: 0;
     transition: opacity 0.4s ease;
@@ -224,8 +224,8 @@ body {
 
 .logo:hover {
     transform: scale(1.05) translateY(-2px);
-    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.2);
-    border-color: rgba(116, 185, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 .logo img {
@@ -278,9 +278,9 @@ body {
     align-items: center;
     gap: 0.5rem;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(116, 185, 255, 0.05) 100%);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .nav-link::before {
@@ -301,15 +301,16 @@ body {
 .nav-link:hover,
 .nav-link.active {
     color: #ffffff;
-    background: linear-gradient(135deg, rgba(116, 185, 255, 0.2) 0%, rgba(162, 155, 254, 0.2) 100%);
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.4) 0%, rgba(162, 155, 254, 0.4) 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.3);
-    border-color: rgba(116, 185, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .nav-link.active {
-    background: linear-gradient(135deg, rgba(116, 185, 255, 0.3) 0%, rgba(162, 155, 254, 0.3) 100%);
-    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.5) 0%, rgba(162, 155, 254, 0.5) 100%);
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 .nav-icon {
@@ -479,32 +480,32 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
     color: white;
-    box-shadow: 0 6px 20px rgba(116, 185, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 20px rgba(116, 185, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+    background: linear-gradient(135deg, #a29bfe 0%, #74b9ff 100%);
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 12px 30px rgba(116, 185, 255, 0.4);
-    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 12px 30px rgba(116, 185, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 .btn-outline {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ecf0f1;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(116, 185, 255, 0.1) 100%);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(15px);
 }
 
 .btn-outline:hover {
-    background: linear-gradient(135deg, rgba(116, 185, 255, 0.2) 0%, rgba(162, 155, 254, 0.2) 100%);
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.3) 0%, rgba(162, 155, 254, 0.3) 100%);
     color: white;
     border-color: #74b9ff;
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
 }
 
     .btn-large {
@@ -624,9 +625,9 @@ body {
     font-weight: 500;
     position: relative;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(116, 185, 255, 0.05) 100%);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .sidebar-nav-link::before {
@@ -646,11 +647,11 @@ body {
 
 .sidebar-nav-link:hover,
 .sidebar-nav-link.active {
-    background: linear-gradient(135deg, rgba(116, 185, 255, 0.2) 0%, rgba(162, 155, 254, 0.2) 100%);
-    color: #74b9ff;
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.4) 0%, rgba(162, 155, 254, 0.4) 100%);
+    color: #ffffff;
     transform: translateX(8px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.2);
-    border-color: rgba(116, 185, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .sidebar-nav-icon {
@@ -671,11 +672,11 @@ body {
 
 .sidebar-nav-link:hover .sidebar-nav-icon i {
     transform: scale(1.2) rotate(5deg);
-    color: #74b9ff;
+    color: #ffffff;
 }
 
 .sidebar-nav-link.active .sidebar-nav-icon i {
-    color: #74b9ff;
+    color: #ffffff;
     transform: scale(1.1);
 }
 
@@ -689,12 +690,12 @@ body {
 
 .sidebar-nav-link:hover .sidebar-nav-text {
     color: #ffffff;
-    text-shadow: 0 0 10px rgba(116, 185, 255, 0.5);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
 }
 
 .sidebar-nav-link.active .sidebar-nav-text {
     color: #ffffff;
-    text-shadow: 0 0 10px rgba(116, 185, 255, 0.7);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 1);
 }
 
 .sidebar-nav-link.active::after {
@@ -705,9 +706,9 @@ body {
     transform: translateY(-50%);
     width: 4px;
     height: 20px;
-    background: #74b9ff;
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
     border-radius: 2px;
-    box-shadow: 0 0 10px rgba(116, 185, 255, 0.5);
+    box-shadow: 0 0 15px rgba(116, 185, 255, 0.8);
 }
 
 .sidebar-user {
@@ -763,32 +764,32 @@ body {
 }
 
 .btn-sidebar-primary {
-    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(116, 185, 255, 0.4);
 }
 
 .btn-sidebar-primary:hover {
-    background: linear-gradient(135deg, #2980b9 0%, #1f5f8b 100%);
+    background: linear-gradient(135deg, #a29bfe 0%, #74b9ff 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
-    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 .btn-sidebar-outline {
-    background: rgba(255, 255, 255, 0.05);
-    color: #ecf0f1;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(116, 185, 255, 0.05) 100%);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px);
 }
 
 .btn-sidebar-outline:hover {
-    background: rgba(52, 152, 219, 0.2);
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.3) 0%, rgba(162, 155, 254, 0.3) 100%);
     color: white;
-    border-color: #3498db;
+    border-color: #74b9ff;
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 4px 15px rgba(116, 185, 255, 0.4);
 }
 
 /* قسم البطل */
