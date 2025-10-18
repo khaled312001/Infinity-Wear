@@ -14,7 +14,7 @@ class TaskBoard extends Model
     protected $fillable = [
         'name',
         'description',
-        'board_type',
+        'type',
         'is_active',
         'sort_order',
         'color',
@@ -57,13 +57,13 @@ class TaskBoard extends Model
      */
     public function getBoardTypeLabelAttribute(): string
     {
-        return match($this->board_type) {
+        return match($this->type ?? 'general') {
             'marketing' => 'التسويق',
             'sales' => 'المبيعات',
             'general' => 'عام',
             'project' => 'مشروع',
             'department' => 'قسم',
-            default => $this->board_type
+            default => 'عام'
         };
     }
 
