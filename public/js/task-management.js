@@ -368,6 +368,199 @@ class TaskManagement {
         console.log('Add column');
         // يمكن إضافة منطق إضافة العمود هنا
     }
+
+    viewTask(taskId) {
+        console.log('Viewing task:', taskId);
+        // حفظ معرف المهمة للاستخدام لاحقاً
+        window.currentTaskId = taskId;
+        // تحميل بيانات المهمة وعرضها
+        this.loadTaskData(taskId).then(taskData => {
+            this.displayTaskView(taskData);
+            this.showModal('viewTaskModal');
+        }).catch(error => {
+            console.error('Error loading task:', error);
+            this.showAlert('error', 'خطأ في تحميل بيانات المهمة');
+        });
+    }
+
+    editTask(taskId) {
+        console.log('Editing task:', taskId);
+        // تحميل بيانات المهمة وتعديلها
+        this.loadTaskData(taskId).then(taskData => {
+            this.displayTaskEdit(taskData);
+            this.showModal('editTaskModal');
+        }).catch(error => {
+            console.error('Error loading task:', error);
+            this.showAlert('error', 'خطأ في تحميل بيانات المهمة');
+        });
+    }
+
+    async loadTaskData(taskId) {
+        // محاكاة تحميل بيانات المهمة
+        // في التطبيق الحقيقي، ستكون هذه استدعاء AJAX
+        return new Promise((resolve) => {
+            // البحث عن المهمة في البيانات المحملة
+            const boards = window.boardsData || [];
+            let foundTask = null;
+            
+            for (const board of boards) {
+                for (const column of board.columns || []) {
+                    for (const task of column.tasks || []) {
+                        if (task.id == taskId) {
+                            foundTask = task;
+                            break;
+                        }
+                    }
+                    if (foundTask) break;
+                }
+                if (foundTask) break;
+            }
+            
+            if (foundTask) {
+                resolve(foundTask);
+            } else {
+                // بيانات وهمية للاختبار
+                resolve({
+                    id: taskId,
+                    title: 'مهمة تجريبية',
+                    description: 'هذه مهمة تجريبية للاختبار',
+                    priority: 'high',
+                    status: 'pending',
+                    due_date: null,
+                    labels: [],
+                    checklist: [],
+                    progress_percentage: 0
+                });
+            }
+        });
+    }
+
+    displayTaskView(taskData) {
+        const content = document.getElementById('viewTaskContent');
+        if (!content) return;
+
+        content.innerHTML = `
+            <div class="task-view">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4>${taskData.title}</h4>
+                        <p class="text-muted">${taskData.description || 'لا يوجد وصف'}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="task-meta">
+                            <div class="mb-2">
+                                <strong>الأولوية:</strong>
+                                <span class="badge bg-${this.getPriorityColor(taskData.priority)}">${this.getPriorityLabel(taskData.priority)}</span>
+                            </div>
+                            <div class="mb-2">
+                                <strong>الحالة:</strong>
+                                <span class="badge bg-${this.getStatusColor(taskData.status)}">${this.getStatusLabel(taskData.status)}</span>
+                            </div>
+                            <div class="mb-2">
+                                <strong>التقدم:</strong>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: ${taskData.progress_percentage || 0}%"></div>
+                                </div>
+                                <small>${taskData.progress_percentage || 0}%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    displayTaskEdit(taskData) {
+        const content = document.getElementById('editTaskContent');
+        if (!content) return;
+
+        content.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="editTaskTitle" class="form-label">عنوان المهمة</label>
+                        <input type="text" class="form-control" id="editTaskTitle" name="title" value="${taskData.title}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="editTaskPriority" class="form-label">الأولوية</label>
+                        <select class="form-select" id="editTaskPriority" name="priority">
+                            <option value="low" ${taskData.priority === 'low' ? 'selected' : ''}>منخفضة</option>
+                            <option value="medium" ${taskData.priority === 'medium' ? 'selected' : ''}>متوسطة</option>
+                            <option value="high" ${taskData.priority === 'high' ? 'selected' : ''}>عالية</option>
+                            <option value="urgent" ${taskData.priority === 'urgent' ? 'selected' : ''}>عاجلة</option>
+                            <option value="critical" ${taskData.priority === 'critical' ? 'selected' : ''}>حرجة</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="editTaskDescription" class="form-label">وصف المهمة</label>
+                <textarea class="form-control" id="editTaskDescription" name="description" rows="3">${taskData.description || ''}</textarea>
+            </div>
+            <input type="hidden" id="editTaskId" name="task_id" value="${taskData.id}">
+        `;
+    }
+
+    getPriorityColor(priority) {
+        const colors = {
+            'low': 'success',
+            'medium': 'warning',
+            'high': 'danger',
+            'urgent': 'danger',
+            'critical': 'dark'
+        };
+        return colors[priority] || 'secondary';
+    }
+
+    getPriorityLabel(priority) {
+        const labels = {
+            'low': 'منخفضة',
+            'medium': 'متوسطة',
+            'high': 'عالية',
+            'urgent': 'عاجلة',
+            'critical': 'حرجة'
+        };
+        return labels[priority] || priority;
+    }
+
+    getStatusColor(status) {
+        const colors = {
+            'pending': 'warning',
+            'in_progress': 'primary',
+            'completed': 'success',
+            'cancelled': 'danger',
+            'on_hold': 'secondary'
+        };
+        return colors[status] || 'secondary';
+    }
+
+    getStatusLabel(status) {
+        const labels = {
+            'pending': 'معلقة',
+            'in_progress': 'قيد التنفيذ',
+            'completed': 'مكتملة',
+            'cancelled': 'ملغية',
+            'on_hold': 'معلقة'
+        };
+        return labels[status] || status;
+    }
+
+    addTask(columnId) {
+        console.log('Adding task to column:', columnId);
+        // تنفيذ إضافة مهمة جديدة
+        this.showAlert('info', 'إضافة مهمة جديدة للعمود رقم: ' + columnId);
+        // يمكن إضافة منطق إضافة المهمة هنا
+    }
+
+    showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        }
+    }
 }
 
 // دوال مساعدة للاستخدام في HTML
@@ -413,3 +606,56 @@ function initializeTaskManagement() {
 
 // تصدير الكلاس للاستخدام العام
 window.TaskManagement = TaskManagement;
+
+// دوال مساعدة للاستخدام في HTML
+function viewTask(taskId) {
+    console.log('View task:', taskId);
+    // تنفيذ عرض المهمة
+    if (window.taskManagement) {
+        window.taskManagement.viewTask(taskId);
+    }
+}
+
+function editTask(taskId) {
+    console.log('Edit task:', taskId);
+    // تنفيذ تعديل المهمة
+    if (window.taskManagement) {
+        window.taskManagement.editTask(taskId);
+    }
+}
+
+function addTask(columnId) {
+    console.log('Add task to column:', columnId);
+    // تنفيذ إضافة مهمة جديدة
+    if (window.taskManagement) {
+        window.taskManagement.addTask(columnId);
+    }
+}
+
+function addColumn(boardId) {
+    console.log('Add column to board:', boardId);
+    // تنفيذ إضافة عمود جديد
+    if (window.taskManagement) {
+        window.taskManagement.addColumn(boardId);
+    }
+}
+
+function createBoard() {
+    console.log('Create new board');
+    // تنفيذ إنشاء لوحة جديدة
+    if (window.taskManagement) {
+        window.taskManagement.showModal('createBoardModal');
+    }
+}
+
+function editTaskFromView() {
+    // إغلاق مودال المعاينة وفتح مودال التعديل
+    if (window.taskManagement) {
+        window.taskManagement.closeModal('viewTaskModal');
+        // الحصول على معرف المهمة من البيانات المحملة
+        const taskId = window.currentTaskId;
+        if (taskId) {
+            window.taskManagement.editTask(taskId);
+        }
+    }
+}
