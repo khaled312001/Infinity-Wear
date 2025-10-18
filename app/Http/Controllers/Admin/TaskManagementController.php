@@ -35,7 +35,7 @@ class TaskManagementController extends Controller
             $defaultBoard = TaskBoard::createWithDefaultColumns([
                 'name' => 'لوحة المهام الرئيسية',
                 'description' => 'لوحة المهام العامة للمشروع',
-                'board_type' => 'general',
+                'type' => 'general',
                 'created_by' => Auth::id(),
                 'color' => '#007bff',
                 'icon' => 'fas fa-tasks'
@@ -49,7 +49,9 @@ class TaskManagementController extends Controller
         // إحصائيات المهام
         $stats = $this->getTaskStats();
 
-        return view('admin.tasks.index', compact('boards', 'users', 'stats'));
+        return view('admin.tasks.index', compact('boards', 'users', 'stats'))
+            ->with('availableUsers', $users)
+            ->with('taskStats', $stats);
     }
 
     /**
@@ -60,7 +62,7 @@ class TaskManagementController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
-            'board_type' => 'required|in:general,marketing,sales,project,department',
+            'type' => 'required|in:general,marketing,sales,project,department',
             'color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'icon' => 'nullable|string|max:50',
             'team_type' => 'nullable|in:admin,marketing,sales',
