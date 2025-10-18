@@ -19,12 +19,13 @@ class SettingsHelper
      */
     public static function getSiteInfo()
     {
+        $settings = self::getAllSettings();
         return [
-            'name' => self::get('site_name', 'Infinity Wear'),
-            'tagline' => self::get('site_tagline', 'مؤسسة الزي اللامحدود'),
-            'description' => self::get('site_description', 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد'),
-            'logo' => self::get('site_logo'),
-            'favicon' => self::get('site_favicon'),
+            'name' => $settings['site_name'] ?? 'Infinity Wear',
+            'tagline' => $settings['site_tagline'] ?? 'مؤسسة الزي اللامحدود',
+            'description' => $settings['site_description'] ?? 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد',
+            'logo' => $settings['site_logo'] ?? null,
+            'favicon' => $settings['site_favicon'] ?? null,
         ];
     }
 
@@ -33,14 +34,15 @@ class SettingsHelper
      */
     public static function getContactInfo()
     {
+        $settings = self::getAllSettings();
         return [
-            'email' => self::get('contact_email', 'info@infinitywear.com'),
-            'phone' => self::get('contact_phone', '+966500982394'),
-            'whatsapp' => self::get('whatsapp_number'),
-            'support_email' => self::get('support_email'),
-            'address' => self::get('address', 'المملكة العربية السعودية، الرياض'),
-            'business_hours' => self::get('business_hours'),
-            'emergency_contact' => self::get('emergency_contact'),
+            'email' => $settings['contact_email'] ?? 'info@infinitywear.com',
+            'phone' => $settings['contact_phone'] ?? '+966500982394',
+            'whatsapp' => $settings['whatsapp_number'] ?? null,
+            'support_email' => $settings['support_email'] ?? null,
+            'address' => $settings['address'] ?? 'المملكة العربية السعودية، الرياض',
+            'business_hours' => $settings['business_hours'] ?? null,
+            'emergency_contact' => $settings['emergency_contact'] ?? null,
         ];
     }
 
@@ -49,13 +51,14 @@ class SettingsHelper
      */
     public static function getSocialLinks()
     {
+        $settings = self::getAllSettings();
         return [
-            'facebook' => self::get('facebook_url'),
-            'twitter' => self::get('twitter_url'),
-            'instagram' => self::get('instagram_url'),
-            'linkedin' => self::get('linkedin_url'),
-            'youtube' => self::get('youtube_url'),
-            'tiktok' => self::get('tiktok_url'),
+            'facebook' => $settings['facebook_url'] ?? null,
+            'twitter' => $settings['twitter_url'] ?? null,
+            'instagram' => $settings['instagram_url'] ?? null,
+            'linkedin' => $settings['linkedin_url'] ?? null,
+            'youtube' => $settings['youtube_url'] ?? null,
+            'tiktok' => $settings['tiktok_url'] ?? null,
         ];
     }
 
@@ -64,14 +67,15 @@ class SettingsHelper
      */
     public static function getSystemSettings()
     {
+        $settings = self::getAllSettings();
         return [
-            'enable_registration' => (bool) self::get('enable_registration', true),
-            'email_verification' => (bool) self::get('email_verification', true),
-            'maintenance_mode' => (bool) self::get('maintenance_mode', false),
-            'debug_mode' => (bool) self::get('debug_mode', false),
-            'default_language' => self::get('default_language', 'ar'),
-            'default_currency' => self::get('default_currency', 'SAR'),
-            'timezone' => self::get('timezone', 'Asia/Riyadh'),
+            'enable_registration' => (bool) ($settings['enable_registration'] ?? true),
+            'email_verification' => (bool) ($settings['email_verification'] ?? true),
+            'maintenance_mode' => (bool) ($settings['maintenance_mode'] ?? false),
+            'debug_mode' => (bool) ($settings['debug_mode'] ?? false),
+            'default_language' => $settings['default_language'] ?? 'ar',
+            'default_currency' => $settings['default_currency'] ?? 'SAR',
+            'timezone' => $settings['timezone'] ?? 'Asia/Riyadh',
         ];
     }
 
@@ -97,5 +101,20 @@ class SettingsHelper
     public static function isEmailVerificationRequired()
     {
         return (bool) self::get('email_verification', true);
+    }
+
+    /**
+     * Get all settings at once to reduce database queries
+     */
+    public static function getAllSettings()
+    {
+        try {
+            return \Illuminate\Support\Facades\Cache::remember('settings.all', 3600, function () {
+                return \App\Models\Setting::pluck('value', 'key')->toArray();
+            });
+        } catch (\Exception $e) {
+            \Log::warning("Failed to load settings, using fallback: " . $e->getMessage());
+            return [];
+        }
     }
 }

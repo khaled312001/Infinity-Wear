@@ -485,7 +485,7 @@ use App\Models\Contact;
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
-                        <a href="{{ route('marketing.tasks') }}" class="quick-action-btn btn-warning">
+                        <a href="{{ route('marketing.tasks.index') }}" class="quick-action-btn btn-warning">
                             <div class="action-icon">
                                 <i class="fas fa-tasks"></i>
                             </div>

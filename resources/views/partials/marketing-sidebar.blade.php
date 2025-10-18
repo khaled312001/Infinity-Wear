@@ -23,7 +23,7 @@
 <!-- إدارة المهام -->
 <div class="nav-group">
     <div class="nav-group-title">إدارة المهام</div>
-    <a href="{{ route('marketing.tasks') }}" class="nav-link {{ request()->routeIs('marketing.tasks*') ? 'active' : '' }}">
+    <a href="{{ route('marketing.tasks.index') }}" class="nav-link {{ request()->routeIs('marketing.tasks*') ? 'active' : '' }}">
         <i class="fas fa-tasks me-2"></i>
         المهام
     </a>
