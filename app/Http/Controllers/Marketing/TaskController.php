@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Marketing;
 use App\Http\Controllers\Controller;
 use App\Models\TaskCard;
 use App\Models\TaskColumn;
+use App\Models\TaskBoard;
 use App\Models\MarketingTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,18 @@ class TaskController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // جلب لوحات المهام
+        $boards = TaskBoard::where('is_active', true)
+            ->where(function($query) {
+                $query->where('type', 'marketing')
+                      ->orWhere('type', 'general');
+            })
+            ->with(['columns' => function($query) {
+                $query->orderBy('sort_order');
+            }])
+            ->orderBy('sort_order')
+            ->get();
+
         // حساب الإحصائيات
         $stats = [
             'total_tasks' => $tasks->count(),
@@ -34,7 +47,7 @@ class TaskController extends Controller
             'urgent_tasks' => $tasks->where('priority', 'high')->where('status', '!=', 'completed')->count(),
         ];
 
-        return view('marketing.tasks.index', compact('tasks', 'stats'));
+        return view('marketing.tasks.index', compact('tasks', 'stats', 'boards'));
     }
 
     /**
