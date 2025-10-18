@@ -397,12 +397,6 @@ function filterTasks(filter) {
     }
 }
 
-function addColumn() {
-    // تنفيذ إضافة عمود جديد
-    if (window.taskManagement) {
-        window.taskManagement.addColumn();
-    }
-}
 
 // تهيئة النظام عند تحميل الصفحة
 function initializeTaskManagement() {
