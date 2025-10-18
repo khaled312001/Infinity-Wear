@@ -365,8 +365,26 @@ class TaskManagementController extends Controller
     {
         return [
             'admins' => Admin::select('id', 'name', 'email')->get(),
-            'marketing' => MarketingTeam::select('id', 'name', 'email')->get(),
-            'sales' => SalesTeam::select('id', 'name', 'email')->get()
+            'marketing' => MarketingTeam::with('admin:id,name,email')
+                ->where('is_active', 1)
+                ->get()
+                ->map(function($member) {
+                    return (object)[
+                        'id' => $member->id,
+                        'name' => $member->admin->name,
+                        'email' => $member->admin->email
+                    ];
+                }),
+            'sales' => SalesTeam::with('admin:id,name,email')
+                ->where('is_active', 1)
+                ->get()
+                ->map(function($member) {
+                    return (object)[
+                        'id' => $member->id,
+                        'name' => $member->admin->name,
+                        'email' => $member->admin->email
+                    ];
+                })
         ];
     }
 

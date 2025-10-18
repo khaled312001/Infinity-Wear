@@ -35,7 +35,7 @@ class SalesTeam extends Model
      */
     public function admin(): BelongsTo
     {
-        return $this->belongsTo(Admin::class);
+        return $this->belongsTo(Admin::class, 'admin_id');
     }
 
     /**
