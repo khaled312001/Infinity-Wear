@@ -412,7 +412,7 @@
 @endsection
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/task-management.css') }}">
+<link rel="stylesheet" href="{{ asset('css/task-management.css') }}?v={{ time() }}">
 @endpush
 
 @push('scripts')
@@ -422,7 +422,7 @@
     window.availableUsers = @json($availableUsers);
     window.taskStats = @json($taskStats);
 </script>
-<script src="{{ asset('js/task-management.js') }}"></script>
+<script src="{{ asset('js/task-management.js') }}?v={{ time() }}"></script>
 <script>
     // تهيئة النظام
     document.addEventListener('DOMContentLoaded', function() {
