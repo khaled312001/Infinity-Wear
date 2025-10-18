@@ -543,7 +543,7 @@ Route::post('/api/ai/generate-design', [ImporterController::class, 'generateDesi
 
 // لوحة تحكم المستوردين
 Route::middleware(['auth', 'user.type:importer'])->prefix('importers')->name('importers.')->group(function () {
-    Route::get('/dashboard', [ImporterController::class, 'dashboard'])->name('dashboard')->middleware('user.permission:dashboard');
+    Route::get('/dashboard', [ImporterController::class, 'dashboard'])->name('dashboard');
     Route::get('/orders', [ImporterController::class, 'orders'])->name('orders')->middleware('user.permission:orders');
     Route::get('/tracking', [ImporterController::class, 'tracking'])->name('tracking')->middleware('user.permission:tracking');
     Route::get('/invoices', [ImporterController::class, 'invoices'])->name('invoices')->middleware('user.permission:invoices');
@@ -654,7 +654,7 @@ Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')-
 
 // لوحة التحكم الإدارية
 Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(function () {
-    Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard')->middleware('user.permission:dashboard');
+    Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/employees', [App\Http\Controllers\Admin\DashboardController::class, 'employees'])->name('employees');
     Route::get('/reports', [App\Http\Controllers\Admin\DashboardController::class, 'reports'])->name('reports')->middleware('user.permission:reports');
     Route::get('/settings', [App\Http\Controllers\Admin\DashboardController::class, 'settings'])->name('settings')->middleware('user.permission:settings');
