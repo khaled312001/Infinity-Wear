@@ -534,10 +534,7 @@ class TaskManagement {
                     <div class="col-md-8">
                         <h4>${taskData.title}</h4>
                         <p class="text-muted">${taskData.description || 'لا يوجد وصف'}</p>
-                        ${!isAssignedToUser && window.isLimitedView ? 
-                            '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>هذه المهمة غير مخصصة لك</div>' : 
-                            ''
-                        }
+                        ${!isAssignedToUser && window.isLimitedView ? '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>هذه المهمة غير مخصصة لك</div>' : ''}
                     </div>
                     <div class="col-md-4">
                         <div class="task-meta">
@@ -571,17 +568,7 @@ class TaskManagement {
                         </div>
                     </div>
                 </div>
-                ${window.isLimitedView ? `
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <strong>ملاحظة:</strong> يمكنك فقط تغيير حالة المهمة (سحب وإفلات) وإضافة تعليقات. 
-                                ${!isAssignedToUser ? 'هذه المهمة غير مخصصة لك.' : ''}
-                            </div>
-                        </div>
-                    </div>
-                ` : ''}
+                ${window.isLimitedView ? `<div class="row mt-3"><div class="col-12"><div class="alert alert-info"><i class="fas fa-info-circle me-2"></i><strong>ملاحظة:</strong> يمكنك فقط تغيير حالة المهمة (سحب وإفلات) وإضافة تعليقات. ${!isAssignedToUser ? 'هذه المهمة غير مخصصة لك.' : ''}</div></div></div>` : ''}
             </div>
         `;
     }
