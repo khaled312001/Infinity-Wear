@@ -8,9 +8,6 @@ use App\Models\TaskColumn;
 use App\Models\TaskCard;
 use App\Models\TaskComment;
 use App\Models\TaskAttachment;
-use App\Models\Admin;
-use App\Models\MarketingTeam;
-use App\Models\SalesTeam;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -470,36 +467,39 @@ class TaskManagementController extends Controller
     private function getAvailableUsers()
     {
         return [
-            'admins' => Admin::select('id', 'name', 'email')
+            'admins' => \App\Models\User::select('id', 'name', 'email', 'user_type')
+                ->where('user_type', 'admin')
                 ->where('is_active', 1)
                 ->get()
-                ->map(function($admin) {
+                ->map(function($user) {
                     return (object)[
-                        'id' => $admin->id,
-                        'name' => $admin->name,
-                        'email' => $admin->email,
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
                         'user_type' => 'admin'
                     ];
                 }),
-            'marketing' => MarketingTeam::with('admin:id,name,email')
+            'marketing' => \App\Models\User::select('id', 'name', 'email', 'user_type')
+                ->where('user_type', 'marketing')
                 ->where('is_active', 1)
                 ->get()
-                ->map(function($member) {
+                ->map(function($user) {
                     return (object)[
-                        'id' => $member->id,
-                        'name' => $member->admin->name,
-                        'email' => $member->admin->email,
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
                         'user_type' => 'marketing'
                     ];
                 }),
-            'sales' => SalesTeam::with('admin:id,name,email')
+            'sales' => \App\Models\User::select('id', 'name', 'email', 'user_type')
+                ->where('user_type', 'sales')
                 ->where('is_active', 1)
                 ->get()
-                ->map(function($member) {
+                ->map(function($user) {
                     return (object)[
-                        'id' => $member->id,
-                        'name' => $member->admin->name,
-                        'email' => $member->admin->email,
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
                         'user_type' => 'sales'
                     ];
                 }),
@@ -537,7 +537,7 @@ class TaskManagementController extends Controller
     private function canEditTask($user, TaskCard $task)
     {
         // الأدمن يمكنه تعديل جميع المهام
-        if ($user->hasPermission('tasks.edit')) {
+        if ($user->user_type === 'admin' || $user->hasPermission('tasks.edit')) {
             return true;
         }
 
@@ -560,7 +560,7 @@ class TaskManagementController extends Controller
     private function canDeleteTask($user, TaskCard $task)
     {
         // الأدمن يمكنه حذف جميع المهام
-        if ($user->hasPermission('tasks.delete')) {
+        if ($user->user_type === 'admin' || $user->hasPermission('tasks.delete')) {
             return true;
         }
 
@@ -578,7 +578,7 @@ class TaskManagementController extends Controller
     private function canMoveTask($user, TaskCard $task)
     {
         // الأدمن يمكنه نقل جميع المهام
-        if ($user->hasPermission('tasks.edit')) {
+        if ($user->user_type === 'admin' || $user->hasPermission('tasks.edit')) {
             return true;
         }
 
@@ -622,16 +622,12 @@ class TaskManagementController extends Controller
      */
     private function getAssignedUser(TaskCard $task)
     {
-        switch ($task->assigned_to_type) {
-            case 'admin':
-                return Admin::find($task->assigned_to);
-            case 'marketing':
-                return MarketingTeam::find($task->assigned_to);
-            case 'sales':
-                return SalesTeam::find($task->assigned_to);
-            default:
-                return null;
+        if ($task->assigned_to && $task->assigned_to_type) {
+            return \App\Models\User::where('id', $task->assigned_to)
+                ->where('user_type', $task->assigned_to_type)
+                ->first();
         }
+        return null;
     }
 
     /**
@@ -654,7 +650,7 @@ class TaskManagementController extends Controller
                     'column_id' => $task->column_id
                 ],
                 [$assignedUser->id],
-                $assignedUser->user_type ?? 'admin'
+                $assignedUser->user_type
             );
         } catch (\Exception $e) {
             Log::error('Failed to create task notification: ' . $e->getMessage());

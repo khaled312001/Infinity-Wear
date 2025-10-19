@@ -857,6 +857,9 @@
     window.boardsData = @json($boards);
     window.availableUsers = @json($availableUsers);
     window.taskStats = @json($taskStats);
+    window.currentUserId = {{ auth()->guard('admin')->id() }};
+    window.currentUserType = 'admin';
+    window.isLimitedView = false; // Admin has full access to all tasks
 </script>
 <script src="{{ asset('js/task-management.js') }}?v={{ time() }}"></script>
 <script>

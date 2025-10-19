@@ -131,6 +131,29 @@ class NotificationController extends Controller
     }
 
     /**
+     * أرشفة جميع الإشعارات المقروءة (AJAX)
+     */
+    public function archiveRead(): JsonResponse
+    {
+        try {
+            $count = $this->notificationService->archiveReadNotifications();
+            
+            return response()->json([
+                'success' => true,
+                'message' => "تم أرشفة {$count} إشعار مقروء",
+                'count' => $count
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error archiving read notifications: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ في أرشفة الإشعارات المقروءة'
+            ], 500);
+        }
+    }
+
+    /**
      * معاينة تفاصيل الإشعار
      */
     public function preview(Notification $notification): JsonResponse

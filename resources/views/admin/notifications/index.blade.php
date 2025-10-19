@@ -18,7 +18,7 @@
                         <div class="connection-status disconnected">
                             <span class="status-text">جاري الاتصال...</span>
                         </div>
-                        <button class="btn btn-outline-primary btn-sm" onclick="window.notificationManager.loadNotifications()">
+                        <button class="btn btn-outline-primary btn-sm" onclick="loadNotifications()">
                             <i class="fas fa-sync-alt"></i>
                             تحديث
                         </button>
@@ -236,6 +236,9 @@
 @endsection
 
 @section('scripts')
+<!-- Load notifications.js for full notification functionality -->
+<script src="{{ asset('js/notifications.js') }}"></script>
+
 <script>
 // Notification Management
 class NotificationPageManager {
@@ -283,9 +286,11 @@ class NotificationPageManager {
 
     async loadNotifications() {
         try {
-            const response = await fetch('/api/notifications', {
+            // Try to use the admin notifications API first
+            const response = await fetch('{{ route("admin.notifications.unread") }}', {
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
                 }
             });
 
@@ -333,10 +338,10 @@ class NotificationPageManager {
 
         if (filteredNotifications.length === 0) {
             container.innerHTML = `
-                <div class="notifications-empty">
-                    <i class="fas fa-bell-slash"></i>
-                    <h4>لا توجد إشعارات</h4>
-                    <p>لم يتم العثور على إشعارات في هذا القسم</p>
+                <div class="notifications-empty text-center py-5">
+                    <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">لا توجد إشعارات</h4>
+                    <p class="text-muted">لم يتم العثور على إشعارات في هذا القسم</p>
                 </div>
             `;
             return;
@@ -355,14 +360,15 @@ class NotificationPageManager {
     createNotificationElement(notification) {
         const timeAgo = this.formatTimeAgo(notification.created_at);
         const isRead = notification.is_read ? 'read' : '';
+        const icon = this.getNotificationIcon(notification.type);
         
         return `
             <div class="notification-item ${isRead}" data-notification-id="${notification.id}" data-type="${notification.type}">
                 <div class="notification-icon">
-                    <i class="${notification.icon}"></i>
+                    <i class="${icon}"></i>
                 </div>
                 <div class="notification-content">
-                    <div class="notification-title">${notification.title}</div>
+                    <div class="notification-title">${notification.title || notification.message}</div>
                     <div class="notification-message">${notification.message}</div>
                     <div class="notification-time">${timeAgo}</div>
                 </div>
@@ -376,6 +382,20 @@ class NotificationPageManager {
                 </div>
             </div>
         `;
+    }
+
+    getNotificationIcon(type) {
+        const icons = {
+            'order': 'fas fa-shopping-cart',
+            'contact': 'fas fa-envelope',
+            'whatsapp': 'fab fa-whatsapp',
+            'importer_order': 'fas fa-truck',
+            'system': 'fas fa-cog',
+            'task': 'fas fa-tasks',
+            'marketing': 'fas fa-bullhorn',
+            'sales': 'fas fa-chart-line'
+        };
+        return icons[type] || 'fas fa-bell';
     }
 
     addNotificationEventListeners(item) {
@@ -402,11 +422,13 @@ class NotificationPageManager {
 
     async markAsRead(notificationId) {
         try {
-            const response = await fetch(`/api/notifications/${notificationId}/read`, {
+            const response = await fetch(`{{ route("admin.notifications.mark-read") }}`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ notification_id: notificationId })
             });
 
             if (response.ok) {
@@ -423,10 +445,11 @@ class NotificationPageManager {
 
     async markAllAsRead() {
         try {
-            const response = await fetch('/api/notifications/mark-all-read', {
+            const response = await fetch('{{ route("admin.notifications.mark-all-read") }}', {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
                 }
             });
 
@@ -441,11 +464,13 @@ class NotificationPageManager {
 
     async archiveNotification(notificationId) {
         try {
-            const response = await fetch(`/api/notifications/${notificationId}/archive`, {
+            const response = await fetch(`{{ route("admin.notifications.archive") }}`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ notification_id: notificationId })
             });
 
             if (response.ok) {
@@ -461,10 +486,11 @@ class NotificationPageManager {
 
     async archiveRead() {
         try {
-            const response = await fetch('/api/notifications/archive-read', {
+            const response = await fetch('{{ route("admin.notifications.archive-read") }}', {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
                 }
             });
 
@@ -536,13 +562,43 @@ class NotificationPageManager {
     }
 
     showSuccess(message) {
-        // You can implement a toast notification here
-        console.log('Success:', message);
+        // Create a simple toast notification
+        const toast = document.createElement('div');
+        toast.className = 'alert alert-success alert-dismissible fade show position-fixed';
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        toast.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(toast);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 3000);
     }
 
     showError(message) {
-        // You can implement a toast notification here
-        console.error('Error:', message);
+        // Create a simple toast notification
+        const toast = document.createElement('div');
+        toast.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        toast.innerHTML = `
+            <i class="fas fa-exclamation-circle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(toast);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 5000);
     }
 }
 
@@ -551,7 +607,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.notificationPageManager = new NotificationPageManager();
 });
 
-// Global functions
+// Global functions for button onclick handlers
+function loadNotifications() {
+    if (window.notificationPageManager) {
+        window.notificationPageManager.loadNotifications();
+    } else if (window.notificationManager) {
+        window.notificationManager.loadNotifications();
+    }
+}
+
 function sendTestNotification() {
     if (window.notificationManager) {
         window.notificationManager.sendTestNotification();
@@ -567,4 +631,251 @@ function saveNotificationSettings() {
 
 @section('styles')
 <link href="{{ asset('css/notifications.css') }}" rel="stylesheet">
+<style>
+/* Notification Page Styles */
+.notification-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.stat-item {
+    text-align: center;
+    min-width: 120px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.notification-item:hover {
+    background-color: #f8fafc;
+    transform: translateX(-2px);
+}
+
+.notification-item.read {
+    opacity: 0.7;
+    background-color: #f8fafc;
+}
+
+.notification-item.unread {
+    background-color: #e3f2fd;
+    border-left: 3px solid #2196f3;
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    font-size: 16px;
+    margin-left: 15px;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.notification-message {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+
+.notification-time {
+    color: #94a3b8;
+    font-size: 0.75rem;
+}
+
+.notification-actions {
+    display: flex;
+    gap: 5px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.notification-item:hover .notification-actions {
+    opacity: 1;
+}
+
+.notification-actions .btn {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+}
+
+.notifications-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #64748b;
+}
+
+.notifications-empty i {
+    color: #cbd5e1;
+    margin-bottom: 20px;
+}
+
+.notifications-loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+}
+
+.notifications-loading i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.connection-status.connected {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.connection-status.disconnected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.connection-status::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-left: 8px;
+    animation: pulse 2s infinite;
+}
+
+.connection-status.connected::before {
+    background-color: #10b981;
+}
+
+.connection-status.disconnected::before {
+    background-color: #ef4444;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Tab Styles */
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: 8px 8px 0 0;
+    margin-right: 5px;
+    padding: 12px 20px;
+    font-weight: 500;
+    color: #64748b;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #f1f5f9;
+    color: var(--primary-color);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.nav-tabs .nav-link .badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .notification-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .stat-item {
+        min-width: auto;
+    }
+    
+    .notification-item {
+        padding: 12px 15px;
+    }
+    
+    .notification-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+        margin-left: 10px;
+    }
+    
+    .notification-actions {
+        opacity: 1; /* Always show on mobile */
+    }
+    
+    .nav-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .nav-tabs .nav-link {
+        margin-bottom: 5px;
+        font-size: 0.85rem;
+        padding: 10px 15px;
+    }
+}
+</style>
 @endsection

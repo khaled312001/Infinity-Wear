@@ -159,11 +159,11 @@
 
                                 <div class="column-content" id="column-{{ $column->id }}-tasks">
                                     @foreach($column->tasks as $task)
-                                        <div class="task-card {{ $task->assigned_to == auth()->guard('marketing')->id() && $task->assigned_to_type == 'marketing' ? 'draggable-task' : 'non-draggable-task' }}" 
+                                        <div class="task-card {{ $task->assigned_to == auth()->user()->id && $task->assigned_to_type == 'marketing' ? 'draggable-task' : 'non-draggable-task' }}" 
                                              data-task-id="{{ $task->id }}" 
                                              data-assigned-to="{{ $task->assigned_to }}" 
                                              data-assigned-to-type="{{ $task->assigned_to_type }}" 
-                                             draggable="{{ $task->assigned_to == auth()->guard('marketing')->id() && $task->assigned_to_type == 'marketing' ? 'true' : 'false' }}">
+                                             draggable="{{ $task->assigned_to == auth()->user()->id && $task->assigned_to_type == 'marketing' ? 'true' : 'false' }}">
                                             <div class="task-header">
                                                 <div class="task-priority priority-{{ $task->priority }}"></div>
                                                 @if($task->is_urgent)
@@ -218,7 +218,7 @@
                                                     <button class="btn btn-sm btn-outline-primary" data-task-id="{{ $task->id }}" onclick="viewTask(this.dataset.taskId)" title="عرض التفاصيل">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
-                                                    @if($task->assigned_to == auth()->guard('marketing')->id() && $task->assigned_to_type == 'marketing')
+                                                    @if($task->assigned_to == auth()->user()->id && $task->assigned_to_type == 'marketing')
                                                         <button class="btn btn-sm btn-outline-info" data-task-id="{{ $task->id }}" onclick="addComment(this.dataset.taskId)" title="إضافة تعليق">
                                                             <i class="fas fa-comment"></i>
                                                         </button>
@@ -342,7 +342,7 @@
     window.boardsData = @json($boards);
     window.availableUsers = @json($availableUsers ?? []);
     window.taskStats = @json($stats);
-    window.currentUserId = {{ auth()->guard('marketing')->id() }};
+    window.currentUserId = {{ auth()->user()->id }};
     window.currentUserType = 'marketing';
     window.isLimitedView = true;
 </script>

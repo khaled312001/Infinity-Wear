@@ -943,6 +943,7 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
         Route::post('/mark-read', [App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('mark-read')->middleware('user.permission:notifications');
         Route::post('/mark-all-read', [App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead'])->name('mark-all-read')->middleware('user.permission:notifications');
         Route::post('/archive', [App\Http\Controllers\Admin\NotificationController::class, 'archiveNotification'])->name('archive')->middleware('user.permission:notifications');
+        Route::post('/archive-read', [App\Http\Controllers\Admin\NotificationController::class, 'archiveRead'])->name('archive-read')->middleware('user.permission:notifications');
         
         // إدارة الإشعارات المخصصة للأدمن
         Route::get('/admin', [App\Http\Controllers\Admin\AdminNotificationController::class, 'index'])->name('admin.index')->middleware('user.permission:admin_notifications');
