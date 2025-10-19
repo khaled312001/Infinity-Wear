@@ -23,8 +23,13 @@ class NotificationController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
-        $userType = $user->user_type ?? 'admin';
+        $user = Auth::guard('admin')->user();
+        
+        if (!$user) {
+            return redirect()->route('admin.login')->with('error', 'يجب تسجيل الدخول أولاً');
+        }
+        
+        $userType = 'admin';
         
         // الحصول على الإشعارات
         $notifications = Notification::where('user_id', $user->id)
@@ -43,31 +48,60 @@ class NotificationController extends Controller
      */
     public function getNotifications(Request $request)
     {
-        $user = Auth::user();
-        $limit = $request->get('limit', 10);
-        $type = $request->get('type');
-        $unreadOnly = $request->get('unread_only', false);
+        try {
+            $user = Auth::guard('admin')->user();
+            
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'المستخدم غير مسجل الدخول'
+                ], 401);
+            }
 
-        $query = Notification::where('user_id', $user->id)
-            ->notArchived();
+            $limit = $request->get('limit', 10);
+            $type = $request->get('type');
+            $unreadOnly = $request->get('unread_only', false);
 
-        if ($type) {
-            $query->ofType($type);
+            $query = Notification::where('user_id', $user->id)
+                ->notArchived();
+
+            if ($type) {
+                $query->ofType($type);
+            }
+
+            if ($unreadOnly) {
+                $query->unread();
+            }
+
+            $notifications = $query->latest()
+                ->limit($limit)
+                ->get();
+
+            $unreadCount = 0;
+            try {
+                $unreadCount = $this->notificationService->getUnreadCount();
+            } catch (\Exception $e) {
+                // If service fails, calculate manually
+                $unreadCount = Notification::where('user_id', $user->id)
+                    ->unread()
+                    ->notArchived()
+                    ->count();
+            }
+
+            return response()->json([
+                'success' => true,
+                'notifications' => $notifications,
+                'unread_count' => $unreadCount
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error in getNotifications: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ في تحميل الإشعارات',
+                'notifications' => [],
+                'unread_count' => 0
+            ], 500);
         }
-
-        if ($unreadOnly) {
-            $query->unread();
-        }
-
-        $notifications = $query->latest()
-            ->limit($limit)
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'notifications' => $notifications,
-            'unread_count' => $this->notificationService->getUnreadCount()
-        ]);
     }
 
     /**
@@ -75,7 +109,7 @@ class NotificationController extends Controller
      */
     public function markAsRead(Request $request, $id)
     {
-        $user = Auth::user();
+        $user = Auth::guard('admin')->user();
         $notification = Notification::where('id', $id)
             ->where('user_id', $user->id)
             ->first();
@@ -100,7 +134,7 @@ class NotificationController extends Controller
      */
     public function markAllAsRead(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('admin')->user();
         $count = $this->notificationService->markAllAsRead();
 
         return response()->json([
@@ -115,7 +149,7 @@ class NotificationController extends Controller
      */
     public function archive(Request $request, $id)
     {
-        $user = Auth::user();
+        $user = Auth::guard('admin')->user();
         $notification = Notification::where('id', $id)
             ->where('user_id', $user->id)
             ->first();
@@ -140,7 +174,7 @@ class NotificationController extends Controller
      */
     public function archiveRead(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('admin')->user();
         $count = Notification::where('user_id', $user->id)
             ->where('is_read', true)
             ->where('is_archived', false)
@@ -161,7 +195,7 @@ class NotificationController extends Controller
      */
     public function delete(Request $request, $id)
     {
-        $user = Auth::user();
+        $user = Auth::guard('admin')->user();
         $notification = Notification::where('id', $id)
             ->where('user_id', $user->id)
             ->first();
@@ -186,12 +220,48 @@ class NotificationController extends Controller
      */
     public function getStats(Request $request)
     {
-        $stats = $this->notificationService->getNotificationStats();
+        try {
+            $user = Auth::guard('admin')->user();
+            
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'المستخدم غير مسجل الدخول'
+                ], 401);
+            }
 
-        return response()->json([
-            'success' => true,
-            'stats' => $stats
-        ]);
+            $stats = [];
+            try {
+                $stats = $this->notificationService->getNotificationStats();
+            } catch (\Exception $e) {
+                // If service fails, calculate manually
+                $stats = [
+                    'total_unread' => Notification::where('user_id', $user->id)->unread()->notArchived()->count(),
+                    'orders' => Notification::where('user_id', $user->id)->unread()->notArchived()->ofType('order')->count(),
+                    'contacts' => Notification::where('user_id', $user->id)->unread()->notArchived()->ofType('contact')->count(),
+                    'whatsapp' => Notification::where('user_id', $user->id)->unread()->notArchived()->ofType('whatsapp')->count(),
+                    'importer_orders' => Notification::where('user_id', $user->id)->unread()->notArchived()->ofType('importer_order')->count(),
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'stats' => $stats
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error in getStats: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ في تحميل الإحصائيات',
+                'stats' => [
+                    'total_unread' => 0,
+                    'orders' => 0,
+                    'contacts' => 0,
+                    'whatsapp' => 0,
+                    'importer_orders' => 0,
+                ]
+            ], 500);
+        }
     }
 
     /**
@@ -215,7 +285,7 @@ class NotificationController extends Controller
             ], 422);
         }
 
-        $user = Auth::user();
+        $user = Auth::guard('admin')->user();
         
         $subscription = PushSubscription::createOrUpdate([
             'user_id' => $user->id,
@@ -252,7 +322,7 @@ class NotificationController extends Controller
             ], 422);
         }
 
-        $user = Auth::user();
+        $user = Auth::guard('admin')->user();
         
         $subscription = PushSubscription::where('endpoint', $request->endpoint)
             ->where('user_id', $user->id)
@@ -278,7 +348,7 @@ class NotificationController extends Controller
      */
     public function sendTestNotification(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('admin')->user();
         
         $notification = $this->notificationService->sendAdvancedNotification(
             'system',

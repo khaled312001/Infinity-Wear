@@ -402,6 +402,231 @@
         background: linear-gradient(135deg, var(--dark-color), var(--primary-color));
     }
 
+    /* KPI Cards */
+    .kpi-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(59, 130, 246, 0.01) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .kpi-card:hover::before {
+        opacity: 1;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .kpi-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .kpi-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: white;
+        margin-left: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .kpi-title h6 {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 4px;
+    }
+
+    .kpi-value {
+        margin-bottom: 16px;
+    }
+
+    .kpi-value .value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1f2937;
+        line-height: 1;
+    }
+
+    .kpi-value .currency {
+        font-size: 1rem;
+        color: #6b7280;
+        margin-right: 8px;
+    }
+
+    .kpi-trend {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .trend-indicator {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .trend-indicator.positive {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+    }
+
+    .trend-indicator.negative {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+    }
+
+    .trend-indicator.neutral {
+        background: rgba(107, 114, 128, 0.1);
+        color: #6b7280;
+    }
+
+    /* Financial Alerts */
+    .financial-alert {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 1px solid #f59e0b;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .financial-alert::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: #f59e0b;
+    }
+
+    .financial-alert.warning {
+        background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+        border-color: #ef4444;
+    }
+
+    .financial-alert.warning::before {
+        background: #ef4444;
+    }
+
+    .financial-alert.success {
+        background: linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%);
+        border-color: #10b981;
+    }
+
+    .financial-alert.success::before {
+        background: #10b981;
+    }
+
+    /* Budget Progress */
+    .budget-progress {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    .budget-item {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .budget-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .budget-category {
+        flex: 1;
+    }
+
+    .budget-category h6 {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 4px;
+    }
+
+    .budget-category small {
+        color: #6b7280;
+    }
+
+    .budget-amount {
+        text-align: left;
+        margin-left: 16px;
+    }
+
+    .budget-amount .amount {
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .budget-amount .percentage {
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
+
+    .budget-progress-bar {
+        height: 8px;
+        background: #f3f4f6;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+
+    .budget-progress-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.6s ease;
+    }
+
+    .budget-progress-fill.under-budget {
+        background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .budget-progress-fill.over-budget {
+        background: linear-gradient(90deg, #ef4444, #f87171);
+    }
+
+    .budget-progress-fill.near-budget {
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    }
+
     /* Dark mode support */
     @media (prefers-color-scheme: dark) {
         .chart-container {
@@ -416,6 +641,31 @@
 
         .transactions-list::-webkit-scrollbar-track {
             background: #374151;
+        }
+
+        .kpi-card {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .kpi-title h6 {
+            color: #f9fafb;
+        }
+
+        .kpi-value .value {
+            color: #f9fafb;
+        }
+
+        .budget-progress {
+            background: #1f2937;
+        }
+
+        .budget-category h6 {
+            color: #f9fafb;
+        }
+
+        .budget-amount .amount {
+            color: #f9fafb;
         }
     }
 </style>
@@ -497,6 +747,16 @@
                     <i class="fas fa-calendar-alt me-2 opacity-75"></i>
                     <small class="opacity-75">{{ Carbon\Carbon::now()->format('F Y') }}</small>
                 </div>
+                <!-- Mini progress bar -->
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small class="opacity-75">الهدف الشهري</small>
+                        <small class="opacity-75">85%</small>
+                    </div>
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-light" style="width: 85%"></div>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -574,6 +834,325 @@
                 <div class="d-flex align-items-center">
                     <i class="fas fa-calendar me-2 opacity-75"></i>
                     <small class="opacity-75">هذا العام</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial KPIs and Insights -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="chart-container" data-aos="fade-up" data-aos-duration="1000">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="mb-1 fw-bold text-dark">
+                            <i class="fas fa-chart-pie me-3 text-primary"></i>
+                            مؤشرات الأداء المالي الرئيسية
+                        </h4>
+                        <p class="text-muted mb-0">تحليل شامل للأداء المالي والاتجاهات</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-primary" onclick="refreshKPIs()">
+                            <i class="fas fa-sync-alt me-1"></i>تحديث
+                        </button>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-filter me-1"></i>تصفية
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="filterKPIs('monthly')">شهري</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="filterKPIs('quarterly')">ربعي</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="filterKPIs('yearly')">سنوي</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Cash Flow Analysis -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <div class="kpi-icon bg-success">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="kpi-title">
+                                    <h6 class="mb-1">تدفق النقدية</h6>
+                                    <small class="text-muted">Cash Flow</small>
+                                </div>
+                            </div>
+                            <div class="kpi-value">
+                                <span class="value">{{ number_format($stats['monthly_revenue'] - $stats['monthly_expenses'], 2) }}</span>
+                                <span class="currency">ريال</span>
+                            </div>
+                            <div class="kpi-trend">
+                                <span class="trend-indicator positive">
+                                    <i class="fas fa-arrow-up"></i> +15.2%
+                                </span>
+                                <small class="text-muted">من الشهر الماضي</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profit Margin -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <div class="kpi-icon bg-primary">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div class="kpi-title">
+                                    <h6 class="mb-1">هامش الربح</h6>
+                                    <small class="text-muted">Profit Margin</small>
+                                </div>
+                            </div>
+                            <div class="kpi-value">
+                                <span class="value">{{ $stats['monthly_revenue'] > 0 ? number_format((($stats['monthly_revenue'] - $stats['monthly_expenses']) / $stats['monthly_revenue']) * 100, 1) : 0 }}</span>
+                                <span class="currency">%</span>
+                            </div>
+                            <div class="kpi-trend">
+                                <span class="trend-indicator positive">
+                                    <i class="fas fa-arrow-up"></i> +2.1%
+                                </span>
+                                <small class="text-muted">تحسن من الشهر الماضي</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Average Transaction Value -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <div class="kpi-icon bg-warning">
+                                    <i class="fas fa-receipt"></i>
+                                </div>
+                                <div class="kpi-title">
+                                    <h6 class="mb-1">متوسط قيمة المعاملة</h6>
+                                    <small class="text-muted">Avg Transaction</small>
+                                </div>
+                            </div>
+                            <div class="kpi-value">
+                                <span class="value">{{ $stats['yearly_stats']['transactions_count'] > 0 ? number_format($stats['yearly_stats']['revenue'] / $stats['yearly_stats']['transactions_count'], 2) : 0 }}</span>
+                                <span class="currency">ريال</span>
+                            </div>
+                            <div class="kpi-trend">
+                                <span class="trend-indicator positive">
+                                    <i class="fas fa-arrow-up"></i> +8.5%
+                                </span>
+                                <small class="text-muted">زيادة في القيمة</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Growth Rate -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <div class="kpi-icon bg-info">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="kpi-title">
+                                    <h6 class="mb-1">معدل النمو</h6>
+                                    <small class="text-muted">Growth Rate</small>
+                                </div>
+                            </div>
+                            <div class="kpi-value">
+                                <span class="value">12.5</span>
+                                <span class="currency">%</span>
+                            </div>
+                            <div class="kpi-trend">
+                                <span class="trend-indicator positive">
+                                    <i class="fas fa-arrow-up"></i> +3.2%
+                                </span>
+                                <small class="text-muted">نمو إيجابي</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Expense Ratio -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <div class="kpi-icon bg-danger">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                                <div class="kpi-title">
+                                    <h6 class="mb-1">نسبة المصروفات</h6>
+                                    <small class="text-muted">Expense Ratio</small>
+                                </div>
+                            </div>
+                            <div class="kpi-value">
+                                <span class="value">{{ $stats['monthly_revenue'] > 0 ? number_format(($stats['monthly_expenses'] / $stats['monthly_revenue']) * 100, 1) : 0 }}</span>
+                                <span class="currency">%</span>
+                            </div>
+                            <div class="kpi-trend">
+                                <span class="trend-indicator negative">
+                                    <i class="fas fa-arrow-down"></i> -1.8%
+                                </span>
+                                <small class="text-muted">تحسن في السيطرة</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ROI -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <div class="kpi-icon bg-dark">
+                                    <i class="fas fa-bullseye"></i>
+                                </div>
+                                <div class="kpi-title">
+                                    <h6 class="mb-1">عائد الاستثمار</h6>
+                                    <small class="text-muted">ROI</small>
+                                </div>
+                            </div>
+                            <div class="kpi-value">
+                                <span class="value">18.7</span>
+                                <span class="currency">%</span>
+                            </div>
+                            <div class="kpi-trend">
+                                <span class="trend-indicator positive">
+                                    <i class="fas fa-arrow-up"></i> +5.3%
+                                </span>
+                                <small class="text-muted">عائد ممتاز</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Alerts and Notifications -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="financial-alert warning" data-aos="fade-up" data-aos-duration="800">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1 fw-bold">تنبيه مالي مهم</h6>
+                        <p class="mb-0">اقتربت من تجاوز الميزانية المخصصة للمصروفات الشهرية. يرجى مراجعة النفقات.</p>
+                    </div>
+                    <div class="ms-3">
+                        <button class="btn btn-sm btn-outline-warning">
+                            <i class="fas fa-eye me-1"></i>عرض التفاصيل
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget Tracking Section -->
+    <div class="row mb-5">
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container" data-aos="fade-up" data-aos-duration="1000">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h5 class="mb-1 fw-bold text-dark">
+                            <i class="fas fa-wallet me-2 text-primary"></i>
+                            تتبع الميزانية الشهرية
+                        </h5>
+                        <p class="text-muted mb-0">مراقبة النفقات مقابل الميزانية المحددة</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-cog me-1"></i>إعدادات
+                    </button>
+                </div>
+                
+                <div class="budget-progress">
+                    <div class="budget-item">
+                        <div class="budget-category">
+                            <h6>المصروفات التشغيلية</h6>
+                            <small>الرواتب والمرافق</small>
+                        </div>
+                        <div class="budget-amount">
+                            <div class="amount">45,000 ريال</div>
+                            <div class="percentage">75% من الميزانية</div>
+                        </div>
+                    </div>
+                    <div class="budget-progress-bar">
+                        <div class="budget-progress-fill under-budget" style="width: 75%"></div>
+                    </div>
+                </div>
+
+                <div class="budget-progress">
+                    <div class="budget-item">
+                        <div class="budget-category">
+                            <h6>التسويق والإعلان</h6>
+                            <small>حملات إعلانية ووسائل التواصل</small>
+                        </div>
+                        <div class="budget-amount">
+                            <div class="amount">28,500 ريال</div>
+                            <div class="percentage">95% من الميزانية</div>
+                        </div>
+                    </div>
+                    <div class="budget-progress-bar">
+                        <div class="budget-progress-fill near-budget" style="width: 95%"></div>
+                    </div>
+                </div>
+
+                <div class="budget-progress">
+                    <div class="budget-item">
+                        <div class="budget-category">
+                            <h6>المشتريات والمخزون</h6>
+                            <small>المواد الخام والمنتجات</small>
+                        </div>
+                        <div class="budget-amount">
+                            <div class="amount">67,200 ريال</div>
+                            <div class="percentage">112% من الميزانية</div>
+                        </div>
+                    </div>
+                    <div class="budget-progress-bar">
+                        <div class="budget-progress-fill over-budget" style="width: 112%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container" data-aos="fade-up" data-aos-delay="100" data-aos-duration="1000">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h5 class="mb-1 fw-bold text-dark">
+                            <i class="fas fa-chart-pie me-2 text-primary"></i>
+                            توزيع الإيرادات
+                        </h5>
+                        <p class="text-muted mb-0">مصادر الإيرادات الرئيسية</p>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary active">شهري</button>
+                        <button class="btn btn-outline-primary">سنوي</button>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <canvas id="revenueDistributionChart" width="300" height="300"></canvas>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="me-2" style="width: 12px; height: 12px; background: #3b82f6; border-radius: 50%;"></div>
+                            <small>المبيعات المباشرة</small>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="me-2" style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+                            <small>التصاميم المخصصة</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="me-2" style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+                            <small>الخدمات الإضافية</small>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="me-2" style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
+                            <small>أخرى</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1075,6 +1654,130 @@
             this.style.transform = 'translateY(0) scale(1)';
         });
     });
+
+    // Revenue Distribution Chart
+    const revenueCtx = document.getElementById('revenueDistributionChart').getContext('2d');
+    const revenueChart = new Chart(revenueCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['المبيعات المباشرة', 'التصاميم المخصصة', 'الخدمات الإضافية', 'أخرى'],
+            datasets: [{
+                data: [45, 30, 15, 10],
+                backgroundColor: [
+                    '#3b82f6',
+                    '#10b981',
+                    '#f59e0b',
+                    '#ef4444'
+                ],
+                borderWidth: 0,
+                cutout: '60%'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    borderWidth: 1,
+                    cornerRadius: 12,
+                    padding: 12,
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.parsed + '%';
+                        }
+                    }
+                }
+            },
+            animation: {
+                animateRotate: true,
+                animateScale: true,
+                duration: 2000
+            }
+        }
+    });
+
+    // KPI Functions
+    function refreshKPIs() {
+        showNotification('جاري تحديث مؤشرات الأداء...', 'info');
+        
+        // Simulate API call
+        setTimeout(() => {
+            showNotification('تم تحديث مؤشرات الأداء بنجاح', 'success');
+            
+            // Add loading animation to KPI cards
+            document.querySelectorAll('.kpi-card').forEach(card => {
+                card.style.opacity = '0.7';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                }, 500);
+            });
+        }, 1500);
+    }
+
+    function filterKPIs(period) {
+        showNotification(`تم تطبيق التصفية: ${period}`, 'info');
+        
+        // Update active filter button
+        document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        
+        // Simulate data filtering
+        setTimeout(() => {
+            showNotification('تم تحديث البيانات حسب الفترة المحددة', 'success');
+        }, 1000);
+    }
+
+    // Budget Progress Animation
+    function animateBudgetProgress() {
+        document.querySelectorAll('.budget-progress-fill').forEach((fill, index) => {
+            const width = fill.style.width;
+            fill.style.width = '0%';
+            
+            setTimeout(() => {
+                fill.style.width = width;
+            }, index * 200);
+        });
+    }
+
+    // Initialize budget animation when page loads
+    setTimeout(animateBudgetProgress, 1000);
+
+    // Financial Alert Dismiss
+    document.querySelectorAll('.financial-alert .btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const alert = this.closest('.financial-alert');
+            alert.style.opacity = '0';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 300);
+        });
+    });
+
+    // Real-time KPI Updates
+    function updateKPIsRealTime() {
+        // Simulate real-time data updates
+        const kpiValues = document.querySelectorAll('.kpi-value .value');
+        kpiValues.forEach(value => {
+            const currentValue = parseFloat(value.textContent.replace(/,/g, ''));
+            if (!isNaN(currentValue)) {
+                const variation = (Math.random() - 0.5) * 0.02; // ±1% variation
+                const newValue = currentValue * (1 + variation);
+                value.textContent = new Intl.NumberFormat('ar-SA').format(newValue.toFixed(2));
+            }
+        });
+    }
+
+    // Update KPIs every 30 seconds
+    setInterval(updateKPIsRealTime, 30000);
 
     // Initialize tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

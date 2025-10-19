@@ -344,7 +344,7 @@ class TaskManagementController extends Controller
         $task->addComment(
             $request->comment,
             Auth::id(),
-            Auth::user()->name ?? 'مدير',
+            Auth::guard('admin')->user()->name ?? 'مدير',
             'admin'
         );
 
@@ -436,7 +436,7 @@ class TaskManagementController extends Controller
             $request->minutes,
             $request->description ?? '',
             Auth::id(),
-            Auth::user()->name ?? 'مدير'
+            Auth::guard('admin')->user()->name ?? 'مدير'
         );
 
         return response()->json([
@@ -470,9 +470,17 @@ class TaskManagementController extends Controller
     private function getAvailableUsers()
     {
         return [
-            'admins' => Admin::select('id', 'name', 'email', 'user_type')
+            'admins' => Admin::select('id', 'name', 'email')
                 ->where('is_active', 1)
-                ->get(),
+                ->get()
+                ->map(function($admin) {
+                    return (object)[
+                        'id' => $admin->id,
+                        'name' => $admin->name,
+                        'email' => $admin->email,
+                        'user_type' => 'admin'
+                    ];
+                }),
             'marketing' => MarketingTeam::with('admin:id,name,email')
                 ->where('is_active', 1)
                 ->get()

@@ -691,7 +691,9 @@ Route::middleware(['auth', 'user.type:employee'])->prefix('employee')->name('emp
 Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/employees', [App\Http\Controllers\Admin\DashboardController::class, 'employees'])->name('employees');
-    Route::get('/reports', [App\Http\Controllers\Admin\DashboardController::class, 'reports'])->name('reports')->middleware('user.permission:reports');
+    Route::get('/reports', [App\Http\Controllers\Admin\ReportsController::class, 'index'])->name('reports')->middleware('user.permission:reports');
+    Route::get('/reports/export/excel', [App\Http\Controllers\Admin\ReportsController::class, 'exportExcel'])->name('reports.export.excel')->middleware('user.permission:reports');
+    Route::get('/reports/export/pdf', [App\Http\Controllers\Admin\ReportsController::class, 'exportPdf'])->name('reports.export.pdf')->middleware('user.permission:reports');
     Route::get('/settings', [App\Http\Controllers\Admin\DashboardController::class, 'settings'])->name('settings')->middleware('user.permission:settings');
     
     // إدارة المهام الجديدة

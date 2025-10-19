@@ -1,28 +1,20 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'تفاصيل المستخدم')
+@section('page-title', 'تفاصيل المستخدم')
+@section('page-subtitle', $user->name)
+
+@section('page-actions')
+    <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-right"></i> العودة للقائمة
+    </a>
+    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-primary">
+        <i class="fas fa-edit"></i> تعديل
+    </a>
+@endsection
 
 @section('content')
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <!-- Header Section -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 class="h3 mb-0">تفاصيل المستخدم</h1>
-                    <p class="text-muted">{{ $user->name }}</p>
-                </div>
-                <div>
-                    <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-right"></i> العودة للقائمة
-                    </a>
-                    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-primary">
-                        <i class="fas fa-edit"></i> تعديل
-                    </a>
-                </div>
-            </div>
-
-            <div class="row">
+<div class="row">
                 <div class="col-lg-4">
                     <!-- User Profile Card -->
                     <div class="card">
@@ -293,7 +285,4 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 @endsection

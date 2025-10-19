@@ -107,7 +107,10 @@ class NotificationManager {
                 return false;
             }
 
-            this.permission = await Notification.requestPermission();
+            // Only request permission if it's default (not already asked)
+            if (this.permission === 'default') {
+                this.permission = await Notification.requestPermission();
+            }
             
             if (this.permission === 'granted') {
                 console.log('Notification permission granted');

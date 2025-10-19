@@ -556,13 +556,77 @@
 
         function changePeriod(period) {
             console.log('تغيير فترة التقرير إلى:', period);
-            // هنا يمكن إضافة منطق تحديث التقرير
+            
+            // إظهار رسالة تحميل
+            const loadingAlert = document.createElement('div');
+            loadingAlert.className = 'alert alert-info alert-dismissible fade show position-fixed';
+            loadingAlert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            loadingAlert.innerHTML = `
+                <i class="fas fa-spinner fa-spin me-2"></i>
+                جاري تحديث التقرير...
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(loadingAlert);
+            
+            // إعادة تحميل الصفحة مع المعامل الجديد
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('period', period);
+            window.location.href = currentUrl.toString();
         }
 
         function exportReport(format) {
             console.log('تصدير التقرير بصيغة:', format);
-            // هنا يمكن إضافة منطق التصدير
-            alert('سيتم تصدير التقرير بصيغة ' + format.toUpperCase());
+            
+            // إظهار رسالة تحميل
+            const loadingAlert = document.createElement('div');
+            loadingAlert.className = 'alert alert-info alert-dismissible fade show position-fixed';
+            loadingAlert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            loadingAlert.innerHTML = `
+                <i class="fas fa-spinner fa-spin me-2"></i>
+                جاري تحضير التقرير...
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(loadingAlert);
+            
+            // بناء URL التصدير
+            const currentPeriod = '{{ $period }}';
+            const exportUrl = format === 'excel' 
+                ? '{{ route("admin.reports.export.excel") }}?period=' + currentPeriod
+                : '{{ route("admin.reports.export.pdf") }}?period=' + currentPeriod;
+            
+            // إنشاء رابط التحميل
+            const link = document.createElement('a');
+            link.href = exportUrl;
+            link.download = '';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // إزالة رسالة التحميل بعد ثانيتين
+            setTimeout(() => {
+                if (loadingAlert.parentNode) {
+                    loadingAlert.remove();
+                }
+                
+                // إظهار رسالة نجاح
+                const successAlert = document.createElement('div');
+                successAlert.className = 'alert alert-success alert-dismissible fade show position-fixed';
+                successAlert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+                successAlert.innerHTML = `
+                    <i class="fas fa-check-circle me-2"></i>
+                    تم تحضير التقرير بنجاح!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(successAlert);
+                
+                // إزالة رسالة النجاح بعد 3 ثوان
+                setTimeout(() => {
+                    if (successAlert.parentNode) {
+                        successAlert.remove();
+                    }
+                }, 3000);
+            }, 2000);
         }
     </script>
 @endpush

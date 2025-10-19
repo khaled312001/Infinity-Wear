@@ -47,8 +47,10 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 // Handle specific permission errors gracefully
-                if (error.name === 'NotAllowedError') {
+                if (error.name === 'NotAllowedError' || error.message.includes('permission')) {
                     console.warn('Pusher Beams permission denied - notifications will not work until permission is granted');
+                } else if (error.message.includes('Invalid instance ID') || error.message.includes('404')) {
+                    console.warn('Pusher Beams instance ID is invalid or not found');
                 } else {
                     console.error('Error setting up Pusher Beams:', error);
                 }
