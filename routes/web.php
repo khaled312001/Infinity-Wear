@@ -840,7 +840,7 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     Route::post('/sales/{id}/assign-task', [AdminController::class, 'assignTaskToSales'])->name('sales.assign-task')->middleware('user.permission:sales_team_management');
     Route::put('/sales/{id}/target', [AdminController::class, 'updateSalesTarget'])->name('sales.update-target')->middleware('user.permission:sales_team_management');
     
-    // مهام فريق المبيعات
+    // مهام فريق المبيعات - Admin access
     Route::prefix('sales/tasks')->name('sales.tasks.')->group(function () {
         Route::get('/', [App\Http\Controllers\Sales\TaskController::class, 'index'])->name('index');
         Route::get('/{task}', [App\Http\Controllers\Sales\TaskController::class, 'show'])->name('show');

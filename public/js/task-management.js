@@ -691,7 +691,14 @@ class TaskManagement {
         if (!container) return;
 
         try {
-            const response = await fetch(`/admin/tasks/${taskId}/comments`);
+            const response = await fetch(`/admin/tasks/${taskId}/comments`, {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
             const data = await response.json();
             
             container.innerHTML = '';
@@ -732,7 +739,19 @@ class TaskManagement {
                 }
             }
 
-            const response = await fetch(commentsUrl);
+            const response = await fetch(commentsUrl, {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const data = await response.json();
             
             container.innerHTML = '';
