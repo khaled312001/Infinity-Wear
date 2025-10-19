@@ -285,27 +285,40 @@ class NotificationPageManager {
     }
 
     async loadNotifications() {
+        console.log('loadNotifications called');
         try {
+            const url = '{{ route("admin.notifications.unread") }}';
+            console.log('Fetching from URL:', url);
+            
             // Try to use the admin notifications API first
-            const response = await fetch('{{ route("admin.notifications.unread") }}', {
+            const response = await fetch(url, {
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     'Accept': 'application/json'
                 }
             });
 
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+
             if (!response.ok) {
-                throw new Error('Failed to load notifications');
+                const errorText = await response.text();
+                console.error('Response error:', errorText);
+                throw new Error('Failed to load notifications: ' + response.status);
             }
 
             const data = await response.json();
+            console.log('Response data:', data);
+            
             this.notifications = data.notifications || [];
             this.updateStats(data.stats || {});
             this.renderNotifications();
             
+            console.log('Notifications loaded successfully, count:', this.notifications.length);
+            
         } catch (error) {
             console.error('Failed to load notifications:', error);
-            this.showError('فشل في تحميل الإشعارات');
+            this.showError('فشل في تحميل الإشعارات: ' + error.message);
         }
     }
 
@@ -604,7 +617,15 @@ class NotificationPageManager {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.notificationPageManager = new NotificationPageManager();
+    console.log('DOM Content Loaded - Initializing NotificationPageManager');
+    alert('JavaScript is executing! Check console for details.');
+    try {
+        window.notificationPageManager = new NotificationPageManager();
+        console.log('NotificationPageManager initialized successfully');
+    } catch (error) {
+        console.error('Error initializing NotificationPageManager:', error);
+        alert('Error initializing NotificationPageManager: ' + error.message);
+    }
 });
 
 // Global functions for button onclick handlers
