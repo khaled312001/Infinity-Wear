@@ -739,16 +739,26 @@ class TaskManagement {
                 }
             }
 
+            console.log('Loading comments from:', commentsUrl);
+            console.log('isLimitedView:', window.isLimitedView);
+            console.log('currentUserType:', window.currentUserType);
+
             const response = await fetch(commentsUrl, {
                 method: 'GET',
                 credentials: 'same-origin',
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             });
             
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
             if (!response.ok) {
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
