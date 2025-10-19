@@ -18,7 +18,7 @@
                     <div class="connection-status disconnected">
                         <span class="status-text">جاري الاتصال...</span>
                     </div>
-                    <button class="btn btn-outline-primary btn-sm" onclick="loadNotifications()">
+                    <button class="btn btn-outline-primary btn-sm" id="refresh-notifications">
                         <i class="fas fa-sync-alt"></i>
                         تحديث
                     </button>
@@ -30,11 +30,11 @@
                         <i class="fas fa-archive"></i>
                         أرشفة المقروءة
                     </button>
-                    <button class="btn btn-outline-info btn-sm" onclick="testNotifications()">
+                    <button class="btn btn-outline-info btn-sm" id="test-notifications">
                         <i class="fas fa-vial"></i>
                         اختبار
                     </button>
-                    <button class="btn btn-outline-secondary btn-sm" onclick="debugNotificationSystem()">
+                    <button class="btn btn-outline-secondary btn-sm" id="debug-notifications">
                         <i class="fas fa-bug"></i>
                         تشخيص
                     </button>
@@ -322,6 +322,58 @@
 <script src="{{ asset('js/notifications.js') }}"></script>
 
 <script>
+// Global functions for button handlers
+function loadNotifications() {
+    console.log('loadNotifications called');
+    if (window.combinedNotificationManager) {
+        console.log('Manager found, loading notifications...');
+        if (window.combinedNotificationManager.currentMainTab === 'system') {
+            window.combinedNotificationManager.loadSystemNotifications();
+        } else {
+            window.combinedNotificationManager.loadAdminNotifications();
+        }
+    } else {
+        console.warn('Notification manager not found, initializing...');
+        // محاولة إعادة تهيئة النظام
+        setTimeout(() => {
+            if (window.combinedNotificationManager) {
+                loadNotifications();
+            } else {
+                console.error('Failed to initialize notification manager');
+            }
+        }, 1000);
+    }
+}
+
+function testNotifications() {
+    console.log('testNotifications called');
+    if (window.combinedNotificationManager) {
+        console.log('Testing notification system...');
+        window.combinedNotificationManager.loadSystemNotifications();
+    } else {
+        console.warn('Notification manager not found');
+        // محاولة إعادة تهيئة النظام
+        setTimeout(() => {
+            if (window.combinedNotificationManager) {
+                testNotifications();
+            } else {
+                console.error('Failed to initialize notification manager');
+            }
+        }, 1000);
+    }
+}
+
+function debugNotificationSystem() {
+    console.log('=== Notification System Debug ===');
+    console.log('CSRF Token:', document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'));
+    console.log('Manager exists:', !!window.combinedNotificationManager);
+    console.log('System notifications:', window.combinedNotificationManager?.systemNotifications?.length || 0);
+    console.log('Current main tab:', window.combinedNotificationManager?.currentMainTab);
+    console.log('Current system tab:', window.combinedNotificationManager?.currentSystemTab);
+    console.log('DOM ready state:', document.readyState);
+    console.log('Window loaded:', window.combinedNotificationManager ? 'Yes' : 'No');
+}
+
 // Combined Notification Management
 class CombinedNotificationManager {
     constructor() {
@@ -407,6 +459,30 @@ class CombinedNotificationManager {
 
         document.querySelector('.archive-read')?.addEventListener('click', () => {
             this.archiveRead();
+        });
+        
+        // Button actions
+        document.getElementById('refresh-notifications')?.addEventListener('click', () => {
+            console.log('Refresh button clicked');
+            this.loadSystemNotifications();
+        });
+        
+        document.getElementById('test-notifications')?.addEventListener('click', () => {
+            console.log('Test button clicked');
+            this.loadSystemNotifications();
+        });
+        
+        document.getElementById('debug-notifications')?.addEventListener('click', () => {
+            console.log('Debug button clicked');
+            this.debugSystem();
+        });
+        
+        // Test system button (dynamically added)
+        document.addEventListener('click', (e) => {
+            if (e.target && e.target.id === 'test-system-btn') {
+                console.log('Test system button clicked');
+                this.loadSystemNotifications();
+            }
         });
     }
 
@@ -612,7 +688,7 @@ class CombinedNotificationManager {
                     <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
                     <h4 class="text-muted">لا توجد إشعارات</h4>
                     <p class="text-muted">لم يتم العثور على إشعارات في هذا القسم</p>
-                    <button class="btn btn-outline-primary btn-sm" onclick="testNotifications()">
+                    <button class="btn btn-outline-primary btn-sm" id="test-system-btn">
                         <i class="fas fa-vial"></i>
                         اختبار النظام
                     </button>
@@ -882,36 +958,30 @@ class CombinedNotificationManager {
             }
         }
     }
-}
-
-// Global function for refresh button
-function loadNotifications() {
-    if (window.combinedNotificationManager) {
-        if (window.combinedNotificationManager.currentMainTab === 'system') {
-            window.combinedNotificationManager.loadSystemNotifications();
-        } else {
-            window.combinedNotificationManager.loadAdminNotifications();
-        }
+    
+    debugSystem() {
+        console.log('=== Notification System Debug ===');
+        console.log('CSRF Token:', document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'));
+        console.log('Manager exists:', !!window.combinedNotificationManager);
+        console.log('System notifications:', this.systemNotifications?.length || 0);
+        console.log('Current main tab:', this.currentMainTab);
+        console.log('Current system tab:', this.currentSystemTab);
+        console.log('DOM ready state:', document.readyState);
+        console.log('Authentication status:', this.checkAuthentication());
+        
+        // محاولة تحميل الإشعارات يدوياً
+        console.log('Attempting manual notification load...');
+        this.loadSystemNotifications();
+        
+        // عرض معلومات إضافية
+        console.log('=== Additional Debug Info ===');
+        console.log('Window location:', window.location.href);
+        console.log('User agent:', navigator.userAgent);
+        console.log('Screen size:', screen.width + 'x' + screen.height);
+        console.log('Viewport size:', window.innerWidth + 'x' + window.innerHeight);
     }
 }
 
-// Global function for testing notifications
-function testNotifications() {
-    if (window.combinedNotificationManager) {
-        console.log('Testing notification system...');
-        window.combinedNotificationManager.loadSystemNotifications();
-    }
-}
-
-// Debug function to check system status
-function debugNotificationSystem() {
-    console.log('=== Notification System Debug ===');
-    console.log('CSRF Token:', document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'));
-    console.log('Manager exists:', !!window.combinedNotificationManager);
-    console.log('System notifications:', window.combinedNotificationManager?.systemNotifications?.length || 0);
-    console.log('Current main tab:', window.combinedNotificationManager?.currentMainTab);
-    console.log('Current system tab:', window.combinedNotificationManager?.currentSystemTab);
-}
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
