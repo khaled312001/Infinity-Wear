@@ -5,15 +5,10 @@
         <i class="fas fa-tachometer-alt me-2"></i>
         لوحة التحكم
     </a>
-    <a href="{{ route('admin.notifications.index') }}" class="nav-link {{ request()->routeIs('admin.notifications.index') ? 'active' : '' }}" style="position: relative;">
+    <a href="{{ route('admin.notifications.index') }}" class="nav-link {{ request()->routeIs('admin.notifications*') ? 'active' : '' }}" style="position: relative;">
         <i class="fas fa-bell me-2"></i>
         الإشعارات
         <span class="notification-badge" id="sidebarNotificationsBadge" style="display: none;">0</span>
-    </a>
-    <a href="{{ route('admin.notifications.new.index') }}" class="nav-link {{ request()->routeIs('admin.notifications.new*') ? 'active' : '' }}" style="position: relative;">
-        <i class="fas fa-bell-slash me-2"></i>
-        الإشعارات الجديدة
-        <span class="badge bg-success ms-1">جديد</span>
     </a>
     <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.contacts*') ? 'active' : '' }}">
         <i class="fas fa-address-book me-2"></i>

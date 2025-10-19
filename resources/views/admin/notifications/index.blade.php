@@ -38,7 +38,7 @@
                         <i class="fas fa-bug"></i>
                         تشخيص
                     </button>
-                    <a href="/admin/notifications/new" class="btn btn-outline-success btn-sm">
+                    <a href="/admin/notifications/new" class="btn btn-outline-success btn-sm" target="_blank">
                         <i class="fas fa-rocket"></i>
                         النظام الجديد
                     </a>
