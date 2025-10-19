@@ -132,7 +132,7 @@
                                         <i class="fas fa-bell fa-3x text-muted mb-3"></i>
                                         <h4 class="text-muted">لا توجد إشعارات حالياً</h4>
                                         <p class="text-muted">جميع الإشعارات ستظهر هنا عند توفرها</p>
-                                        <button class="btn btn-outline-primary btn-sm" onclick="createTestNotification()">
+                                        <button class="btn btn-outline-primary btn-sm" id="create-test-notification">
                                             <i class="fas fa-plus"></i>
                                             إنشاء إشعار تجريبي
                                         </button>
@@ -1428,12 +1428,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </style>
 
 <script>
-// Simple notification functions
-function createTestNotification() {
-    alert('تم إنشاء إشعار تجريبي بنجاح!');
-    console.log('Test notification created');
-}
-
 // Make buttons work
 document.addEventListener('DOMContentLoaded', function() {
     // Refresh button
@@ -1481,6 +1475,15 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Page loaded successfully');
             console.log('All buttons are working');
             alert('تم تشخيص النظام - جميع الأزرار تعمل بشكل صحيح!');
+        });
+    }
+    
+    // Create test notification button
+    const createTestBtn = document.getElementById('create-test-notification');
+    if (createTestBtn) {
+        createTestBtn.addEventListener('click', function() {
+            console.log('Create test notification clicked');
+            alert('تم إنشاء إشعار تجريبي بنجاح!');
         });
     }
     
