@@ -61,7 +61,20 @@ class AdminNotificationController extends Controller
             'scheduled' => AdminNotification::where('is_scheduled', true)->where('is_sent', false)->count(),
         ];
 
-        return view('admin.notifications.index', compact('adminNotifications', 'adminStats'));
+        // إحصائيات النظام (للتبويب الأول)
+        $stats = [
+            'total' => \App\Models\Notification::count(),
+            'unread' => \App\Models\Notification::where('is_read', false)->where('is_archived', false)->count(),
+            'order' => \App\Models\Notification::where('is_read', false)->where('is_archived', false)->where('type', 'order')->count(),
+            'contact' => \App\Models\Notification::where('is_read', false)->where('is_archived', false)->where('type', 'contact')->count(),
+            'whatsapp' => \App\Models\Notification::where('is_read', false)->where('is_archived', false)->where('type', 'whatsapp')->count(),
+            'importer_order' => \App\Models\Notification::where('is_read', false)->where('is_archived', false)->where('type', 'importer_order')->count(),
+        ];
+
+        // إشعارات النظام (للتبويب الأول)
+        $notifications = \App\Models\Notification::notArchived()->latest()->paginate(20);
+
+        return view('admin.notifications.index', compact('adminNotifications', 'adminStats', 'notifications', 'stats'));
     }
 
     /**
