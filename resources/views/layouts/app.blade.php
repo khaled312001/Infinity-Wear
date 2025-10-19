@@ -142,7 +142,7 @@
                     <!-- Action Buttons -->
                     <div class="header-actions">
                         @auth
-                            <a href="{{ route('customer.dashboard') }}" class="btn btn-outline">لوحة التحكم</a>
+                            <a href="{{ route(Auth::user()->getDashboardRoute()) }}" class="btn btn-outline">لوحة التحكم</a>
                             <form method="POST" action="{{ route('logout') }}" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-primary">تسجيل الخروج</button>
@@ -239,7 +239,7 @@
             </div>
             <div class="sidebar-user-actions">
                 @auth
-                    <a href="{{ route('customer.dashboard') }}" class="btn btn-sidebar-primary">لوحة التحكم</a>
+                    <a href="{{ route(Auth::user()->getDashboardRoute()) }}" class="btn btn-sidebar-primary">لوحة التحكم</a>
                     <form method="POST" action="{{ route('logout') }}" class="d-inline">
                         @csrf
                         <button type="submit" class="btn btn-sidebar-outline">تسجيل الخروج</button>

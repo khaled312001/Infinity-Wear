@@ -654,7 +654,14 @@ Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')-
     });
 });
 
-
+// لوحة تحكم الموظفين
+Route::middleware(['auth', 'user.type:employee'])->prefix('employee')->name('employee.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Employee\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/tasks', [App\Http\Controllers\Employee\DashboardController::class, 'tasks'])->name('tasks');
+    Route::put('/tasks/{task}/status', [App\Http\Controllers\Employee\DashboardController::class, 'updateTaskStatus'])->name('tasks.update-status');
+    Route::get('/profile', [App\Http\Controllers\Employee\DashboardController::class, 'profile'])->name('profile');
+    Route::put('/profile', [App\Http\Controllers\Employee\DashboardController::class, 'updateProfile'])->name('profile.update');
+});
 
 // لوحة التحكم الإدارية
 Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(function () {
