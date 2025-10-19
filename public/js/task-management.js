@@ -444,6 +444,8 @@ class TaskManagement {
         this.loadTaskData(taskId).then(taskData => {
             this.displayTaskView(taskData);
             this.showModal('viewTaskModal');
+            // تحميل التعليقات بعد عرض النافذة
+            this.loadTaskCommentsForView(taskId);
         }).catch(error => {
             console.error('Error loading task:', error);
             this.showAlert('error', 'خطأ في تحميل بيانات المهمة');
@@ -577,6 +579,18 @@ class TaskManagement {
                     </div>
                 </div>
                 ${window.isLimitedView ? `<div class="row mt-3"><div class="col-12"><div class="alert alert-info"><i class="fas fa-info-circle me-2"></i><strong>ملاحظة:</strong> يمكنك فقط تغيير حالة المهمة (سحب وإفلات) وإضافة تعليقات. ${!isAssignedToUser ? 'هذه المهمة غير مخصصة لك.' : ''}</div></div></div>` : ''}
+                
+                <!-- قسم التعليقات -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h5><i class="fas fa-comments me-2"></i>التعليقات</h5>
+                        <div id="viewTaskComments" class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin"></i> جاري تحميل التعليقات...
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
     }
@@ -699,6 +713,47 @@ class TaskManagement {
             }
         } catch (error) {
             console.error('Error loading comments:', error);
+            container.innerHTML = '<p class="text-muted">خطأ في تحميل التعليقات</p>';
+        }
+    }
+
+    async loadTaskCommentsForView(taskId) {
+        const container = document.getElementById('viewTaskComments');
+        if (!container) return;
+
+        try {
+            // تحديد المسار الصحيح حسب نوع المستخدم
+            let commentsUrl = `/admin/tasks/${taskId}/comments`;
+            if (window.isLimitedView) {
+                if (window.currentUserType === 'sales') {
+                    commentsUrl = `/sales/tasks/${taskId}/comments`;
+                } else if (window.currentUserType === 'marketing') {
+                    commentsUrl = `/marketing/tasks/${taskId}/comments`;
+                }
+            }
+
+            const response = await fetch(commentsUrl);
+            const data = await response.json();
+            
+            container.innerHTML = '';
+            if (data.comments && data.comments.length > 0) {
+                data.comments.forEach(comment => {
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'border-bottom pb-2 mb-2';
+                    commentElement.innerHTML = `
+                        <div class="d-flex justify-content-between">
+                            <strong>${comment.author_name}</strong>
+                            <small class="text-muted">${comment.created_at}</small>
+                        </div>
+                        <p class="mb-0">${comment.comment}</p>
+                    `;
+                    container.appendChild(commentElement);
+                });
+            } else {
+                container.innerHTML = '<p class="text-muted">لا توجد تعليقات</p>';
+            }
+        } catch (error) {
+            console.error('Error loading comments for view:', error);
             container.innerHTML = '<p class="text-muted">خطأ في تحميل التعليقات</p>';
         }
     }
