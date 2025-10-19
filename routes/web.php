@@ -628,6 +628,7 @@ Route::middleware(['auth', 'user.type:marketing'])->prefix('marketing')->name('m
         Route::post('/', [App\Http\Controllers\Marketing\TaskController::class, 'createTask'])->name('create');
         Route::put('/{task}', [App\Http\Controllers\Marketing\TaskController::class, 'updateTask'])->name('update');
         Route::post('/{task}/move', [App\Http\Controllers\Marketing\TaskController::class, 'moveTask'])->name('move');
+        Route::get('/{task}/comments', [App\Http\Controllers\Marketing\TaskController::class, 'getComments'])->name('comments');
         Route::post('/{task}/comment', [App\Http\Controllers\Marketing\TaskController::class, 'addComment'])->name('comment');
         Route::post('/{task}/attachment', [App\Http\Controllers\Marketing\TaskController::class, 'addAttachment'])->name('attachment');
         Route::post('/{task}/checklist', [App\Http\Controllers\Marketing\TaskController::class, 'addChecklistItem'])->name('checklist');
@@ -670,6 +671,7 @@ Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')-
         Route::post('/', [App\Http\Controllers\Sales\TaskController::class, 'createTask'])->name('create');
         Route::put('/{task}', [App\Http\Controllers\Sales\TaskController::class, 'updateTask'])->name('update');
         Route::post('/{task}/move', [App\Http\Controllers\Sales\TaskController::class, 'moveTask'])->name('move');
+        Route::get('/{task}/comments', [App\Http\Controllers\Sales\TaskController::class, 'getComments'])->name('comments');
         Route::post('/{task}/comment', [App\Http\Controllers\Sales\TaskController::class, 'addComment'])->name('comment');
         Route::post('/{task}/attachment', [App\Http\Controllers\Sales\TaskController::class, 'addAttachment'])->name('attachment');
         Route::post('/{task}/checklist', [App\Http\Controllers\Sales\TaskController::class, 'addChecklistItem'])->name('checklist');
@@ -704,6 +706,7 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
         Route::put('/{task}', [App\Http\Controllers\Admin\TaskManagementController::class, 'updateTask'])->name('update')->middleware('user.permission:tasks_management');
         Route::delete('/{task}', [App\Http\Controllers\Admin\TaskManagementController::class, 'deleteTask'])->name('delete')->middleware('user.permission:tasks_management');
         Route::post('/{task}/move', [App\Http\Controllers\Admin\TaskManagementController::class, 'moveTask'])->name('move')->middleware('user.permission:tasks_management');
+        Route::get('/{task}/comments', [App\Http\Controllers\Admin\TaskManagementController::class, 'getComments'])->name('comments')->middleware('user.permission:tasks_management');
         Route::post('/{task}/comment', [App\Http\Controllers\Admin\TaskManagementController::class, 'addComment'])->name('comment')->middleware('user.permission:tasks_management');
         Route::post('/{task}/attachment', [App\Http\Controllers\Admin\TaskManagementController::class, 'addAttachment'])->name('attachment')->middleware('user.permission:tasks_management');
         Route::post('/{task}/checklist', [App\Http\Controllers\Admin\TaskManagementController::class, 'addChecklistItem'])->name('checklist')->middleware('user.permission:tasks_management');
@@ -936,7 +939,7 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     
     // إدارة الإشعارات
     Route::prefix('notifications')->name('notifications.')->group(function () {
-        Route::get('/', [NotificationController::class, 'index'])->name('index')->middleware('user.permission:notifications');
+        Route::get('/', [App\Http\Controllers\Admin\AdminNotificationController::class, 'index'])->name('index')->middleware('user.permission:admin_notifications');
         Route::get('/unread', [App\Http\Controllers\Admin\NotificationController::class, 'getUnreadNotifications'])->name('unread');
         Route::get('/stats', [App\Http\Controllers\Admin\NotificationController::class, 'getNotificationStats'])->name('stats');
         Route::get('/{notification}/preview', [App\Http\Controllers\Admin\NotificationController::class, 'preview'])->name('preview')->middleware('user.permission:notifications');

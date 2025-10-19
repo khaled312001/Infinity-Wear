@@ -51,17 +51,17 @@ class AdminNotificationController extends Controller
             });
         }
 
-        $notifications = $query->paginate(15);
+        $adminNotifications = $query->paginate(15);
 
         // إحصائيات
-        $stats = [
+        $adminStats = [
             'total' => AdminNotification::count(),
             'sent' => AdminNotification::where('is_sent', true)->count(),
             'pending' => AdminNotification::where('is_sent', false)->count(),
             'scheduled' => AdminNotification::where('is_scheduled', true)->where('is_sent', false)->count(),
         ];
 
-        return view('admin.notifications.admin-index', compact('notifications', 'stats'));
+        return view('admin.notifications.index', compact('adminNotifications', 'adminStats'));
     }
 
     /**

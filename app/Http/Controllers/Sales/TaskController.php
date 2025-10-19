@@ -120,6 +120,34 @@ class TaskController extends Controller
     }
 
     /**
+     * جلب تعليقات المهمة
+     */
+    public function getComments(TaskCard $task)
+    {
+        $this->authorizeTaskAccess($task);
+
+        $comments = $task->comments()
+            ->with('author')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($comment) {
+                return [
+                    'id' => $comment->id,
+                    'comment' => $comment->comment,
+                    'author_name' => $comment->author_name,
+                    'author_type' => $comment->author_type,
+                    'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
+                    'is_internal' => $comment->is_internal ?? false
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'comments' => $comments
+        ]);
+    }
+
+    /**
      * التحقق من صلاحية الوصول للمهمة
      */
     private function authorizeTaskAccess(TaskCard $task)
