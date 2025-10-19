@@ -61,7 +61,7 @@ class AdminNotificationController extends Controller
             'scheduled' => AdminNotification::where('is_scheduled', true)->where('is_sent', false)->count(),
         ];
 
-        return view('admin.notifications.index', compact('notifications', 'stats'));
+        return view('admin.notifications.admin-index', compact('notifications', 'stats'));
     }
 
     /**

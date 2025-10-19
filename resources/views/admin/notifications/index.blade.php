@@ -9,226 +9,300 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">
-                        <i class="fas fa-bell me-2"></i>
-                        الإشعارات
-                    </h3>
-                    <div class="d-flex gap-2">
-                        <div class="connection-status disconnected">
-                            <span class="status-text">جاري الاتصال...</span>
-                        </div>
-                        <button class="btn btn-outline-primary btn-sm" onclick="loadNotifications()">
-                            <i class="fas fa-sync-alt"></i>
-                            تحديث
-                        </button>
-                        <button class="btn btn-outline-success btn-sm mark-all-read">
-                            <i class="fas fa-check-double"></i>
-                            تحديد الكل كمقروء
-                        </button>
-                        <button class="btn btn-outline-warning btn-sm archive-read">
-                            <i class="fas fa-archive"></i>
-                            أرشفة المقروءة
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="card-body p-0">
-                    <!-- Notification Stats -->
-                    <div class="notification-stats">
-                        <div class="stat-item">
-                            <span class="stat-label">إجمالي غير المقروءة</span>
-                            <span class="stat-value" id="total-unread">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">الطلبات</span>
-                            <span class="stat-value" id="orders-count">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">الرسائل</span>
-                            <span class="stat-value" id="contacts-count">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">الواتساب</span>
-                            <span class="stat-value" id="whatsapp-count">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">طلبات المستوردين</span>
-                            <span class="stat-value" id="importer-orders-count">0</span>
-                        </div>
-                    </div>
-
-                    <!-- Filter Tabs -->
-                    <div class="border-bottom">
-                        <ul class="nav nav-tabs" id="notificationTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab">
-                                    الكل
-                                    <span class="badge bg-primary ms-1" id="all-badge">0</span>
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="unread-tab" data-bs-toggle="tab" data-bs-target="#unread" type="button" role="tab">
-                                    غير مقروءة
-                                    <span class="badge bg-danger ms-1" id="unread-badge">0</span>
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab">
-                                    الطلبات
-                                    <span class="badge bg-success ms-1" id="orders-tab-badge">0</span>
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts" type="button" role="tab">
-                                    الرسائل
-                                    <span class="badge bg-info ms-1" id="contacts-tab-badge">0</span>
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="whatsapp-tab" data-bs-toggle="tab" data-bs-target="#whatsapp" type="button" role="tab">
-                                    الواتساب
-                                    <span class="badge bg-success ms-1" id="whatsapp-tab-badge">0</span>
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Tab Content -->
-                    <div class="tab-content" id="notificationTabContent">
-                        <!-- All Notifications -->
-                        <div class="tab-pane fade show active" id="all" role="tabpanel">
-                            <div class="notifications-container" id="all-notifications">
-                                <div class="notifications-loading">
-                                    <i class="fas fa-spinner"></i>
-                                    <p>جاري تحميل الإشعارات...</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Unread Notifications -->
-                        <div class="tab-pane fade" id="unread" role="tabpanel">
-                            <div class="notifications-container" id="unread-notifications">
-                                <div class="notifications-loading">
-                                    <i class="fas fa-spinner"></i>
-                                    <p>جاري تحميل الإشعارات غير المقروءة...</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Orders -->
-                        <div class="tab-pane fade" id="orders" role="tabpanel">
-                            <div class="notifications-container" id="orders-notifications">
-                                <div class="notifications-loading">
-                                    <i class="fas fa-spinner"></i>
-                                    <p>جاري تحميل إشعارات الطلبات...</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Contacts -->
-                        <div class="tab-pane fade" id="contacts" role="tabpanel">
-                            <div class="notifications-container" id="contacts-notifications">
-                                <div class="notifications-loading">
-                                    <i class="fas fa-spinner"></i>
-                                    <p>جاري تحميل إشعارات الرسائل...</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- WhatsApp -->
-                        <div class="tab-pane fade" id="whatsapp" role="tabpanel">
-                            <div class="notifications-container" id="whatsapp-notifications">
-                                <div class="notifications-loading">
-                                    <i class="fas fa-spinner"></i>
-                                    <p>جاري تحميل إشعارات الواتساب...</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<!-- Notification Settings Modal -->
-<div class="modal fade" id="notificationSettingsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-cog me-2"></i>
-                    إعدادات الإشعارات
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="notificationSettingsForm">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>إشعارات المتصفح</h6>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="browserNotifications" checked>
-                                <label class="form-check-label" for="browserNotifications">
-                                    تفعيل إشعارات المتصفح
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="soundNotifications" checked>
-                                <label class="form-check-label" for="soundNotifications">
-                                    تفعيل صوت الإشعارات
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <h6>أنواع الإشعارات</h6>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="orderNotifications" checked>
-                                <label class="form-check-label" for="orderNotifications">
-                                    إشعارات الطلبات
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="contactNotifications" checked>
-                                <label class="form-check-label" for="contactNotifications">
-                                    إشعارات الرسائل
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="whatsappNotifications" checked>
-                                <label class="form-check-label" for="whatsappNotifications">
-                                    إشعارات الواتساب
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                <button type="button" class="btn btn-primary" onclick="saveNotificationSettings()">حفظ الإعدادات</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Test Notification Modal -->
-<div class="modal fade" id="testNotificationModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">
                     <i class="fas fa-bell me-2"></i>
-                    إشعار تجريبي
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    الإشعارات
+                </h3>
+                <div class="d-flex gap-2">
+                    <div class="connection-status disconnected">
+                        <span class="status-text">جاري الاتصال...</span>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="loadNotifications()">
+                        <i class="fas fa-sync-alt"></i>
+                        تحديث
+                    </button>
+                    <button class="btn btn-outline-success btn-sm mark-all-read">
+                        <i class="fas fa-check-double"></i>
+                        تحديد الكل كمقروء
+                    </button>
+                    <button class="btn btn-outline-warning btn-sm archive-read">
+                        <i class="fas fa-archive"></i>
+                        أرشفة المقروءة
+                    </button>
+                </div>
             </div>
-            <div class="modal-body">
-                <p>هل تريد إرسال إشعار تجريبي لاختبار النظام؟</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                <button type="button" class="btn btn-primary" onclick="sendTestNotification()">إرسال تجريبي</button>
+                
+            <div class="card-body p-0">
+                <!-- Main Tabs -->
+                <div class="main-tabs-container">
+                    <ul class="nav nav-tabs main-tabs" id="mainNotificationTabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-target="#system-notifications-tab">
+                                <i class="fas fa-bell me-2"></i>
+                                إشعارات النظام
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-target="#admin-notifications-tab">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                إرسال الإشعارات
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- System Notifications Tab -->
+                    <div class="tab-pane fade show active" id="system-notifications-tab">
+                        <!-- System Notification Stats -->
+                        <div class="notification-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">إجمالي غير المقروءة</span>
+                                <span class="stat-value" id="total-unread">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">الطلبات</span>
+                                <span class="stat-value" id="orders-count">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">الرسائل</span>
+                                <span class="stat-value" id="contacts-count">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">الواتساب</span>
+                                <span class="stat-value" id="whatsapp-count">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">طلبات المستوردين</span>
+                                <span class="stat-value" id="importer-orders-count">0</span>
+                            </div>
+                        </div>
+
+                        <!-- System Filter Tabs -->
+                        <div class="nav-tabs-container">
+                            <ul class="nav nav-tabs" id="notificationTabs">
+                                <li class="nav-item">
+                                    <button class="nav-link active" data-bs-target="#all-notifications">
+                                        الكل <span class="badge bg-secondary" id="all-count">0</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-target="#unread-notifications">
+                                        غير مقروءة <span class="badge bg-danger" id="unread-count">0</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-target="#orders-notifications">
+                                        الطلبات <span class="badge bg-success" id="orders-badge">0</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-target="#contacts-notifications">
+                                        الرسائل <span class="badge bg-info" id="contacts-badge">0</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-target="#whatsapp-notifications">
+                                        الواتساب <span class="badge bg-success" id="whatsapp-badge">0</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- System Tab Content -->
+                        <div class="tab-content">
+                            <!-- All System Notifications -->
+                            <div class="tab-pane fade show active" id="all-notifications">
+                                <div class="notifications-container">
+                                    <div class="notifications-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>جاري تحميل الإشعارات...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Unread System Notifications -->
+                            <div class="tab-pane fade" id="unread-notifications">
+                                <div class="notifications-container">
+                                    <div class="notifications-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>جاري تحميل الإشعارات غير المقروءة...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Orders Notifications -->
+                            <div class="tab-pane fade" id="orders-notifications">
+                                <div class="notifications-container">
+                                    <div class="notifications-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>جاري تحميل إشعارات الطلبات...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contacts Notifications -->
+                            <div class="tab-pane fade" id="contacts-notifications">
+                                <div class="notifications-container">
+                                    <div class="notifications-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>جاري تحميل إشعارات الرسائل...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- WhatsApp Notifications -->
+                            <div class="tab-pane fade" id="whatsapp-notifications">
+                                <div class="notifications-container">
+                                    <div class="notifications-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>جاري تحميل إشعارات الواتساب...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Notifications Tab -->
+                    <div class="tab-pane fade" id="admin-notifications-tab">
+                        <!-- Admin Notification Stats -->
+                        <div class="notification-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">إجمالي الإشعارات</span>
+                                <span class="stat-value" id="admin-total-notifications">{{ $adminStats['total'] ?? 0 }}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">مرسلة</span>
+                                <span class="stat-value" id="admin-sent-notifications">{{ $adminStats['sent'] ?? 0 }}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">معلقة</span>
+                                <span class="stat-value" id="admin-pending-notifications">{{ $adminStats['pending'] ?? 0 }}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">مجدولة</span>
+                                <span class="stat-value" id="admin-scheduled-notifications">{{ $adminStats['scheduled'] ?? 0 }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Admin Filter Tabs -->
+                        <div class="nav-tabs-container">
+                            <ul class="nav nav-tabs" id="adminNotificationTabs">
+                                <li class="nav-item">
+                                    <button class="nav-link active" data-bs-target="#all-admin-notifications">
+                                        الكل <span class="badge bg-secondary" id="admin-all-count">{{ $adminNotifications->total() }}</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-target="#sent-admin-notifications">
+                                        مرسلة <span class="badge bg-success" id="admin-sent-count">{{ $adminStats['sent'] ?? 0 }}</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-target="#pending-admin-notifications">
+                                        معلقة <span class="badge bg-warning" id="admin-pending-count">{{ $adminStats['pending'] ?? 0 }}</span>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-target="#scheduled-admin-notifications">
+                                        مجدولة <span class="badge bg-info" id="admin-scheduled-count">{{ $adminStats['scheduled'] ?? 0 }}</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Admin Tab Content -->
+                        <div class="tab-content">
+                            <!-- All Admin Notifications -->
+                            <div class="tab-pane fade show active" id="all-admin-notifications">
+                                @if(isset($adminNotifications) && $adminNotifications->count() > 0)
+                                    <div class="admin-notifications-list">
+                                        @foreach($adminNotifications as $notification)
+                                            <div class="admin-notification-item {{ $notification->is_sent ? 'sent' : 'pending' }}">
+                                                <div class="notification-icon">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                </div>
+                                                <div class="notification-content">
+                                                    <div class="notification-title">{{ $notification->title }}</div>
+                                                    <div class="notification-message">{{ Str::limit($notification->message, 100) }}</div>
+                                                    <div class="notification-meta">
+                                                        <span class="notification-type">{{ $notification->type }}</span>
+                                                        <span class="notification-priority priority-{{ $notification->priority }}">{{ $notification->priority }}</span>
+                                                        <span class="notification-time">{{ $notification->created_at->diffForHumans() }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="notification-actions">
+                                                    <a href="{{ route('admin.notifications.admin.show', $notification) }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    @if(!$notification->is_sent)
+                                                        <form method="POST" action="{{ route('admin.notifications.admin.send', $notification) }}" style="display: inline;">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('هل تريد إرسال هذا الإشعار الآن؟')">
+                                                                <i class="fas fa-paper-plane"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
+                                                    <form method="POST" action="{{ route('admin.notifications.admin.destroy', $notification) }}" style="display: inline;" onsubmit="return confirm('هل تريد حذف هذا الإشعار؟')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    
+                                    <!-- Pagination -->
+                                    <div class="pagination-container">
+                                        {{ $adminNotifications->links() }}
+                                    </div>
+                                @else
+                                    <div class="notifications-empty text-center py-5">
+                                        <i class="fas fa-paper-plane fa-3x text-muted mb-3"></i>
+                                        <h4 class="text-muted">لا توجد إشعارات</h4>
+                                        <p class="text-muted">لم يتم إنشاء أي إشعارات بعد</p>
+                                        <a href="{{ route('admin.notifications.admin.create') }}" class="btn btn-primary">
+                                            <i class="fas fa-plus me-2"></i>
+                                            إنشاء إشعار جديد
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Sent Admin Notifications -->
+                            <div class="tab-pane fade" id="sent-admin-notifications">
+                                <div class="notifications-empty text-center py-5">
+                                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                                    <h4 class="text-muted">الإشعارات المرسلة</h4>
+                                    <p class="text-muted">سيتم عرض الإشعارات المرسلة هنا</p>
+                                </div>
+                            </div>
+
+                            <!-- Pending Admin Notifications -->
+                            <div class="tab-pane fade" id="pending-admin-notifications">
+                                <div class="notifications-empty text-center py-5">
+                                    <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                                    <h4 class="text-muted">الإشعارات المعلقة</h4>
+                                    <p class="text-muted">سيتم عرض الإشعارات المعلقة هنا</p>
+                                </div>
+                            </div>
+
+                            <!-- Scheduled Admin Notifications -->
+                            <div class="tab-pane fade" id="scheduled-admin-notifications">
+                                <div class="notifications-empty text-center py-5">
+                                    <i class="fas fa-calendar fa-3x text-info mb-3"></i>
+                                    <h4 class="text-muted">الإشعارات المجدولة</h4>
+                                    <p class="text-muted">سيتم عرض الإشعارات المجدولة هنا</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -240,26 +314,46 @@
 <script src="{{ asset('js/notifications.js') }}"></script>
 
 <script>
-// Notification Management
-class NotificationPageManager {
+// Combined Notification Management
+class CombinedNotificationManager {
     constructor() {
-        this.currentTab = 'all';
-        this.notifications = [];
+        this.currentMainTab = 'system';
+        this.currentSystemTab = 'all';
+        this.currentAdminTab = 'all';
+        this.systemNotifications = [];
+        this.adminNotifications = [];
         this.init();
     }
 
     init() {
-        this.loadNotifications();
         this.setupEventListeners();
         this.setupTabs();
+        this.loadSystemNotifications();
+        this.loadAdminNotifications();
     }
 
     setupEventListeners() {
-        // Tab switching
+        // Main tab switching
+        document.querySelectorAll('#mainNotificationTabs button').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const target = e.target.getAttribute('data-bs-target').replace('#', '');
+                this.switchMainTab(target);
+            });
+        });
+
+        // System tab switching
         document.querySelectorAll('#notificationTabs button').forEach(tab => {
             tab.addEventListener('click', (e) => {
                 const target = e.target.getAttribute('data-bs-target').replace('#', '');
-                this.switchTab(target);
+                this.switchSystemTab(target);
+            });
+        });
+
+        // Admin tab switching
+        document.querySelectorAll('#adminNotificationTabs button').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const target = e.target.getAttribute('data-bs-target').replace('#', '');
+                this.switchAdminTab(target);
             });
         });
 
@@ -274,23 +368,82 @@ class NotificationPageManager {
     }
 
     setupTabs() {
-        // Initialize tab content
-        this.tabs = {
+        // Initialize system tab content
+        this.systemTabs = {
             'all': document.getElementById('all-notifications'),
             'unread': document.getElementById('unread-notifications'),
             'orders': document.getElementById('orders-notifications'),
             'contacts': document.getElementById('contacts-notifications'),
             'whatsapp': document.getElementById('whatsapp-notifications')
         };
+
+        // Initialize admin tab content
+        this.adminTabs = {
+            'all': document.getElementById('all-admin-notifications'),
+            'sent': document.getElementById('sent-admin-notifications'),
+            'pending': document.getElementById('pending-admin-notifications'),
+            'scheduled': document.getElementById('scheduled-admin-notifications')
+        };
     }
 
-    async loadNotifications() {
-        console.log('loadNotifications called');
+    switchMainTab(tabName) {
+        this.currentMainTab = tabName;
+        
+        // Update active main tab
+        document.querySelectorAll('#mainNotificationTabs .nav-link').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelector(`#mainNotificationTabs button[data-bs-target="#${tabName}"]`).classList.add('active');
+        
+        // Update active content
+        document.querySelectorAll('.tab-pane').forEach(pane => {
+            pane.classList.remove('show', 'active');
+        });
+        document.getElementById(tabName).classList.add('show', 'active');
+    }
+
+    switchSystemTab(tabName) {
+        this.currentSystemTab = tabName;
+        
+        // Update active system tab
+        document.querySelectorAll('#notificationTabs .nav-link').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelector(`#notificationTabs button[data-bs-target="#${tabName}"]`).classList.add('active');
+        
+        // Update active content
+        document.querySelectorAll('#system-notifications-tab .tab-pane').forEach(pane => {
+            pane.classList.remove('show', 'active');
+        });
+        document.getElementById(tabName).classList.add('show', 'active');
+        
+        this.renderSystemNotifications();
+    }
+
+    switchAdminTab(tabName) {
+        this.currentAdminTab = tabName;
+        
+        // Update active admin tab
+        document.querySelectorAll('#adminNotificationTabs .nav-link').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelector(`#adminNotificationTabs button[data-bs-target="#${tabName}"]`).classList.add('active');
+        
+        // Update active content
+        document.querySelectorAll('#admin-notifications-tab .tab-pane').forEach(pane => {
+            pane.classList.remove('show', 'active');
+        });
+        document.getElementById(tabName).classList.add('show', 'active');
+        
+        this.renderAdminNotifications();
+    }
+
+    async loadSystemNotifications() {
+        console.log('Loading system notifications...');
         try {
             const url = '{{ route("admin.notifications.unread") }}';
             console.log('Fetching from URL:', url);
             
-            // Try to use the admin notifications API first
             const response = await fetch(url, {
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -299,7 +452,6 @@ class NotificationPageManager {
             });
 
             console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
 
             if (!response.ok) {
                 const errorText = await response.text();
@@ -310,42 +462,83 @@ class NotificationPageManager {
             const data = await response.json();
             console.log('Response data:', data);
             
-            this.notifications = data.notifications || [];
-            this.updateStats(data.stats || {});
-            this.renderNotifications();
+            this.systemNotifications = data.notifications || [];
+            this.updateSystemStats(data.stats || {});
+            this.renderSystemNotifications();
             
-            console.log('Notifications loaded successfully, count:', this.notifications.length);
+            console.log('System notifications loaded successfully, count:', this.systemNotifications.length);
             
         } catch (error) {
-            console.error('Failed to load notifications:', error);
-            this.showError('فشل في تحميل الإشعارات: ' + error.message);
+            console.error('Failed to load system notifications:', error);
+            this.showError('فشل في تحميل إشعارات النظام: ' + error.message);
         }
     }
 
-    switchTab(tabName) {
-        this.currentTab = tabName;
-        this.renderNotifications();
+    async loadAdminNotifications() {
+        try {
+            const response = await fetch('{{ route("admin.notifications.admin.api.stats") }}', {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                this.updateAdminStats(data.stats);
+            }
+        } catch (error) {
+            console.error('Failed to load admin notifications:', error);
+        }
     }
 
-    renderNotifications() {
-        const container = this.tabs[this.currentTab];
+    updateSystemStats(stats) {
+        document.getElementById('total-unread').textContent = stats.total_unread || 0;
+        document.getElementById('orders-count').textContent = stats.orders || 0;
+        document.getElementById('contacts-count').textContent = stats.contacts || 0;
+        document.getElementById('whatsapp-count').textContent = stats.whatsapp || 0;
+        document.getElementById('importer-orders-count').textContent = stats.importer_orders || 0;
+        
+        // Update badge counts
+        document.getElementById('all-count').textContent = this.systemNotifications.length;
+        document.getElementById('unread-count').textContent = stats.total_unread || 0;
+        document.getElementById('orders-badge').textContent = stats.orders || 0;
+        document.getElementById('contacts-badge').textContent = stats.contacts || 0;
+        document.getElementById('whatsapp-badge').textContent = stats.whatsapp || 0;
+    }
+
+    updateAdminStats(stats) {
+        document.getElementById('admin-total-notifications').textContent = stats.total || 0;
+        document.getElementById('admin-sent-notifications').textContent = stats.sent || 0;
+        document.getElementById('admin-pending-notifications').textContent = stats.pending || 0;
+        document.getElementById('admin-scheduled-notifications').textContent = stats.scheduled || 0;
+        
+        // Update badge counts
+        document.getElementById('admin-all-count').textContent = stats.total || 0;
+        document.getElementById('admin-sent-count').textContent = stats.sent || 0;
+        document.getElementById('admin-pending-count').textContent = stats.pending || 0;
+        document.getElementById('admin-scheduled-count').textContent = stats.scheduled || 0;
+    }
+
+    renderSystemNotifications() {
+        const container = this.systemTabs[this.currentSystemTab];
         if (!container) return;
 
-        let filteredNotifications = this.notifications;
+        let filteredNotifications = this.systemNotifications;
 
         // Filter based on current tab
-        switch (this.currentTab) {
+        switch (this.currentSystemTab) {
             case 'unread':
-                filteredNotifications = this.notifications.filter(n => !n.is_read);
+                filteredNotifications = this.systemNotifications.filter(n => !n.is_read);
                 break;
             case 'orders':
-                filteredNotifications = this.notifications.filter(n => n.type === 'order');
+                filteredNotifications = this.systemNotifications.filter(n => n.type === 'order');
                 break;
             case 'contacts':
-                filteredNotifications = this.notifications.filter(n => n.type === 'contact');
+                filteredNotifications = this.systemNotifications.filter(n => n.type === 'contact');
                 break;
             case 'whatsapp':
-                filteredNotifications = this.notifications.filter(n => n.type === 'whatsapp');
+                filteredNotifications = this.systemNotifications.filter(n => n.type === 'whatsapp');
                 break;
         }
 
@@ -361,16 +554,21 @@ class NotificationPageManager {
         }
 
         container.innerHTML = filteredNotifications.map(notification => 
-            this.createNotificationElement(notification)
+            this.createSystemNotificationElement(notification)
         ).join('');
 
         // Add event listeners to notification elements
         container.querySelectorAll('.notification-item').forEach(item => {
-            this.addNotificationEventListeners(item);
+            this.addSystemNotificationEventListeners(item);
         });
     }
 
-    createNotificationElement(notification) {
+    renderAdminNotifications() {
+        // Admin notifications are rendered server-side, so this is mainly for filtering
+        console.log('Rendering admin notifications for tab:', this.currentAdminTab);
+    }
+
+    createSystemNotificationElement(notification) {
         const timeAgo = this.formatTimeAgo(notification.created_at);
         const isRead = notification.is_read ? 'read' : '';
         const icon = this.getNotificationIcon(notification.type);
@@ -411,7 +609,7 @@ class NotificationPageManager {
         return icons[type] || 'fas fa-bell';
     }
 
-    addNotificationEventListeners(item) {
+    addSystemNotificationEventListeners(item) {
         const notificationId = item.dataset.notificationId;
         
         // Mark as read
@@ -435,7 +633,7 @@ class NotificationPageManager {
 
     async markAsRead(notificationId) {
         try {
-            const response = await fetch(`{{ route("admin.notifications.mark-read") }}`, {
+            const response = await fetch('{{ route("admin.notifications.mark-read") }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -445,14 +643,11 @@ class NotificationPageManager {
             });
 
             if (response.ok) {
-                const item = document.querySelector(`[data-notification-id="${notificationId}"]`);
-                if (item) {
-                    item.classList.add('read');
-                }
-                this.updateStats();
+                this.loadSystemNotifications();
+                this.showSuccess('تم تحديد الإشعار كمقروء');
             }
         } catch (error) {
-            console.error('Failed to mark as read:', error);
+            console.error('Failed to mark notification as read:', error);
         }
     }
 
@@ -467,17 +662,17 @@ class NotificationPageManager {
             });
 
             if (response.ok) {
-                this.loadNotifications();
+                this.loadSystemNotifications();
                 this.showSuccess('تم تحديد جميع الإشعارات كمقروءة');
             }
         } catch (error) {
-            console.error('Failed to mark all as read:', error);
+            console.error('Failed to mark all notifications as read:', error);
         }
     }
 
     async archiveNotification(notificationId) {
         try {
-            const response = await fetch(`{{ route("admin.notifications.archive") }}`, {
+            const response = await fetch('{{ route("admin.notifications.archive") }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -487,10 +682,8 @@ class NotificationPageManager {
             });
 
             if (response.ok) {
-                const item = document.querySelector(`[data-notification-id="${notificationId}"]`);
-                if (item) {
-                    item.remove();
-                }
+                this.loadSystemNotifications();
+                this.showSuccess('تم أرشفة الإشعار');
             }
         } catch (error) {
             console.error('Failed to archive notification:', error);
@@ -508,7 +701,7 @@ class NotificationPageManager {
             });
 
             if (response.ok) {
-                this.loadNotifications();
+                this.loadSystemNotifications();
                 this.showSuccess('تم أرشفة الإشعارات المقروءة');
             }
         } catch (error) {
@@ -517,7 +710,7 @@ class NotificationPageManager {
     }
 
     openNotification(notificationId) {
-        const notification = this.notifications.find(n => n.id == notificationId);
+        const notification = this.systemNotifications.find(n => n.id == notificationId);
         if (notification) {
             const url = this.getNotificationUrl(notification);
             if (url) {
@@ -541,146 +734,158 @@ class NotificationPageManager {
         return urls[notification.type] || '/admin/notifications';
     }
 
-    updateStats(stats = null) {
-        if (stats) {
-            document.getElementById('total-unread').textContent = stats.total_unread || 0;
-            document.getElementById('orders-count').textContent = stats.orders || 0;
-            document.getElementById('contacts-count').textContent = stats.contacts || 0;
-            document.getElementById('whatsapp-count').textContent = stats.whatsapp || 0;
-            document.getElementById('importer-orders-count').textContent = stats.importer_orders || 0;
-            
-            // Update tab badges
-            document.getElementById('all-badge').textContent = this.notifications.length;
-            document.getElementById('unread-badge').textContent = stats.total_unread || 0;
-            document.getElementById('orders-tab-badge').textContent = stats.orders || 0;
-            document.getElementById('contacts-tab-badge').textContent = stats.contacts || 0;
-            document.getElementById('whatsapp-tab-badge').textContent = stats.whatsapp || 0;
-        }
-    }
-
-    formatTimeAgo(timestamp) {
-        const date = new Date(timestamp);
+    formatTimeAgo(dateString) {
+        const date = new Date(dateString);
         const now = new Date();
-        const diff = now - date;
+        const diffInSeconds = Math.floor((now - date) / 1000);
         
-        if (diff < 60000) {
-            return 'الآن';
-        } else if (diff < 3600000) {
-            return `${Math.floor(diff / 60000)} دقيقة`;
-        } else if (diff < 86400000) {
-            return `${Math.floor(diff / 3600000)} ساعة`;
-        } else {
-            return date.toLocaleDateString('ar-SA');
-        }
+        if (diffInSeconds < 60) return 'الآن';
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} دقيقة`;
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} ساعة`;
+        if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} يوم`;
+        
+        return date.toLocaleDateString('ar-SA');
     }
 
     showSuccess(message) {
-        // Create a simple toast notification
-        const toast = document.createElement('div');
-        toast.className = 'alert alert-success alert-dismissible fade show position-fixed';
-        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        toast.innerHTML = `
-            <i class="fas fa-check-circle me-2"></i>
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        document.body.appendChild(toast);
-        
-        // Auto remove after 3 seconds
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-        }, 3000);
+        // You can implement a toast notification here
+        console.log('Success:', message);
     }
 
     showError(message) {
-        // Create a simple toast notification
-        const toast = document.createElement('div');
-        toast.className = 'alert alert-danger alert-dismissible fade show position-fixed';
-        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        toast.innerHTML = `
-            <i class="fas fa-exclamation-circle me-2"></i>
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        document.body.appendChild(toast);
-        
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-        }, 5000);
+        // You can implement a toast notification here
+        console.error('Error:', message);
+    }
+}
+
+// Global function for refresh button
+function loadNotifications() {
+    if (window.combinedNotificationManager) {
+        if (window.combinedNotificationManager.currentMainTab === 'system') {
+            window.combinedNotificationManager.loadSystemNotifications();
+        } else {
+            window.combinedNotificationManager.loadAdminNotifications();
+        }
     }
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM Content Loaded - Initializing NotificationPageManager');
-    alert('JavaScript is executing! Check console for details.');
+    console.log('DOM Content Loaded - Initializing CombinedNotificationManager');
     try {
-        window.notificationPageManager = new NotificationPageManager();
-        console.log('NotificationPageManager initialized successfully');
+        window.combinedNotificationManager = new CombinedNotificationManager();
+        console.log('CombinedNotificationManager initialized successfully');
     } catch (error) {
-        console.error('Error initializing NotificationPageManager:', error);
-        alert('Error initializing NotificationPageManager: ' + error.message);
+        console.error('Error initializing CombinedNotificationManager:', error);
     }
 });
-
-// Global functions for button onclick handlers
-function loadNotifications() {
-    if (window.notificationPageManager) {
-        window.notificationPageManager.loadNotifications();
-    } else if (window.notificationManager) {
-        window.notificationManager.loadNotifications();
-    }
-}
-
-function sendTestNotification() {
-    if (window.notificationManager) {
-        window.notificationManager.sendTestNotification();
-    }
-}
-
-function saveNotificationSettings() {
-    // Implement notification settings saving
-    console.log('Saving notification settings...');
-}
 </script>
 @endsection
 
 @section('styles')
 <link href="{{ asset('css/notifications.css') }}" rel="stylesheet">
 <style>
-/* Notification Page Styles */
+.main-tabs-container {
+    border-bottom: 2px solid #dee2e6;
+    padding: 0 20px;
+}
+
+.main-tabs .nav-link {
+    border: none;
+    border-radius: 8px 8px 0 0;
+    margin-right: 5px;
+    padding: 15px 25px;
+    font-weight: 600;
+    color: #64748b;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.main-tabs .nav-link:hover {
+    background-color: #f1f5f9;
+    color: var(--primary-color);
+}
+
+.main-tabs .nav-link.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
 .notification-stats {
     display: flex;
-    justify-content: space-around;
+    gap: 20px;
     padding: 20px;
-    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-    border-bottom: 1px solid #e2e8f0;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
     flex-wrap: wrap;
-    gap: 15px;
 }
 
 .stat-item {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     min-width: 120px;
 }
 
 .stat-label {
-    display: block;
     font-size: 0.85rem;
-    color: #64748b;
+    color: #6c757d;
     margin-bottom: 5px;
-    font-weight: 500;
 }
 
 .stat-value {
-    display: block;
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.nav-tabs-container {
+    border-bottom: 1px solid #dee2e6;
+    padding: 0 20px;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: 8px 8px 0 0;
+    margin-right: 5px;
+    padding: 12px 20px;
+    font-weight: 500;
+    color: #64748b;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #f1f5f9;
+    color: var(--primary-color);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.nav-tabs .nav-link .badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+}
+
+.notifications-container {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.notifications-loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.notifications-loading i {
+    font-size: 2rem;
+    margin-bottom: 15px;
     color: var(--primary-color);
 }
 
@@ -691,111 +896,135 @@ function saveNotificationSettings() {
     border-bottom: 1px solid #f1f5f9;
     transition: all 0.3s ease;
     cursor: pointer;
-    position: relative;
 }
 
 .notification-item:hover {
-    background-color: #f8fafc;
-    transform: translateX(-2px);
+    background-color: #f8f9fa;
 }
 
 .notification-item.read {
-    opacity: 0.7;
-    background-color: #f8fafc;
-}
-
-.notification-item.unread {
-    background-color: #e3f2fd;
-    border-left: 3px solid #2196f3;
+    opacity: 0.6;
 }
 
 .notification-icon {
     width: 40px;
     height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    font-size: 16px;
     margin-left: 15px;
-    flex-shrink: 0;
+    font-size: 16px;
 }
 
 .notification-content {
     flex: 1;
-    min-width: 0;
 }
 
 .notification-title {
     font-weight: 600;
-    color: #1e293b;
+    color: #2d3748;
     margin-bottom: 5px;
-    font-size: 0.95rem;
 }
 
 .notification-message {
-    color: #64748b;
-    font-size: 0.85rem;
-    margin-bottom: 5px;
-    line-height: 1.4;
+    color: #718096;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
 }
 
 .notification-time {
-    color: #94a3b8;
-    font-size: 0.75rem;
+    color: #a0aec0;
+    font-size: 0.8rem;
 }
 
 .notification-actions {
     display: flex;
     gap: 5px;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.3s ease;
 }
 
 .notification-item:hover .notification-actions {
     opacity: 1;
 }
 
-.notification-actions .btn {
-    padding: 5px 8px;
-    font-size: 0.75rem;
-    border-radius: 6px;
+.admin-notifications-list {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.admin-notification-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+}
+
+.admin-notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.admin-notification-item.sent {
+    border-left: 4px solid #28a745;
+}
+
+.admin-notification-item.pending {
+    border-left: 4px solid #ffc107;
+}
+
+.notification-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.8rem;
+}
+
+.notification-type {
+    background-color: #e2e8f0;
+    color: #4a5568;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.notification-priority {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.priority-high {
+    background-color: #fed7d7;
+    color: #c53030;
+}
+
+.priority-medium {
+    background-color: #fef5e7;
+    color: #dd6b20;
+}
+
+.priority-low {
+    background-color: #e6fffa;
+    color: #319795;
 }
 
 .notifications-empty {
-    text-align: center;
     padding: 60px 20px;
-    color: #64748b;
 }
 
 .notifications-empty i {
-    color: #cbd5e1;
     margin-bottom: 20px;
 }
 
-.notifications-loading {
-    text-align: center;
-    padding: 40px 20px;
-    color: #64748b;
-}
-
-.notifications-loading i {
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 15px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.pagination-container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
 }
 
 .connection-status {
-    display: flex;
-    align-items: center;
     padding: 8px 12px;
     border-radius: 6px;
     font-size: 0.85rem;
@@ -834,34 +1063,6 @@ function saveNotificationSettings() {
     50% { opacity: 0.5; }
 }
 
-/* Tab Styles */
-.nav-tabs .nav-link {
-    border: none;
-    border-radius: 8px 8px 0 0;
-    margin-right: 5px;
-    padding: 12px 20px;
-    font-weight: 500;
-    color: #64748b;
-    transition: all 0.3s ease;
-}
-
-.nav-tabs .nav-link:hover {
-    background-color: #f1f5f9;
-    color: var(--primary-color);
-}
-
-.nav-tabs .nav-link.active {
-    background-color: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-.nav-tabs .nav-link .badge {
-    font-size: 0.7rem;
-    padding: 4px 8px;
-    border-radius: 12px;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .notification-stats {
@@ -885,7 +1086,7 @@ function saveNotificationSettings() {
     }
     
     .notification-actions {
-        opacity: 1; /* Always show on mobile */
+        opacity: 1;
     }
     
     .nav-tabs {
@@ -896,6 +1097,11 @@ function saveNotificationSettings() {
         margin-bottom: 5px;
         font-size: 0.85rem;
         padding: 10px 15px;
+    }
+    
+    .main-tabs .nav-link {
+        padding: 12px 20px;
+        font-size: 0.9rem;
     }
 }
 </style>

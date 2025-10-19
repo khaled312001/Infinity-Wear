@@ -226,10 +226,21 @@ class NotificationController extends Controller
 
         $notifications = $query->paginate(20);
         
-        // إحصائيات
+        // إحصائيات النظام
         $stats = $this->notificationService->getNotificationStats();
         
-        return view('admin.notifications.index', compact('notifications', 'stats'));
+        // إحصائيات الإشعارات الإدارية
+        $adminStats = [
+            'total' => \App\Models\AdminNotification::count(),
+            'sent' => \App\Models\AdminNotification::where('is_sent', true)->count(),
+            'pending' => \App\Models\AdminNotification::where('is_sent', false)->count(),
+            'scheduled' => \App\Models\AdminNotification::where('is_scheduled', true)->where('is_sent', false)->count(),
+        ];
+        
+        // الإشعارات الإدارية
+        $adminNotifications = \App\Models\AdminNotification::with('creator')->latest()->paginate(15);
+        
+        return view('admin.notifications.index', compact('notifications', 'stats', 'adminStats', 'adminNotifications'));
     }
 
     /**

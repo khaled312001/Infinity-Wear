@@ -507,6 +507,33 @@ class TaskManagement {
             taskData.assigned_to == window.currentUserId && 
             taskData.assigned_to_type == window.currentUserType;
 
+        // Debug: Check if methods exist
+        console.log('displayTaskView - this.getPriorityColor exists:', typeof this.getPriorityColor);
+        console.log('displayTaskView - this.getPriorityLabel exists:', typeof this.getPriorityLabel);
+        console.log('displayTaskView - this.getStatusColor exists:', typeof this.getStatusColor);
+        console.log('displayTaskView - this.getStatusLabel exists:', typeof this.getStatusLabel);
+
+        // Fallback methods in case of binding issues
+        const getPriorityColor = this.getPriorityColor || this.getPriorityColorFallback || function(priority) {
+            const colors = { 'low': 'success', 'medium': 'warning', 'high': 'danger', 'urgent': 'danger', 'critical': 'dark' };
+            return colors[priority] || 'secondary';
+        };
+        
+        const getPriorityLabel = this.getPriorityLabel || this.getPriorityLabelFallback || function(priority) {
+            const labels = { 'low': 'منخفضة', 'medium': 'متوسطة', 'high': 'عالية', 'urgent': 'عاجلة', 'critical': 'حرجة' };
+            return labels[priority] || priority;
+        };
+        
+        const getStatusColor = this.getStatusColor || this.getStatusColorFallback || function(status) {
+            const colors = { 'pending': 'warning', 'in_progress': 'primary', 'completed': 'success', 'cancelled': 'danger', 'on_hold': 'secondary' };
+            return colors[status] || 'secondary';
+        };
+        
+        const getStatusLabel = this.getStatusLabel || this.getStatusLabelFallback || function(status) {
+            const labels = { 'pending': 'معلقة', 'in_progress': 'قيد التنفيذ', 'completed': 'مكتملة', 'cancelled': 'ملغية', 'on_hold': 'معلقة' };
+            return labels[status] || status;
+        };
+
         content.innerHTML = `
             <div class="task-view">
                 <div class="row">
@@ -522,11 +549,11 @@ class TaskManagement {
                         <div class="task-meta">
                             <div class="mb-2">
                                 <strong>الأولوية:</strong>
-                                <span class="badge bg-${this.getPriorityColor ? this.getPriorityColor(taskData.priority) : (typeof getPriorityColor === 'function' ? getPriorityColor(taskData.priority) : this.getPriorityColorFallback(taskData.priority))}">${this.getPriorityLabel ? this.getPriorityLabel(taskData.priority) : (typeof getPriorityLabel === 'function' ? getPriorityLabel(taskData.priority) : this.getPriorityLabelFallback(taskData.priority))}</span>
+                                <span class="badge bg-${getPriorityColor(taskData.priority)}">${getPriorityLabel(taskData.priority)}</span>
                             </div>
                             <div class="mb-2">
                                 <strong>الحالة:</strong>
-                                <span class="badge bg-${this.getStatusColor ? this.getStatusColor(taskData.status) : (typeof getStatusColor === 'function' ? getStatusColor(taskData.status) : this.getStatusColorFallback(taskData.status))}">${this.getStatusLabel ? this.getStatusLabel(taskData.status) : (typeof getStatusLabel === 'function' ? getStatusLabel(taskData.status) : this.getStatusLabelFallback(taskData.status))}</span>
+                                <span class="badge bg-${getStatusColor(taskData.status)}">${getStatusLabel(taskData.status)}</span>
                             </div>
                             <div class="mb-2">
                                 <strong>التقدم:</strong>
@@ -1259,49 +1286,6 @@ function saveTaskEdit() {
         });
     }
 
-    function getPriorityColor(priority) {
-        const colors = {
-            'low': 'success',
-            'medium': 'warning',
-            'high': 'danger',
-            'urgent': 'danger',
-            'critical': 'dark'
-        };
-        return colors[priority] || 'secondary';
-    }
-
-    function getPriorityLabel(priority) {
-        const labels = {
-            'low': 'منخفضة',
-            'medium': 'متوسطة',
-            'high': 'عالية',
-            'urgent': 'عاجلة',
-            'critical': 'حرجة'
-        };
-        return labels[priority] || priority;
-    }
-
-    function getStatusColor(status) {
-        const colors = {
-            'pending': 'warning',
-            'in_progress': 'primary',
-            'completed': 'success',
-            'cancelled': 'danger',
-            'on_hold': 'secondary'
-        };
-        return colors[status] || 'secondary';
-    }
-
-    function getStatusLabel(status) {
-        const labels = {
-            'pending': 'معلقة',
-            'in_progress': 'قيد التنفيذ',
-            'completed': 'مكتملة',
-            'cancelled': 'ملغية',
-            'on_hold': 'معلقة'
-        };
-        return labels[status] || status;
-    }
 
     // دوال الفلتر المتقدم
     function applyAdvancedFilter() {
@@ -1517,13 +1501,24 @@ function saveTaskEdit() {
         const headers = ['المعرف', 'العنوان', 'الوصف', 'الأولوية', 'الحالة', 'القسم', 'اللوحة', 'العمود', 'تاريخ الاستحقاق'];
         const csvRows = [headers.join(',')];
         
+        // Helper functions for CSV generation
+        const getPriorityLabel = function(priority) {
+            const labels = { 'low': 'منخفضة', 'medium': 'متوسطة', 'high': 'عالية', 'urgent': 'عاجلة', 'critical': 'حرجة' };
+            return labels[priority] || priority;
+        };
+        
+        const getStatusLabel = function(status) {
+            const labels = { 'pending': 'معلقة', 'in_progress': 'قيد التنفيذ', 'completed': 'مكتملة', 'cancelled': 'ملغية', 'on_hold': 'معلقة' };
+            return labels[status] || status;
+        };
+        
         tasks.forEach(task => {
             const row = [
                 task.id,
                 `"${task.title || ''}"`,
                 `"${task.description || ''}"`,
-                this.getPriorityLabel(task.priority),
-                this.getStatusLabel(task.status),
+                getPriorityLabel(task.priority),
+                getStatusLabel(task.status),
                 task.department || '',
                 `"${task.boardName || ''}"`,
                 `"${task.columnName || ''}"`,
