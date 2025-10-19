@@ -507,12 +507,6 @@ class TaskManagement {
             taskData.assigned_to == window.currentUserId && 
             taskData.assigned_to_type == window.currentUserType;
 
-        // Debug: Check if methods exist
-        console.log('displayTaskView - this.getPriorityColor exists:', typeof this.getPriorityColor);
-        console.log('displayTaskView - this.getPriorityLabel exists:', typeof this.getPriorityLabel);
-        console.log('displayTaskView - this.getStatusColor exists:', typeof this.getStatusColor);
-        console.log('displayTaskView - this.getStatusLabel exists:', typeof this.getStatusLabel);
-
         // Fallback methods in case of binding issues
         const getPriorityColor = this.getPriorityColor || this.getPriorityColorFallback || function(priority) {
             const colors = { 'low': 'success', 'medium': 'warning', 'high': 'danger', 'urgent': 'danger', 'critical': 'dark' };
