@@ -41,7 +41,7 @@ class TaskBoard extends Model
      */
     public function tasks(): HasMany
     {
-        return $this->hasMany(TaskCard::class, 'board_id');
+        return $this->hasMany(Task::class, 'board_id');
     }
 
     /**

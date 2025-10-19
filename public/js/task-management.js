@@ -1169,7 +1169,7 @@ function saveTaskEdit() {
         });
     }
 
-    getPriorityColor(priority) {
+    function getPriorityColor(priority) {
         const colors = {
             'low': 'success',
             'medium': 'warning',
@@ -1180,7 +1180,7 @@ function saveTaskEdit() {
         return colors[priority] || 'secondary';
     }
 
-    getPriorityLabel(priority) {
+    function getPriorityLabel(priority) {
         const labels = {
             'low': 'منخفضة',
             'medium': 'متوسطة',
@@ -1191,7 +1191,7 @@ function saveTaskEdit() {
         return labels[priority] || priority;
     }
 
-    getStatusColor(status) {
+    function getStatusColor(status) {
         const colors = {
             'pending': 'warning',
             'in_progress': 'primary',
@@ -1202,7 +1202,7 @@ function saveTaskEdit() {
         return colors[status] || 'secondary';
     }
 
-    getStatusLabel(status) {
+    function getStatusLabel(status) {
         const labels = {
             'pending': 'معلقة',
             'in_progress': 'قيد التنفيذ',
@@ -1214,14 +1214,14 @@ function saveTaskEdit() {
     }
 
     // دوال الفلتر المتقدم
-    applyAdvancedFilter() {
-        const filters = this.getFilterValues();
-        const filteredTasks = this.filterTasks(filters);
-        this.displayFilteredTasks(filteredTasks);
-        this.updateFilterResultsCount(filteredTasks.length);
+    function applyAdvancedFilter() {
+        const filters = getFilterValues();
+        const filteredTasks = filterTasks(filters);
+        displayFilteredTasks(filteredTasks);
+        updateFilterResultsCount(filteredTasks.length);
     }
 
-    getFilterValues() {
+    function getFilterValues() {
         return {
             user: document.getElementById('filterByUser')?.value || '',
             department: document.getElementById('filterByDepartment')?.value || '',
@@ -1233,7 +1233,7 @@ function saveTaskEdit() {
         };
     }
 
-    filterTasks(filters) {
+    function filterTasks(filters) {
         const boards = window.boardsData || [];
         const allTasks = [];
         
@@ -1307,7 +1307,7 @@ function saveTaskEdit() {
         });
     }
 
-    displayFilteredTasks(filteredTasks) {
+    function displayFilteredTasks(filteredTasks) {
         // إخفاء جميع المهام
         const allTaskCards = document.querySelectorAll('.task-card');
         allTaskCards.forEach(card => {
@@ -1334,14 +1334,14 @@ function saveTaskEdit() {
         });
     }
 
-    updateFilterResultsCount(count) {
+    function updateFilterResultsCount(count) {
         const countElement = document.getElementById('filterResultsCount');
         if (countElement) {
             countElement.textContent = `${count} نتيجة`;
         }
     }
 
-    clearAdvancedFilter() {
+    function clearAdvancedFilter() {
         // مسح جميع الفلاتر
         document.getElementById('filterByUser').value = '';
         document.getElementById('filterByDepartment').value = '';
@@ -1364,20 +1364,20 @@ function saveTaskEdit() {
         });
 
         // تحديث عداد النتائج
-        this.updateFilterResultsCount(allTaskCards.length);
+        updateFilterResultsCount(allTaskCards.length);
     }
 
-    exportFilteredTasks() {
-        const filters = this.getFilterValues();
-        const filteredTasks = this.filterTasks(filters);
+    function exportFilteredTasks() {
+        const filters = getFilterValues();
+        const filteredTasks = filterTasks(filters);
         
         if (filteredTasks.length === 0) {
-            this.showAlert('warning', 'لا توجد مهام للتصدير');
+            showAlert('warning', 'لا توجد مهام للتصدير');
             return;
         }
 
         // إنشاء CSV
-        const csvContent = this.generateCSV(filteredTasks);
+        const csvContent = generateCSV(filteredTasks);
         
         // تحميل الملف
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -1390,10 +1390,40 @@ function saveTaskEdit() {
         link.click();
         document.body.removeChild(link);
         
-        this.showAlert('success', 'تم تصدير المهام بنجاح');
+        showAlert('success', 'تم تصدير المهام بنجاح');
     }
 
-    generateCSV(tasks) {
+    function showAlert(type, message) {
+        const alertClass = type === 'success' ? 'alert-success' : 
+                          type === 'warning' ? 'alert-warning' : 
+                          type === 'info' ? 'alert-info' : 'alert-danger';
+        const iconClass = type === 'success' ? 'fa-check-circle' : 
+                         type === 'warning' ? 'fa-exclamation-triangle' : 
+                         type === 'info' ? 'fa-info-circle' : 'fa-exclamation-circle';
+        
+        const alert = document.createElement('div');
+        alert.className = `alert ${alertClass} alert-dismissible fade show`;
+        alert.innerHTML = `
+            <i class="fas ${iconClass} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        // إضافة التنبيه إلى أعلى الصفحة
+        const container = document.querySelector('.container-fluid') || document.body;
+        if (container) {
+            container.insertBefore(alert, container.firstChild);
+        }
+        
+        // إزالة التنبيه تلقائياً بعد 5 ثوان
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.remove();
+            }
+        }, 5000);
+    }
+
+    function generateCSV(tasks) {
         const headers = ['المعرف', 'العنوان', 'الوصف', 'الأولوية', 'الحالة', 'القسم', 'اللوحة', 'العمود', 'تاريخ الاستحقاق'];
         const csvRows = [headers.join(',')];
         
@@ -1415,14 +1445,14 @@ function saveTaskEdit() {
         return csvRows.join('\n');
     }
 
-    addTask(columnId) {
+    function addTask(columnId) {
         console.log('Adding task to column:', columnId);
         // تنفيذ إضافة مهمة جديدة
-        this.showAlert('info', 'إضافة مهمة جديدة للعمود رقم: ' + columnId);
+        showAlert('info', 'إضافة مهمة جديدة للعمود رقم: ' + columnId);
         // يمكن إضافة منطق إضافة المهمة هنا
     }
 
-    showModal(modalId) {
+    function showModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
             const bsModal = new bootstrap.Modal(modal);
@@ -1430,7 +1460,7 @@ function saveTaskEdit() {
         }
     }
 
-    hideModal(modalId) {
+    function hideModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
             const bsModal = bootstrap.Modal.getInstance(modal);
@@ -1440,7 +1470,7 @@ function saveTaskEdit() {
         }
     }
 
-    async updateChecklistItem(itemId, completed) {
+    async function updateChecklistItem(itemId, completed) {
         try {
             const response = await fetch(`/admin/tasks/checklist/${itemId}`, {
                 method: 'PUT',
@@ -1453,17 +1483,63 @@ function saveTaskEdit() {
 
             const data = await response.json();
             if (data.success) {
-                this.showAlert('success', 'تم تحديث العنصر بنجاح');
+                showAlert('success', 'تم تحديث العنصر بنجاح');
             } else {
-                this.showAlert('error', data.message || 'خطأ في تحديث العنصر');
+                showAlert('error', data.message || 'خطأ في تحديث العنصر');
             }
         } catch (error) {
             console.error('Error updating checklist item:', error);
-            this.showAlert('error', 'خطأ في تحديث العنصر');
+            showAlert('error', 'خطأ في تحديث العنصر');
         }
     }
 
-    async removeTaskAttachment(attachmentId) {
+    async function loadTaskAttachments(taskId) {
+        try {
+            const response = await fetch(`/admin/tasks/${taskId}/attachments`);
+            const data = await response.json();
+            if (data.success) {
+                displayTaskAttachments(data.attachments);
+            }
+        } catch (error) {
+            console.error('Error loading attachments:', error);
+        }
+    }
+
+    function displayTaskAttachments(attachments) {
+        const container = document.getElementById('editTaskAttachments');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        if (attachments && attachments.length > 0) {
+            attachments.forEach(attachment => {
+                const attachmentElement = document.createElement('div');
+                attachmentElement.className = 'd-flex justify-content-between align-items-center p-2 border rounded mb-2';
+                attachmentElement.innerHTML = `
+                    <div>
+                        <i class="fas fa-paperclip me-2"></i>
+                        <a href="${attachment.file_url}" target="_blank" class="text-decoration-none">
+                            ${attachment.original_name}
+                        </a>
+                        <small class="text-muted d-block">${formatFileSize(attachment.file_size)}</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger" onclick="removeTaskAttachment(${attachment.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                container.appendChild(attachmentElement);
+            });
+        }
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    async function removeTaskAttachment(attachmentId) {
         if (!confirm('هل أنت متأكد من حذف هذا المرفق؟')) {
             return;
         }
@@ -1478,20 +1554,19 @@ function saveTaskEdit() {
 
             const data = await response.json();
             if (data.success) {
-                this.showAlert('success', 'تم حذف المرفق بنجاح');
+                showAlert('success', 'تم حذف المرفق بنجاح');
                 // إعادة تحميل المرفقات
                 if (window.currentEditingTask) {
-                    this.loadTaskAttachments(window.currentEditingTask.id);
+                    loadTaskAttachments(window.currentEditingTask.id);
                 }
             } else {
-                this.showAlert('error', data.message || 'خطأ في حذف المرفق');
+                showAlert('error', data.message || 'خطأ في حذف المرفق');
             }
         } catch (error) {
             console.error('Error removing attachment:', error);
-            this.showAlert('error', 'خطأ في حذف المرفق');
+            showAlert('error', 'خطأ في حذف المرفق');
         }
     }
-}
 
 // دوال مساعدة للاستخدام في HTML
 function addColumn(boardId) {
@@ -1499,34 +1574,14 @@ function addColumn(boardId) {
     console.log('Add column for board:', boardId);
 }
 
-function addTask(columnId) {
-    // فتح مودال إنشاء مهمة جديدة مع تحديد العمود
-    const modal = new bootstrap.Modal(document.getElementById('createTaskModal'));
-    document.getElementById('taskColumn').value = columnId;
-    modal.show();
-}
 
 function editBoard(boardId) {
     // تنفيذ تعديل اللوحة
     console.log('Edit board:', boardId);
 }
 
-function viewTask(taskId) {
-    // تنفيذ عرض تفاصيل المهمة
-    console.log('View task:', taskId);
-}
 
-function editTask(taskId) {
-    // تنفيذ تعديل المهمة
-    console.log('Edit task:', taskId);
-}
 
-function filterTasks(filter) {
-    // تنفيذ تصفية المهام
-    if (window.taskManagement) {
-        window.taskManagement.filterTasks(filter);
-    }
-}
 
 
 // تهيئة النظام عند تحميل الصفحة
@@ -1541,37 +1596,8 @@ function initializeTaskManagement() {
 window.TaskManagement = TaskManagement;
 
 // دوال مساعدة للاستخدام في HTML
-function viewTask(taskId) {
-    console.log('View task:', taskId);
-    // تنفيذ عرض المهمة
-    if (window.taskManagement) {
-        window.taskManagement.viewTask(taskId);
-    }
-}
 
-function editTask(taskId) {
-    console.log('Edit task:', taskId);
-    // تنفيذ تعديل المهمة
-    if (window.taskManagement) {
-        window.taskManagement.editTask(taskId);
-    }
-}
 
-function addTask(columnId) {
-    console.log('Add task to column:', columnId);
-    // تنفيذ إضافة مهمة جديدة
-    if (window.taskManagement) {
-        window.taskManagement.addTask(columnId);
-    }
-}
-
-function addColumn(boardId) {
-    console.log('Add column to board:', boardId);
-    // تنفيذ إضافة عمود جديد
-    if (window.taskManagement) {
-        window.taskManagement.addColumn(boardId);
-    }
-}
 
 function createBoard() {
     console.log('Create new board');
@@ -1593,39 +1619,3 @@ function editTaskFromView() {
     }
 }
 
-// دوال الفلتر المتقدم
-function applyAdvancedFilter() {
-    if (window.taskManagement) {
-        window.taskManagement.applyAdvancedFilter();
-    }
-}
-
-function clearAdvancedFilter() {
-    if (window.taskManagement) {
-        window.taskManagement.clearAdvancedFilter();
-    }
-}
-
-function exportFilteredTasks() {
-    if (window.taskManagement) {
-        window.taskManagement.exportFilteredTasks();
-    }
-}
-
-function deleteTask(taskId) {
-    if (window.taskManagement) {
-        window.taskManagement.deleteTask(taskId);
-    }
-}
-
-function updateChecklistItem(itemId, completed) {
-    if (window.taskManagement) {
-        window.taskManagement.updateChecklistItem(itemId, completed);
-    }
-}
-
-function removeTaskAttachment(attachmentId) {
-    if (window.taskManagement) {
-        window.taskManagement.removeTaskAttachment(attachmentId);
-    }
-}

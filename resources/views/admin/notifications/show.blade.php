@@ -1,11 +1,13 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'تفاصيل الإشعار')
+@section('dashboard-title', 'تفاصيل الإشعار')
+@section('page-title', 'عرض تفاصيل الإشعار')
+@section('page-subtitle', 'مراجعة تفاصيل الإشعار المحدد')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Header Section -->
-    <div class="row mb-4">
+<!-- Header Section -->
+<div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
@@ -303,5 +305,4 @@
             </div>
         </div>
     </div>
-</div>
 @endsection

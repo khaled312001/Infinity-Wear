@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Importer;
 use App\Models\ImporterOrder;
-use App\Models\Task;
+use App\Models\TaskCard;
 use App\Models\PortfolioItem;
 use App\Models\CompanyPlan;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +46,7 @@ class DashboardController extends Controller
         $recentOrders = $orders->take(5);
 
         // المهام المرتبطة بالمستورد
-        $tasks = Task::where('importer_id', $importer->id)
+        $tasks = TaskCard::where('importer_id', $importer->id)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -199,7 +199,7 @@ class DashboardController extends Controller
             return redirect()->route('login')->with('error', 'لا يمكن الوصول إلى لوحة التحكم');
         }
 
-        $tasks = Task::where('importer_id', $importer->id)
+        $tasks = TaskCard::where('importer_id', $importer->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 

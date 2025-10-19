@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Importer;
 use App\Models\ImporterOrder;
-use App\Models\Task;
+use App\Models\TaskCard;
 use App\Models\User;
 use App\Services\AIDesignService;
 use App\Services\NotificationService;

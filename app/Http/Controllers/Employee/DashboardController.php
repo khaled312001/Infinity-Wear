@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Employee;
 use App\Models\Order;
-use App\Models\Task;
+use App\Models\TaskCard;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +25,7 @@ class DashboardController extends Controller
         }
 
         // المهام المخصصة للموظف
-        $myTasks = Task::where('assigned_to', $user->id)
+        $myTasks = TaskCard::where('assigned_to', $user->id)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -69,12 +69,12 @@ class DashboardController extends Controller
 
         // إحصائيات الأداء الشهرية
         $monthlyPerformance = [
-            'tasks_completed' => Task::where('assigned_to', $user->id)
+            'tasks_completed' => TaskCard::where('assigned_to', $user->id)
                 ->where('status', 'completed')
                 ->whereRaw('strftime("%m", completed_at) = ?', [str_pad(Carbon::now()->month, 2, '0', STR_PAD_LEFT)])
                 ->whereRaw('strftime("%Y", completed_at) = ?', [Carbon::now()->year])
                 ->count(),
-            'hours_worked' => Task::where('assigned_to', $user->id)
+            'hours_worked' => TaskCard::where('assigned_to', $user->id)
                 ->where('status', 'completed')
                 ->whereRaw('strftime("%m", completed_at) = ?', [str_pad(Carbon::now()->month, 2, '0', STR_PAD_LEFT)])
                 ->whereRaw('strftime("%Y", completed_at) = ?', [Carbon::now()->year])
@@ -127,7 +127,7 @@ class DashboardController extends Controller
     public function tasks()
     {
         $user = Auth::user();
-        $tasks = Task::where('assigned_to', $user->id)
+        $tasks = TaskCard::where('assigned_to', $user->id)
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 

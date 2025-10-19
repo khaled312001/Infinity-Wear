@@ -42,7 +42,7 @@ class TaskColumn extends Model
      */
     public function tasks(): HasMany
     {
-        return $this->hasMany(TaskCard::class, 'column_id')->orderBy('sort_order');
+        return $this->hasMany(Task::class, 'column_id')->orderBy('sort_order');
     }
 
     /**
@@ -50,7 +50,7 @@ class TaskColumn extends Model
      */
     public function activeTasks(): HasMany
     {
-        return $this->hasMany(TaskCard::class, 'column_id')
+        return $this->hasMany(Task::class, 'column_id')
             ->where('is_archived', false)
             ->orderBy('sort_order');
     }

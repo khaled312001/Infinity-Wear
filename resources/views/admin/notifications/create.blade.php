@@ -1,11 +1,13 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'إنشاء إشعار جديد')
+@section('dashboard-title', 'إنشاء إشعار جديد')
+@section('page-title', 'إرسال إشعار جديد')
+@section('page-subtitle', 'إنشاء وإرسال إشعار مخصص للمستخدمين')
 
 @section('content')
-<div class="container-fluid">
-    <!-- Header Section -->
-    <div class="row mb-4">
+<!-- Header Section -->
+<div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <div>

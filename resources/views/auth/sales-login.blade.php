@@ -1,12 +1,12 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'تسجيل الدخول - Infinity Wear')
-@section('description', 'سجل دخولك إلى حسابك في إنفينيتي وير للوصول إلى جميع الخدمات والمميزات')
+@section('title', 'تسجيل دخول فريق المبيعات - Infinity Wear')
+@section('description', 'سجل دخولك إلى لوحة تحكم فريق المبيعات في إنفينيتي وير')
 
 @section('styles')
 <link href="{{ asset('css/infinity-home.css') }}" rel="stylesheet">
 <style>
-    .customer-login-container {
+    .sales-login-container {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         display: flex;
@@ -26,7 +26,7 @@
     }
     
     .login-header {
-        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
         color: white;
         padding: 2.5rem 2rem;
         text-align: center;
@@ -105,8 +105,8 @@
     
     .form-control:focus {
         outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        border-color: #27ae60;
+        box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
     }
     
     .input-group {
@@ -128,7 +128,7 @@
     
     .btn-login {
         width: 100%;
-        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
         color: white;
         border: none;
         padding: 1rem 1.5rem;
@@ -143,7 +143,7 @@
     
     .btn-login:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
     }
     
     .btn-login:disabled {
@@ -162,7 +162,7 @@
         margin-left: 0.5rem;
         width: 18px;
         height: 18px;
-        accent-color: #3498db;
+        accent-color: #27ae60;
     }
     
     .remember-me label {
@@ -216,14 +216,14 @@
     }
     
     .login-footer a {
-        color: #3498db;
+        color: #27ae60;
         text-decoration: none;
         font-weight: 500;
         transition: all 0.3s ease;
     }
     
     .login-footer a:hover {
-        color: #2980b9;
+        color: #2ecc71;
         text-decoration: underline;
     }
     
@@ -244,6 +244,31 @@
     .admin-link a:hover {
         color: #7f8c8d;
         text-decoration: underline;
+    }
+    
+    .sales-info {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .sales-info h4 {
+        color: #27ae60;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .sales-info ul {
+        margin: 0;
+        padding-right: 1.5rem;
+    }
+    
+    .sales-info li {
+        margin-bottom: 0.25rem;
     }
     
     @media (max-width: 480px) {
@@ -283,17 +308,26 @@
 @endsection
 
 @section('content')
-    <div class="customer-login-container">
+    <div class="sales-login-container">
         <div class="login-card">
             <div class="login-header">
                 <div class="login-icon">
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-chart-line"></i>
                 </div>
-                <h1>تسجيل الدخول</h1>
-                <p>مرحباً بك في إنفينيتي وير</p>
+                <h1>تسجيل دخول فريق المبيعات</h1>
+                <p>لوحة تحكم فريق المبيعات - إنفينيتي وير</p>
             </div>
 
             <div class="login-form">
+                <div class="sales-info">
+                    <h4><i class="fas fa-info-circle"></i> معلومات تسجيل الدخول</h4>
+                    <ul>
+                        <li>البريد الإلكتروني: sales@infinitywear.sa</li>
+                        <li>كلمة المرور: sales123</li>
+                        <li>أو استخدم الحساب الثانوي: sales2@infinitywear.sa</li>
+                    </ul>
+                </div>
+
                 @if ($errors->any())
                     <div class="error-message">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -308,7 +342,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" id="loginForm">
+                <form method="POST" action="{{ route('sales.login.post') }}" id="loginForm">
                     @csrf
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     
@@ -321,7 +355,7 @@
                                    name="email" 
                                    class="form-control" 
                                    value="{{ old('email') }}" 
-                                   placeholder="أدخل بريدك الإلكتروني"
+                                   placeholder="sales@infinitywear.sa"
                                    required 
                                    autocomplete="email" 
                                    autofocus>
@@ -369,11 +403,6 @@
                     <a href="{{ route('marketing.login') }}">
                         <i class="fas fa-bullhorn"></i>
                         تسجيل دخول فريق التسويق
-                    </a>
-                    <br>
-                    <a href="{{ route('sales.login') }}">
-                        <i class="fas fa-chart-line"></i>
-                        تسجيل دخول فريق المبيعات
                     </a>
                 </div>
             </div>
@@ -441,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     });
 
-    console.log('🔐 Customer Login System Loaded');
+    console.log('💰 Sales Login System Loaded');
 });
 </script>
 @endsection

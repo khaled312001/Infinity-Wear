@@ -33,7 +33,7 @@ class SiteSettingsHelper
     public static function getLogoUrl()
     {
         $logo = self::get('site_logo');
-        if ($logo) {
+        if ($logo && file_exists(storage_path('app/public/' . $logo))) {
             // إضافة timestamp لمنع الكاش في المتصفح
             $timestamp = filemtime(storage_path('app/public/' . $logo));
             return asset('storage/' . $logo) . '?v=' . $timestamp;
@@ -47,7 +47,7 @@ class SiteSettingsHelper
     public static function getFaviconUrl()
     {
         $favicon = self::get('site_favicon');
-        if ($favicon) {
+        if ($favicon && file_exists(storage_path('app/public/' . $favicon))) {
             // إضافة timestamp لمنع الكاش في المتصفح
             $timestamp = filemtime(storage_path('app/public/' . $favicon));
             return asset('storage/' . $favicon) . '?v=' . $timestamp;

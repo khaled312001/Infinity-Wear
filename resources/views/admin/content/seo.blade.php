@@ -1,6 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('title', 'إدارة SEO - Infinity Wear Admin')
+@section('dashboard-title', 'إدارة SEO')
+@section('page-title', 'تحسين محركات البحث')
+@section('page-subtitle', 'إدارة وتحسين SEO للموقع')
 
 @section('styles')
 <style>
@@ -147,9 +150,8 @@
 @endsection
 
 @section('content')
-<div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="row mb-4">
+<!-- Header -->
+<div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
@@ -401,7 +403,6 @@
             </div>
         </div>
     </form>
-</div>
 @endsection
 
 @section('scripts')

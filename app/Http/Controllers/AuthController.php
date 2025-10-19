@@ -14,6 +14,17 @@ class AuthController extends Controller
     {
         // Regenerate session to ensure fresh CSRF token
         request()->session()->regenerate();
+        
+        // Check the current route to determine which login form to show
+        $routeName = request()->route()->getName();
+        
+        if ($routeName === 'marketing.login') {
+            return view('auth.marketing-login');
+        } elseif ($routeName === 'sales.login') {
+            return view('auth.sales-login');
+        }
+        
+        // Default to regular customer login
         return view('auth.login');
     }
 
@@ -45,6 +56,24 @@ class AuthController extends Controller
                 // Redirect to appropriate dashboard based on user type
                 $user = Auth::user();
                 \Log::info('Login successful', ['user_id' => $user->id, 'user_type' => $user->user_type]);
+                
+                // Check if user is trying to access the correct login route
+                $routeName = $request->route()->getName();
+                
+                // Restrict access based on route and user type
+                if ($routeName === 'marketing.login.post' && $user->user_type !== 'marketing') {
+                    Auth::logout();
+                    return back()->withErrors([
+                        'email' => 'هذا الحساب غير مسموح له بالوصول إلى لوحة تحكم التسويق.',
+                    ])->onlyInput('email');
+                }
+                
+                if ($routeName === 'sales.login.post' && $user->user_type !== 'sales') {
+                    Auth::logout();
+                    return back()->withErrors([
+                        'email' => 'هذا الحساب غير مسموح له بالوصول إلى لوحة تحكم المبيعات.',
+                    ])->onlyInput('email');
+                }
                 
                 // Special handling for importer users
                 if ($user->user_type === 'importer') {

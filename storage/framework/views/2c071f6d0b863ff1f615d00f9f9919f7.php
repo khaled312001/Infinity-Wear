@@ -1,1 +1,0 @@
- <?php /**PATH F:\infinity\Infinity-Wear\resources\views\layouts\app-backup.blade.php ENDPATH**/ ?>
