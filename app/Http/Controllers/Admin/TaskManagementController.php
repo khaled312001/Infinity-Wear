@@ -338,16 +338,27 @@ class TaskManagementController extends Controller
             'is_internal' => 'boolean'
         ]);
 
-        $task->addComment(
-            $request->comment,
-            Auth::id(),
-            Auth::guard('admin')->user()->name ?? 'مدير',
-            'admin'
-        );
+        // إنشاء تعليق جديد في جدول منفصل
+        $comment = TaskComment::create([
+            'task_id' => $task->id,
+            'user_id' => Auth::id(),
+            'user_type' => 'admin',
+            'user_name' => Auth::guard('admin')->user()->name ?? 'مدير',
+            'comment' => $request->comment,
+            'is_internal' => $request->boolean('is_internal', false)
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'تم إضافة التعليق بنجاح'
+            'message' => 'تم إضافة التعليق بنجاح',
+            'comment' => [
+                'id' => $comment->id,
+                'comment' => $comment->comment,
+                'author_name' => $comment->user_name,
+                'author_type' => $comment->user_type,
+                'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
+                'is_internal' => $comment->is_internal
+            ]
         ]);
     }
 
@@ -356,16 +367,15 @@ class TaskManagementController extends Controller
      */
     public function getComments(TaskCard $task)
     {
-        $comments = $task->comments()
-            ->with('author')
+        $comments = $task->taskComments()
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($comment) {
                 return [
                     'id' => $comment->id,
                     'comment' => $comment->comment,
-                    'author_name' => $comment->author_name,
-                    'author_type' => $comment->author_type,
+                    'author_name' => $comment->user_name,
+                    'author_type' => $comment->user_type,
                     'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
                     'is_internal' => $comment->is_internal ?? false
                 ];

@@ -107,16 +107,27 @@ class TaskController extends Controller
             'is_internal' => 'boolean'
         ]);
 
-        $task->addComment(
-            $request->comment,
-            Auth::id(),
-            Auth::user()->name ?? 'فريق التسويق',
-            'marketing'
-        );
+        // إنشاء تعليق جديد في جدول منفصل
+        $comment = \App\Models\TaskComment::create([
+            'task_id' => $task->id,
+            'user_id' => Auth::id(),
+            'user_type' => 'marketing',
+            'user_name' => Auth::user()->name ?? 'فريق التسويق',
+            'comment' => $request->comment,
+            'is_internal' => $request->boolean('is_internal', false)
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'تم إضافة التعليق بنجاح'
+            'message' => 'تم إضافة التعليق بنجاح',
+            'comment' => [
+                'id' => $comment->id,
+                'comment' => $comment->comment,
+                'author_name' => $comment->user_name,
+                'author_type' => $comment->user_type,
+                'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
+                'is_internal' => $comment->is_internal
+            ]
         ]);
     }
 
@@ -127,16 +138,15 @@ class TaskController extends Controller
     {
         $this->authorizeTaskAccess($task);
 
-        $comments = $task->comments()
-            ->with('author')
+        $comments = $task->taskComments()
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($comment) {
                 return [
                     'id' => $comment->id,
                     'comment' => $comment->comment,
-                    'author_name' => $comment->author_name,
-                    'author_type' => $comment->author_type,
+                    'author_name' => $comment->user_name,
+                    'author_type' => $comment->user_type,
                     'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
                     'is_internal' => $comment->is_internal ?? false
                 ];
