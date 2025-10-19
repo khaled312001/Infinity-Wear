@@ -845,6 +845,7 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
         Route::get('/', [App\Http\Controllers\Sales\TaskController::class, 'index'])->name('index');
         Route::get('/{task}', [App\Http\Controllers\Sales\TaskController::class, 'show'])->name('show');
         Route::post('/{task}/move', [App\Http\Controllers\Sales\TaskController::class, 'moveTask'])->name('move');
+        Route::get('/{task}/comments', [App\Http\Controllers\Sales\TaskController::class, 'getComments'])->name('comments');
         Route::post('/{task}/comment', [App\Http\Controllers\Sales\TaskController::class, 'addComment'])->name('comment');
     });
     Route::put('/sales/{id}/disable', [AdminController::class, 'disableSalesMember'])->name('sales.disable')->middleware('user.permission:sales_team_management');
