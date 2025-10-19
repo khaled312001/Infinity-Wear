@@ -950,7 +950,9 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     
     // إدارة الإشعارات
     Route::prefix('notifications')->name('notifications.')->group(function () {
-        Route::get('/', [App\Http\Controllers\Admin\AdminNotificationController::class, 'index'])->name('index')->middleware('user.permission:admin_notifications');
+        Route::get('/', function() {
+            return view('admin.notifications.simple-working');
+        })->name('index');
         Route::get('/unread', [App\Http\Controllers\Admin\NotificationController::class, 'getUnreadNotifications'])->name('unread')->middleware('auth:admin');
         Route::get('/stats', [App\Http\Controllers\Admin\NotificationController::class, 'getNotificationStats'])->name('stats')->middleware('auth:admin');
         Route::get('/{notification}/preview', [App\Http\Controllers\Admin\NotificationController::class, 'preview'])->name('preview')->middleware('user.permission:notifications');
@@ -974,7 +976,7 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
         
         // النظام الجديد للإشعارات - مؤقت
         Route::get('/new', function() {
-            return view('admin.notifications.improved');
+            return view('admin.notifications.simple-working');
         })->name('new.index');
         Route::put('/settings', [App\Http\Controllers\Admin\NotificationSettingsController::class, 'update'])->name('settings.update')->middleware('user.permission:notifications');
         Route::post('/settings/test', [App\Http\Controllers\Admin\NotificationSettingsController::class, 'testEmail'])->name('settings.test')->middleware('user.permission:notifications');
