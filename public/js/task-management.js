@@ -522,11 +522,11 @@ class TaskManagement {
                         <div class="task-meta">
                             <div class="mb-2">
                                 <strong>الأولوية:</strong>
-                                <span class="badge bg-${this.getPriorityColor(taskData.priority)}">${this.getPriorityLabel(taskData.priority)}</span>
+                                <span class="badge bg-${this.getPriorityColor ? this.getPriorityColor(taskData.priority) : getPriorityColor(taskData.priority)}">${this.getPriorityLabel ? this.getPriorityLabel(taskData.priority) : getPriorityLabel(taskData.priority)}</span>
                             </div>
                             <div class="mb-2">
                                 <strong>الحالة:</strong>
-                                <span class="badge bg-${this.getStatusColor(taskData.status)}">${this.getStatusLabel(taskData.status)}</span>
+                                <span class="badge bg-${this.getStatusColor ? this.getStatusColor(taskData.status) : getStatusColor(taskData.status)}">${this.getStatusLabel ? this.getStatusLabel(taskData.status) : getStatusLabel(taskData.status)}</span>
                             </div>
                             <div class="mb-2">
                                 <strong>التقدم:</strong>
