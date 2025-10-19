@@ -46,7 +46,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('All Pusher Beams subscriptions completed successfully!');
             })
             .catch(error => {
-                console.error('Error setting up Pusher Beams:', error);
+                // Handle specific permission errors gracefully
+                if (error.name === 'NotAllowedError') {
+                    console.warn('Pusher Beams permission denied - notifications will not work until permission is granted');
+                } else {
+                    console.error('Error setting up Pusher Beams:', error);
+                }
             });
 
         // Handle notification clicks - Pusher Beams uses different event handling

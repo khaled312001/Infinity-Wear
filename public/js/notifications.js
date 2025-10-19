@@ -12,8 +12,11 @@ class NotificationManager {
         this.notificationContainer = null;
         this.statsContainer = null;
         this.isConnected = false;
+        this.isPageActive = false;
+        this.pageActiveTime = 0;
         
         this.init();
+        this.trackPageActivity();
     }
 
     /**
@@ -35,12 +38,13 @@ class NotificationManager {
             // Subscribe to push notifications
             await this.subscribeToPush();
             
-            // Initialize WebSocket connection (optional)
-            try {
-                this.initWebSocket();
-            } catch (error) {
-                console.warn('WebSocket initialization failed, continuing without real-time updates:', error);
-            }
+            // Initialize WebSocket connection (optional - disabled until endpoint is implemented)
+            // try {
+            //     this.initWebSocket();
+            // } catch (error) {
+            //     console.warn('WebSocket initialization failed, continuing without real-time updates:', error);
+            // }
+            console.log('WebSocket connection disabled - real-time updates not available');
             
             // Initialize UI
             this.initUI();
@@ -63,12 +67,15 @@ class NotificationManager {
             const registration = await navigator.serviceWorker.register('/sw.js');
             console.log('Service Worker registered:', registration);
             
-            // Listen for updates
+            // Listen for updates (only show alert if user is actively using the app)
             registration.addEventListener('updatefound', () => {
                 const newWorker = registration.installing;
                 newWorker.addEventListener('statechange', () => {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        this.showUpdateNotification();
+                        // Only show update notification if the page has been visible for more than 30 seconds
+                        if (document.visibilityState === 'visible' && this.isPageActive) {
+                            this.showUpdateNotification();
+                        }
                     }
                 });
             });
@@ -463,6 +470,11 @@ class NotificationManager {
             });
             
             if (!response.ok) {
+                // If API endpoint doesn't exist, just log and continue
+                if (response.status === 404 || response.status === 500) {
+                    console.log('Notifications API not available, continuing without loading existing notifications');
+                    return;
+                }
                 throw new Error('Failed to load notifications');
             }
             
@@ -470,7 +482,7 @@ class NotificationManager {
             this.updateNotificationCount(data.unread_count);
             
         } catch (error) {
-            console.error('Failed to load notifications:', error);
+            console.warn('Failed to load notifications (API may not be implemented yet):', error.message);
         }
     }
 
@@ -734,9 +746,47 @@ class NotificationManager {
         }
     }
 
+    /**
+     * Track page activity to determine if user is actively using the app
+     */
+    trackPageActivity() {
+        let activityTimer;
+        
+        const resetTimer = () => {
+            clearTimeout(activityTimer);
+            this.isPageActive = true;
+            this.pageActiveTime = Date.now();
+            
+            // Reset to inactive after 30 seconds of no activity
+            activityTimer = setTimeout(() => {
+                this.isPageActive = false;
+            }, 30000);
+        };
+        
+        // Track various user activities
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+            document.addEventListener(event, resetTimer, true);
+        });
+        
+        // Track visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                resetTimer();
+            } else {
+                this.isPageActive = false;
+            }
+        });
+        
+        // Initial activity
+        resetTimer();
+    }
+
     showUpdateNotification() {
-        if (confirm('تحديث متاح! هل تريد إعادة تحميل الصفحة؟')) {
-            window.location.reload();
+        // Only show if page has been active for more than 30 seconds
+        if (this.isPageActive && (Date.now() - this.pageActiveTime) > 30000) {
+            if (confirm('تحديث متاح! هل تريد إعادة تحميل الصفحة؟')) {
+                window.location.reload();
+            }
         }
     }
 }
