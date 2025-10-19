@@ -422,6 +422,14 @@ class TaskManagement {
         }
     }
 
+    showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        }
+    }
+
     addColumn() {
         // تنفيذ إضافة عمود جديد
         console.log('Add column');
