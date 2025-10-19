@@ -522,11 +522,11 @@ class TaskManagement {
                         <div class="task-meta">
                             <div class="mb-2">
                                 <strong>الأولوية:</strong>
-                                <span class="badge bg-${this.getPriorityColor ? this.getPriorityColor(taskData.priority) : getPriorityColor(taskData.priority)}">${this.getPriorityLabel ? this.getPriorityLabel(taskData.priority) : getPriorityLabel(taskData.priority)}</span>
+                                <span class="badge bg-${this.getPriorityColor ? this.getPriorityColor(taskData.priority) : (typeof getPriorityColor === 'function' ? getPriorityColor(taskData.priority) : this.getPriorityColorFallback(taskData.priority))}">${this.getPriorityLabel ? this.getPriorityLabel(taskData.priority) : (typeof getPriorityLabel === 'function' ? getPriorityLabel(taskData.priority) : this.getPriorityLabelFallback(taskData.priority))}</span>
                             </div>
                             <div class="mb-2">
                                 <strong>الحالة:</strong>
-                                <span class="badge bg-${this.getStatusColor ? this.getStatusColor(taskData.status) : getStatusColor(taskData.status)}">${this.getStatusLabel ? this.getStatusLabel(taskData.status) : getStatusLabel(taskData.status)}</span>
+                                <span class="badge bg-${this.getStatusColor ? this.getStatusColor(taskData.status) : (typeof getStatusColor === 'function' ? getStatusColor(taskData.status) : this.getStatusColorFallback(taskData.status))}">${this.getStatusLabel ? this.getStatusLabel(taskData.status) : (typeof getStatusLabel === 'function' ? getStatusLabel(taskData.status) : this.getStatusLabelFallback(taskData.status))}</span>
                             </div>
                             <div class="mb-2">
                                 <strong>التقدم:</strong>
@@ -992,6 +992,51 @@ class TaskManagement {
     }
 
     getStatusLabel(status) {
+        const labels = {
+            'pending': 'معلقة',
+            'in_progress': 'قيد التنفيذ',
+            'completed': 'مكتملة',
+            'cancelled': 'ملغية',
+            'on_hold': 'معلقة'
+        };
+        return labels[status] || status;
+    }
+
+    // Fallback methods in case the main methods don't exist
+    getPriorityColorFallback(priority) {
+        const colors = {
+            'low': 'success',
+            'medium': 'warning',
+            'high': 'danger',
+            'urgent': 'danger',
+            'critical': 'dark'
+        };
+        return colors[priority] || 'secondary';
+    }
+
+    getPriorityLabelFallback(priority) {
+        const labels = {
+            'low': 'منخفضة',
+            'medium': 'متوسطة',
+            'high': 'عالية',
+            'urgent': 'عاجلة',
+            'critical': 'حرجة'
+        };
+        return labels[priority] || priority;
+    }
+
+    getStatusColorFallback(status) {
+        const colors = {
+            'pending': 'warning',
+            'in_progress': 'primary',
+            'completed': 'success',
+            'cancelled': 'danger',
+            'on_hold': 'secondary'
+        };
+        return colors[status] || 'secondary';
+    }
+
+    getStatusLabelFallback(status) {
         const labels = {
             'pending': 'معلقة',
             'in_progress': 'قيد التنفيذ',
