@@ -159,7 +159,11 @@
 
                                 <div class="column-content" id="column-{{ $column->id }}-tasks">
                                     @foreach($column->tasks as $task)
-                                        <div class="task-card" data-task-id="{{ $task->id }}" draggable="true">
+                                        <div class="task-card {{ $task->assigned_to == auth()->guard('marketing')->id() && $task->assigned_to_type == 'marketing' ? 'draggable-task' : 'non-draggable-task' }}" 
+                                             data-task-id="{{ $task->id }}" 
+                                             data-assigned-to="{{ $task->assigned_to }}" 
+                                             data-assigned-to-type="{{ $task->assigned_to_type }}" 
+                                             draggable="{{ $task->assigned_to == auth()->guard('marketing')->id() && $task->assigned_to_type == 'marketing' ? 'true' : 'false' }}">
                                             <div class="task-header">
                                                 <div class="task-priority priority-{{ $task->priority }}"></div>
                                                 @if($task->is_urgent)
@@ -214,9 +218,18 @@
                                                     <button class="btn btn-sm btn-outline-primary" data-task-id="{{ $task->id }}" onclick="viewTask(this.dataset.taskId)" title="عرض التفاصيل">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
-                                                    <button class="btn btn-sm btn-outline-info" data-task-id="{{ $task->id }}" onclick="addComment(this.dataset.taskId)" title="إضافة تعليق">
-                                                        <i class="fas fa-comment"></i>
-                                                    </button>
+                                                    @if($task->assigned_to == auth()->guard('marketing')->id() && $task->assigned_to_type == 'marketing')
+                                                        <button class="btn btn-sm btn-outline-info" data-task-id="{{ $task->id }}" onclick="addComment(this.dataset.taskId)" title="إضافة تعليق">
+                                                            <i class="fas fa-comment"></i>
+                                                        </button>
+                                                        <span class="badge bg-success ms-1" title="يمكنك تحريك هذه المهمة">
+                                                            <i class="fas fa-hand-paper"></i>
+                                                        </span>
+                                                    @else
+                                                        <span class="badge bg-secondary ms-1" title="مهمة غير مخصصة لك">
+                                                            <i class="fas fa-lock"></i>
+                                                        </span>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -228,6 +241,25 @@
                 </div>
             </div>
         @endforeach
+    </div>
+
+    <!-- Modal عرض المهمة -->
+    <div class="modal fade" id="viewTaskModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">عرض تفاصيل المهمة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="viewTaskContent">
+                    <!-- سيتم تحميل محتوى المهمة هنا -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-info" onclick="addCommentFromView()">إضافة تعليق</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modal إضافة تعليق -->
@@ -259,9 +291,61 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/task-management.css') }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<style>
+    .draggable-task {
+        cursor: move;
+        border-left: 4px solid #28a745;
+        background: linear-gradient(135deg, #f8fff9 0%, #ffffff 100%);
+    }
+    
+    .draggable-task:hover {
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
+    
+    .non-draggable-task {
+        cursor: not-allowed;
+        border-left: 4px solid #6c757d;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        opacity: 0.7;
+    }
+    
+    .non-draggable-task:hover {
+        box-shadow: 0 2px 8px rgba(108, 117, 125, 0.1);
+    }
+    
+    .draggable-task .task-header::before {
+        content: "✋";
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        font-size: 12px;
+        color: #28a745;
+    }
+    
+    .non-draggable-task .task-header::before {
+        content: "🔒";
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        font-size: 12px;
+        color: #6c757d;
+    }
+</style>
 @endpush
 
 @push('scripts')
+<script>
+    // تمرير البيانات من الخادم إلى JavaScript
+    window.boardsData = @json($boards);
+    window.availableUsers = @json($availableUsers ?? []);
+    window.taskStats = @json($stats);
+    window.currentUserId = {{ auth()->guard('marketing')->id() }};
+    window.currentUserType = 'marketing';
+    window.isLimitedView = true;
+</script>
 <script src="{{ asset('js/task-management.js') }}"></script>
 <script>
     // تهيئة النظام
@@ -274,6 +358,19 @@
         document.getElementById('commentTaskId').value = taskId;
         const modal = new bootstrap.Modal(document.getElementById('addCommentModal'));
         modal.show();
+    }
+
+    // وظيفة إضافة تعليق من نافذة العرض
+    function addCommentFromView() {
+        const taskId = window.currentTaskId;
+        if (taskId) {
+            addComment(taskId);
+            // إغلاق نافذة العرض
+            const viewModal = bootstrap.Modal.getInstance(document.getElementById('viewTaskModal'));
+            if (viewModal) {
+                viewModal.hide();
+            }
+        }
     }
 
     // معالجة إرسال التعليق

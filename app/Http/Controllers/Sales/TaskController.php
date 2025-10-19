@@ -21,24 +21,30 @@ class TaskController extends Controller
         $currentUser = Auth::user();
         
         // جلب المهام المخصصة للمستخدم الحالي فقط
-        $tasks = TaskCard::where('department', 'sales')
-            ->where('is_archived', false)
+        $tasks = TaskCard::where('is_archived', false)
             ->where(function($query) use ($currentUser) {
                 $query->where('assigned_to', $currentUser->id)
                       ->where('assigned_to_type', 'sales');
             })
-            ->with(['column', 'board'])
+            ->with(['column', 'board', 'assignedUser'])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // جلب لوحات المهام
+        // جلب لوحات المهام مع المهام
         $boards = TaskBoard::where('is_active', true)
             ->where(function($query) {
                 $query->where('type', 'sales')
                       ->orWhere('type', 'general');
             })
-            ->with(['columns' => function($query) {
-                $query->orderBy('sort_order');
+            ->with(['columns' => function($query) use ($currentUser) {
+                $query->orderBy('sort_order')
+                      ->with(['tasks' => function($taskQuery) use ($currentUser) {
+                          $taskQuery->where('is_archived', false)
+                                   ->where('assigned_to', $currentUser->id)
+                                   ->where('assigned_to_type', 'sales')
+                                   ->with('assignedUser')
+                                   ->orderBy('sort_order');
+                      }]);
             }])
             ->orderBy('sort_order')
             ->get();

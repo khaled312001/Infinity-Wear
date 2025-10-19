@@ -40,6 +40,21 @@ class TaskManagement {
         // إعداد السحب والإفلات للمهام
         document.addEventListener('dragstart', (e) => {
             if (e.target.classList.contains('task-card')) {
+                // التحقق من الصلاحيات للسحب والإفلات
+                if (window.isLimitedView) {
+                    const assignedTo = e.target.dataset.assignedTo;
+                    const assignedToType = e.target.dataset.assignedToType;
+                    const currentUserId = window.currentUserId;
+                    const currentUserType = window.currentUserType;
+                    
+                    // السماح بالسحب فقط للمهام المخصصة للمستخدم الحالي
+                    if (assignedTo != currentUserId || assignedToType != currentUserType) {
+                        e.preventDefault();
+                        this.showAlert('warning', 'يمكنك فقط تحريك المهام المخصصة لك');
+                        return false;
+                    }
+                }
+                
                 this.draggedElement = e.target;
                 e.target.classList.add('dragging');
                 
@@ -203,8 +218,18 @@ class TaskManagement {
         const taskId = draggedElement.dataset.taskId;
         const columnId = targetColumn.dataset.columnId || targetColumn.closest('.task-column').dataset.columnId;
         
+        // تحديد المسار الصحيح حسب نوع المستخدم
+        let moveUrl = '/admin/tasks/' + taskId + '/move';
+        if (window.isLimitedView) {
+            if (window.currentUserType === 'sales') {
+                moveUrl = '/sales/tasks/' + taskId + '/move';
+            } else if (window.currentUserType === 'marketing') {
+                moveUrl = '/marketing/tasks/' + taskId + '/move';
+            }
+        }
+        
         try {
-            const response = await fetch(`/admin/tasks/${taskId}/move`, {
+            const response = await fetch(moveUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -221,12 +246,13 @@ class TaskManagement {
                 // نقل العنصر بصرياً
                 targetColumn.appendChild(draggedElement);
                 this.updateTaskCounts();
+                this.showAlert('success', 'تم تحديث حالة المهمة بنجاح');
             } else {
-                this.showAlert('error', result.message || 'حدث خطأ أثناء نقل المهمة');
+                this.showAlert('error', result.message || 'حدث خطأ أثناء تحديث حالة المهمة');
             }
         } catch (error) {
             console.error('Error moving task:', error);
-            this.showAlert('error', 'حدث خطأ أثناء نقل المهمة');
+            this.showAlert('error', 'حدث خطأ أثناء تحديث حالة المهمة');
         }
     }
 
@@ -310,6 +336,8 @@ class TaskManagement {
 
     filterTasks(filter) {
         const taskCards = document.querySelectorAll('.task-card');
+        const currentUserId = window.currentUserId || null;
+        const currentUserType = window.currentUserType || null;
         
         taskCards.forEach(card => {
             let show = true;
@@ -317,7 +345,11 @@ class TaskManagement {
             switch (filter) {
                 case 'my':
                     // إظهار المهام المخصصة للمستخدم الحالي فقط
-                    // يجب تنفيذ هذا المنطق حسب احتياجات التطبيق
+                    if (currentUserId && currentUserType) {
+                        const assignedTo = card.dataset.assignedTo;
+                        const assignedToType = card.dataset.assignedToType;
+                        show = assignedTo == currentUserId && assignedToType == currentUserType;
+                    }
                     break;
                 case 'urgent':
                     show = card.querySelector('.fa-fire') !== null;
@@ -327,12 +359,22 @@ class TaskManagement {
                     break;
                 case 'all':
                 default:
-                    show = true;
+                    // للصفحات المحدودة (sales/marketing) إظهار مهام المستخدم فقط
+                    if (window.isLimitedView && currentUserId && currentUserType) {
+                        const assignedTo = card.dataset.assignedTo;
+                        const assignedToType = card.dataset.assignedToType;
+                        show = assignedTo == currentUserId && assignedToType == currentUserType;
+                    } else {
+                        show = true;
+                    }
                     break;
             }
             
             card.style.display = show ? 'block' : 'none';
         });
+        
+        // تحديث عداد المهام في كل عمود
+        this.updateTaskCounts();
     }
 
     updateTaskCounts() {
@@ -459,12 +501,22 @@ class TaskManagement {
         const content = document.getElementById('viewTaskContent');
         if (!content) return;
 
+        // تحديد ما إذا كان المستخدم يمكنه التعديل أم لا
+        const canEdit = !window.isLimitedView;
+        const isAssignedToUser = window.isLimitedView && 
+            taskData.assigned_to == window.currentUserId && 
+            taskData.assigned_to_type == window.currentUserType;
+
         content.innerHTML = `
             <div class="task-view">
                 <div class="row">
                     <div class="col-md-8">
                         <h4>${taskData.title}</h4>
                         <p class="text-muted">${taskData.description || 'لا يوجد وصف'}</p>
+                        ${!isAssignedToUser && window.isLimitedView ? 
+                            '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>هذه المهمة غير مخصصة لك</div>' : 
+                            ''
+                        }
                     </div>
                     <div class="col-md-4">
                         <div class="task-meta">
@@ -483,9 +535,32 @@ class TaskManagement {
                                 </div>
                                 <small>${taskData.progress_percentage || 0}%</small>
                             </div>
+                            ${taskData.due_date ? `
+                                <div class="mb-2">
+                                    <strong>تاريخ الاستحقاق:</strong>
+                                    <span class="text-muted">${taskData.due_date}</span>
+                                </div>
+                            ` : ''}
+                            ${taskData.assignedUser ? `
+                                <div class="mb-2">
+                                    <strong>المخصص إلى:</strong>
+                                    <span class="text-muted">${taskData.assignedUser.name}</span>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 </div>
+                ${window.isLimitedView ? `
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>ملاحظة:</strong> يمكنك فقط تغيير حالة المهمة (سحب وإفلات) وإضافة تعليقات. 
+                                ${!isAssignedToUser ? 'هذه المهمة غير مخصصة لك.' : ''}
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
             </div>
         `;
     }
@@ -937,7 +1012,9 @@ function saveTaskEdit() {
 
     // تهيئة النظام عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', function() {
-        window.taskManagement.initialize();
+        if (window.taskManagement) {
+            window.taskManagement.init();
+        }
         initializeUserAssignmentSelects();
     });
 
@@ -1090,28 +1167,6 @@ function saveTaskEdit() {
         optgroups.forEach(group => {
             group.style.display = 'block';
         });
-    }
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="editTaskPriority" class="form-label">الأولوية</label>
-                        <select class="form-select" id="editTaskPriority" name="priority">
-                            <option value="low" ${taskData.priority === 'low' ? 'selected' : ''}>منخفضة</option>
-                            <option value="medium" ${taskData.priority === 'medium' ? 'selected' : ''}>متوسطة</option>
-                            <option value="high" ${taskData.priority === 'high' ? 'selected' : ''}>عالية</option>
-                            <option value="urgent" ${taskData.priority === 'urgent' ? 'selected' : ''}>عاجلة</option>
-                            <option value="critical" ${taskData.priority === 'critical' ? 'selected' : ''}>حرجة</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="editTaskDescription" class="form-label">وصف المهمة</label>
-                <textarea class="form-control" id="editTaskDescription" name="description" rows="3">${taskData.description || ''}</textarea>
-            </div>
-            <input type="hidden" id="editTaskId" name="task_id" value="${taskData.id}">
-        `;
     }
 
     getPriorityColor(priority) {
@@ -1374,6 +1429,68 @@ function saveTaskEdit() {
             bsModal.show();
         }
     }
+
+    hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) {
+                bsModal.hide();
+            }
+        }
+    }
+
+    async updateChecklistItem(itemId, completed) {
+        try {
+            const response = await fetch(`/admin/tasks/checklist/${itemId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ completed })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                this.showAlert('success', 'تم تحديث العنصر بنجاح');
+            } else {
+                this.showAlert('error', data.message || 'خطأ في تحديث العنصر');
+            }
+        } catch (error) {
+            console.error('Error updating checklist item:', error);
+            this.showAlert('error', 'خطأ في تحديث العنصر');
+        }
+    }
+
+    async removeTaskAttachment(attachmentId) {
+        if (!confirm('هل أنت متأكد من حذف هذا المرفق؟')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/admin/tasks/attachment/${attachmentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                this.showAlert('success', 'تم حذف المرفق بنجاح');
+                // إعادة تحميل المرفقات
+                if (window.currentEditingTask) {
+                    this.loadTaskAttachments(window.currentEditingTask.id);
+                }
+            } else {
+                this.showAlert('error', data.message || 'خطأ في حذف المرفق');
+            }
+        } catch (error) {
+            console.error('Error removing attachment:', error);
+            this.showAlert('error', 'خطأ في حذف المرفق');
+        }
+    }
 }
 
 // دوال مساعدة للاستخدام في HTML
@@ -1414,7 +1531,10 @@ function filterTasks(filter) {
 
 // تهيئة النظام عند تحميل الصفحة
 function initializeTaskManagement() {
-    window.taskManagement = new TaskManagement();
+    if (!window.taskManagement) {
+        window.taskManagement = new TaskManagement();
+    }
+    return window.taskManagement;
 }
 
 // تصدير الكلاس للاستخدام العام
@@ -1495,5 +1615,17 @@ function exportFilteredTasks() {
 function deleteTask(taskId) {
     if (window.taskManagement) {
         window.taskManagement.deleteTask(taskId);
+    }
+}
+
+function updateChecklistItem(itemId, completed) {
+    if (window.taskManagement) {
+        window.taskManagement.updateChecklistItem(itemId, completed);
+    }
+}
+
+function removeTaskAttachment(attachmentId) {
+    if (window.taskManagement) {
+        window.taskManagement.removeTaskAttachment(attachmentId);
     }
 }
