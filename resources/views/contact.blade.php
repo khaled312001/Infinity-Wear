@@ -6,6 +6,13 @@
 @section('styles')
 <link href="{{ asset('css/infinity-home.css') }}" rel="stylesheet">
 <link href="{{ asset('css/contact-page.css') }}" rel="stylesheet">
+<style>
+    .contact-us-image {
+        max-width: 70% !important;
+        margin: 0 auto;
+        display: block;
+    }
+</style>
 @endsection
 @section('content')
 <div class="contact-page-wrapper">
