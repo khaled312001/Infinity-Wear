@@ -637,6 +637,16 @@ Route::middleware(['auth', 'user.type:marketing'])->prefix('marketing')->name('m
     });
 });
 
+// Test route for debugging
+Route::get('/test-sales-comments/{task}', function($task) {
+    return response()->json([
+        'success' => true,
+        'message' => 'Test route working',
+        'task_id' => $task,
+        'timestamp' => now()
+    ]);
+});
+
 // لوحة تحكم فريق المبيعات
 Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Sales\DashboardController::class, 'index'])->name('dashboard');
