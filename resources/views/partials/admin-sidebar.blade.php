@@ -10,11 +10,12 @@
         الإشعارات
         <span class="notification-badge" id="sidebarNotificationsBadge" style="display: none;">0</span>
     </a>
-    <a href="{{ route('admin.notifications.new.index') }}" class="nav-link {{ request()->routeIs('admin.notifications.new*') ? 'active' : '' }}" style="position: relative;">
+    {{-- Temporarily commented out until route is deployed --}}
+    {{-- <a href="{{ route('admin.notifications.new.index') }}" class="nav-link {{ request()->routeIs('admin.notifications.new*') ? 'active' : '' }}" style="position: relative;">
         <i class="fas fa-bell-slash me-2"></i>
         الإشعارات المحسنة
         <span class="badge bg-success ms-1">جديد</span>
-    </a>
+    </a> --}}
     <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.contacts*') ? 'active' : '' }}">
         <i class="fas fa-address-book me-2"></i>
         رسائل التواصل    </a>
