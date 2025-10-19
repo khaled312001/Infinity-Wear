@@ -286,26 +286,39 @@ class NotificationPageManager {
 
     async loadNotifications() {
         try {
+            console.log('Loading notifications...');
+            const url = '{{ route("admin.notifications.unread") }}';
+            console.log('Request URL:', url);
+            
             // Try to use the admin notifications API first
-            const response = await fetch('{{ route("admin.notifications.unread") }}', {
+            const response = await fetch(url, {
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     'Accept': 'application/json'
                 }
             });
 
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+
             if (!response.ok) {
-                throw new Error('Failed to load notifications');
+                const errorText = await response.text();
+                console.error('Response error:', errorText);
+                throw new Error(`Failed to load notifications: ${response.status} - ${errorText}`);
             }
 
             const data = await response.json();
+            console.log('Response data:', data);
+            
             this.notifications = data.notifications || [];
             this.updateStats(data.stats || {});
             this.renderNotifications();
             
+            console.log('Notifications loaded successfully:', this.notifications.length);
+            
         } catch (error) {
             console.error('Failed to load notifications:', error);
-            this.showError('فشل في تحميل الإشعارات');
+            this.showError('فشل في تحميل الإشعارات: ' + error.message);
         }
     }
 
@@ -529,7 +542,9 @@ class NotificationPageManager {
     }
 
     updateStats(stats = null) {
+        console.log('updateStats called with:', stats);
         if (stats) {
+            console.log('Updating stats with:', stats);
             document.getElementById('total-unread').textContent = stats.total_unread || 0;
             document.getElementById('orders-count').textContent = stats.orders || 0;
             document.getElementById('contacts-count').textContent = stats.contacts || 0;

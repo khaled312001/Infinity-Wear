@@ -125,15 +125,15 @@ class TaskController extends Controller
     private function authorizeTaskAccess(TaskCard $task)
     {
         // التحقق من أن المهمة مرتبطة بالمبيعات
-        if ($task->department !== 'sales') {
+        if ($task->assigned_to_type !== 'sales') {
             abort(403, 'ليس لديك صلاحية للوصول لهذه المهمة');
         }
 
         // يمكن للفريق الوصول للمهام المخصصة له أو المهام العامة
         $canAccess = $task->assigned_to === Auth::id() && $task->assigned_to_type === 'sales'
                   || $task->created_by === Auth::id() && $task->created_by_type === 'sales'
-                  || $task->board->board_type === 'general'
-                  || $task->board->board_type === 'sales';
+                  || ($task->board && $task->board->type === 'general')
+                  || ($task->board && $task->board->type === 'sales');
 
         if (!$canAccess) {
             abort(403, 'ليس لديك صلاحية للوصول لهذه المهمة');

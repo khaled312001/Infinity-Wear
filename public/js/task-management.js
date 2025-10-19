@@ -956,6 +956,51 @@ class TaskManagement {
             this.showAlert('error', 'خطأ في حفظ التغييرات');
         }
     }
+
+    // Helper methods for priority and status
+    getPriorityColor(priority) {
+        const colors = {
+            'low': 'success',
+            'medium': 'warning',
+            'high': 'danger',
+            'urgent': 'danger',
+            'critical': 'dark'
+        };
+        return colors[priority] || 'secondary';
+    }
+
+    getPriorityLabel(priority) {
+        const labels = {
+            'low': 'منخفضة',
+            'medium': 'متوسطة',
+            'high': 'عالية',
+            'urgent': 'عاجلة',
+            'critical': 'حرجة'
+        };
+        return labels[priority] || priority;
+    }
+
+    getStatusColor(status) {
+        const colors = {
+            'pending': 'warning',
+            'in_progress': 'primary',
+            'completed': 'success',
+            'cancelled': 'danger',
+            'on_hold': 'secondary'
+        };
+        return colors[status] || 'secondary';
+    }
+
+    getStatusLabel(status) {
+        const labels = {
+            'pending': 'معلقة',
+            'in_progress': 'قيد التنفيذ',
+            'completed': 'مكتملة',
+            'cancelled': 'ملغية',
+            'on_hold': 'معلقة'
+        };
+        return labels[status] || status;
+    }
 }
 
 // دوال عامة للتعامل مع المهام
