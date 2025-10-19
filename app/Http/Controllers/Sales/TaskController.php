@@ -26,7 +26,7 @@ class TaskController extends Controller
                 $query->where('assigned_to', $currentUser->id)
                       ->where('assigned_to_type', 'sales');
             })
-            ->with(['column', 'board', 'assignedUser'])
+            ->with(['column', 'board'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -42,7 +42,6 @@ class TaskController extends Controller
                           $taskQuery->where('is_archived', false)
                                    ->where('assigned_to', $currentUser->id)
                                    ->where('assigned_to_type', 'sales')
-                                   ->with('assignedUser')
                                    ->orderBy('sort_order');
                       }]);
             }])

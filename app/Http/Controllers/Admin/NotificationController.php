@@ -26,6 +26,7 @@ class NotificationController extends Controller
         try {
             $limit = $request->get('limit', 10);
             $notifications = $this->notificationService->getUnreadNotifications($limit);
+            $stats = $this->notificationService->getNotificationStats();
             
             Log::info('Getting unread notifications', [
                 'limit' => $limit,
@@ -36,7 +37,7 @@ class NotificationController extends Controller
             return response()->json([
                 'success' => true,
                 'notifications' => $notifications,
-                'count' => $this->notificationService->getUnreadCount()
+                'stats' => $stats
             ]);
         } catch (\Exception $e) {
             Log::error('Error getting unread notifications: ' . $e->getMessage());
