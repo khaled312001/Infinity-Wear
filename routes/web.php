@@ -951,8 +951,8 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     // إدارة الإشعارات
     Route::prefix('notifications')->name('notifications.')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\AdminNotificationController::class, 'index'])->name('index')->middleware('user.permission:admin_notifications');
-        Route::get('/unread', [App\Http\Controllers\Admin\NotificationController::class, 'getUnreadNotifications'])->name('unread');
-        Route::get('/stats', [App\Http\Controllers\Admin\NotificationController::class, 'getNotificationStats'])->name('stats');
+        Route::get('/unread', [App\Http\Controllers\Admin\NotificationController::class, 'getUnreadNotifications'])->name('unread')->middleware('auth:admin');
+        Route::get('/stats', [App\Http\Controllers\Admin\NotificationController::class, 'getNotificationStats'])->name('stats')->middleware('auth:admin');
         Route::get('/{notification}/preview', [App\Http\Controllers\Admin\NotificationController::class, 'preview'])->name('preview')->middleware('user.permission:notifications');
         Route::post('/mark-read', [App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('mark-read')->middleware('user.permission:notifications');
         Route::post('/mark-all-read', [App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead'])->name('mark-all-read')->middleware('user.permission:notifications');

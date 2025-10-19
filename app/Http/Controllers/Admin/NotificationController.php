@@ -24,6 +24,23 @@ class NotificationController extends Controller
     public function getUnreadNotifications(Request $request): JsonResponse
     {
         try {
+            // التحقق من تسجيل الدخول
+            $user = auth('admin')->user();
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'يجب تسجيل الدخول أولاً',
+                    'notifications' => [],
+                    'stats' => [
+                        'total_unread' => 0,
+                        'orders' => 0,
+                        'contacts' => 0,
+                        'whatsapp' => 0,
+                        'importer_orders' => 0,
+                    ]
+                ], 401);
+            }
+
             $limit = $request->get('limit', 10);
             $notifications = $this->notificationService->getUnreadNotifications($limit);
             $stats = $this->notificationService->getNotificationStats();
@@ -31,7 +48,7 @@ class NotificationController extends Controller
             Log::info('Getting unread notifications', [
                 'limit' => $limit,
                 'count' => $notifications->count(),
-                'user' => auth('admin')->user() ? auth('admin')->user()->email : 'not authenticated'
+                'user' => $user->email
             ]);
             
             return response()->json([
@@ -45,7 +62,15 @@ class NotificationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'حدث خطأ في تحميل الإشعارات',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'notifications' => [],
+                'stats' => [
+                    'total_unread' => 0,
+                    'orders' => 0,
+                    'contacts' => 0,
+                    'whatsapp' => 0,
+                    'importer_orders' => 0,
+                ]
             ], 500);
         }
     }
@@ -56,11 +81,27 @@ class NotificationController extends Controller
     public function getNotificationStats(): JsonResponse
     {
         try {
+            // التحقق من تسجيل الدخول
+            $user = auth('admin')->user();
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'يجب تسجيل الدخول أولاً',
+                    'stats' => [
+                        'total_unread' => 0,
+                        'orders' => 0,
+                        'contacts' => 0,
+                        'whatsapp' => 0,
+                        'importer_orders' => 0,
+                    ]
+                ], 401);
+            }
+
             $stats = $this->notificationService->getNotificationStats();
             
             Log::info('Getting notification stats', [
                 'stats' => $stats,
-                'user' => auth('admin')->user() ? auth('admin')->user()->email : 'not authenticated'
+                'user' => $user->email
             ]);
             
             return response()->json([
@@ -73,7 +114,14 @@ class NotificationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'حدث خطأ في تحميل الإحصائيات',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'stats' => [
+                    'total_unread' => 0,
+                    'orders' => 0,
+                    'contacts' => 0,
+                    'whatsapp' => 0,
+                    'importer_orders' => 0,
+                ]
             ], 500);
         }
     }

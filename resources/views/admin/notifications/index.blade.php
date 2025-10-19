@@ -30,6 +30,14 @@
                         <i class="fas fa-archive"></i>
                         أرشفة المقروءة
                     </button>
+                    <button class="btn btn-outline-info btn-sm" onclick="testNotifications()">
+                        <i class="fas fa-vial"></i>
+                        اختبار
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="debugNotificationSystem()">
+                        <i class="fas fa-bug"></i>
+                        تشخيص
+                    </button>
                 </div>
             </div>
                 
@@ -328,8 +336,43 @@ class CombinedNotificationManager {
     init() {
         this.setupEventListeners();
         this.setupTabs();
-        this.loadSystemNotifications();
-        this.loadAdminNotifications();
+        
+        // التحقق من تسجيل الدخول قبل تحميل الإشعارات
+        this.checkAuthentication().then(isAuthenticated => {
+            if (isAuthenticated) {
+                this.loadSystemNotifications();
+                this.loadAdminNotifications();
+            } else {
+                console.warn('User not authenticated, skipping notification loading');
+                this.showError('يجب تسجيل الدخول أولاً');
+            }
+        });
+    }
+    
+    async checkAuthentication() {
+        try {
+            // التحقق من وجود CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfToken) {
+                console.warn('CSRF token not found');
+                return false;
+            }
+            
+            // محاولة تحميل صفحة بسيطة للتحقق من تسجيل الدخول
+            const response = await fetch('{{ route("admin.notifications.stats") }}', {
+                method: 'HEAD',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+                    'Accept': 'application/json'
+                }
+            });
+            
+            console.log('Authentication check response status:', response.status);
+            return response.status !== 401;
+        } catch (error) {
+            console.error('Authentication check failed:', error);
+            return false;
+        }
     }
 
     setupEventListeners() {
@@ -440,6 +483,7 @@ class CombinedNotificationManager {
 
     async loadSystemNotifications() {
         console.log('Loading system notifications...');
+        this.showLoadingIndicator();
         try {
             const url = '{{ route("admin.notifications.unread") }}';
             console.log('Fetching from URL:', url);
@@ -456,21 +500,41 @@ class CombinedNotificationManager {
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('Response error:', errorText);
+                
+                // إذا كان الخطأ 401، يعني أن المستخدم غير مسجل الدخول
+                if (response.status === 401) {
+                    this.showError('يجب تسجيل الدخول أولاً');
+                    // إعادة توجيه إلى صفحة تسجيل الدخول
+                    setTimeout(() => {
+                        window.location.href = '{{ route("admin.login") }}';
+                    }, 2000);
+                    return;
+                }
+                
                 throw new Error('Failed to load notifications: ' + response.status);
             }
 
             const data = await response.json();
             console.log('Response data:', data);
             
+            // التحقق من نجاح العملية
+            if (!data.success) {
+                console.error('API returned error:', data.message);
+                this.showError(data.message || 'حدث خطأ في تحميل الإشعارات');
+                return;
+            }
+            
             this.systemNotifications = data.notifications || [];
             this.updateSystemStats(data.stats || {});
             this.renderSystemNotifications();
+            this.hideLoadingIndicator();
             
             console.log('System notifications loaded successfully, count:', this.systemNotifications.length);
             
         } catch (error) {
             console.error('Failed to load system notifications:', error);
             this.showError('فشل في تحميل إشعارات النظام: ' + error.message);
+            this.hideLoadingIndicator();
         }
     }
 
@@ -548,6 +612,10 @@ class CombinedNotificationManager {
                     <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
                     <h4 class="text-muted">لا توجد إشعارات</h4>
                     <p class="text-muted">لم يتم العثور على إشعارات في هذا القسم</p>
+                    <button class="btn btn-outline-primary btn-sm" onclick="testNotifications()">
+                        <i class="fas fa-vial"></i>
+                        اختبار النظام
+                    </button>
                 </div>
             `;
             return;
@@ -753,8 +821,66 @@ class CombinedNotificationManager {
     }
 
     showError(message) {
-        // You can implement a toast notification here
         console.error('Error:', message);
+        
+        // إنشاء toast notification للخطأ
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification error';
+        toast.innerHTML = `
+            <div class="toast-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="toast-content">
+                <div class="toast-title">خطأ</div>
+                <div class="toast-message">${message}</div>
+            </div>
+            <button class="toast-close">&times;</button>
+        `;
+        
+        // إضافة الـ toast إلى الصفحة
+        document.body.appendChild(toast);
+        
+        // إضافة animation
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
+        
+        // إزالة الـ toast بعد 5 ثوان
+        setTimeout(() => {
+            this.removeToast(toast);
+        }, 5000);
+        
+        // زر الإغلاق
+        toast.querySelector('.toast-close').addEventListener('click', () => {
+            this.removeToast(toast);
+        });
+    }
+    
+    removeToast(toast) {
+        toast.classList.add('hide');
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 300);
+    }
+    
+    hideLoadingIndicator() {
+        // إخفاء جميع loading indicators
+        document.querySelectorAll('.notifications-loading').forEach(loading => {
+            loading.style.display = 'none';
+        });
+    }
+    
+    showLoadingIndicator() {
+        // إظهار loading indicator في التاب النشط
+        const activeTab = document.querySelector('.tab-pane.show.active');
+        if (activeTab) {
+            const loading = activeTab.querySelector('.notifications-loading');
+            if (loading) {
+                loading.style.display = 'block';
+            }
+        }
     }
 }
 
@@ -767,6 +893,24 @@ function loadNotifications() {
             window.combinedNotificationManager.loadAdminNotifications();
         }
     }
+}
+
+// Global function for testing notifications
+function testNotifications() {
+    if (window.combinedNotificationManager) {
+        console.log('Testing notification system...');
+        window.combinedNotificationManager.loadSystemNotifications();
+    }
+}
+
+// Debug function to check system status
+function debugNotificationSystem() {
+    console.log('=== Notification System Debug ===');
+    console.log('CSRF Token:', document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'));
+    console.log('Manager exists:', !!window.combinedNotificationManager);
+    console.log('System notifications:', window.combinedNotificationManager?.systemNotifications?.length || 0);
+    console.log('Current main tab:', window.combinedNotificationManager?.currentMainTab);
+    console.log('Current system tab:', window.combinedNotificationManager?.currentSystemTab);
 }
 
 // Initialize when DOM is loaded
@@ -1102,6 +1246,100 @@ document.addEventListener('DOMContentLoaded', () => {
     .main-tabs .nav-link {
         padding: 12px 20px;
         font-size: 0.9rem;
+    }
+}
+
+/* Toast Notifications */
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    min-width: 300px;
+    max-width: 400px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    border-right: 4px solid #3b82f6;
+}
+
+.toast-notification.error {
+    border-right-color: #ef4444;
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+}
+
+.toast-notification.hide {
+    transform: translateX(100%);
+}
+
+.toast-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: white;
+    background: #3b82f6;
+}
+
+.toast-notification.error .toast-icon {
+    background: #ef4444;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.toast-message {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.toast-close:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+@media (max-width: 768px) {
+    .toast-notification {
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        max-width: none;
     }
 }
 </style>
