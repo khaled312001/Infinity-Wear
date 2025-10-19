@@ -38,6 +38,10 @@
                         <i class="fas fa-bug"></i>
                         تشخيص
                     </button>
+                    <a href="/admin/notifications/new" class="btn btn-outline-success btn-sm">
+                        <i class="fas fa-rocket"></i>
+                        النظام الجديد
+                    </a>
                 </div>
             </div>
                 

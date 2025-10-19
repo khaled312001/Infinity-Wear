@@ -972,15 +972,10 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
         // إعدادات الإشعارات
         Route::get('/settings', [App\Http\Controllers\Admin\NotificationSettingsController::class, 'index'])->name('settings')->middleware('user.permission:notifications');
         
-        // النظام الجديد للإشعارات
-        Route::prefix('new')->name('new.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Admin\NewNotificationController::class, 'index'])->name('index')->middleware('auth:admin');
-            Route::get('/get', [App\Http\Controllers\Admin\NewNotificationController::class, 'getNotificationsAjax'])->name('get')->middleware('auth:admin');
-            Route::get('/stats', [App\Http\Controllers\Admin\NewNotificationController::class, 'getStatsAjax'])->name('stats')->middleware('auth:admin');
-            Route::post('/mark-read', [App\Http\Controllers\Admin\NewNotificationController::class, 'markAsRead'])->name('mark-read')->middleware('auth:admin');
-            Route::post('/mark-all-read', [App\Http\Controllers\Admin\NewNotificationController::class, 'markAllAsRead'])->name('mark-all-read')->middleware('auth:admin');
-            Route::post('/create-test', [App\Http\Controllers\Admin\NewNotificationController::class, 'createTestNotification'])->name('create-test')->middleware('auth:admin');
-        });
+        // النظام الجديد للإشعارات - مؤقت
+        Route::get('/new', function() {
+            return view('admin.notifications.simple-new');
+        })->name('new.index');
         Route::put('/settings', [App\Http\Controllers\Admin\NotificationSettingsController::class, 'update'])->name('settings.update')->middleware('user.permission:notifications');
         Route::post('/settings/test', [App\Http\Controllers\Admin\NotificationSettingsController::class, 'testEmail'])->name('settings.test')->middleware('user.permission:notifications');
         Route::post('/settings/reset', [App\Http\Controllers\Admin\NotificationSettingsController::class, 'reset'])->name('settings.reset')->middleware('user.permission:notifications');
