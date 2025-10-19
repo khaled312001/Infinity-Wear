@@ -49,55 +49,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error setting up Pusher Beams:', error);
             });
 
-        // Handle notification clicks
-        beamsClient.on('notification', function(notification) {
-            console.log('Received notification:', notification);
-            
-            // Handle different types of notifications
-            if (notification.data && notification.data.type) {
-                switch(notification.data.type) {
-                    case 'contact_form':
-                        // Redirect to contact management page
-                        if (window.location.pathname !== '/admin/contacts') {
-                            window.location.href = '/admin/contacts';
-                        }
-                        break;
-                    case 'importer_request':
-                        // Redirect to importer management page
-                        if (window.location.pathname !== '/admin/importers') {
-                            window.location.href = '/admin/importers';
-                        }
-                        break;
-                    case 'task_update':
-                        // Redirect to task management page
-                        if (window.location.pathname !== '/admin/tasks') {
-                            window.location.href = '/admin/tasks';
-                        }
-                        break;
-                    case 'system_alert':
-                        // Show system alert modal or redirect to admin dashboard
-                        if (window.location.pathname !== '/admin') {
-                            window.location.href = '/admin';
-                        }
-                        break;
-                    default:
-                        console.log('Unknown notification type:', notification.data.type);
-                }
-            }
-        });
-
-        // Handle notification permission changes
-        beamsClient.on('permission', function(permission) {
-            console.log('Notification permission:', permission);
-            
-            if (permission === 'granted') {
-                console.log('Notification permission granted');
-                showNotificationPermissionMessage('تم تفعيل الإشعارات بنجاح!', 'success');
-            } else if (permission === 'denied') {
-                console.log('Notification permission denied');
-                showNotificationPermissionMessage('تم رفض الإشعارات. يمكنك تفعيلها من إعدادات المتصفح.', 'warning');
-            }
-        });
+        // Handle notification clicks - Pusher Beams uses different event handling
+        // Note: Pusher Beams handles notifications through the service worker
+        // The actual notification handling is done in the service worker (sw.js)
+        console.log('Pusher Beams client initialized - notifications will be handled by service worker');
 
     } else {
         console.error('Pusher Beams SDK not loaded');

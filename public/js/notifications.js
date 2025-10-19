@@ -35,8 +35,12 @@ class NotificationManager {
             // Subscribe to push notifications
             await this.subscribeToPush();
             
-            // Initialize WebSocket connection
-            this.initWebSocket();
+            // Initialize WebSocket connection (optional)
+            try {
+                this.initWebSocket();
+            } catch (error) {
+                console.warn('WebSocket initialization failed, continuing without real-time updates:', error);
+            }
             
             // Initialize UI
             this.initUI();
@@ -90,7 +94,22 @@ class NotificationManager {
         }
 
         try {
+            // Check if we're in a secure context
+            if (!window.isSecureContext) {
+                console.warn('Notifications require a secure context (HTTPS)');
+                return false;
+            }
+
             this.permission = await Notification.requestPermission();
+            
+            if (this.permission === 'granted') {
+                console.log('Notification permission granted');
+            } else if (this.permission === 'denied') {
+                console.log('Notification permission denied by user');
+            } else {
+                console.log('Notification permission dismissed by user');
+            }
+            
             return this.permission === 'granted';
         } catch (error) {
             console.error('Failed to request notification permission:', error);
@@ -175,9 +194,16 @@ class NotificationManager {
      */
     initWebSocket() {
         try {
+            // Check if WebSocket is supported
+            if (!window.WebSocket) {
+                console.warn('WebSocket is not supported in this browser');
+                return;
+            }
+
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsUrl = `${protocol}//${window.location.host}/ws/notifications`;
+            const wsUrl = `${protocol}//${window.location.hostname}:${window.location.port || (protocol === 'wss:' ? 443 : 80)}/ws/notifications`;
             
+            console.log('Attempting to connect to WebSocket:', wsUrl);
             this.websocket = new WebSocket(wsUrl);
             
             this.websocket.onopen = () => {
@@ -195,15 +221,18 @@ class NotificationManager {
                 }
             };
             
-            this.websocket.onclose = () => {
-                console.log('WebSocket disconnected');
+            this.websocket.onclose = (event) => {
+                console.log('WebSocket disconnected:', event.code, event.reason);
                 this.isConnected = false;
                 this.updateConnectionStatus(false);
                 
-                // Reconnect after 5 seconds
-                setTimeout(() => {
-                    this.initWebSocket();
-                }, 5000);
+                // Only reconnect if it wasn't a manual close
+                if (event.code !== 1000) {
+                    console.log('Attempting to reconnect in 5 seconds...');
+                    setTimeout(() => {
+                        this.initWebSocket();
+                    }, 5000);
+                }
             };
             
             this.websocket.onerror = (error) => {
