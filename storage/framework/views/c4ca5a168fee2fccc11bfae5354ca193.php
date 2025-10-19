@@ -1,0 +1,1 @@
+ <?php /**PATH F:\infinity\Infinity-Wear\resources\views\customer\designs.blade.php ENDPATH**/ ?>

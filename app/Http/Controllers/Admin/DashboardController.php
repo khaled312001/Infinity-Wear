@@ -11,6 +11,7 @@ use App\Models\Importer;
 use App\Models\TaskCard;
 use App\Models\Transaction;
 use App\Models\ImporterOrder;
+use App\Models\MarketingReport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -29,6 +30,9 @@ class DashboardController extends Controller
             'total_tasks' => TaskCard::count(),
             'total_transactions' => Transaction::count(),
             'total_importer_orders' => ImporterOrder::count(),
+            'total_marketing_reports' => MarketingReport::count(),
+            'pending_marketing_reports' => MarketingReport::where('status', 'pending')->count(),
+            'approved_marketing_reports' => MarketingReport::where('status', 'approved')->count(),
         ];
 
         // إحصائيات المبيعات الشهرية
@@ -70,6 +74,20 @@ class DashboardController extends Controller
 
         // المستوردين الجدد
         $newImporters = Importer::where('status', 'new')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        // تقارير المندوبين التسويقيين الحديثة
+        $recentMarketingReports = MarketingReport::with('creator')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        // تقارير تحتاج مراجعة
+        $reportsNeedingReview = MarketingReport::where('status', 'pending')
+            ->orWhere('status', 'under_review')
+            ->with('creator')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
@@ -121,6 +139,8 @@ class DashboardController extends Controller
             'recentOrders',
             'pendingTasks',
             'newImporters',
+            'recentMarketingReports',
+            'reportsNeedingReview',
             'orderStats',
             'taskStats',
             'recentActivity'

@@ -1,0 +1,32 @@
+# Email Configuration for Infinity Wear
+# Copy these settings to your .env file
+
+# Email Configuration - Hostinger
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.hostinger.com
+MAIL_PORT=465
+MAIL_USERNAME=info@infinitywearsa.com
+MAIL_PASSWORD="Info2025#*"
+MAIL_ENCRYPTION=ssl
+MAIL_FROM_ADDRESS=info@infinitywearsa.com
+MAIL_FROM_NAME="Infinity Wear"
+
+# Admin Email
+MAIL_ADMIN_EMAIL=info@infinitywearsa.com
+
+# IMAP Configuration for receiving emails
+MAIL_IMAP_HOST=imap.hostinger.com
+MAIL_IMAP_PORT=993
+MAIL_IMAP_ENCRYPTION=ssl
+
+# POP Configuration
+MAIL_POP_HOST=pop.hostinger.com
+MAIL_POP_PORT=995
+MAIL_POP_ENCRYPTION=ssl
+
+# Hostinger Email Server Details:
+# Incoming server (IMAP): imap.hostinger.com:993 (SSL)
+# Incoming server (POP): pop.hostinger.com:995 (SSL)
+# Outgoing server (SMTP): smtp.hostinger.com:465 (SSL)
+# Username: info@infinitywearsa.com
+# Password: Info2025#*

@@ -7,10 +7,6 @@
 
 @section('page-actions')
     <div class="d-flex gap-2">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTaskModal">
-            <i class="fas fa-plus me-2"></i>
-            مهمة جديدة
-        </button>
         <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                 <i class="fas fa-filter me-2"></i>
@@ -22,6 +18,10 @@
                 <li><a class="dropdown-item" href="#" onclick="filterTasks('urgent')">عاجلة</a></li>
                 <li><a class="dropdown-item" href="#" onclick="filterTasks('overdue')">متأخرة</a></li>
             </ul>
+        </div>
+        <div class="alert alert-info mb-0 d-flex align-items-center">
+            <i class="fas fa-info-circle me-2"></i>
+            <small>يمكنك فقط نقل المهام وإضافة تعليقات</small>
         </div>
     </div>
 @endsection
@@ -136,7 +136,7 @@
             <div class="task-board" data-board-id="{{ $board->id }}">
                 <div class="board-header">
                     <div class="board-title">
-                        <i class="{{ $board->board_icon }}" style="color: {{ $board->board_color }}"></i>
+                        <i class="{{ $board->board_icon }}" style="color: {{ $board->board_color ?? '#6c757d' }}"></i>
                         <h4>{{ $board->name }}</h4>
                         <span class="badge bg-secondary">{{ $board->board_type_label }}</span>
                     </div>
@@ -148,14 +148,12 @@
                             <div class="task-column" data-column-id="{{ $column->id }}" data-board-id="{{ $board->id }}">
                                 <div class="column-header">
                                     <div class="column-title">
-                                        <i class="{{ $column->column_icon }}" style="color: {{ $column->column_color }}"></i>
+                                        <i class="{{ $column->column_icon }}" style="color: {{ $column->column_color ?? '#6c757d' }}"></i>
                                         <span>{{ $column->name }}</span>
                                         <span class="task-count">{{ $column->active_tasks_count }}</span>
                                     </div>
                                     <div class="column-actions">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="addTask({{ $column->id }})">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
+                                        <span class="badge bg-light text-dark">فريق التسويق</span>
                                     </div>
                                 </div>
 
@@ -191,7 +189,7 @@
                                             @if($task->checklist && count($task->checklist) > 0)
                                                 <div class="task-progress">
                                                     <div class="progress">
-                                                        <div class="progress-bar" style="width: {{ $task->progress_percentage }}%"></div>
+                                                        <div class="progress-bar" style="width: {{ $task->progress_percentage ?? 0 }}%"></div>
                                                     </div>
                                                     <small class="text-muted">{{ $task->progress_percentage }}%</small>
                                                 </div>
@@ -206,18 +204,18 @@
                                                 @endif
                                                 
                                                 @if($task->due_date)
-                                                    <div class="due-date {{ $task->is_overdue ? 'overdue' : ($task->is_due_soon ? 'due-soon' : '') }}">
+                                                    <div class="due-date @if($task->is_overdue) overdue @elseif($task->is_due_soon) due-soon @endif">
                                                         <i class="fas fa-calendar"></i>
                                                         {{ $task->due_date->format('Y-m-d') }}
                                                     </div>
                                                 @endif
 
                                                 <div class="task-actions">
-                                                    <button class="btn btn-sm btn-outline-primary" onclick="viewTask({{ $task->id }})">
+                                                    <button class="btn btn-sm btn-outline-primary" data-task-id="{{ $task->id }}" onclick="viewTask(this.dataset.taskId)" title="عرض التفاصيل">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
-                                                    <button class="btn btn-sm btn-outline-secondary" onclick="editTask({{ $task->id }})">
-                                                        <i class="fas fa-edit"></i>
+                                                    <button class="btn btn-sm btn-outline-info" data-task-id="{{ $task->id }}" onclick="addComment(this.dataset.taskId)" title="إضافة تعليق">
+                                                        <i class="fas fa-comment"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -232,129 +230,26 @@
         @endforeach
     </div>
 
-    <!-- Modal إنشاء مهمة جديدة -->
-    <div class="modal fade" id="createTaskModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+    <!-- Modal إضافة تعليق -->
+    <div class="modal fade" id="addCommentModal" tabindex="-1">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">إنشاء مهمة جديدة</h5>
+                    <h5 class="modal-title">إضافة تعليق</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="createTaskForm">
+                <form id="addCommentForm">
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="mb-3">
-                                    <label for="taskTitle" class="form-label">عنوان المهمة</label>
-                                    <input type="text" class="form-control" id="taskTitle" name="title" required>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="taskPriority" class="form-label">الأولوية</label>
-                                    <select class="form-select" id="taskPriority" name="priority" required>
-                                        <option value="low">منخفضة</option>
-                                        <option value="medium" selected>متوسطة</option>
-                                        <option value="high">عالية</option>
-                                        <option value="urgent">عاجلة</option>
-                                        <option value="critical">حرجة</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        
                         <div class="mb-3">
-                            <label for="taskDescription" class="form-label">الوصف</label>
-                            <textarea class="form-control" id="taskDescription" name="description" rows="3"></textarea>
+                            <label for="commentText" class="form-label">التعليق</label>
+                            <textarea class="form-control" id="commentText" name="comment" rows="4" placeholder="اكتب تعليقك هنا..." required></textarea>
+                            <div class="form-text">سيظهر هذا التعليق للأدمن</div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="taskBoard" class="form-label">اللوحة</label>
-                                    <select class="form-select" id="taskBoard" name="board_id" required>
-                                        @foreach($boards as $board)
-                                            <option value="{{ $board->id }}">{{ $board->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="taskColumn" class="form-label">العمود</label>
-                                    <select class="form-select" id="taskColumn" name="column_id" required>
-                                        @foreach($boards->first()->columns ?? [] as $column)
-                                            <option value="{{ $column->id }}">{{ $column->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="taskDueDate" class="form-label">تاريخ الاستحقاق</label>
-                                    <input type="date" class="form-control" id="taskDueDate" name="due_date">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="taskAssignedTo" class="form-label">تعيين إلى</label>
-                                    <select class="form-select" id="taskAssignedTo" name="assigned_to">
-                                        <option value="">اختر شخص</option>
-                                        @if(isset($users['admins']) && is_array($users['admins']))
-                                            @foreach($users['admins'] as $admin)
-                                                <option value="{{ $admin['id'] }}" data-type="admin">{{ $admin['name'] }}</option>
-                                            @endforeach
-                                        @elseif(isset($users['admins']) && is_object($users['admins']))
-                                            @foreach($users['admins'] as $admin)
-                                                <option value="{{ $admin->id }}" data-type="admin">{{ $admin->name }}</option>
-                                            @endforeach
-                                        @endif
-                                        
-                                        @if(isset($users['marketing']) && is_array($users['marketing']))
-                                            @foreach($users['marketing'] as $marketing)
-                                                <option value="{{ $marketing['id'] }}" data-type="marketing">{{ $marketing['name'] }} (تسويق)</option>
-                                            @endforeach
-                                        @elseif(isset($users['marketing']) && is_object($users['marketing']))
-                                            @foreach($users['marketing'] as $marketing)
-                                                <option value="{{ $marketing->id }}" data-type="marketing">{{ $marketing->name }} (تسويق)</option>
-                                            @endforeach
-                                        @endif
-                                        
-                                        @if(isset($users['sales']) && is_array($users['sales']))
-                                            @foreach($users['sales'] as $sales)
-                                                <option value="{{ $sales['id'] }}" data-type="sales">{{ $sales['name'] }} (مبيعات)</option>
-                                            @endforeach
-                                        @elseif(isset($users['sales']) && is_object($users['sales']))
-                                            @foreach($users['sales'] as $sales)
-                                                <option value="{{ $sales->id }}" data-type="sales">{{ $sales->name }} (مبيعات)</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="taskEstimatedHours" class="form-label">الساعات المتوقعة</label>
-                                    <input type="number" class="form-control" id="taskEstimatedHours" name="estimated_hours" step="0.5" min="0">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="taskColor" class="form-label">اللون</label>
-                                    <input type="color" class="form-control form-control-color" id="taskColor" name="color">
-                                </div>
-                            </div>
-                        </div>
+                        <input type="hidden" id="commentTaskId" name="task_id">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                        <button type="submit" class="btn btn-primary">إنشاء المهمة</button>
+                        <button type="submit" class="btn btn-primary">إضافة التعليق</button>
                     </div>
                 </form>
             </div>
@@ -373,5 +268,75 @@
     document.addEventListener('DOMContentLoaded', function() {
         initializeTaskManagement();
     });
+
+    // وظيفة إضافة تعليق
+    function addComment(taskId) {
+        document.getElementById('commentTaskId').value = taskId;
+        const modal = new bootstrap.Modal(document.getElementById('addCommentModal'));
+        modal.show();
+    }
+
+    // معالجة إرسال التعليق
+    document.getElementById('addCommentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const taskId = formData.get('task_id');
+        const comment = formData.get('comment');
+
+        fetch(`/marketing/tasks/${taskId}/comment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                comment: comment,
+                is_internal: true
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // إغلاق المودال
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addCommentModal'));
+                modal.hide();
+                
+                // مسح النموذج
+                this.reset();
+                
+                // إظهار رسالة نجاح
+                showAlert('success', 'تم إضافة التعليق بنجاح');
+            } else {
+                showAlert('error', 'حدث خطأ في إضافة التعليق');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('error', 'حدث خطأ في إضافة التعليق');
+        });
+    });
+
+    // وظيفة إظهار التنبيهات
+    function showAlert(type, message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        // إضافة التنبيه في أعلى الصفحة
+        const container = document.querySelector('.container-fluid');
+        container.insertBefore(alertDiv, container.firstChild);
+        
+        // إزالة التنبيه تلقائياً بعد 5 ثوان
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
 </script>
 @endpush

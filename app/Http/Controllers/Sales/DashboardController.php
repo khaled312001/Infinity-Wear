@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Sales;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Order;
 use App\Models\Importer;
 use App\Models\ImporterOrder;
 use App\Models\TaskCard;
@@ -169,13 +168,6 @@ class DashboardController extends Controller
         }
     }
 
-    public function orders()
-    {
-        $orders = Order::orderBy('created_at', 'desc')
-            ->paginate(20);
-
-        return view('sales.orders.index', compact('orders'));
-    }
 
     public function importers()
     {
@@ -234,11 +226,11 @@ class DashboardController extends Controller
 
     public function reports()
     {
-        // تقارير المبيعات
-        $monthlyReport = Order::select(
+        // تقارير المبيعات (طلبات المستوردين فقط)
+        $monthlyReport = ImporterOrder::select(
             DB::raw('strftime("%m", created_at) as month'),
             DB::raw('COUNT(*) as orders_count'),
-            DB::raw('SUM(total) as total_revenue')
+            DB::raw('SUM(final_cost) as total_revenue')
         )
         ->whereRaw('strftime("%Y", created_at) = ?', [Carbon::now()->year])
         ->where('status', '!=', 'cancelled')
@@ -290,25 +282,6 @@ class DashboardController extends Controller
         return redirect()->back()->with('success', 'تم تحديث الملف الشخصي بنجاح');
     }
 
-    public function showOrder(Order $order)
-    {
-        return view('sales.orders.show', compact('order'));
-    }
-
-    public function updateOrderStatus(Request $request, Order $order)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,processing,completed,cancelled',
-            'notes' => 'nullable|string|max:1000'
-        ]);
-
-        $order->update([
-            'status' => $request->status,
-            'notes' => $request->notes,
-        ]);
-
-        return redirect()->back()->with('success', 'تم تحديث حالة الطلب بنجاح');
-    }
 
     public function showImporterOrder(ImporterOrder $order)
     {
@@ -350,44 +323,88 @@ class DashboardController extends Controller
         return redirect()->back()->with('success', 'تم تحديث حالة المستورد بنجاح');
     }
 
-    public function contacts()
+    public function contacts(Request $request)
     {
-        $contacts = DB::table('contacts')->orderBy('created_at', 'desc')->paginate(20);
-        return view('sales.contacts.index', compact('contacts'));
+        $query = Contact::notArchived()->forSales()->latest();
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by contact type
+        if ($request->filled('contact_type')) {
+            $query->where('contact_type', $request->contact_type);
+        }
+
+        // Filter by priority
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
+        // Filter by source
+        if ($request->filled('source')) {
+            $query->where('source', $request->source);
+        }
+
+        // Filter by tags
+        if ($request->filled('tags')) {
+            $query->byTags($request->tags);
+        }
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('company', 'like', "%{$search}%")
+                  ->orWhere('subject', 'like', "%{$search}%")
+                  ->orWhere('message', 'like', "%{$search}%");
+            });
+        }
+
+        $contacts = $query->paginate(20);
+
+        // Statistics
+        $stats = [
+            'total' => Contact::notArchived()->forSales()->count(),
+            'new' => Contact::notArchived()->forSales()->new()->count(),
+            'read' => Contact::notArchived()->forSales()->read()->count(),
+            'replied' => Contact::notArchived()->forSales()->replied()->count(),
+            'closed' => Contact::notArchived()->forSales()->closed()->count(),
+            'inquiry' => Contact::notArchived()->forSales()->inquiry()->count(),
+            'custom' => Contact::notArchived()->forSales()->custom()->count(),
+            'high_priority' => Contact::notArchived()->forSales()->byPriority('high')->count(),
+            'follow_up_today' => Contact::notArchived()->forSales()->whereDate('follow_up_date', today())->count(),
+        ];
+
+        return view('sales.contacts.index', compact('contacts', 'stats'));
     }
 
-    public function showContact($id)
+    public function showContact(Contact $contact)
     {
-        $contact = DB::table('contacts')->where('id', $id)->first();
-        if (!$contact) {
-            return redirect()->route('sales.contacts')->with('error', 'جهة الاتصال غير موجودة');
+        // Mark as read if it's new
+        if ($contact->status === 'new') {
+            $contact->markAsRead();
         }
+
         return view('sales.contacts.show', compact('contact'));
     }
 
-    public function updateContact(Request $request, $id)
+    public function updateContact(Request $request, Contact $contact)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            'company' => 'nullable|string|max:255',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
             'status' => 'required|in:new,read,replied,closed',
             'admin_notes' => 'nullable|string|max:1000'
         ]);
 
-        DB::table('contacts')->where('id', $id)->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'company' => $request->company,
-            'subject' => $request->subject,
-            'message' => $request->message,
+        $contact->update([
             'status' => $request->status,
             'admin_notes' => $request->admin_notes,
-            'updated_at' => now(),
+            'read_at' => $request->status === 'read' && !$contact->read_at ? now() : $contact->read_at,
+            'replied_at' => $request->status === 'replied' && !$contact->replied_at ? now() : $contact->replied_at,
         ]);
 
         return redirect()->back()->with('success', 'تم تحديث جهة الاتصال بنجاح');

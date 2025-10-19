@@ -1,0 +1,403 @@
+
+
+<?php $__env->startSection('title', 'إدارة الخدمات'); ?>
+<?php $__env->startSection('page-title', 'إدارة الخدمات'); ?>
+<?php $__env->startSection('page-subtitle', 'إدارة وتعديل محتوى صفحة الخدمات'); ?>
+
+<?php $__env->startSection('content'); ?>
+<script>
+// Define functions immediately to ensure they're available
+window.addFeature = function() {
+    const container = document.getElementById('featuresContainer');
+    if (!container) return;
+    
+    const div = document.createElement('div');
+    div.className = 'input-group mb-2';
+    div.innerHTML = `
+        <input type="text" class="form-control" name="features[]" placeholder="أدخل ميزة">
+        <button type="button" class="btn btn-outline-danger" data-action="remove-feature">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    container.appendChild(div);
+};
+
+window.removeFeature = function(button) {
+    if (button && button.parentElement) {
+        button.parentElement.remove();
+    }
+};
+
+// Also define as regular functions for backward compatibility
+function addFeature() {
+    window.addFeature();
+}
+
+function removeFeature(button) {
+    window.removeFeature(button);
+}
+
+console.log('Feature functions defined at page start');
+
+// Add event delegation for dynamic buttons
+document.addEventListener('click', function(e) {
+    if (e.target.closest('button[data-action="remove-feature"]')) {
+        e.preventDefault();
+        const button = e.target.closest('button[data-action="remove-feature"]');
+        removeFeature(button);
+    }
+    
+    if (e.target.closest('button[data-action="add-feature"]')) {
+        e.preventDefault();
+        addFeature();
+    }
+    
+    // Fallback for onclick attributes
+    if (e.target.closest('button[onclick*="removeFeature"]')) {
+        e.preventDefault();
+        const button = e.target.closest('button[onclick*="removeFeature"]');
+        removeFeature(button);
+    }
+    
+    if (e.target.closest('button[onclick*="addFeature"]')) {
+        e.preventDefault();
+        addFeature();
+    }
+});
+</script>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-cogs me-2"></i>
+                    إدارة محتوى صفحة الخدمات
+                </h5>
+                <?php if(session('success')): ?>
+                    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <?php echo e(session('success')); ?>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="d-grid gap-2">
+                            <a href="<?php echo e(route('services')); ?>" target="_blank" class="btn btn-outline-primary">
+                                <i class="fas fa-external-link-alt me-2"></i>
+                                عرض صفحة الخدمات
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+                                <i class="fas fa-plus me-2"></i>
+                                إضافة خدمة جديدة
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-warning" onclick="activateAllServices()">
+                                <i class="fas fa-toggle-on me-2"></i>
+                                تفعيل جميع الخدمات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr class="my-4">
+                
+                <!-- Services List -->
+                <div class="row">
+                    <div class="col-12">
+                        <h6 class="fw-bold mb-3">قائمة الخدمات:</h6>
+                        
+                        <?php if($services->count() > 0): ?>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>الترتيب</th>
+                                            <th>الصورة</th>
+                                            <th>العنوان</th>
+                                            <th>الوصف</th>
+                                            <th>الميزات</th>
+                                            <th>الحالة</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $__currentLoopData = $services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <tr>
+                                                <td>
+                                                    <span class="badge bg-secondary"><?php echo e($service->order); ?></span>
+                                                </td>
+                                                <td>
+                                                    <?php if($service->image): ?>
+                                                        <img src="<?php echo e($service->image_url); ?>" alt="<?php echo e($service->title); ?>" 
+                                                             class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                                                    <?php else: ?>
+                                                        <div class="bg-light d-flex align-items-center justify-content-center" 
+                                                             style="width: 60px; height: 60px;">
+                                                            <i class="<?php echo e($service->icon ?? 'fas fa-cog'); ?> text-muted"></i>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <strong><?php echo e($service->title); ?></strong>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted"><?php echo e(Str::limit($service->description, 100)); ?></small>
+                                                </td>
+                                                <td>
+                                                    <?php if($service->features && count($service->features) > 0): ?>
+                                                        <small class="text-muted"><?php echo e(count($service->features)); ?> ميزة</small>
+                                                    <?php else: ?>
+                                                        <small class="text-muted">لا توجد ميزات</small>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <?php if($service->is_active): ?>
+                                                        <span class="badge bg-success">مفعل</span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-danger">معطل</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a href="<?php echo e(route('admin.services.edit', $service->id)); ?>" 
+                                                           class="btn btn-sm btn-outline-primary" title="تعديل">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <form method="POST" action="<?php echo e(route('admin.services.toggle-status', $service->id)); ?>" 
+                                                              style="display: inline;" onsubmit="return confirm('هل أنت متأكد من تغيير حالة هذه الخدمة؟')">
+                                                            <?php echo csrf_field(); ?>
+                                                            <?php echo method_field('PATCH'); ?>
+                                                            <button type="submit" class="btn btn-sm btn-outline-<?php echo e($service->is_active ? 'warning' : 'success'); ?>" 
+                                                                    title="<?php echo e($service->is_active ? 'تعطيل' : 'تفعيل'); ?>">
+                                                                <i class="fas fa-<?php echo e($service->is_active ? 'pause' : 'play'); ?>"></i>
+                                                            </button>
+                                                        </form>
+                                                        <form method="POST" action="<?php echo e(route('admin.services.destroy', $service->id)); ?>" 
+                                                              style="display: inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذه الخدمة؟ لا يمكن التراجع عن هذا الإجراء.')">
+                                                            <?php echo csrf_field(); ?>
+                                                            <?php echo method_field('DELETE'); ?>
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php else: ?>
+                            <div class="text-center py-5">
+                                <i class="fas fa-cogs fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">لا توجد خدمات</h5>
+                                <p class="text-muted">ابدأ بإضافة خدمة جديدة</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Service Modal -->
+<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addServiceModalLabel">
+                    <i class="fas fa-plus me-2"></i>
+                    إضافة خدمة جديدة
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="<?php echo e(route('admin.services.store')); ?>" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">عنوان الخدمة <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="icon" class="form-label">الأيقونة</label>
+                                <input type="text" class="form-control" id="icon" name="icon" 
+                                       placeholder="مثال: fas fa-tshirt">
+                                <small class="form-text text-muted">استخدم Font Awesome icons</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">وصف الخدمة <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="image" class="form-label">صورة الخدمة</label>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/jpeg,image/jpg,image/png,image/gif,image/svg+xml">
+                        <small class="form-text text-muted">الصور المقبولة: JPEG, JPG, PNG, GIF, SVG (حد أقصى 2MB)</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">ميزات الخدمة</label>
+                        <div id="featuresContainer">
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" name="features[]" placeholder="أدخل ميزة">
+                                <button type="button" class="btn btn-outline-danger" data-action="remove-feature" onclick="if(typeof removeFeature === 'function') removeFeature(this); else console.error('removeFeature not defined');">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-action="add-feature" id="addFeatureBtn" onclick="if(typeof addFeature === 'function') addFeature(); else console.error('addFeature not defined');">
+                            <i class="fas fa-plus me-1"></i> إضافة ميزة
+                        </button>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="order" class="form-label">ترتيب العرض</label>
+                                <input type="number" class="form-control" id="order" name="order" min="0" value="0">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" checked>
+                                    <input type="hidden" name="is_active" value="0">
+                                    <label class="form-check-label" for="is_active">
+                                        تفعيل الخدمة
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="meta_title" class="form-label">عنوان SEO</label>
+                        <input type="text" class="form-control" id="meta_title" name="meta_title">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="meta_description" class="form-label">وصف SEO</label>
+                        <textarea class="form-control" id="meta_description" name="meta_description" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>
+                        حفظ الخدمة
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('scripts'); ?>
+<script>
+// Ensure functions are available globally
+window.addFeature = function() {
+    const container = document.getElementById('featuresContainer');
+    if (!container) return;
+    
+    const div = document.createElement('div');
+    div.className = 'input-group mb-2';
+    div.innerHTML = `
+        <input type="text" class="form-control" name="features[]" placeholder="أدخل ميزة">
+        <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    container.appendChild(div);
+};
+
+window.removeFeature = function(button) {
+    if (button && button.parentElement) {
+        button.parentElement.remove();
+    }
+};
+
+// Also define as regular functions for backward compatibility
+function addFeature() {
+    window.addFeature();
+}
+
+function removeFeature(button) {
+    window.removeFeature(button);
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Services index page loaded');
+    console.log('addFeature function available:', typeof window.addFeature);
+    console.log('removeFeature function available:', typeof window.removeFeature);
+    
+    // Ensure all remove buttons work
+    const removeButtons = document.querySelectorAll('button[onclick*="removeFeature"]');
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            removeFeature(this);
+        });
+    });
+    
+    // Ensure add button works
+    const addButton = document.getElementById('addFeatureBtn');
+    if (addButton) {
+        addButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            addFeature();
+        });
+    }
+});
+
+// Function to activate all services
+function activateAllServices() {
+    if (confirm('هل أنت متأكد من تفعيل جميع الخدمات؟')) {
+        fetch('/admin/services/activate-all', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('تم تفعيل جميع الخدمات بنجاح');
+                location.reload();
+            } else {
+                alert('حدث خطأ أثناء تفعيل الخدمات');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('حدث خطأ أثناء تفعيل الخدمات');
+        });
+    }
+}
+</script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.dashboard', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH F:\infinity\Infinity-Wear\resources\views\admin\services\index.blade.php ENDPATH**/ ?>

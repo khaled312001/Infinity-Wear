@@ -3,110 +3,108 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | VAPID Keys for Web Push Notifications
+    | Push Notifications Configuration
     |--------------------------------------------------------------------------
     |
-    | These keys are used for Web Push notifications. You can generate them
-    | using the web-push library or online tools.
-    |
-    */
-
-    'vapid' => [
-        'subject' => env('PUSH_VAPID_SUBJECT', config('app.url')),
-        'public_key' => env('PUSH_VAPID_PUBLIC_KEY', ''),
-        'private_key' => env('PUSH_VAPID_PRIVATE_KEY', ''),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Push Notification Settings
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for push notifications behavior
+    | This file contains the configuration for push notifications using
+    | Web Push protocol. Configure your VAPID keys and notification settings.
     |
     */
 
     'settings' => [
         'enabled' => env('PUSH_NOTIFICATIONS_ENABLED', true),
-        'default_icon' => env('PUSH_DEFAULT_ICON', '/images/logo.png'),
-        'default_badge' => env('PUSH_DEFAULT_BADGE', '/images/logo.png'),
-        'default_url' => env('PUSH_DEFAULT_URL', '/admin/notifications'),
-        'ttl' => env('PUSH_TTL', 86400), // 24 hours
-        'urgency' => env('PUSH_URGENCY', 'normal'), // low, normal, high
+        'default_icon' => '/images/notification-icon.png',
+        'default_badge' => '/images/badge-icon.png',
+        'default_url' => '/dashboard',
+        'ttl' => 86400, // 24 hours
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Notification Types
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for different notification types
-    |
-    */
+    'vapid' => [
+        'subject' => env('PUSH_VAPID_SUBJECT', 'mailto:admin@infinitywear.com'),
+        'public_key' => env('PUSH_VAPID_PUBLIC_KEY'),
+        'private_key' => env('PUSH_VAPID_PRIVATE_KEY'),
+    ],
 
     'types' => [
         'order' => [
             'title' => 'طلب جديد',
             'icon' => '/images/order-icon.png',
             'url' => '/admin/orders',
-            'enabled' => true,
+            'sound' => 'order-notification.mp3',
         ],
         'contact' => [
             'title' => 'رسالة اتصال جديدة',
             'icon' => '/images/contact-icon.png',
             'url' => '/admin/contacts',
-            'enabled' => true,
+            'sound' => 'contact-notification.mp3',
         ],
         'whatsapp' => [
             'title' => 'رسالة واتساب جديدة',
             'icon' => '/images/whatsapp-icon.png',
             'url' => '/admin/whatsapp',
-            'enabled' => true,
+            'sound' => 'whatsapp-notification.mp3',
+        ],
+        'importer_order' => [
+            'title' => 'طلب مستورد جديد',
+            'icon' => '/images/importer-icon.png',
+            'url' => '/admin/importer-orders',
+            'sound' => 'importer-notification.mp3',
         ],
         'system' => [
             'title' => 'إشعار النظام',
             'icon' => '/images/system-icon.png',
             'url' => '/admin/notifications',
-            'enabled' => true,
+            'sound' => 'system-notification.mp3',
+        ],
+        'task' => [
+            'title' => 'مهمة جديدة',
+            'icon' => '/images/task-icon.png',
+            'url' => '/admin/tasks',
+            'sound' => 'task-notification.mp3',
+        ],
+        'marketing' => [
+            'title' => 'تقرير تسويقي',
+            'icon' => '/images/marketing-icon.png',
+            'url' => '/admin/marketing',
+            'sound' => 'marketing-notification.mp3',
+        ],
+        'sales' => [
+            'title' => 'تقرير مبيعات',
+            'icon' => '/images/sales-icon.png',
+            'url' => '/admin/sales',
+            'sound' => 'sales-notification.mp3',
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | User Types
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for different user types that can receive notifications
-    |
-    */
-
-    'user_types' => [
+    'channels' => [
         'admin' => [
             'enabled' => true,
-            'default_notifications' => ['order', 'contact', 'whatsapp', 'system'],
+            'types' => ['order', 'contact', 'whatsapp', 'importer_order', 'system', 'task', 'marketing', 'sales'],
         ],
-        'customer' => [
-            'enabled' => false,
-            'default_notifications' => ['order'],
+        'sales' => [
+            'enabled' => true,
+            'types' => ['order', 'contact', 'task', 'sales'],
+        ],
+        'marketing' => [
+            'enabled' => true,
+            'types' => ['contact', 'whatsapp', 'task', 'marketing'],
         ],
         'importer' => [
-            'enabled' => false,
-            'default_notifications' => ['order'],
+            'enabled' => true,
+            'types' => ['importer_order', 'system'],
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Cleanup Settings
-    |--------------------------------------------------------------------------
-    |
-    | Settings for cleaning up old subscriptions
-    |
-    */
+    'rate_limiting' => [
+        'enabled' => true,
+        'max_per_minute' => 10,
+        'max_per_hour' => 100,
+        'max_per_day' => 1000,
+    ],
 
     'cleanup' => [
         'enabled' => true,
-        'days_old' => 30, // Delete subscriptions older than 30 days
-        'schedule' => 'daily', // How often to run cleanup
+        'old_subscriptions_days' => 30,
+        'failed_notifications_days' => 7,
     ],
 ];

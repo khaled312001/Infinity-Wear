@@ -1,518 +1,312 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
-@section('title', 'تعديل العميل - ' . $user->name)
-@section('dashboard-title', 'إدارة العملاء')
-@section('page-title', 'تعديل بيانات العميل')
-@section('page-subtitle', 'تحديث معلومات العميل')
-
-@section('sidebar-menu')
-    <a href="{{ route('admin.dashboard') }}" class="nav-link">
-        <i class="fas fa-tachometer-alt me-2"></i>
-        الرئيسية
-    </a>
-    
-    <!-- إدارة المحتوى -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-store me-2"></i>
-            إدارة المحتوى
-        </div>
-        <a href="{{ route('admin.portfolio.index') }}" class="nav-link">
-            <i class="fas fa-tshirt me-2"></i>
-            المنتجات
-        </a>
-        <a href="{{ route('admin.portfolio.index') }}" class="nav-link">
-            <i class="fas fa-image me-2"></i>
-            معرض الأعمال
-        </a>
-        <a href="{{ route('admin.testimonials.index') }}" class="nav-link">
-            <i class="fas fa-star me-2"></i>
-            التقييمات
-        </a>
-    </div>
-    
-    <!-- إدارة المستخدمين -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-users me-2"></i>
-            إدارة المستخدمين
-        </div>
-        <a href="{{ route('admin.users.index') }}" class="nav-link active">
-            <i class="fas fa-user me-2"></i>
-            العملاء
-        </a>
-        <a href="{{ route('admin.admins.index') }}" class="nav-link">
-            <i class="fas fa-user-shield me-2"></i>
-            المشرفين
-        </a>
-        <a href="{{ route('admin.importers.index') }}" class="nav-link">
-            <i class="fas fa-truck me-2"></i>
-            المستوردين
-        </a>
-    </div>
-    
-    <!-- إدارة الفرق -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-users-cog me-2"></i>
-            إدارة الفرق
-        </div>
-        <a href="{{ route('admin.marketing.index') }}" class="nav-link">
-            <i class="fas fa-bullhorn me-2"></i>
-            فريق التسويق
-        </a>
-        <a href="{{ route('admin.sales.index') }}" class="nav-link">
-            <i class="fas fa-chart-line me-2"></i>
-            فريق المبيعات
-        </a>
-        <a href="{{ route('admin.tasks.index') }}" class="nav-link">
-            <i class="fas fa-tasks me-2"></i>
-            إدارة المهام
-        </a>
-    </div>
-    
-    <!-- النظام المالي -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-money-bill-wave me-2"></i>
-            النظام المالي
-        </div>
-        <a href="{{ route('admin.finance.dashboard') }}" class="nav-link">
-            <i class="fas fa-chart-pie me-2"></i>
-            لوحة المالية
-        </a>
-        <a href="{{ route('admin.finance.transactions') }}" class="nav-link">
-            <i class="fas fa-exchange-alt me-2"></i>
-            المعاملات المالية
-        </a>
-        <a href="{{ route('admin.finance.reports') }}" class="nav-link">
-            <i class="fas fa-file-invoice-dollar me-2"></i>
-            التقارير المالية
-        </a>
-    </div>
-    
-    <!-- إدارة المحتوى والـ SEO -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-search me-2"></i>
-            المحتوى والـ SEO
-        </div>
-        <a href="{{ route('admin.content.index') }}" class="nav-link">
-            <i class="fas fa-file-alt me-2"></i>
-            إدارة المحتوى
-        </a>
-        <a href="{{ route('admin.content.seo') }}" class="nav-link">
-            <i class="fas fa-search-plus me-2"></i>
-            إعدادات SEO
-        </a>
-    </div>
-    
-    <!-- التقارير والإحصائيات -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-chart-bar me-2"></i>
-            التقارير والإحصائيات
-        </div>
-        <a href="{{ route('admin.reports') }}" class="nav-link">
-            <i class="fas fa-analytics me-2"></i>
-            تقارير شاملة
-        </a>
-    </div>
-    
-    <!-- الإعدادات -->
-    <div class="nav-group">
-        <div class="nav-group-title">
-            <i class="fas fa-cog me-2"></i>
-            إعدادات النظام
-        </div>
-        <a href="{{ route('admin.settings') }}" class="nav-link">
-            <i class="fas fa-sliders-h me-2"></i>
-            الإعدادات العامة
-        </a>
-    </div>
-@endsection
-
-@section('page-actions')
-    <div class="d-flex gap-2">
-        <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-outline-info">
-            <i class="fas fa-eye me-2"></i>
-            عرض التفاصيل
-        </a>
-        <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>
-            العودة للقائمة
-        </a>
-    </div>
-@endsection
+@section('title', 'تعديل المستخدم')
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="dashboard-card">
-                <div class="card-header bg-white border-bottom">
-                    <div class="d-flex align-items-center">
-                        <div class="user-avatar me-3">
-                            <div class="avatar-medium">
-                                {{ substr($user->name, 0, 1) }}
-                            </div>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header Section -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">تعديل المستخدم</h1>
+                    <p class="text-muted">تعديل بيانات المستخدم: {{ $user->name }}</p>
+                </div>
+                <div>
+                    <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-right"></i> العودة للقائمة
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">بيانات المستخدم</h5>
                         </div>
-                        <div>
-                            <h5 class="mb-0">
-                                <i class="fas fa-user-edit me-2 text-primary"></i>
-                                تعديل بيانات العميل
-                            </h5>
-                            <small class="text-muted">آخر تحديث: {{ $user->updated_at->diffForHumans() }}</small>
+                        <div class="card-body">
+                            <form method="POST" action="{{ route('admin.users.update', $user) }}" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+                                
+                                <div class="row">
+                                    <!-- الاسم -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="name" class="form-label">الاسم <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                                               id="name" name="name" value="{{ old('name', $user->name) }}" required>
+                                        @error('name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- البريد الإلكتروني -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">البريد الإلكتروني <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror" 
+                                               id="email" name="email" value="{{ old('email', $user->email) }}" required>
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- كلمة المرور -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="password" class="form-label">كلمة المرور الجديدة</label>
+                                        <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                                               id="password" name="password">
+                                        @error('password')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <div class="form-text">اتركها فارغة إذا كنت لا تريد تغيير كلمة المرور</div>
+                                    </div>
+
+                                    <!-- تأكيد كلمة المرور -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="password_confirmation" class="form-label">تأكيد كلمة المرور الجديدة</label>
+                                        <input type="password" class="form-control" 
+                                               id="password_confirmation" name="password_confirmation">
+                                    </div>
+
+                                    <!-- نوع المستخدم -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="user_type" class="form-label">نوع المستخدم <span class="text-danger">*</span></label>
+                                        <select class="form-select @error('user_type') is-invalid @enderror" 
+                                                id="user_type" name="user_type" required onchange="toggleUserTypeFields()">
+                                            <option value="">اختر نوع المستخدم</option>
+                                            @foreach($userTypes as $value => $label)
+                                                <option value="{{ $value }}" {{ old('user_type', $user->user_type) == $value ? 'selected' : '' }}>
+                                                    {{ $label }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('user_type')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- رقم الهاتف -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phone" class="form-label">رقم الهاتف</label>
+                                        <input type="text" class="form-control @error('phone') is-invalid @enderror" 
+                                               id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
+                                        @error('phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- المدينة -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="city" class="form-label">المدينة</label>
+                                        <input type="text" class="form-control @error('city') is-invalid @enderror" 
+                                               id="city" name="city" value="{{ old('city', $user->city) }}">
+                                        @error('city')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- العنوان -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="address" class="form-label">العنوان</label>
+                                        <textarea class="form-control @error('address') is-invalid @enderror" 
+                                                  id="address" name="address" rows="3">{{ old('address', $user->address) }}</textarea>
+                                        @error('address')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- الصورة الشخصية -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="avatar" class="form-label">الصورة الشخصية</label>
+                                        @if($user->avatar)
+                                            <div class="mb-2">
+                                                <img src="{{ asset('storage/' . $user->avatar) }}" 
+                                                     alt="{{ $user->name }}" 
+                                                     class="rounded-circle" 
+                                                     width="60" height="60">
+                                                <small class="text-muted d-block">الصورة الحالية</small>
+                                            </div>
+                                        @endif
+                                        <input type="file" class="form-control @error('avatar') is-invalid @enderror" 
+                                               id="avatar" name="avatar" accept="image/*">
+                                        @error('avatar')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <div class="form-text">الحد الأقصى: 2MB، الأنواع المسموحة: JPG, PNG, GIF</div>
+                                    </div>
+
+                                    <!-- نبذة شخصية -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="bio" class="form-label">نبذة شخصية</label>
+                                        <textarea class="form-control @error('bio') is-invalid @enderror" 
+                                                  id="bio" name="bio" rows="3">{{ old('bio', $user->bio) }}</textarea>
+                                        @error('bio')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- الحالة -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                                   value="1" {{ old('is_active', $user->is_active) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="is_active">
+                                                تفعيل المستخدم
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- حقول إضافية حسب نوع المستخدم -->
+                                <div id="importer-fields" style="display: none;">
+                                    <hr>
+                                    <h6 class="text-primary">بيانات المستورد</h6>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="company_name" class="form-label">اسم الشركة</label>
+                                            <input type="text" class="form-control" id="company_name" name="company_name" 
+                                                   value="{{ old('company_name', $user->importer->company_name ?? '') }}">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="company_type" class="form-label">نوع الشركة</label>
+                                            <select class="form-select" id="company_type" name="company_type">
+                                                <option value="">اختر نوع الشركة</option>
+                                                <option value="individual" {{ old('company_type', $user->importer->company_type ?? '') == 'individual' ? 'selected' : '' }}>فرد</option>
+                                                <option value="company" {{ old('company_type', $user->importer->company_type ?? '') == 'company' ? 'selected' : '' }}>شركة</option>
+                                                <option value="institution" {{ old('company_type', $user->importer->company_type ?? '') == 'institution' ? 'selected' : '' }}>مؤسسة</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12 mb-3">
+                                            <label for="business_license" class="form-label">رقم السجل التجاري</label>
+                                            <input type="text" class="form-control" id="business_license" name="business_license" 
+                                                   value="{{ old('business_license', $user->importer->business_license ?? '') }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="marketing-fields" style="display: none;">
+                                    <hr>
+                                    <h6 class="text-primary">بيانات فريق التسويق</h6>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="department" class="form-label">القسم</label>
+                                            <input type="text" class="form-control" id="department" name="department" 
+                                                   value="{{ old('department', $user->marketingTeam->department ?? 'تسويق') }}">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="position" class="form-label">المنصب</label>
+                                            <input type="text" class="form-control" id="position" name="position" 
+                                                   value="{{ old('position', $user->marketingTeam->position ?? 'موظف تسويق') }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="sales-fields" style="display: none;">
+                                    <hr>
+                                    <h6 class="text-primary">بيانات فريق المبيعات</h6>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="department" class="form-label">القسم</label>
+                                            <input type="text" class="form-control" id="department" name="department" 
+                                                   value="{{ old('department', $user->salesTeam->department ?? 'مبيعات') }}">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="position" class="form-label">المنصب</label>
+                                            <input type="text" class="form-control" id="position" name="position" 
+                                                   value="{{ old('position', $user->salesTeam->position ?? 'مندوب مبيعات') }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end gap-2 mt-4">
+                                    <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
+                                        <i class="fas fa-times"></i> إلغاء
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> حفظ التغييرات
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.users.update', $user->id) }}" method="POST" id="userForm">
-                        @csrf
-                        @method('PUT')
-                        
-                        <div class="row g-3">
-                            <!-- الاسم -->
-                            <div class="col-md-6">
-                                <label for="name" class="form-label">
-                                    <i class="fas fa-user me-2 text-primary"></i>
-                                    الاسم الكامل
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" 
-                                       class="form-control @error('name') is-invalid @enderror" 
-                                       id="name" 
-                                       name="name" 
-                                       value="{{ old('name', $user->name) }}" 
-                                       required
-                                       placeholder="أدخل الاسم الكامل">
-                                @error('name')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
+
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">معلومات المستخدم</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                @if($user->avatar)
+                                    <img src="{{ asset('storage/' . $user->avatar) }}" 
+                                         alt="{{ $user->name }}" 
+                                         class="rounded-circle mb-2" 
+                                         width="80" height="80">
+                                @else
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" 
+                                         style="width: 80px; height: 80px;">
+                                        {{ substr($user->name, 0, 1) }}
                                     </div>
-                                @enderror
+                                @endif
+                                <h5>{{ $user->name }}</h5>
+                                <p class="text-muted">{{ $user->getUserTypeLabelAttribute() }}</p>
                             </div>
 
-                            <!-- البريد الإلكتروني -->
-                            <div class="col-md-6">
-                                <label for="email" class="form-label">
-                                    <i class="fas fa-envelope me-2 text-primary"></i>
-                                    البريد الإلكتروني
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input type="email" 
-                                       class="form-control @error('email') is-invalid @enderror" 
-                                       id="email" 
-                                       name="email" 
-                                       value="{{ old('email', $user->email) }}" 
-                                       required
-                                       placeholder="example@domain.com">
-                                @error('email')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-
-                            <!-- رقم الهاتف -->
-                            <div class="col-md-6">
-                                <label for="phone" class="form-label">
-                                    <i class="fas fa-phone me-2 text-primary"></i>
-                                    رقم الهاتف
-                                </label>
-                                <input type="tel" 
-                                       class="form-control @error('phone') is-invalid @enderror" 
-                                       id="phone" 
-                                       name="phone" 
-                                       value="{{ old('phone', $user->phone) }}"
-                                       placeholder="+966500982394">
-                                @error('phone')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-
-                            <!-- حالة التفعيل -->
-                            <div class="col-md-6">
-                                <label class="form-label">
-                                    <i class="fas fa-check-circle me-2 text-primary"></i>
-                                    حالة التفعيل
-                                </label>
-                                <div class="form-control d-flex align-items-center">
-                                    @if($user->email_verified_at)
-                                        <span class="badge bg-success me-2">
-                                            <i class="fas fa-check me-1"></i>
-                                            مفعل
-                                        </span>
-                                        <small class="text-muted">
-                                            تم التفعيل في {{ $user->email_verified_at->format('d/m/Y H:i') }}
-                                        </small>
-                                    @else
-                                        <span class="badge bg-warning me-2">
-                                            <i class="fas fa-clock me-1"></i>
-                                            غير مفعل
-                                        </span>
-                                        <small class="text-muted">في انتظار التفعيل</small>
-                                    @endif
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item d-flex justify-content-between">
+                                    <span>تاريخ الإنشاء:</span>
+                                    <span>{{ $user->created_at->format('Y-m-d') }}</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between">
+                                    <span>آخر تحديث:</span>
+                                    <span>{{ $user->updated_at->format('Y-m-d') }}</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between">
+                                    <span>الحالة:</span>
+                                    <span class="badge bg-{{ $user->is_active ? 'success' : 'danger' }}">
+                                        {{ $user->is_active ? 'نشط' : 'غير نشط' }}
+                                    </span>
                                 </div>
                             </div>
 
-                            <!-- كلمة المرور الجديدة -->
-                            <div class="col-md-6">
-                                <label for="password" class="form-label">
-                                    <i class="fas fa-lock me-2 text-primary"></i>
-                                    كلمة المرور الجديدة
-                                    <small class="text-muted">(اتركه فارغاً إذا لم ترد التغيير)</small>
-                                </label>
-                                <div class="input-group">
-                                    <input type="password" 
-                                           class="form-control @error('password') is-invalid @enderror" 
-                                           id="password" 
-                                           name="password" 
-                                           placeholder="أدخل كلمة مرور جديدة">
-                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password')">
-                                        <i class="fas fa-eye" id="passwordIcon"></i>
-                                    </button>
-                                </div>
-                                <div class="form-text">
-                                    كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل
-                                </div>
-                                @error('password')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-
-                            <!-- تأكيد كلمة المرور -->
-                            <div class="col-md-6">
-                                <label for="password_confirmation" class="form-label">
-                                    <i class="fas fa-lock me-2 text-primary"></i>
-                                    تأكيد كلمة المرور الجديدة
-                                </label>
-                                <div class="input-group">
-                                    <input type="password" 
-                                           class="form-control" 
-                                           id="password_confirmation" 
-                                           name="password_confirmation" 
-                                           placeholder="أعد إدخال كلمة المرور">
-                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password_confirmation')">
-                                        <i class="fas fa-eye" id="passwordConfirmationIcon"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- العنوان -->
-                            <div class="col-12">
-                                <label for="address" class="form-label">
-                                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>
-                                    العنوان
-                                </label>
-                                <textarea class="form-control @error('address') is-invalid @enderror" 
-                                          id="address" 
-                                          name="address" 
-                                          rows="3"
-                                          placeholder="أدخل العنوان الكامل">{{ old('address', $user->address) }}</textarea>
-                                @error('address')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                            <div class="alert alert-warning mt-3">
+                                <h6><i class="fas fa-exclamation-triangle"></i> تحذير</h6>
+                                <p class="mb-0">تغيير نوع المستخدم قد يؤثر على صلاحياته وبياناته المرتبطة.</p>
                             </div>
                         </div>
-
-                        <hr class="my-4">
-
-                        <!-- معلومات إضافية -->
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-4">
-                                <div class="info-card">
-                                    <div class="info-icon text-primary">
-                                        <i class="fas fa-calendar-plus"></i>
-                                    </div>
-                                    <div class="info-content">
-                                        <div class="info-label">تاريخ التسجيل</div>
-                                        <div class="info-value">{{ $user->created_at->format('d/m/Y') }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="info-card">
-                                    <div class="info-icon text-success">
-                                        <i class="fas fa-shopping-cart"></i>
-                                    </div>
-                                    <div class="info-content">
-                                        <div class="info-label">إجمالي الطلبات</div>
-                                        <div class="info-value">{{ $user->orders()->count() }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- أزرار الحفظ -->
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-outline-secondary">
-                                <i class="fas fa-times me-2"></i>
-                                إلغاء
-                            </a>
-                            <div>
-                                <button type="button" class="btn btn-outline-primary me-2" onclick="resetForm()">
-                                    <i class="fas fa-redo me-2"></i>
-                                    إعادة تعيين
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>
-                                    حفظ التغييرات
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection
 
-@push('styles')
-    <style>
-        .avatar-medium {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
-        }
+@section('scripts')
+<script>
+    function toggleUserTypeFields() {
+        const userType = document.getElementById('user_type').value;
         
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(30, 58, 138, 0.25);
-        }
+        // إخفاء جميع الحقول الإضافية
+        document.getElementById('importer-fields').style.display = 'none';
+        document.getElementById('marketing-fields').style.display = 'none';
+        document.getElementById('sales-fields').style.display = 'none';
         
-        .input-group .btn {
-            border-color: #d1d5db;
+        // إظهار الحقول المناسبة
+        if (userType === 'importer') {
+            document.getElementById('importer-fields').style.display = 'block';
+        } else if (userType === 'marketing') {
+            document.getElementById('marketing-fields').style.display = 'block';
+        } else if (userType === 'sales') {
+            document.getElementById('sales-fields').style.display = 'block';
         }
-        
-        .is-invalid {
-            border-color: #ef4444;
-        }
-        
-        .invalid-feedback {
-            display: block;
-            color: #ef4444;
-        }
-        
-        .card-header {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        }
+    }
 
-        .info-card {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-        }
-
-        .info-icon {
-            font-size: 1.5rem;
-            margin-left: 0.75rem;
-        }
-
-        .info-label {
-            font-size: 0.875rem;
-            color: #64748b;
-            margin-bottom: 0.25rem;
-        }
-
-        .info-value {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #374151;
-        }
-    </style>
-@endpush
-
-@push('scripts')
-    <script>
-        function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            const icon = document.getElementById(fieldId + 'Icon');
-            
-            if (field.type === 'password') {
-                field.type = 'text';
-                icon.className = 'fas fa-eye-slash';
-            } else {
-                field.type = 'password';
-                icon.className = 'fas fa-eye';
-            }
-        }
-
-        function resetForm() {
-            if (confirm('هل أنت متأكد من إعادة تعيين النموذج؟ سيتم فقدان جميع التغييرات غير المحفوظة.')) {
-                document.getElementById('userForm').reset();
-            }
-        }
-
-        // التحقق من تطابق كلمات المرور
-        document.getElementById('password_confirmation').addEventListener('input', function() {
-            const password = document.getElementById('password').value;
-            const confirmation = this.value;
-            
-            if (password && confirmation && password !== confirmation) {
-                this.setCustomValidity('كلمات المرور غير متطابقة');
-            } else {
-                this.setCustomValidity('');
-            }
-        });
-
-        // تنسيق رقم الهاتف
-        document.getElementById('phone').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.startsWith('966')) {
-                value = value.substring(3);
-            }
-            if (value.startsWith('0')) {
-                value = value.substring(1);
-            }
-            
-            // تنسيق الرقم
-            if (value.length > 0) {
-                if (value.length <= 2) {
-                    value = `+966 ${value}`;
-                } else if (value.length <= 5) {
-                    value = `+966 ${value.substring(0, 2)} ${value.substring(2)}`;
-                } else if (value.length <= 8) {
-                    value = `+966 ${value.substring(0, 2)} ${value.substring(2, 5)} ${value.substring(5)}`;
-                } else {
-                    value = `+966 ${value.substring(0, 2)} ${value.substring(2, 5)} ${value.substring(5, 9)}`;
-                }
-            }
-            
-            e.target.value = value;
-        });
-
-        // التحقق من صحة البريد الإلكتروني
-        document.getElementById('email').addEventListener('blur', function() {
-            const email = this.value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            if (email && !emailRegex.test(email)) {
-                this.setCustomValidity('يرجى إدخال بريد إلكتروني صحيح');
-            } else {
-                this.setCustomValidity('');
-            }
-        });
-    </script>
-@endpush
+    // تشغيل الدالة عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleUserTypeFields();
+    });
+</script>
+@endsection

@@ -62,6 +62,22 @@ class User extends Authenticatable
     }
 
     /**
+     * العلاقة مع فريق التسويق
+     */
+    public function marketingTeam(): HasOne
+    {
+        return $this->hasOne(MarketingTeam::class);
+    }
+
+    /**
+     * العلاقة مع فريق المبيعات
+     */
+    public function salesTeam(): HasOne
+    {
+        return $this->hasOne(SalesTeam::class);
+    }
+
+    /**
      * العلاقة مع الأدوار
      */
     public function roles(): BelongsToMany

@@ -24,54 +24,80 @@
 
 <!-- إحصائيات سريعة -->
 <div class="row g-4 mb-4">
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="stats-card">
             <div class="d-flex align-items-center">
                 <div class="stats-icon primary">
                     <i class="fas fa-envelope"></i>
                 </div>
                 <div class="ms-3">
-                    <h3 class="mb-0">{{ $contacts->total() }}</h3>
-                    <p class="mb-0 text-muted">إجمالي جهات الاتصال</p>
+                    <h3 class="mb-0">{{ $stats['total'] }}</h3>
+                    <p class="mb-0 text-muted">إجمالي الجهات</p>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="stats-card">
             <div class="d-flex align-items-center">
                 <div class="stats-icon warning">
                     <i class="fas fa-clock"></i>
                 </div>
                 <div class="ms-3">
-                    <h3 class="mb-0">{{ $contacts->where('status', 'new')->count() }}</h3>
+                    <h3 class="mb-0">{{ $stats['new'] }}</h3>
                     <p class="mb-0 text-muted">جديدة</p>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="stats-card">
             <div class="d-flex align-items-center">
                 <div class="stats-icon info">
                     <i class="fas fa-eye"></i>
                 </div>
                 <div class="ms-3">
-                    <h3 class="mb-0">{{ $contacts->where('status', 'read')->count() }}</h3>
+                    <h3 class="mb-0">{{ $stats['read'] }}</h3>
                     <p class="mb-0 text-muted">مقروءة</p>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="stats-card">
             <div class="d-flex align-items-center">
                 <div class="stats-icon success">
                     <i class="fas fa-reply"></i>
                 </div>
                 <div class="ms-3">
-                    <h3 class="mb-0">{{ $contacts->where('status', 'replied')->count() }}</h3>
+                    <h3 class="mb-0">{{ $stats['replied'] }}</h3>
                     <p class="mb-0 text-muted">تم الرد عليها</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="ms-3">
+                    <h3 class="mb-0">{{ $stats['high_priority'] }}</h3>
+                    <p class="mb-0 text-muted">أولوية عالية</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon warning">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="ms-3">
+                    <h3 class="mb-0">{{ $stats['follow_up_today'] }}</h3>
+                    <p class="mb-0 text-muted">متابعة اليوم</p>
                 </div>
             </div>
         </div>
@@ -81,30 +107,62 @@
 <!-- فلترة جهات الاتصال -->
 <div class="card mb-4">
     <div class="card-body">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h6 class="mb-0">فلترة جهات الاتصال</h6>
+        <form method="GET" action="{{ route('sales.contacts') }}" class="row g-3">
+            <div class="col-md-3">
+                <label for="status" class="form-label">الحالة</label>
+                <select name="status" id="status" class="form-select">
+                    <option value="">جميع الحالات</option>
+                    <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>جديدة</option>
+                    <option value="read" {{ request('status') == 'read' ? 'selected' : '' }}>مقروءة</option>
+                    <option value="replied" {{ request('status') == 'replied' ? 'selected' : '' }}>تم الرد عليها</option>
+                    <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>مغلقة</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="contact_type" class="form-label">نوع الجهة</label>
+                <select name="contact_type" id="contact_type" class="form-select">
+                    <option value="">جميع الأنواع</option>
+                    <option value="inquiry" {{ request('contact_type') == 'inquiry' ? 'selected' : '' }}>استفسار</option>
+                    <option value="custom" {{ request('contact_type') == 'custom' ? 'selected' : '' }}>مخصص</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="priority" class="form-label">الأولوية</label>
+                <select name="priority" id="priority" class="form-select">
+                    <option value="">جميع الأولويات</option>
+                    <option value="high" {{ request('priority') == 'high' ? 'selected' : '' }}>عالية</option>
+                    <option value="medium" {{ request('priority') == 'medium' ? 'selected' : '' }}>متوسطة</option>
+                    <option value="low" {{ request('priority') == 'low' ? 'selected' : '' }}>منخفضة</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="source" class="form-label">المصدر</label>
+                <select name="source" id="source" class="form-select">
+                    <option value="">جميع المصادر</option>
+                    <option value="website" {{ request('source') == 'website' ? 'selected' : '' }}>الموقع</option>
+                    <option value="phone" {{ request('source') == 'phone' ? 'selected' : '' }}>هاتف</option>
+                    <option value="email" {{ request('source') == 'email' ? 'selected' : '' }}>بريد إلكتروني</option>
+                    <option value="referral" {{ request('source') == 'referral' ? 'selected' : '' }}>إحالة</option>
+                </select>
             </div>
             <div class="col-md-6">
-                <div class="d-flex gap-2 justify-content-end">
-                    <button class="btn btn-outline-primary btn-sm" onclick="filterContacts('all')">
-                        جميع جهات الاتصال
+                <label for="search" class="form-label">البحث</label>
+                <input type="text" name="search" id="search" class="form-control" 
+                       placeholder="البحث بالاسم، البريد الإلكتروني، أو الموضوع..." 
+                       value="{{ request('search') }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i>فلترة
                     </button>
-                    <button class="btn btn-outline-warning btn-sm" onclick="filterContacts('new')">
-                        جديدة
-                    </button>
-                    <button class="btn btn-outline-info btn-sm" onclick="filterContacts('read')">
-                        مقروءة
-                    </button>
-                    <button class="btn btn-outline-success btn-sm" onclick="filterContacts('replied')">
-                        تم الرد عليها
-                    </button>
-                    <button class="btn btn-outline-secondary btn-sm" onclick="filterContacts('closed')">
-                        مغلقة
-                    </button>
+                    <a href="{{ route('sales.contacts') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i>مسح
+                    </a>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -122,13 +180,12 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>الاسم</th>
-                            <th>البريد الإلكتروني</th>
-                            <th>الهاتف</th>
-                            <th>الشركة</th>
-                            <th>الموضوع</th>
+                            <th>الجهة</th>
+                            <th>المعلومات</th>
+                            <th>النوع</th>
+                            <th>الأولوية</th>
                             <th>الحالة</th>
-                            <th>تاريخ الإرسال</th>
+                            <th>التاريخ</th>
                             <th>الإجراءات</th>
                         </tr>
                     </thead>
@@ -142,16 +199,36 @@
                                         </div>
                                         <div>
                                             <h6 class="mb-0">{{ $contact->name }}</h6>
+                                            @if($contact->company)
+                                                <small class="text-muted">{{ $contact->company }}</small>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{ $contact->email }}</td>
-                                <td>{{ $contact->phone ?? 'غير محدد' }}</td>
-                                <td>{{ $contact->company ?? 'غير محدد' }}</td>
                                 <td>
-                                    <p class="mb-0 text-truncate" style="max-width: 200px;" title="{{ $contact->subject }}">
-                                        {{ $contact->subject }}
-                                    </p>
+                                    <div>
+                                        <a href="mailto:{{ $contact->email }}" class="text-decoration-none">
+                                            {{ $contact->email }}
+                                        </a>
+                                        @if($contact->phone)
+                                            <br><small class="text-muted">
+                                                <i class="fas fa-phone me-1"></i>{{ $contact->phone }}
+                                            </small>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td>
+                                    @if($contact->contact_type === 'inquiry')
+                                        <span class="badge bg-info">استفسار</span>
+                                    @else
+                                        <span class="badge bg-secondary">مخصص</span>
+                                    @endif
+                                    @if($contact->source)
+                                        <br><small class="text-muted">{{ $contact->source_text }}</small>
+                                    @endif
+                                </td>
+                                <td>
+                                    {!! $contact->priority_badge !!}
                                 </td>
                                 <td>
                                     @switch($contact->status)
@@ -170,9 +247,20 @@
                                     @endswitch
                                 </td>
                                 <td>
-                                    <small class="text-muted">
-                                        {{ \Carbon\Carbon::parse($contact->created_at)->format('Y-m-d H:i') }}
-                                    </small>
+                                    <div>
+                                        <small class="text-muted">
+                                            {{ \Carbon\Carbon::parse($contact->created_at)->format('Y-m-d') }}
+                                        </small>
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ \Carbon\Carbon::parse($contact->created_at)->format('H:i') }}
+                                        </small>
+                                        @if($contact->follow_up_date)
+                                            <br><small class="text-warning">
+                                                <i class="fas fa-clock me-1"></i>متابعة: {{ $contact->follow_up_date->format('m/d') }}
+                                            </small>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td>
                                     <a href="{{ route('sales.contacts.show', $contact->id) }}" class="btn btn-sm btn-outline-primary">

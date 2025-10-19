@@ -10,10 +10,6 @@
 <!-- إدارة الطلبات -->
 <div class="nav-group">
     <div class="nav-group-title">إدارة الطلبات</div>
-    <a href="{{ route('sales.orders') }}" class="nav-link {{ request()->routeIs('sales.orders*') ? 'active' : '' }}">
-        <i class="fas fa-shopping-cart me-2"></i>
-        طلبات العملاء
-    </a>
     <a href="{{ route('sales.importer-orders') }}" class="nav-link {{ request()->routeIs('sales.importer-orders*') ? 'active' : '' }}">
         <i class="fas fa-industry me-2"></i>
         طلبات المستوردين

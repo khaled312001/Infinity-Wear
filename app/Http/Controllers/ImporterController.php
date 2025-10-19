@@ -878,6 +878,17 @@ class ImporterController extends Controller
             // إنشاء إشعار للمدير
             $notificationService = app(\App\Services\NotificationService::class);
             $notificationService->createContactNotification($contact);
+            
+            // إرسال إيميل للمدير
+            $emailService = app(\App\Services\EmailService::class);
+            $emailService->sendContactForm([
+                'name' => $contact->name,
+                'email' => $contact->email,
+                'phone' => $contact->phone,
+                'company' => $contact->company ?? 'غير محدد',
+                'subject' => $contact->subject,
+                'message' => $contact->message
+            ]);
 
             // إرسال إشعار WhatsApp للمدير
             try {

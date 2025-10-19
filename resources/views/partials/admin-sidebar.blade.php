@@ -5,10 +5,14 @@
         <i class="fas fa-tachometer-alt me-2"></i>
         لوحة التحكم
     </a>
-    <a href="{{ route('admin.notifications.index') }}" class="nav-link {{ request()->routeIs('admin.notifications*') ? 'active' : '' }}" style="position: relative;">
+    <a href="{{ route('admin.notifications.index') }}" class="nav-link {{ request()->routeIs('admin.notifications.index') ? 'active' : '' }}" style="position: relative;">
         <i class="fas fa-bell me-2"></i>
-        الإشعارات
+        إشعارات النظام
         <span class="notification-badge" id="sidebarNotificationsBadge" style="display: none;">0</span>
+    </a>
+    <a href="{{ route('admin.notifications.admin.index') }}" class="nav-link {{ request()->routeIs('admin.notifications.admin*') ? 'active' : '' }}">
+        <i class="fas fa-paper-plane me-2"></i>
+        إرسال الإشعارات
     </a>
     <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.contacts*') ? 'active' : '' }}">
         <i class="fas fa-address-book me-2"></i>
@@ -95,6 +99,10 @@
         <i class="fas fa-handshake me-2"></i>
         فريق المبيعات
     </a>
+    <a href="{{ route('admin.marketing-reports.index') }}" class="nav-link {{ request()->routeIs('admin.marketing-reports*') ? 'active' : '' }}">
+        <i class="fas fa-file-alt me-2"></i>
+        تقارير المندوبين
+    </a>
     <a href="{{ route('admin.email-marketing.index') }}" class="nav-link {{ request()->routeIs('admin.email-marketing*') ? 'active' : '' }}">
         <i class="fas fa-envelope-open-text me-2"></i>
         التسويق بالبريد الإلكتروني
@@ -104,7 +112,10 @@
 <!-- إدارة العملاء -->
 <div class="nav-group">
     <div class="nav-group-title">إدارة العملاء</div>
-   
+    <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+        <i class="fas fa-users me-2"></i>
+        إدارة المستخدمين
+    </a>
     <a href="{{ route('admin.customer-notes.index') }}" class="nav-link {{ request()->routeIs('admin.customer-notes*') ? 'active' : '' }}">
         <i class="fas fa-sticky-note me-2"></i>
         ملاحظات العملاء

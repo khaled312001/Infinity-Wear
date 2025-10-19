@@ -18,9 +18,15 @@ class TaskController extends Controller
      */
     public function index()
     {
-        // جلب المهام المخصصة لفريق المبيعات
+        $currentUser = Auth::user();
+        
+        // جلب المهام المخصصة للمستخدم الحالي فقط
         $tasks = TaskCard::where('department', 'sales')
             ->where('is_archived', false)
+            ->where(function($query) use ($currentUser) {
+                $query->where('assigned_to', $currentUser->id)
+                      ->where('assigned_to_type', 'sales');
+            })
             ->with(['column', 'board'])
             ->orderBy('created_at', 'desc')
             ->get();

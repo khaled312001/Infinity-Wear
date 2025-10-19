@@ -65,6 +65,65 @@
     </div>
 </div>
 
+<!-- إحصائيات إضافية -->
+<div class="row">
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon success">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <div class="ms-3">
+                    <h3 class="mb-0">{{ number_format($stats['under_review']) }}</h3>
+                    <p class="mb-0 text-muted">قيد المراجعة</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon primary">
+                    <i class="fas fa-calendar-week"></i>
+                </div>
+                <div class="ms-3">
+                    <h3 class="mb-0">{{ number_format($stats['this_week']) }}</h3>
+                    <p class="mb-0 text-muted">هذا الأسبوع</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon warning">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="ms-3">
+                    <h3 class="mb-0">{{ number_format($stats['today']) }}</h3>
+                    <p class="mb-0 text-muted">اليوم</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon info">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="ms-3">
+                    <h3 class="mb-0">{{ number_format($salesStats['total_target_quantity']) }}</h3>
+                    <p class="mb-0 text-muted">إجمالي الكمية المستهدفة</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <!-- إحصائيات المندوبين -->
     <div class="col-lg-6 mb-4">
@@ -123,6 +182,112 @@
                     <p>لا توجد إحصائيات متاحة</p>
                 </div>
                 @endforelse
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إحصائيات إضافية -->
+<div class="row">
+    <!-- إحصائيات نوع الزيارة -->
+    <div class="col-lg-4 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-route me-2"></i>
+                    إحصائيات نوع الزيارة
+                </h5>
+            </div>
+            <div class="card-body">
+                @forelse($visitTypeStats as $stat)
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">
+                            @switch($stat->visit_type)
+                                @case('office_visit') زيارة مقر @break
+                                @case('phone_call') اتصال @break
+                                @case('whatsapp') رسائل Whatsapp @break
+                                @default غير محدد
+                            @endswitch
+                        </span>
+                        <span class="fw-bold">{{ $stat->count }}</span>
+                    </div>
+                </div>
+                @empty
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-route fa-3x mb-3"></i>
+                    <p>لا توجد إحصائيات متاحة</p>
+                </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    <!-- إحصائيات نوع النشاط -->
+    <div class="col-lg-4 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-building me-2"></i>
+                    إحصائيات نوع النشاط
+                </h5>
+            </div>
+            <div class="card-body">
+                @forelse($activityStats as $stat)
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">
+                            @switch($stat->company_activity)
+                                @case('sports_academy') أكاديمية رياضية @break
+                                @case('school') مدرسة @break
+                                @case('institution_company') مؤسسة / شركة @break
+                                @case('wholesale_store') محل جملة @break
+                                @case('retail_store') محل تجزئة @break
+                                @case('other') أخرى @break
+                                @default غير محدد
+                            @endswitch
+                        </span>
+                        <span class="fw-bold">{{ $stat->count }}</span>
+                    </div>
+                </div>
+                @empty
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-building fa-3x mb-3"></i>
+                    <p>لا توجد إحصائيات متاحة</p>
+                </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    <!-- إحصائيات المبيعات -->
+    <div class="col-lg-4 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    إحصائيات المبيعات
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">إجمالي الاستهلاك السنوي</span>
+                        <span class="fw-bold">{{ number_format($salesStats['total_annual_consumption']) }}</span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">متوسط الكمية المستهدفة</span>
+                        <span class="fw-bold">{{ number_format($salesStats['avg_target_quantity'], 0) }}</span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">متوسط الاستهلاك السنوي</span>
+                        <span class="fw-bold">{{ number_format($salesStats['avg_annual_consumption'], 0) }}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

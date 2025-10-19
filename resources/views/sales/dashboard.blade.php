@@ -319,25 +319,19 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <a href="{{ route('sales.orders') }}" class="btn btn-primary w-100">
-                            <i class="fas fa-shopping-cart me-2"></i>
-                            عرض الطلبات
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-3">
                         <a href="{{ route('sales.importers') }}" class="btn btn-info w-100">
                             <i class="fas fa-industry me-2"></i>
                             المستوردين
                         </a>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-3">
                         <a href="{{ route('sales.tasks') }}" class="btn btn-success w-100">
                             <i class="fas fa-tasks me-2"></i>
                             المهام
                         </a>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-3">
                         <a href="{{ route('sales.reports') }}" class="btn btn-warning w-100">
                             <i class="fas fa-chart-bar me-2"></i>
                             التقارير

@@ -12,7 +12,7 @@
         <div class="stats-card enhanced">
             <div class="stats-content text-center">
                 <h3 class="stats-number text-primary">{{ $stats['total'] }}</h3>
-                <p class="stats-label">إجمالي الرسائل</p>
+                <p class="stats-label">إجمالي الجهات</p>
             </div>
         </div>
     </div>
@@ -20,7 +20,7 @@
         <div class="stats-card enhanced">
             <div class="stats-content text-center">
                 <h3 class="stats-number text-warning">{{ $stats['new'] }}</h3>
-                <p class="stats-label">رسائل جديدة</p>
+                <p class="stats-label">جديدة</p>
             </div>
         </div>
     </div>
@@ -48,20 +48,34 @@
             </div>
         </div>
     </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="stats-card enhanced">
+            <div class="stats-content text-center">
+                <h3 class="stats-number text-danger">{{ $stats['high_priority'] }}</h3>
+                <p class="stats-label">أولوية عالية</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Filters and Search -->
 <div class="row mb-4">
     <div class="col-12">
         <div class="dashboard-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-filter me-2 text-primary"></i>
+                    فلترة جهات الاتصال
+                </h5>
+            </div>
             <div class="card-body">
                 <form method="GET" action="{{ route('marketing.contacts') }}" class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="search" class="form-label">البحث</label>
                         <input type="text" class="form-control" id="search" name="search" 
-                               value="{{ request('search') }}" placeholder="البحث في الاسم، البريد الإلكتروني، أو الموضوع">
+                               value="{{ request('search') }}" placeholder="البحث في الجهات...">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="status" class="form-label">الحالة</label>
                         <select class="form-select" id="status" name="status">
                             <option value="">جميع الحالات</option>
@@ -71,14 +85,39 @@
                             <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>مغلقة</option>
                         </select>
                     </div>
-                    <div class="col-md-3 d-flex align-items-end">
+                    <div class="col-md-2">
+                        <label for="contact_type" class="form-label">نوع الجهة</label>
+                        <select class="form-select" id="contact_type" name="contact_type">
+                            <option value="">جميع الأنواع</option>
+                            <option value="inquiry" {{ request('contact_type') == 'inquiry' ? 'selected' : '' }}>استفسار</option>
+                            <option value="custom" {{ request('contact_type') == 'custom' ? 'selected' : '' }}>مخصص</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="priority" class="form-label">الأولوية</label>
+                        <select class="form-select" id="priority" name="priority">
+                            <option value="">جميع الأولويات</option>
+                            <option value="low" {{ request('priority') == 'low' ? 'selected' : '' }}>منخفض</option>
+                            <option value="medium" {{ request('priority') == 'medium' ? 'selected' : '' }}>متوسط</option>
+                            <option value="high" {{ request('priority') == 'high' ? 'selected' : '' }}>عالي</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="source" class="form-label">المصدر</label>
+                        <select class="form-select" id="source" name="source">
+                            <option value="">جميع المصادر</option>
+                            <option value="website" {{ request('source') == 'website' ? 'selected' : '' }}>الموقع</option>
+                            <option value="phone" {{ request('source') == 'phone' ? 'selected' : '' }}>الهاتف</option>
+                            <option value="email" {{ request('source') == 'email' ? 'selected' : '' }}>البريد</option>
+                            <option value="referral" {{ request('source') == 'referral' ? 'selected' : '' }}>إحالة</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary me-2">
-                            <i class="fas fa-search me-1"></i>
-                            بحث
+                            <i class="fas fa-search"></i>
                         </button>
                         <a href="{{ route('marketing.contacts') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-times me-1"></i>
-                            مسح
+                            <i class="fas fa-times"></i>
                         </a>
                     </div>
                 </form>
@@ -106,10 +145,10 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>الاسم</th>
-                                    <th>البريد الإلكتروني</th>
-                                    <th>الهاتف</th>
-                                    <th>الموضوع</th>
+                                    <th>الجهة</th>
+                                    <th>المعلومات</th>
+                                    <th>النوع</th>
+                                    <th>الأولوية</th>
                                     <th>الحالة</th>
                                     <th>التاريخ</th>
                                     <th>الإجراءات</th>
@@ -132,21 +171,29 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="mailto:{{ $contact->email }}" class="text-decoration-none">
-                                            {{ $contact->email }}
-                                        </a>
+                                        <div>
+                                            <a href="mailto:{{ $contact->email }}" class="text-decoration-none">
+                                                {{ $contact->email }}
+                                            </a>
+                                            @if($contact->phone)
+                                                <br><small class="text-muted">
+                                                    <i class="fas fa-phone me-1"></i>{{ $contact->phone }}
+                                                </small>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td>
-                                        @if($contact->phone)
-                                            <a href="tel:{{ $contact->phone }}" class="text-decoration-none">
-                                                {{ $contact->phone }}
-                                            </a>
+                                        @if($contact->contact_type === 'inquiry')
+                                            <span class="badge bg-info">استفسار</span>
                                         @else
-                                            <span class="text-muted">غير محدد</span>
+                                            <span class="badge bg-secondary">مخصص</span>
+                                        @endif
+                                        @if($contact->source)
+                                            <br><small class="text-muted">{{ $contact->source_text }}</small>
                                         @endif
                                     </td>
                                     <td>
-                                        <span class="contact-subject">{{ Str::limit($contact->subject, 50) }}</span>
+                                        {!! $contact->priority_badge !!}
                                     </td>
                                     <td>
                                         @switch($contact->status)
@@ -169,6 +216,11 @@
                                             <small class="text-muted">{{ $contact->created_at->format('Y-m-d') }}</small>
                                             <br>
                                             <small class="text-muted">{{ $contact->created_at->format('H:i') }}</small>
+                                            @if($contact->follow_up_date)
+                                                <br><small class="text-warning">
+                                                    <i class="fas fa-clock me-1"></i>متابعة: {{ $contact->follow_up_date->format('m/d') }}
+                                                </small>
+                                            @endif
                                         </div>
                                     </td>
                                     <td>

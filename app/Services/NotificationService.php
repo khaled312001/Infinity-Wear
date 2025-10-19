@@ -9,14 +9,19 @@ use App\Models\WhatsAppMessage;
 use App\Models\ImporterOrder;
 use App\Models\NotificationSetting;
 use App\Models\PushSubscription;
+use App\Models\User;
 use App\Mail\OrderNotificationMail;
 use App\Mail\ContactNotificationMail;
 use App\Mail\WhatsAppNotificationMail;
 use App\Mail\SystemNotificationMail;
+use App\Events\NotificationSent;
+use App\Events\NotificationStatsUpdated;
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\RateLimiter;
 
 class NotificationService
 {
@@ -332,22 +337,38 @@ class NotificationService
     /**
      * تحديث إعدادات البريد الإلكتروني
      */
-    private function updateMailConfig(NotificationSetting $settings)
+    private function updateMailConfig(NotificationSetting $settings = null)
     {
-        $smtpConfig = $settings->getSmtpConfig();
-        $fromConfig = $settings->getFromConfig();
-        
-        // تحديث إعدادات البريد الإلكتروني
+        // استخدام إعدادات البريد الإلكتروني الرسمي
         config([
             'mail.default' => 'smtp',
-            'mail.mailers.smtp.host' => $smtpConfig['host'],
-            'mail.mailers.smtp.port' => $smtpConfig['port'],
-            'mail.mailers.smtp.username' => $smtpConfig['username'],
-            'mail.mailers.smtp.password' => $smtpConfig['password'],
-            'mail.mailers.smtp.encryption' => $smtpConfig['encryption'],
-            'mail.from.address' => $fromConfig['address'],
-            'mail.from.name' => $fromConfig['name'],
+            'mail.mailers.smtp.host' => 'smtp.hostinger.com',
+            'mail.mailers.smtp.port' => 465,
+            'mail.mailers.smtp.username' => 'info@infinitywearsa.com',
+            'mail.mailers.smtp.password' => 'Info2025#*',
+            'mail.mailers.smtp.encryption' => 'ssl',
+            'mail.from.address' => 'info@infinitywearsa.com',
+            'mail.from.name' => 'Infinity Wear',
         ]);
+        
+        // إذا كانت هناك إعدادات مخصصة، استخدمها
+        if ($settings) {
+            $smtpConfig = $settings->getSmtpConfig();
+            $fromConfig = $settings->getFromConfig();
+            
+            // التحقق من وجود إعدادات مخصصة
+            if (!empty($smtpConfig['host']) && !empty($smtpConfig['username'])) {
+                config([
+                    'mail.mailers.smtp.host' => $smtpConfig['host'],
+                    'mail.mailers.smtp.port' => $smtpConfig['port'],
+                    'mail.mailers.smtp.username' => $smtpConfig['username'],
+                    'mail.mailers.smtp.password' => $smtpConfig['password'],
+                    'mail.mailers.smtp.encryption' => $smtpConfig['encryption'],
+                    'mail.from.address' => $fromConfig['address'],
+                    'mail.from.name' => $fromConfig['name'],
+                ]);
+            }
+        }
     }
 
     /**
@@ -398,9 +419,65 @@ class NotificationService
     }
 
     /**
+     * إرسال إشعار متقدم مع البث المباشر
+     */
+    public function sendAdvancedNotification($type, $title, $message, $data = [], $targetUsers = null, $userType = 'admin')
+    {
+        try {
+            // التحقق من Rate Limiting
+            if (!$this->checkRateLimit($type)) {
+                Log::warning("Rate limit exceeded for notification type: {$type}");
+                return false;
+            }
+
+            // تحديد المستخدمين المستهدفين
+            $users = $this->getTargetUsers($targetUsers, $userType);
+            
+            if ($users->isEmpty()) {
+                Log::info("No target users found for notification type: {$type}");
+                return false;
+            }
+
+            $notifications = collect();
+            
+            // إنشاء إشعار لكل مستخدم
+            foreach ($users as $user) {
+                $notification = $this->createUserNotification($user, $type, $title, $message, $data);
+                if ($notification) {
+                    $notifications->push($notification);
+                    
+                    // إرسال البث المباشر
+                    $this->broadcastNotification($notification, $userType, $user->id);
+                }
+            }
+
+            // تحديث الإحصائيات
+            $this->updateNotificationStats($userType);
+            
+            // إرسال Push Notifications
+            $this->sendPushNotification($type, $data, $userType);
+            
+            Log::info("Advanced notification sent successfully", [
+                'type' => $type,
+                'sent_count' => $notifications->count(),
+                'user_type' => $userType
+            ]);
+            
+            return $notifications;
+            
+        } catch (\Exception $e) {
+            Log::error("Advanced notification failed", [
+                'type' => $type,
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
      * إرسال Push Notification
      */
-    private function sendPushNotification($type, $data, $adminEmail)
+    private function sendPushNotification($type, $data, $userType = 'admin')
     {
         try {
             // التحقق من تفعيل Push Notifications
@@ -408,11 +485,17 @@ class NotificationService
                 return false;
             }
 
+            // التحقق من تفعيل نوع الإشعار لهذا النوع من المستخدمين
+            $channelConfig = config("push.channels.{$userType}", []);
+            if (!($channelConfig['enabled'] ?? false) || !in_array($type, $channelConfig['types'] ?? [])) {
+                return false;
+            }
+
             // الحصول على الاشتراكات النشطة
-            $subscriptions = PushSubscription::getActiveSubscriptions('admin');
+            $subscriptions = PushSubscription::getActiveSubscriptions($userType);
             
             if ($subscriptions->isEmpty()) {
-                Log::info('No active push subscriptions found');
+                Log::info("No active push subscriptions found for user type: {$userType}");
                 return false;
             }
 
@@ -425,7 +508,8 @@ class NotificationService
             Log::info("Push notification sent successfully", [
                 'type' => $type,
                 'sent_count' => $sentCount,
-                'total_subscriptions' => $subscriptions->count()
+                'total_subscriptions' => $subscriptions->count(),
+                'user_type' => $userType
             ]);
             
             return true;
@@ -548,9 +632,219 @@ class NotificationService
      */
     private function getVapidKeys()
     {
+        $settings = NotificationSetting::getSettings();
+        $vapidConfig = $settings->getVapidConfig();
+        
         return [
-            'public_key' => config('push.vapid.public_key'),
-            'private_key' => config('push.vapid.private_key')
+            'public_key' => $vapidConfig['public_key'],
+            'private_key' => $vapidConfig['private_key']
         ];
     }
+
+    /**
+     * التحقق من Rate Limiting
+     */
+    private function checkRateLimit($type)
+    {
+        if (!config('push.rate_limiting.enabled', true)) {
+            return true;
+        }
+
+        $key = "notification_rate_limit_{$type}";
+        $maxPerMinute = config('push.rate_limiting.max_per_minute', 10);
+        
+        return RateLimiter::attempt($key, $maxPerMinute, function() {
+            // Callback when rate limit is not exceeded
+        });
+    }
+
+    /**
+     * الحصول على المستخدمين المستهدفين
+     */
+    private function getTargetUsers($targetUsers, $userType)
+    {
+        if ($targetUsers) {
+            if (is_array($targetUsers)) {
+                return User::whereIn('id', $targetUsers)->where('user_type', $userType)->get();
+            }
+            return collect([$targetUsers]);
+        }
+
+        // الحصول على جميع المستخدمين من النوع المحدد
+        return User::where('user_type', $userType)->where('is_active', true)->get();
+    }
+
+    /**
+     * إنشاء إشعار للمستخدم
+     */
+    private function createUserNotification($user, $type, $title, $message, $data)
+    {
+        $icon = $this->getNotificationIcon($type);
+        $color = $this->getNotificationColor($type);
+
+        return Notification::create([
+            'user_id' => $user->id,
+            'type' => $type,
+            'title' => $title,
+            'message' => $message,
+            'icon' => $icon,
+            'color' => $color,
+            'data' => $data
+        ]);
+    }
+
+    /**
+     * البث المباشر للإشعار
+     */
+    private function broadcastNotification($notification, $userType, $userId = null)
+    {
+        try {
+            event(new NotificationSent($notification, $userType, $userId));
+        } catch (\Exception $e) {
+            Log::error("Failed to broadcast notification", [
+                'notification_id' => $notification->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * تحديث إحصائيات الإشعارات
+     */
+    private function updateNotificationStats($userType)
+    {
+        try {
+            $stats = $this->getNotificationStats();
+            event(new NotificationStatsUpdated($stats, $userType));
+        } catch (\Exception $e) {
+            Log::error("Failed to update notification stats", [
+                'user_type' => $userType,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * الحصول على أيقونة الإشعار
+     */
+    private function getNotificationIcon($type)
+    {
+        $icons = [
+            'order' => 'fas fa-shopping-cart',
+            'contact' => 'fas fa-envelope',
+            'whatsapp' => 'fab fa-whatsapp',
+            'importer_order' => 'fas fa-industry',
+            'system' => 'fas fa-cogs',
+            'task' => 'fas fa-tasks',
+            'marketing' => 'fas fa-chart-line',
+            'sales' => 'fas fa-chart-bar',
+        ];
+
+        return $icons[$type] ?? 'fas fa-bell';
+    }
+
+    /**
+     * الحصول على لون الإشعار
+     */
+    private function getNotificationColor($type)
+    {
+        $colors = [
+            'order' => 'success',
+            'contact' => 'info',
+            'whatsapp' => 'success',
+            'importer_order' => 'warning',
+            'system' => 'primary',
+            'task' => 'info',
+            'marketing' => 'purple',
+            'sales' => 'green',
+        ];
+
+        return $colors[$type] ?? 'primary';
+    }
+
+    /**
+     * إرسال إشعارات مجدولة
+     */
+    public function sendScheduledNotifications()
+    {
+        try {
+            $scheduledNotifications = \App\Models\AdminNotification::where('is_scheduled', true)
+                ->where('is_sent', false)
+                ->where('scheduled_at', '<=', now())
+                ->get();
+
+            foreach ($scheduledNotifications as $adminNotification) {
+                $this->processScheduledNotification($adminNotification);
+            }
+
+            Log::info("Scheduled notifications processed", [
+                'count' => $scheduledNotifications->count()
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Failed to process scheduled notifications", [
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * معالجة إشعار مجدول
+     */
+    private function processScheduledNotification($adminNotification)
+    {
+        try {
+            $targetUsers = $this->getScheduledNotificationTargets($adminNotification);
+            
+            foreach ($targetUsers as $user) {
+                $notification = $this->createUserNotification(
+                    $user,
+                    'system',
+                    $adminNotification->title,
+                    $adminNotification->message,
+                    ['admin_notification_id' => $adminNotification->id]
+                );
+
+                if ($notification) {
+                    $this->broadcastNotification($notification, $user->user_type, $user->id);
+                }
+            }
+
+            // تحديث حالة الإشعار
+            $adminNotification->update([
+                'is_sent' => true,
+                'sent_at' => now(),
+                'sent_count' => $targetUsers->count()
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Failed to process scheduled notification", [
+                'admin_notification_id' => $adminNotification->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * الحصول على مستهدفي الإشعار المجدول
+     */
+    private function getScheduledNotificationTargets($adminNotification)
+    {
+        switch ($adminNotification->target_type) {
+            case 'specific_users':
+                return User::whereIn('id', $adminNotification->target_users ?? [])->get();
+                
+            case 'user_type':
+                return User::whereIn('user_type', $adminNotification->target_user_types ?? [])
+                    ->where('is_active', true)
+                    ->get();
+                    
+            case 'all':
+                return User::where('is_active', true)->get();
+                
+            default:
+                return collect();
+        }
+    }
+
 }

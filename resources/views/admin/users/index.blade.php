@@ -1,328 +1,265 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
-@section('title', 'إدارة العملاء')
-@section('dashboard-title', 'إدارة العملاء')
-@section('page-title', 'قائمة العملاء')
-@section('page-subtitle', 'إدارة وعرض جميع العملاء المسجلين في النظام')
-
-{{-- Sidebar menu is now handled by the unified admin-sidebar partial --}}
-
-@section('page-actions')
-    <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i>
-        إضافة عميل جديد
-    </a>
-@endsection
+@section('title', 'إدارة المستخدمين')
 
 @section('content')
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header Section -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">إدارة المستخدمين</h1>
+                    <p class="text-muted">إدارة جميع المستخدمين في النظام</p>
+                </div>
+                <div>
+                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> إضافة مستخدم جديد
+                    </a>
+                    <a href="{{ route('admin.users.export', request()->query()) }}" class="btn btn-outline-success">
+                        <i class="fas fa-download"></i> تصدير
+                    </a>
+                </div>
+            </div>
 
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ $stats['total'] }}</h4>
+                                    <p class="mb-0">إجمالي المستخدمين</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ $stats['active'] }}</h4>
+                                    <p class="mb-0">المستخدمين النشطين</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-user-check fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ $stats['inactive'] }}</h4>
+                                    <p class="mb-0">المستخدمين غير النشطين</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-user-times fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ $stats['by_type']['importer'] ?? 0 }}</h4>
+                                    <p class="mb-0">المستوردين</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-truck fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <!-- إحصائيات سريعة -->
-    <div class="row g-4 mb-4">
-        <div class="col-lg-3 col-md-6">
-            <div class="stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon success me-3">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div>
-                        <h3 class="mb-0">{{ $users->total() }}</h3>
-                        <p class="text-muted mb-0">إجمالي العملاء</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon info me-3">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <div>
-                        <h3 class="mb-0">{{ $users->where('created_at', '>=', now()->startOfMonth())->count() }}</h3>
-                        <p class="text-muted mb-0">عملاء جدد هذا الشهر</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon warning me-3">
-                        <i class="fas fa-user-clock"></i>
-                    </div>
-                    <div>
-                        <h3 class="mb-0">{{ $users->where('created_at', '>=', now()->startOfWeek())->count() }}</h3>
-                        <p class="text-muted mb-0">عملاء جدد هذا الأسبوع</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon primary me-3">
-                        <i class="fas fa-user-check"></i>
-                    </div>
-                    <div>
-                        <h3 class="mb-0">{{ $users->where('email_verified_at', '!=', null)->count() }}</h3>
-                        <p class="text-muted mb-0">عملاء مفعلين</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- جدول العملاء -->
-    <div class="dashboard-card">
-        <div class="card-header bg-white border-bottom">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i class="fas fa-users me-2 text-primary"></i>
-                    قائمة العملاء
-                </h5>
-                <div class="d-flex gap-2">
-                    <div class="input-group" style="width: 300px;">
-                        <input type="text" class="form-control" placeholder="البحث عن عميل..." id="searchInput">
-                        <button class="btn btn-outline-secondary" type="button">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-filter me-2"></i>
-                            تصفية
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" onclick="filterUsers('all')">جميع العملاء</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="filterUsers('verified')">العملاء المفعلين</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="filterUsers('unverified')">العملاء غير المفعلين</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="filterUsers('recent')">العملاء الجدد</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>المعرف</th>
-                            <th>الاسم</th>
-                            <th>البريد الإلكتروني</th>
-                            <th>رقم الهاتف</th>
-                            <th>حالة التفعيل</th>
-                            <th>تاريخ التسجيل</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($users as $user)
-                            <tr>
-                                <td>
-                                    <span class="badge bg-primary">#{{ $user->id }}</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar me-3">
-                                            <div class="avatar-initial bg-primary rounded-circle">
-                                                {{ substr($user->name, 0, 1) }}
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-0">{{ $user->name }}</h6>
-                                            @if($user->address)
-                                                <small class="text-muted">{{ $user->address }}</small>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a href="mailto:{{ $user->email }}" class="text-decoration-none">
-                                        {{ $user->email }}
-                                    </a>
-                                </td>
-                                <td>
-                                    @if($user->phone)
-                                        <a href="tel:{{ $user->phone }}" class="text-decoration-none">
-                                            {{ $user->phone }}
-                                        </a>
-                                    @else
-                                        <span class="text-muted">غير محدد</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($user->email_verified_at)
-                                        <span class="badge bg-success">
-                                            <i class="fas fa-check me-1"></i>
-                                            مفعل
-                                        </span>
-                                    @else
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock me-1"></i>
-                                            غير مفعل
-                                        </span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div>
-                                        {{ $user->created_at->format('Y-m-d') }}
-                                        <small class="d-block text-muted">
-                                            {{ $user->created_at->diffForHumans() }}
-                                        </small>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ route('admin.users.show', $user->id) }}" 
-                                           class="btn btn-sm btn-outline-info" 
-                                           title="عرض التفاصيل">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('admin.users.edit', $user->id) }}" 
-                                           class="btn btn-sm btn-outline-warning" 
-                                           title="تعديل">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <button type="button" 
-                                                class="btn btn-sm btn-outline-danger" 
-                                                title="حذف"
-                                                onclick="deleteUser({{ $user->id }}, '{{ $user->name }}')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <div class="text-muted">
-                                        <i class="fas fa-users fa-3x mb-3"></i>
-                                        <h5>لا توجد عملاء مسجلين</h5>
-                                        <p>لم يتم العثور على أي عملاء في النظام</p>
-                                        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-                                            <i class="fas fa-plus me-2"></i>
-                                            إضافة عميل جديد
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        @if($users->hasPages())
-            <div class="card-footer bg-white border-top">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="text-muted">
-                        عرض {{ $users->firstItem() }} إلى {{ $users->lastItem() }} من أصل {{ $users->total() }} عميل
-                    </div>
-                    {{ $users->links() }}
-                </div>
-            </div>
-        @endif
-    </div>
-
-    <!-- Modal لتأكيد الحذف -->
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">تأكيد الحذف</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>هل أنت متأكد من حذف العميل <strong id="userName"></strong>؟</p>
-                    <p class="text-danger">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        هذا الإجراء لا يمكن التراجع عنه!
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <form id="deleteForm" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash me-2"></i>
-                            حذف
-                        </button>
+            <!-- Filters -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" action="{{ route('admin.users.index') }}">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="user_type" class="form-label">نوع المستخدم</label>
+                                <select name="user_type" id="user_type" class="form-select">
+                                    <option value="">جميع الأنواع</option>
+                                    <option value="admin" {{ request('user_type') == 'admin' ? 'selected' : '' }}>مدير</option>
+                                    <option value="employee" {{ request('user_type') == 'employee' ? 'selected' : '' }}>موظف</option>
+                                    <option value="importer" {{ request('user_type') == 'importer' ? 'selected' : '' }}>مستورد</option>
+                                    <option value="customer" {{ request('user_type') == 'customer' ? 'selected' : '' }}>عميل</option>
+                                    <option value="sales" {{ request('user_type') == 'sales' ? 'selected' : '' }}>مندوب مبيعات</option>
+                                    <option value="marketing" {{ request('user_type') == 'marketing' ? 'selected' : '' }}>موظف تسويق</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="status" class="form-label">الحالة</label>
+                                <select name="status" id="status" class="form-select">
+                                    <option value="">جميع الحالات</option>
+                                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>نشط</option>
+                                    <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>غير نشط</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="search" class="form-label">البحث</label>
+                                <input type="text" name="search" id="search" class="form-control" 
+                                       placeholder="البحث بالاسم، البريد الإلكتروني، أو رقم الهاتف" 
+                                       value="{{ request('search') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">&nbsp;</label>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> بحث
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
+
+            <!-- Users Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">قائمة المستخدمين</h5>
+                </div>
+                <div class="card-body p-0">
+                    @if($users->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>المستخدم</th>
+                                        <th>نوع المستخدم</th>
+                                        <th>البريد الإلكتروني</th>
+                                        <th>رقم الهاتف</th>
+                                        <th>المدينة</th>
+                                        <th>الحالة</th>
+                                        <th>تاريخ الإنشاء</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($users as $user)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    @if($user->avatar)
+                                                        <img src="{{ asset('storage/' . $user->avatar) }}" 
+                                                             alt="{{ $user->name }}" 
+                                                             class="rounded-circle me-2" 
+                                                             width="40" height="40">
+                                                    @else
+                                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                                             style="width: 40px; height: 40px;">
+                                                            {{ substr($user->name, 0, 1) }}
+                                                        </div>
+                                                    @endif
+                                                    <div>
+                                                        <h6 class="mb-0">{{ $user->name }}</h6>
+                                                        @if($user->bio)
+                                                            <small class="text-muted">{{ Str::limit($user->bio, 30) }}</small>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{{ $user->user_type == 'admin' ? 'danger' : ($user->user_type == 'importer' ? 'info' : 'secondary') }}">
+                                                    {{ $user->getUserTypeLabelAttribute() }}
+                                                </span>
+                                            </td>
+                                            <td>{{ $user->email }}</td>
+                                            <td>{{ $user->phone ?? '-' }}</td>
+                                            <td>{{ $user->city ?? '-' }}</td>
+                                            <td>
+                                                @if($user->is_active)
+                                                    <span class="badge bg-success">نشط</span>
+                                                @else
+                                                    <span class="badge bg-danger">غير نشط</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $user->created_at->format('Y-m-d') }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{{ route('admin.users.show', $user) }}" 
+                                                       class="btn btn-sm btn-outline-info" 
+                                                       title="عرض">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('admin.users.edit', $user) }}" 
+                                                       class="btn btn-sm btn-outline-primary" 
+                                                       title="تعديل">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form method="POST" action="{{ route('admin.users.toggle-status', $user) }}" 
+                                                          class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" 
+                                                                class="btn btn-sm btn-outline-{{ $user->is_active ? 'warning' : 'success' }}"
+                                                                title="{{ $user->is_active ? 'إلغاء تفعيل' : 'تفعيل' }}"
+                                                                onclick="return confirm('هل أنت متأكد من تغيير حالة المستخدم؟')">
+                                                            <i class="fas fa-{{ $user->is_active ? 'ban' : 'check' }}"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form method="POST" action="{{ route('admin.users.destroy', $user) }}" 
+                                                          class="d-inline"
+                                                          onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div class="card-footer">
+                            {{ $users->appends(request()->query())->links() }}
+                        </div>
+                    @else
+                        <div class="text-center py-5">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">لا توجد مستخدمين</h5>
+                            <p class="text-muted">لم يتم العثور على مستخدمين مطابقين للبحث</p>
+                            <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> إضافة مستخدم جديد
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
+</div>
 @endsection
 
-@push('styles')
-    <style>
-        .avatar-initial {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: white;
-        }
-        
-        .table th {
-            font-weight: 600;
-            color: #374151;
-            border-bottom: 2px solid #e5e7eb;
-        }
-        
-        .table td {
-            vertical-align: middle;
-            border-bottom: 1px solid #f3f4f6;
-        }
-        
-        .table tbody tr:hover {
-            background-color: #f8fafc;
-        }
-    </style>
-@endpush
-
-@push('scripts')
-    <script>
-        function deleteUser(userId, userName) {
-            document.getElementById('userName').textContent = userName;
-            document.getElementById('deleteForm').action = '/admin/users/' + userId;
-            new bootstrap.Modal(document.getElementById('deleteModal')).show();
-        }
-
-        function filterUsers(type) {
-            // هنا يمكن إضافة منطق التصفية
-            console.log('تصفية العملاء حسب:', type);
-        }
-
-        // البحث في الجدول
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            const searchTerm = this.value.toLowerCase();
-            const tableRows = document.querySelectorAll('tbody tr');
-            
-            tableRows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
-        });
-    </script>
-@endpush
+@section('scripts')
+<script>
+    // Auto-submit form on filter change
+    document.getElementById('user_type').addEventListener('change', function() {
+        this.form.submit();
+    });
+    
+    document.getElementById('status').addEventListener('change', function() {
+        this.form.submit();
+    });
+</script>
+@endsection

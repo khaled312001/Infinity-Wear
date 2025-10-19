@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="vapid-public-key" content="{{ config('push.vapid.public_key') }}">
     <title>@yield('title', \App\Helpers\SiteSettingsHelper::getPageTitle())</title>
     <meta name="description" content="@yield('description', \App\Helpers\SiteSettingsHelper::getSiteDescription())">
     
@@ -68,6 +69,9 @@
     <link href="{{ asset('css/whatsapp-button.css') }}" rel="stylesheet">
     <!-- Push Notifications CSS -->
     <link href="{{ asset('css/push-notifications.css') }}" rel="stylesheet">
+    
+    <!-- Pusher Beams SDK -->
+    <script src="https://js.pusher.com/beams/2.1.0/push-notifications-cdn.js"></script>
     
     @yield('styles')
 </head>
@@ -142,7 +146,7 @@
                     <!-- Action Buttons -->
                     <div class="header-actions">
                         @auth
-                            <a href="{{ route(Auth::user()->getDashboardRoute()) }}" class="btn btn-outline">لوحة التحكم</a>
+                            <a href="{{ route(Auth::user()->getDashboardRoute()) }}" class="btn btn-outline">لوحة التحكم</a>ا
                             <form method="POST" action="{{ route('logout') }}" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-primary">تسجيل الخروج</button>
@@ -669,5 +673,12 @@
             });
         });
     </script>
+    
+    <!-- Notification System -->
+    <script src="{{ asset('js/notifications.js') }}"></script>
+    <link href="{{ asset('css/notifications.css') }}" rel="stylesheet">
+    
+    <!-- Pusher Beams Configuration -->
+    <script src="{{ asset('js/pusher-beams.js') }}"></script>
 </body>
 </html>

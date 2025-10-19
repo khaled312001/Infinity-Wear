@@ -27,7 +27,10 @@ class NotificationSetting extends Model
         'email_verification_enabled',
         'email_rate_limit',
         'email_queue_enabled',
-        'email_template_customization'
+        'email_template_customization',
+        'vapid_public_key',
+        'vapid_private_key',
+        'vapid_subject'
     ];
 
     protected $casts = [
@@ -138,5 +141,29 @@ class NotificationSetting extends Model
             'address' => $this->from_email,
             'name' => $this->from_name,
         ];
+    }
+
+    /**
+     * الحصول على إعدادات VAPID
+     */
+    public function getVapidConfig()
+    {
+        return [
+            'public_key' => $this->vapid_public_key ?: config('push.vapid.public_key'),
+            'private_key' => $this->vapid_private_key ?: config('push.vapid.private_key'),
+            'subject' => $this->vapid_subject ?: config('push.vapid.subject'),
+        ];
+    }
+
+    /**
+     * تحديث مفاتيح VAPID
+     */
+    public function updateVapidKeys($publicKey, $privateKey, $subject = null)
+    {
+        $this->update([
+            'vapid_public_key' => $publicKey,
+            'vapid_private_key' => $privateKey,
+            'vapid_subject' => $subject ?: 'mailto:admin@infinitywear.com'
+        ]);
     }
 }

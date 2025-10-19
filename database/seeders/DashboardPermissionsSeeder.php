@@ -155,6 +155,13 @@ class DashboardPermissionsSeeder extends Seeder
                 'user_type' => 'admin'
             ],
             [
+                'name' => 'admin.marketing-reports',
+                'display_name' => 'تقارير المندوبين',
+                'description' => 'إدارة تقارير المندوبين التسويقيين',
+                'module' => 'admin',
+                'user_type' => 'admin'
+            ],
+            [
                 'name' => 'admin.reports',
                 'display_name' => 'التقارير',
                 'description' => 'عرض تقارير النظام',
@@ -195,13 +202,6 @@ class DashboardPermissionsSeeder extends Seeder
                 'name' => 'sales.dashboard',
                 'display_name' => 'لوحة تحكم المبيعات',
                 'description' => 'الوصول إلى لوحة تحكم المبيعات',
-                'module' => 'sales',
-                'user_type' => 'sales'
-            ],
-            [
-                'name' => 'sales.orders',
-                'display_name' => 'طلبات العملاء',
-                'description' => 'عرض وإدارة طلبات العملاء',
                 'module' => 'sales',
                 'user_type' => 'sales'
             ],

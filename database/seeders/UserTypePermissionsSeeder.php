@@ -23,7 +23,7 @@ class UserTypePermissionsSeeder extends Seeder
                 'importers_management', 'importers_orders', 'tasks_management',
                 'finance_dashboard', 'finance_transactions', 'finance_reports',
                 'marketing_team_management', 'sales_team_management', 'customer_notes',
-                'reports', 'settings', 'permissions_management', 'admins_management', 'profile'
+                'marketing_reports', 'reports', 'settings', 'permissions_management', 'admins_management', 'profile'
             ],
             'importer' => [
                 'dashboard', 'orders', 'tracking', 'invoices',

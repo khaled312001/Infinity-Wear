@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Services\NotificationService;
+use App\Services\EmailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -13,10 +14,12 @@ use Illuminate\Support\Facades\Log;
 class ContactController extends Controller
 {
     protected $notificationService;
+    protected $emailService;
 
-    public function __construct(NotificationService $notificationService)
+    public function __construct(NotificationService $notificationService, EmailService $emailService)
     {
         $this->notificationService = $notificationService;
+        $this->emailService = $emailService;
     }
     /**
      * Show the contact form
@@ -78,8 +81,15 @@ class ContactController extends Controller
             // إنشاء إشعار للرسالة الجديدة
             $this->notificationService->createContactNotification($contact);
 
-            // Send email notification to admin
-            $this->sendAdminNotification($contact);
+            // Send email notification to admin using EmailService
+            $this->emailService->sendContactForm([
+                'name' => $contact->name,
+                'email' => $contact->email,
+                'phone' => $contact->phone,
+                'company' => $contact->company,
+                'subject' => $contact->subject,
+                'message' => $contact->message
+            ]);
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -111,25 +121,4 @@ class ContactController extends Controller
         }
     }
 
-    /**
-     * Send email notification to admin
-     */
-    private function sendAdminNotification(Contact $contact)
-    {
-        try {
-            $adminEmail = config('mail.admin_email', 'admin@infinitywear.sa');
-            
-            Mail::send('emails.contact-notification', [
-                'contact' => $contact
-            ], function ($message) use ($adminEmail, $contact) {
-                $message->to($adminEmail)
-                    ->cc($contact->email) // Send copy to sender
-                    ->subject('رسالة جديدة من موقع Infinity Wear - ' . $contact->subject);
-            });
-
-        } catch (\Exception $e) {
-            // Log the error but don't fail the contact form submission
-            Log::error('Failed to send contact notification email: ' . $e->getMessage());
-        }
-    }
 }

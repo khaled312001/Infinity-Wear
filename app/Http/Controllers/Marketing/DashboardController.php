@@ -479,11 +479,31 @@ class DashboardController extends Controller
      */
     public function contacts(Request $request)
     {
-        $query = Contact::latest();
+        $query = Contact::notArchived()->forMarketing()->latest();
 
         // Filter by status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
+        }
+
+        // Filter by contact type
+        if ($request->filled('contact_type')) {
+            $query->where('contact_type', $request->contact_type);
+        }
+
+        // Filter by priority
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
+        // Filter by source
+        if ($request->filled('source')) {
+            $query->where('source', $request->source);
+        }
+
+        // Filter by tags
+        if ($request->filled('tags')) {
+            $query->byTags($request->tags);
         }
 
         // Search
@@ -493,6 +513,7 @@ class DashboardController extends Controller
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('company', 'like', "%{$search}%")
                   ->orWhere('subject', 'like', "%{$search}%")
                   ->orWhere('message', 'like', "%{$search}%");
             });
@@ -502,11 +523,15 @@ class DashboardController extends Controller
 
         // Statistics
         $stats = [
-            'total' => Contact::count(),
-            'new' => Contact::new()->count(),
-            'read' => Contact::read()->count(),
-            'replied' => Contact::replied()->count(),
-            'closed' => Contact::closed()->count(),
+            'total' => Contact::notArchived()->forMarketing()->count(),
+            'new' => Contact::notArchived()->forMarketing()->new()->count(),
+            'read' => Contact::notArchived()->forMarketing()->read()->count(),
+            'replied' => Contact::notArchived()->forMarketing()->replied()->count(),
+            'closed' => Contact::notArchived()->forMarketing()->closed()->count(),
+            'inquiry' => Contact::notArchived()->forMarketing()->inquiry()->count(),
+            'custom' => Contact::notArchived()->forMarketing()->custom()->count(),
+            'high_priority' => Contact::notArchived()->forMarketing()->byPriority('high')->count(),
+            'follow_up_today' => Contact::notArchived()->forMarketing()->whereDate('follow_up_date', today())->count(),
         ];
 
         return view('marketing.contacts.index', compact('contacts', 'stats'));

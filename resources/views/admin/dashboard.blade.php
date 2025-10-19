@@ -104,6 +104,96 @@
     </div>
 </div>
 
+<!-- إحصائيات إضافية -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card enhanced">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon warning">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="ms-3 flex-grow-1">
+                    <h3 class="mb-0 stats-number">{{ number_format($stats['total_marketing_reports']) }}</h3>
+                    <p class="mb-0 text-muted stats-label">تقارير المندوبين</p>
+                    <div class="stats-trend">
+                        <i class="fas fa-arrow-up text-success me-1"></i>
+                        <span class="text-success">+8%</span>
+                        <small class="text-muted">من الشهر الماضي</small>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-chart">
+                <canvas id="marketingReportsChart" width="60" height="30"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card enhanced">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon danger">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="ms-3 flex-grow-1">
+                    <h3 class="mb-0 stats-number">{{ number_format($stats['pending_marketing_reports']) }}</h3>
+                    <p class="mb-0 text-muted stats-label">تقارير معلقة</p>
+                    <div class="stats-trend">
+                        <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                        <span class="text-warning">تحتاج مراجعة</span>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-chart">
+                <canvas id="pendingReportsChart" width="60" height="30"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card enhanced">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="ms-3 flex-grow-1">
+                    <h3 class="mb-0 stats-number">{{ number_format($stats['approved_marketing_reports']) }}</h3>
+                    <p class="mb-0 text-muted stats-label">تقارير موافق عليها</p>
+                    <div class="stats-trend">
+                        <i class="fas fa-arrow-up text-success me-1"></i>
+                        <span class="text-success">+12%</span>
+                        <small class="text-muted">من الشهر الماضي</small>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-chart">
+                <canvas id="approvedReportsChart" width="60" height="30"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stats-card enhanced">
+            <div class="d-flex align-items-center">
+                <div class="stats-icon info">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="ms-3 flex-grow-1">
+                    <h3 class="mb-0 stats-number">{{ number_format($stats['total_transactions']) }}</h3>
+                    <p class="mb-0 text-muted stats-label">إجمالي المعاملات</p>
+                    <div class="stats-trend">
+                        <i class="fas fa-arrow-up text-success me-1"></i>
+                        <span class="text-success">+15%</span>
+                        <small class="text-muted">من الشهر الماضي</small>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-chart">
+                <canvas id="transactionsChart" width="60" height="30"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <!-- إحصائيات المبيعات الشهرية -->
     <div class="col-lg-8 mb-4">
@@ -311,6 +401,103 @@
         </div>
     </div>
 </div>
+
+<!-- تقارير المندوبين التسويقيين -->
+<div class="row">
+    <!-- التقارير الحديثة -->
+    <div class="col-lg-6 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-file-alt me-2"></i>
+                        تقارير المندوبين الحديثة
+                    </h5>
+                    <a href="{{ route('admin.marketing-reports.index') }}" class="btn btn-sm btn-outline-primary">
+                        عرض الكل
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="recent-activity">
+                    @forelse($recentMarketingReports as $report)
+                    <div class="activity-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">{{ $report->company_name }}</h6>
+                                <p class="mb-1 text-muted">{{ $report->representative_name }}</p>
+                                <small class="text-muted">{{ $report->created_at->diffForHumans() }}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-{{ $report->getStatusBadgeClass() }}">
+                                    {{ $report->getStatusText() }}
+                                </span>
+                                <div class="mt-1">
+                                    <a href="{{ route('admin.marketing-reports.show', $report) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-file-alt fa-3x mb-3"></i>
+                        <p>لا توجد تقارير حديثة</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- التقارير التي تحتاج مراجعة -->
+    <div class="col-lg-6 mb-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                        تقارير تحتاج مراجعة
+                    </h5>
+                    <a href="{{ route('admin.marketing-reports.index') }}" class="btn btn-sm btn-outline-warning">
+                        مراجعة الكل
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="recent-activity">
+                    @forelse($reportsNeedingReview as $report)
+                    <div class="activity-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">{{ $report->company_name }}</h6>
+                                <p class="mb-1 text-muted">{{ $report->representative_name }}</p>
+                                <small class="text-muted">{{ $report->created_at->diffForHumans() }}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-{{ $report->getStatusBadgeClass() }}">
+                                    {{ $report->getStatusText() }}
+                                </span>
+                                <div class="mt-1">
+                                    <a href="{{ route('admin.marketing-reports.show', $report) }}" class="btn btn-sm btn-outline-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+                        <p>جميع التقارير تم مراجعتها</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -404,6 +591,10 @@ function createMiniChart(canvasId, data, color) {
 createMiniChart('usersChart', [10, 15, 12, 18, 20, 25], '#3b82f6');
 createMiniChart('importersChart', [2, 4, 6, 8, 10, 12], '#3b82f6');
 createMiniChart('tasksChart', [20, 18, 15, 12, 10, 8], '#10b981');
+createMiniChart('marketingReportsChart', [5, 8, 12, 15, 18, 22], '#f59e0b');
+createMiniChart('pendingReportsChart', [3, 5, 4, 6, 8, 7], '#ef4444');
+createMiniChart('approvedReportsChart', [8, 12, 15, 18, 20, 25], '#10b981');
+createMiniChart('transactionsChart', [15, 18, 22, 25, 28, 30], '#3b82f6');
 
 // Dashboard functions
 function refreshDashboard() {

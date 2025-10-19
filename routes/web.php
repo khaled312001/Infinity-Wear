@@ -13,11 +13,38 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\FaviconController;
 use App\Http\Controllers\HealthController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\MailTestController;
 use Illuminate\Support\Facades\Log;
 
 // Health check routes
 Route::get('/health', [HealthController::class, 'index']);
 Route::get('/health/database', [HealthController::class, 'database']);
+
+// Email testing routes
+Route::get('/email-test', function () {
+    return view('email-test');
+})->name('email-test.page');
+
+Route::prefix('email-test')->name('email-test.')->group(function () {
+    Route::get('/test', [App\Http\Controllers\EmailTestController::class, 'testEmail'])->name('test');
+    Route::get('/status', [App\Http\Controllers\EmailTestController::class, 'getEmailStatus'])->name('status');
+    Route::post('/send-notification', [App\Http\Controllers\EmailTestController::class, 'sendTestNotification'])->name('send-notification');
+    Route::post('/send-alert', [App\Http\Controllers\EmailTestController::class, 'sendSystemAlert'])->name('send-alert');
+    Route::post('/test-contact-form', [App\Http\Controllers\EmailTestController::class, 'testContactForm'])->name('test-contact-form');
+    Route::post('/test-importer-request', [App\Http\Controllers\EmailTestController::class, 'testImporterRequest'])->name('test-importer-request');
+});
+
+// Notification testing page
+Route::get('/notification-test', function () {
+    return view('notification-test');
+})->name('notification-test.page');
+
+// Pusher Push Notifications routes
+Route::prefix('api/pusher')->name('api.pusher.')->group(function () {
+    Route::post('/test', [App\Http\Controllers\PusherNotificationController::class, 'testNotification'])->name('test');
+    Route::get('/stats', [App\Http\Controllers\PusherNotificationController::class, 'getStats'])->name('stats');
+});
 
 // Test settings page
 Route::get('/test-settings', function () {
@@ -612,9 +639,6 @@ Route::middleware(['auth', 'user.type:marketing'])->prefix('marketing')->name('m
 // لوحة تحكم فريق المبيعات
 Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Sales\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/orders', [App\Http\Controllers\Sales\DashboardController::class, 'orders'])->name('orders');
-    Route::get('/orders/{order}', [App\Http\Controllers\Sales\DashboardController::class, 'showOrder'])->name('orders.show');
-    Route::put('/orders/{order}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateOrderStatus'])->name('orders.update-status');
     Route::get('/importer-orders', [App\Http\Controllers\Sales\DashboardController::class, 'importerOrders'])->name('importer-orders');
     Route::get('/importer-orders/{order}', [App\Http\Controllers\Sales\DashboardController::class, 'showImporterOrder'])->name('importer-orders.show');
     Route::put('/importer-orders/{order}/status', [App\Http\Controllers\Sales\DashboardController::class, 'updateImporterOrderStatus'])->name('importer-orders.update-status');
@@ -766,14 +790,18 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
         Route::get('/stats', [App\Http\Controllers\Admin\WhatsAppController::class, 'getConversationStats'])->name('stats');
     });
     
-    // إدارة المستخدمين
-    Route::get('/users', [AdminController::class, 'users'])->name('users.index');
-    Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
-    Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
-    Route::get('/users/{id}', [AdminController::class, 'showUser'])->name('users.show');
-    Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('users.edit');
-    Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('users.update');
-    Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    // إدارة المستخدمين الجديدة
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Admin\UserManagementController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Admin\UserManagementController::class, 'store'])->name('store');
+        Route::get('/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'show'])->name('show');
+        Route::get('/{user}/edit', [App\Http\Controllers\Admin\UserManagementController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'update'])->name('update');
+        Route::delete('/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'destroy'])->name('destroy');
+        Route::patch('/{user}/toggle-status', [App\Http\Controllers\Admin\UserManagementController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('/export', [App\Http\Controllers\Admin\UserManagementController::class, 'export'])->name('export');
+    });
     
     
     // فريق التسويق
@@ -858,6 +886,30 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     Route::patch('contacts/{contact}/mark-replied', [App\Http\Controllers\Admin\ContactController::class, 'markAsReplied'])->name('contacts.mark-replied')->middleware('user.permission:contacts');
     Route::patch('contacts/{contact}/mark-closed', [App\Http\Controllers\Admin\ContactController::class, 'markAsClosed'])->name('contacts.mark-closed')->middleware('user.permission:contacts');
     
+    // إدارة الجهات المخصصة
+    Route::patch('contacts/{contact}/archive', [App\Http\Controllers\Admin\ContactController::class, 'archive'])->name('contacts.archive')->middleware('user.permission:contacts');
+    
+    // إدارة تقارير المندوبين التسويقيين
+    Route::prefix('marketing-reports')->name('marketing-reports.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\MarketingReportController::class, 'index'])->name('index')->middleware('user.permission:marketing_reports');
+        Route::get('/{marketingReport}', [App\Http\Controllers\Admin\MarketingReportController::class, 'show'])->name('show')->middleware('user.permission:marketing_reports');
+        Route::get('/{marketingReport}/edit', [App\Http\Controllers\Admin\MarketingReportController::class, 'edit'])->name('edit')->middleware('user.permission:marketing_reports');
+        Route::put('/{marketingReport}', [App\Http\Controllers\Admin\MarketingReportController::class, 'update'])->name('update')->middleware('user.permission:marketing_reports');
+        Route::delete('/{marketingReport}', [App\Http\Controllers\Admin\MarketingReportController::class, 'destroy'])->name('destroy')->middleware('user.permission:marketing_reports');
+        Route::patch('/{marketingReport}/status', [App\Http\Controllers\Admin\MarketingReportController::class, 'updateStatus'])->name('update-status')->middleware('user.permission:marketing_reports');
+        Route::get('/export', [App\Http\Controllers\Admin\MarketingReportController::class, 'export'])->name('export')->middleware('user.permission:marketing_reports');
+        Route::get('/analytics', [App\Http\Controllers\Admin\MarketingReportController::class, 'analytics'])->name('analytics')->middleware('user.permission:marketing_reports');
+    });
+    Route::patch('contacts/{contact}/unarchive', [App\Http\Controllers\Admin\ContactController::class, 'unarchive'])->name('contacts.unarchive')->middleware('user.permission:contacts');
+    Route::patch('contacts/{contact}/assign', [App\Http\Controllers\Admin\ContactController::class, 'assign'])->name('contacts.assign')->middleware('user.permission:contacts');
+    Route::patch('contacts/{contact}/set-priority', [App\Http\Controllers\Admin\ContactController::class, 'setPriority'])->name('contacts.set-priority')->middleware('user.permission:contacts');
+    Route::post('contacts/{contact}/add-tag', [App\Http\Controllers\Admin\ContactController::class, 'addTag'])->name('contacts.add-tag')->middleware('user.permission:contacts');
+    Route::delete('contacts/{contact}/remove-tag', [App\Http\Controllers\Admin\ContactController::class, 'removeTag'])->name('contacts.remove-tag')->middleware('user.permission:contacts');
+    Route::patch('contacts/{contact}/set-follow-up', [App\Http\Controllers\Admin\ContactController::class, 'setFollowUp'])->name('contacts.set-follow-up')->middleware('user.permission:contacts');
+    Route::post('contacts/bulk-assign', [App\Http\Controllers\Admin\ContactController::class, 'bulkAssign'])->name('contacts.bulk-assign')->middleware('user.permission:contacts');
+    Route::post('contacts/bulk-archive', [App\Http\Controllers\Admin\ContactController::class, 'bulkArchive'])->name('contacts.bulk-archive')->middleware('user.permission:contacts');
+    Route::get('api/contacts/team/{team}', [App\Http\Controllers\Admin\ContactController::class, 'getTeamContacts'])->name('api.contacts.team')->middleware('user.permission:contacts');
+    
     // الإعدادات
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::put('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
@@ -882,13 +934,23 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     
     // إدارة الإشعارات
     Route::prefix('notifications')->name('notifications.')->group(function () {
-        Route::get('/', [App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('index')->middleware('user.permission:notifications');
+        Route::get('/', [NotificationController::class, 'index'])->name('index')->middleware('user.permission:notifications');
         Route::get('/unread', [App\Http\Controllers\Admin\NotificationController::class, 'getUnreadNotifications'])->name('unread')->middleware('user.permission:notifications');
         Route::get('/stats', [App\Http\Controllers\Admin\NotificationController::class, 'getNotificationStats'])->name('stats')->middleware('user.permission:notifications');
         Route::get('/{notification}/preview', [App\Http\Controllers\Admin\NotificationController::class, 'preview'])->name('preview')->middleware('user.permission:notifications');
         Route::post('/mark-read', [App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('mark-read')->middleware('user.permission:notifications');
         Route::post('/mark-all-read', [App\Http\Controllers\Admin\NotificationController::class, 'markAllAsRead'])->name('mark-all-read')->middleware('user.permission:notifications');
         Route::post('/archive', [App\Http\Controllers\Admin\NotificationController::class, 'archiveNotification'])->name('archive')->middleware('user.permission:notifications');
+        
+        // إدارة الإشعارات المخصصة للأدمن
+        Route::get('/admin', [App\Http\Controllers\Admin\AdminNotificationController::class, 'index'])->name('admin.index')->middleware('user.permission:admin_notifications');
+        Route::get('/admin/create', [App\Http\Controllers\Admin\AdminNotificationController::class, 'create'])->name('admin.create')->middleware('user.permission:admin_notifications');
+        Route::post('/admin', [App\Http\Controllers\Admin\AdminNotificationController::class, 'store'])->name('admin.store')->middleware('user.permission:admin_notifications');
+        Route::get('/admin/{notification}', [App\Http\Controllers\Admin\AdminNotificationController::class, 'show'])->name('admin.show')->middleware('user.permission:admin_notifications');
+        Route::post('/admin/{notification}/send', [App\Http\Controllers\Admin\AdminNotificationController::class, 'send'])->name('admin.send')->middleware('user.permission:admin_notifications');
+        Route::delete('/admin/{notification}', [App\Http\Controllers\Admin\AdminNotificationController::class, 'destroy'])->name('admin.destroy')->middleware('user.permission:admin_notifications');
+        Route::get('/admin/api/users-by-type', [App\Http\Controllers\Admin\AdminNotificationController::class, 'getUsersByType'])->name('admin.api.users-by-type')->middleware('user.permission:admin_notifications');
+        Route::get('/admin/api/stats', [App\Http\Controllers\Admin\AdminNotificationController::class, 'stats'])->name('admin.api.stats')->middleware('user.permission:admin_notifications');
         
         // إعدادات الإشعارات
         Route::get('/settings', [App\Http\Controllers\Admin\NotificationSettingsController::class, 'index'])->name('settings')->middleware('user.permission:notifications');
@@ -923,6 +985,21 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     Route::put('/admin-settings', [AdminController::class, 'updateAdminSettings'])->name('admin-settings.update');
 });
 
+// API Routes for Notifications
+Route::prefix('api/notifications')->name('api.notifications.')->group(function () {
+    Route::get('/', [NotificationController::class, 'getNotifications'])->name('index');
+    Route::get('/stats', [NotificationController::class, 'getStats'])->name('stats');
+    Route::post('/{id}/read', [NotificationController::class, 'markAsRead'])->name('mark-read');
+    Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+    Route::post('/{id}/archive', [NotificationController::class, 'archive'])->name('archive');
+    Route::post('/archive-read', [NotificationController::class, 'archiveRead'])->name('archive-read');
+    Route::delete('/{id}', [NotificationController::class, 'delete'])->name('delete');
+    Route::post('/subscribe', [NotificationController::class, 'subscribe'])->name('subscribe');
+    Route::post('/unsubscribe', [NotificationController::class, 'unsubscribe'])->name('unsubscribe');
+    Route::post('/test', [NotificationController::class, 'sendTestNotification'])->name('test');
+    Route::post('/cleanup', [NotificationController::class, 'cleanup'])->name('cleanup');
+});
+
 // API Routes for Push Notifications
 Route::prefix('api/push')->name('api.push.')->group(function () {
     Route::get('/vapid-key', function () {
@@ -944,3 +1021,40 @@ use App\Http\Controllers\ThreeDModelController;
 Route::get('/3d-model', [ThreeDModelController::class, 'show'])->name('3d.model.viewer');
 Route::get('/3d-model/obj', [ThreeDModelController::class, 'getObjFile'])->name('3d.model.obj');
 Route::get('/3d-model/info', [ThreeDModelController::class, 'getModelInfo'])->name('3d.model.info');
+
+// Mail Test Routes
+Route::get('/mail-test', function () {
+    return view('mail-test');
+})->name('mail-test');
+Route::prefix('mail-test')->name('mail-test.')->group(function () {
+    Route::get('/settings', [MailTestController::class, 'testMailSettings'])->name('settings');
+    Route::post('/send', [MailTestController::class, 'sendTestEmail'])->name('send');
+    Route::post('/notification', [MailTestController::class, 'testNotificationEmail'])->name('notification');
+    Route::post('/full-test', [MailTestController::class, 'runFullTest'])->name('full-test');
+});
+
+// Daily Report Routes
+Route::get('/daily-report', function () {
+    return view('daily-report');
+})->name('daily-report');
+Route::prefix('daily-report')->name('daily-report.')->group(function () {
+    Route::get('/preview', function () {
+        $dailyReportService = app(\App\Services\DailyReportService::class);
+        $reportData = $dailyReportService->generateDailyReport();
+        return view('emails.daily-report', compact('reportData'));
+    })->name('preview');
+    Route::post('/send', function (\Illuminate\Http\Request $request) {
+        $email = $request->input('email', 'info@infinitywearsa.com');
+        $date = $request->input('date');
+        
+        \Artisan::call('report:daily', [
+            '--email' => $email,
+            '--date' => $date
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'تم إرسال التقرير بنجاح'
+        ]);
+    })->name('send');
+});

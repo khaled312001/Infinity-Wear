@@ -11,6 +11,7 @@ use App\Models\TaskAttachment;
 use App\Models\Admin;
 use App\Models\MarketingTeam;
 use App\Models\SalesTeam;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +20,13 @@ use Illuminate\Support\Str;
 
 class TaskManagementController extends Controller
 {
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+
     /**
      * عرض لوحة المهام الرئيسية
      */
@@ -623,8 +631,26 @@ class TaskManagementController extends Controller
      */
     private function createTaskNotification(TaskCard $task, $assignedUser)
     {
-        // يمكن إضافة جدول إشعارات هنا
-        // Notification::create([...]);
+        try {
+            // إنشاء إشعار للمهمة الجديدة
+            $this->notificationService->sendAdvancedNotification(
+                'task',
+                'مهمة جديدة',
+                "تم تعيين مهمة جديدة لك: {$task->title}",
+                [
+                    'task_id' => $task->id,
+                    'task_title' => $task->title,
+                    'priority' => $task->priority,
+                    'due_date' => $task->due_date,
+                    'board_id' => $task->board_id,
+                    'column_id' => $task->column_id
+                ],
+                [$assignedUser->id],
+                $assignedUser->user_type ?? 'admin'
+            );
+        } catch (\Exception $e) {
+            Log::error('Failed to create task notification: ' . $e->getMessage());
+        }
     }
 
     /**
