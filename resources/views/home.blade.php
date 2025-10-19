@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
     <link href="{{ asset('css/infinity-home.css') }}" rel="stylesheet">
     <!-- Home Page Responsive CSS -->
     <link href="{{ asset('css/home-responsive.css') }}" rel="stylesheet">
+    <!-- Hero Video CSS -->
+    <link href="{{ asset('css/hero-video.css') }}" rel="stylesheet">
     
 @endsection
 
@@ -65,6 +67,31 @@ use Illuminate\Support\Facades\Storage;
                         </a>
                     </div>
                 </div>
+                <!-- Video Section -->
+                <div class="infinity-hero-video" style="width: 100%; margin-top: 2rem;">
+                    <div class="video-container">
+                        <video id="heroVideo" class="hero-video" preload="metadata" poster="{{ asset('images/video/video-poster.jpg') }}">
+                            <source src="{{ asset('videos/intro.mp4') }}" type="video/mp4">
+                            متصفحك لا يدعم تشغيل الفيديو
+                        </video>
+                        <div class="video-overlay">
+                            <div class="play-button-container">
+                                <button class="play-button" id="playButton">
+                                    <div class="play-icon">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="play-ripple"></div>
+                                </button>
+                                <div class="video-title">
+                                    <h3>شاهد قصتنا</h3>
+                                    <p>اكتشف رحلة إنفينيتي وير</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
                 <div class="infinity-hero-stats" style="width: 100%; margin-top: 2rem;">
                     <div class="stat-item animate-counter">
                         <div class="stat-icon">
@@ -716,6 +743,98 @@ use Illuminate\Support\Facades\Storage;
                 this.src = '{{ asset("images/default-image.png") }}';
             });
         });
+
+        // Video Control
+        const video = document.getElementById('heroVideo');
+        const playButton = document.getElementById('playButton');
+        const videoOverlay = document.querySelector('.video-overlay');
+        const videoContainer = document.querySelector('.video-container');
+        
+        if (video && playButton) {
+            // Play button click handler
+            playButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleVideo();
+            });
+            
+            // Video click handler
+            video.addEventListener('click', function() {
+                toggleVideo();
+            });
+            
+            // Video ended handler
+            video.addEventListener('ended', function() {
+                showOverlay();
+            });
+            
+            // Video playing handler
+            video.addEventListener('play', function() {
+                hideOverlay();
+                videoContainer.classList.add('playing');
+            });
+            
+            // Video paused handler
+            video.addEventListener('pause', function() {
+                showOverlay();
+                videoContainer.classList.remove('playing');
+            });
+            
+            // Video loading handler
+            video.addEventListener('loadstart', function() {
+                videoContainer.classList.add('loading');
+            });
+            
+            video.addEventListener('canplay', function() {
+                videoContainer.classList.remove('loading');
+            });
+            
+            // Keyboard support
+            video.addEventListener('keydown', function(e) {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    e.preventDefault();
+                    toggleVideo();
+                }
+            });
+            
+            // Make video focusable
+            video.setAttribute('tabindex', '0');
+            
+            function toggleVideo() {
+                if (video.paused) {
+                    video.play().catch(function(error) {
+                        console.log('Video play failed:', error);
+                        showOverlay();
+                    });
+                } else {
+                    video.pause();
+                    showOverlay();
+                }
+            }
+            
+            function showOverlay() {
+                videoOverlay.style.opacity = '1';
+                videoOverlay.style.visibility = 'visible';
+                videoContainer.classList.remove('playing');
+            }
+            
+            function hideOverlay() {
+                videoOverlay.style.opacity = '0';
+                videoOverlay.style.visibility = 'hidden';
+                videoContainer.classList.add('playing');
+            }
+            
+            // Add ripple effect to play button
+            playButton.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                ripple.classList.add('play-ripple');
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        }
 
         // Push Notifications for Home Page
         const enableButton = document.getElementById('enableNotificationsHome');
