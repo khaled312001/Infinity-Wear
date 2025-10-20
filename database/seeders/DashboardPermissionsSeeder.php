@@ -313,42 +313,7 @@ class DashboardPermissionsSeeder extends Seeder
                 'user_type' => 'marketing'
             ],
 
-            // صلاحيات العملاء
-            [
-                'name' => 'customer.dashboard',
-                'display_name' => 'لوحة تحكم العميل',
-                'description' => 'الوصول إلى لوحة تحكم العميل',
-                'module' => 'customer',
-                'user_type' => 'customer'
-            ],
-            [
-                'name' => 'customer.orders',
-                'display_name' => 'طلباتي',
-                'description' => 'عرض طلبات العميل',
-                'module' => 'customer',
-                'user_type' => 'customer'
-            ],
-            [
-                'name' => 'customer.designs',
-                'display_name' => 'تصاميمي',
-                'description' => 'عرض تصاميم العميل',
-                'module' => 'customer',
-                'user_type' => 'customer'
-            ],
-            [
-                'name' => 'customer.profile',
-                'display_name' => 'الملف الشخصي',
-                'description' => 'إدارة الملف الشخصي',
-                'module' => 'customer',
-                'user_type' => 'customer'
-            ],
-            [
-                'name' => 'customer.settings',
-                'display_name' => 'الإعدادات',
-                'description' => 'إعدادات الحساب',
-                'module' => 'customer',
-                'user_type' => 'customer'
-            ],
+            // صلاحيات العملاء (تمت الإزالة)
 
             // صلاحيات المستوردين
             [
@@ -457,12 +422,7 @@ class DashboardPermissionsSeeder extends Seeder
                 'description' => 'موظف تسويق',
                 'permissions' => Permission::where('user_type', 'marketing')->pluck('name')->toArray()
             ],
-            [
-                'name' => 'customer',
-                'display_name' => 'عميل',
-                'description' => 'عميل',
-                'permissions' => Permission::where('user_type', 'customer')->pluck('name')->toArray()
-            ],
+            // دور العميل (تمت الإزالة)
             [
                 'name' => 'importer',
                 'display_name' => 'مستورد',

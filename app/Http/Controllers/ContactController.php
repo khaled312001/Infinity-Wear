@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class ContactController extends Controller
 {
@@ -65,18 +66,29 @@ class ContactController extends Controller
         }
 
         try {
-            // Create contact record
-            $contact = Contact::create([
+            // Build payload only with columns that actually exist to avoid SQL errors
+            $payload = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'phone' => $request->phone,
-                'company' => $request->company,
                 'subject' => $request->subject,
                 'message' => $request->message,
                 'status' => 'new',
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent()
-            ]);
+            ];
+
+            if (Schema::hasColumn('contacts', 'phone')) {
+                $payload['phone'] = $request->phone;
+            }
+            if (Schema::hasColumn('contacts', 'company')) {
+                $payload['company'] = $request->company;
+            }
+            if (Schema::hasColumn('contacts', 'ip_address')) {
+                $payload['ip_address'] = $request->ip();
+            }
+            if (Schema::hasColumn('contacts', 'user_agent')) {
+                $payload['user_agent'] = $request->userAgent();
+            }
+
+            $contact = Contact::create($payload);
 
             // إنشاء إشعار للرسالة الجديدة
             $this->notificationService->createContactNotification($contact);

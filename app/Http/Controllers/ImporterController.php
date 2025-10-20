@@ -498,24 +498,20 @@ class ImporterController extends Controller
                 ->with('error', 'يرجى إكمال بيانات المستورد أولاً');
         }
         
-        // الحصول على الإشعارات من قاعدة البيانات
+        // الحصول على الإشعارات الحقيقية من قاعدة البيانات مع ترقيم الصفحات
         $notifications = \App\Models\Notification::where('user_id', $user->id)
             ->where('is_archived', false)
             ->orderBy('created_at', 'desc')
-            ->get();
-        
-        // إذا لم توجد إشعارات، إنشاء بعض الإشعارات التجريبية
-        if ($notifications->isEmpty()) {
-            $this->createSampleNotifications($user->id);
-            $notifications = \App\Models\Notification::where('user_id', $user->id)
-                ->where('is_archived', false)
-                ->orderBy('created_at', 'desc')
-                ->get();
-        }
-        
-        // إحصائيات الإشعارات
-        $unreadCount = $notifications->where('is_read', false)->count();
-        $totalCount = $notifications->count();
+            ->paginate(20);
+
+        // إحصائيات الإشعارات الحقيقية
+        $unreadCount = \App\Models\Notification::where('user_id', $user->id)
+            ->where('is_archived', false)
+            ->where('is_read', false)
+            ->count();
+        $totalCount = \App\Models\Notification::where('user_id', $user->id)
+            ->where('is_archived', false)
+            ->count();
         
         return view('importers.notifications', compact('importer', 'notifications', 'unreadCount', 'totalCount'));
     }
@@ -825,35 +821,26 @@ class ImporterController extends Controller
                 ->with('error', 'يرجى إكمال بيانات المستورد أولاً');
         }
         
-        // محاكاة تذاكر الدعم
-        $supportTickets = [
-            [
-                'id' => 1,
-                'subject' => 'مشكلة في تحميل الفاتورة',
-                'status' => 'open',
-                'priority' => 'high',
-                'created_at' => now()->subHours(2),
-                'last_reply' => now()->subMinutes(30)
-            ],
-            [
-                'id' => 2,
-                'subject' => 'استفسار حول وقت التسليم',
-                'status' => 'in_progress',
-                'priority' => 'medium',
-                'created_at' => now()->subDays(1),
-                'last_reply' => now()->subHours(3)
-            ],
-            [
-                'id' => 3,
-                'subject' => 'طلب تغيير في التصميم',
-                'status' => 'resolved',
-                'priority' => 'low',
-                'created_at' => now()->subDays(3),
-                'last_reply' => now()->subDays(1)
-            ]
-        ];
+        // جلب تذاكر الدعم الحقيقية (Contacts) الخاصة بالمستخدم الحالي
+        $supportTickets = \App\Models\Contact::where('created_by', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        // إحصائيات التذاكر بناءً على حالات Contact
+        $totalCount = \App\Models\Contact::where('created_by', $user->id)->count();
+        $openCount = \App\Models\Contact::where('created_by', $user->id)
+            ->whereIn('status', ['new'])
+            ->count();
+        $inProgressCount = \App\Models\Contact::where('created_by', $user->id)
+            ->whereIn('status', ['read', 'replied'])
+            ->count();
+        $resolvedCount = \App\Models\Contact::where('created_by', $user->id)
+            ->where('status', 'closed')
+            ->count();
+
+        $ticketStats = compact('totalCount', 'openCount', 'inProgressCount', 'resolvedCount');
         
-        return view('importers.support', compact('importer', 'supportTickets'));
+        return view('importers.support', compact('importer', 'supportTickets', 'ticketStats'));
     }
 
     /**
@@ -1007,11 +994,53 @@ class ImporterController extends Controller
             'preferred_time' => 'nullable|string|max:255'
         ]);
 
-        // محاكاة إرسال الرسالة
-        // في التطبيق الحقيقي، سيتم حفظ في قاعدة البيانات وإرسال إشعار
-        
-        return redirect()->route('importers.contact')
-            ->with('success', 'تم إرسال رسالتك بنجاح. سنتواصل معك قريباً.');
+        try {
+            // إنشاء سجل تواصل فعلي (كتذكرة/رسالة دعم)
+            $contact = \App\Models\Contact::create([
+                'name' => $importer->name,
+                'email' => $importer->email,
+                'phone' => $importer->phone,
+                'company' => $importer->company_name,
+                'subject' => $validated['subject'],
+                'message' => $validated['message'],
+                'status' => 'new',
+                'contact_type' => 'inquiry',
+                'assigned_to' => 'both',
+                'priority' => 'medium',
+                'source' => 'website',
+                'tags' => ['importer_contact'],
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'admin_notes' => 'طريقة التواصل المفضلة: ' . $validated['contact_method'] . ($validated['preferred_time'] ? (' | الوقت المفضل: ' . $validated['preferred_time']) : ''),
+                'created_by' => $user->id,
+            ]);
+
+            // إرسال بريد عبر SMTP باستخدام خدمة البريد
+            $emailService = app(\App\Services\EmailService::class);
+            $emailService->sendContactForm([
+                'name' => $contact->name,
+                'email' => $contact->email,
+                'phone' => $contact->phone,
+                'company' => $contact->company ?? $importer->company_name,
+                'subject' => $contact->subject,
+                'message' => $contact->message
+            ]);
+
+            // إنشاء إشعار داخلي للإدارة
+            try {
+                $notificationService = app(\App\Services\NotificationService::class);
+                $notificationService->createContactNotification($contact);
+            } catch (\Exception $e) {
+                Log::warning('Failed to create contact notification: ' . $e->getMessage());
+            }
+
+            return redirect()->route('importers.contact')
+                ->with('success', 'تم إرسال رسالتك بنجاح. سنتواصل معك قريباً.');
+        } catch (\Exception $e) {
+            Log::error('Importer contact send error: ' . $e->getMessage());
+            return redirect()->route('importers.contact')
+                ->with('error', 'تعذر إرسال الرسالة حالياً. يرجى المحاولة لاحقاً.');
+        }
     }
 
     /**

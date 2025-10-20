@@ -169,8 +169,9 @@
                                     <label for="user-type" class="form-label">نوع المستخدم</label>
                                     <select class="form-select" id="user-type" name="user_type">
                                         <option value="admin">المديرين</option>
-                                        <option value="customer">العملاء</option>
                                         <option value="importer">المستوردين</option>
+                                        <option value="sales">المبيعات</option>
+                                        <option value="marketing">التسويق</option>
                                     </select>
                                 </div>
                             </div>
@@ -227,9 +228,24 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <span class="badge bg-{{ $subscription->user_type == 'admin' ? 'primary' : ($subscription->user_type == 'customer' ? 'success' : 'warning') }}">
-                                                {{ $subscription->user_type == 'admin' ? 'مدير' : ($subscription->user_type == 'customer' ? 'عميل' : 'مستورد') }}
-                                            </span>
+                                            @php
+                                                $type = $subscription->user_type;
+                                                $labelMap = [
+                                                    'admin' => 'مدير',
+                                                    'importer' => 'مستورد',
+                                                    'sales' => 'مبيعات',
+                                                    'marketing' => 'تسويق',
+                                                ];
+                                                $classMap = [
+                                                    'admin' => 'primary',
+                                                    'importer' => 'warning',
+                                                    'sales' => 'success',
+                                                    'marketing' => 'info',
+                                                ];
+                                                $label = $labelMap[$type] ?? $type;
+                                                $class = $classMap[$type] ?? 'secondary';
+                                            @endphp
+                                            <span class="badge bg-{{ $class }}">{{ $label }}</span>
                                         </td>
                                         <td>
                                             <span class="badge bg-{{ $subscription->device_type == 'mobile' ? 'info' : ($subscription->device_type == 'tablet' ? 'warning' : 'secondary') }}">
@@ -252,13 +268,15 @@
                                             <span class="badge bg-primary">{{ $subscription->notification_count }}</span>
                                         </td>
                                         <td>
+                                            @php
+                                                $toggleBtnClass = $subscription->is_active ? 'warning' : 'success';
+                                                $iconClass = $subscription->is_active ? 'pause' : 'play';
+                                            @endphp
                                             <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-{{ $subscription->is_active ? 'warning' : 'success' }}" 
-                                                        onclick="toggleSubscription({{ $subscription->id }})">
-                                                    <i class="fas fa-{{ $subscription->is_active ? 'pause' : 'play' }}"></i>
+                                                <button class="btn btn-outline-{{ $toggleBtnClass }} btn-toggle-sub" data-id="{{ $subscription->id }}">
+                                                    <i class="fas fa-{{ $iconClass }}"></i>
                                                 </button>
-                                                <button class="btn btn-outline-danger" 
-                                                        onclick="deleteSubscription({{ $subscription->id }})">
+                                                <button class="btn btn-outline-danger btn-delete-sub" data-id="{{ $subscription->id }}">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>

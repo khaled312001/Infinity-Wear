@@ -167,14 +167,7 @@ class RolePermissionSeeder extends Seeder
                     'content.view', 'content.create', 'content.edit',
                 ]
             ],
-            [
-                'name' => 'customer',
-                'display_name' => 'عميل',
-                'description' => 'عميل عادي مع صلاحيات محدودة',
-                'permissions' => [
-                    'orders.view', 'orders.create',
-                ]
-            ],
+            // تمت إزالة دور العميل نهائياً
             [
                 'name' => 'importer',
                 'display_name' => 'مستورد',

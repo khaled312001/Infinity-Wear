@@ -9,6 +9,7 @@ use App\Models\MarketingTeam;
 use App\Models\SalesTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -70,7 +71,6 @@ class UserManagementController extends Controller
             'admin' => 'مدير',
             'employee' => 'موظف',
             'importer' => 'مستورد',
-            'customer' => 'عميل',
             'sales' => 'مندوب مبيعات',
             'marketing' => 'موظف تسويق'
         ];
@@ -90,7 +90,7 @@ class UserManagementController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
             'city' => 'nullable|string|max:100',
-            'user_type' => ['required', Rule::in(['admin', 'employee', 'importer', 'customer', 'sales', 'marketing'])],
+            'user_type' => ['required', Rule::in(['admin', 'employee', 'importer', 'sales', 'marketing'])],
             'is_active' => 'boolean',
             'bio' => 'nullable|string|max:1000',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
@@ -144,7 +144,6 @@ class UserManagementController extends Controller
             'admin' => 'مدير',
             'employee' => 'موظف',
             'importer' => 'مستورد',
-            'customer' => 'عميل',
             'sales' => 'مندوب مبيعات',
             'marketing' => 'موظف تسويق'
         ];
@@ -164,7 +163,7 @@ class UserManagementController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
             'city' => 'nullable|string|max:100',
-            'user_type' => ['required', Rule::in(['admin', 'employee', 'importer', 'customer', 'sales', 'marketing'])],
+            'user_type' => ['required', Rule::in(['admin', 'employee', 'importer', 'sales', 'marketing'])],
             'is_active' => 'boolean',
             'bio' => 'nullable|string|max:1000',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
@@ -188,8 +187,8 @@ class UserManagementController extends Controller
         // رفع صورة شخصية جديدة
         if ($request->hasFile('avatar')) {
             // حذف الصورة القديمة
-            if ($user->avatar && \Storage::disk('public')->exists($user->avatar)) {
-                \Storage::disk('public')->delete($user->avatar);
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
             }
 
             $avatar = $request->file('avatar');
@@ -213,8 +212,8 @@ class UserManagementController extends Controller
     public function destroy(User $user)
     {
         // حذف الصورة الشخصية
-        if ($user->avatar && \Storage::disk('public')->exists($user->avatar)) {
-            \Storage::disk('public')->delete($user->avatar);
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+            Storage::disk('public')->delete($user->avatar);
         }
 
         // حذف السجلات المرتبطة

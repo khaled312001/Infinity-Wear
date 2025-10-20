@@ -24,14 +24,14 @@ class AuthController extends Controller
             return view('auth.sales-login');
         }
         
-        // Default to regular customer login
+        // Default to regular login
         return view('auth.login');
     }
 
     public function login(Request $request)
     {
         // Debug: Log all request data
-        \Log::info('Login request data', $request->all());
+        Log::info('Login request data', $request->all());
         
         try {
             $credentials = $request->validate([
@@ -39,12 +39,12 @@ class AuthController extends Controller
                 'password' => 'required',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Validation failed', $e->errors());
+            Log::error('Validation failed', $e->errors());
             throw $e;
         }
 
         // Debug logging
-        \Log::info('Login attempt', [
+        Log::info('Login attempt', [
             'email' => $credentials['email']
         ]);
 
@@ -54,8 +54,9 @@ class AuthController extends Controller
                 $request->session()->regenerate();
                 
                 // Redirect to appropriate dashboard based on user type
+                /** @var \App\Models\User $user */
                 $user = Auth::user();
-                \Log::info('Login successful', ['user_id' => $user->id, 'user_type' => $user->user_type]);
+                Log::info('Login successful', ['user_id' => $user->id, 'user_type' => $user->user_type]);
                 
                 // Check if user is trying to access the correct login route
                 $routeName = $request->route()->getName();
@@ -81,12 +82,12 @@ class AuthController extends Controller
                         // Check if importer profile exists
                         $importer = \App\Models\Importer::where('user_id', $user->id)->first();
                         if (!$importer) {
-                            \Log::info('Importer profile not found, redirecting to form', ['user_id' => $user->id]);
+                            Log::info('Importer profile not found, redirecting to form', ['user_id' => $user->id]);
                             return redirect()->route('importers.form')
                                 ->with('info', 'يرجى إكمال بيانات المستورد أولاً');
                         }
                     } catch (\Exception $e) {
-                        \Log::warning('Database unavailable for importer check, proceeding with login: ' . $e->getMessage());
+                        Log::warning('Database unavailable for importer check, proceeding with login: ' . $e->getMessage());
                         // Continue with login even if importer check fails
                     }
                 }
@@ -100,7 +101,7 @@ class AuthController extends Controller
             
         } catch (\Illuminate\Database\QueryException $e) {
             if (strpos($e->getMessage(), 'max_connections_per_hour') !== false) {
-                \Log::error('Database connection limit exceeded during login', [
+                Log::error('Database connection limit exceeded during login', [
                     'email' => $credentials['email'],
                     'error' => $e->getMessage()
                 ]);
@@ -113,7 +114,7 @@ class AuthController extends Controller
             // Re-throw other database exceptions
             throw $e;
         } catch (\Exception $e) {
-            \Log::error('Unexpected error during login', [
+            Log::error('Unexpected error during login', [
                 'email' => $credentials['email'],
                 'error' => $e->getMessage()
             ]);
@@ -141,7 +142,8 @@ class AuthController extends Controller
         ]);
 
         $validatedData['password'] = Hash::make($validatedData['password']);
-        $validatedData['user_type'] = 'customer';
+        // التعيين الافتراضي لنوع المستخدم بعد حذف العملاء
+        $validatedData['user_type'] = 'importer';
 
         $user = User::create($validatedData);
 

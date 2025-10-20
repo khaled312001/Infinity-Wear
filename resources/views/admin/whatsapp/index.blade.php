@@ -113,7 +113,6 @@
                                     <option value="importer">مستوردين</option>
                                     <option value="marketing">تسويق</option>
                                     <option value="sales">مبيعات</option>
-                                    <option value="customer">عملاء</option>
                                     <option value="external">خارجي</option>
                                 </select>
                             </div>
@@ -239,7 +238,6 @@
                                 <option value="importer">مستورد</option>
                                 <option value="marketing">تسويق</option>
                                 <option value="sales">مبيعات</option>
-                                <option value="customer">عميل</option>
                                 <option value="external">خارجي</option>
                             </select>
                         </div>

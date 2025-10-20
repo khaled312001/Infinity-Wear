@@ -109,10 +109,7 @@ class User extends Authenticatable
         return $this->user_type === 'employee';
     }
 
-    public function isCustomer(): bool
-    {
-        return $this->user_type === 'customer';
-    }
+    // تمت إزالة نوع العميل نهائياً
 
     public function isSales(): bool
     {
@@ -211,8 +208,9 @@ class User extends Authenticatable
                 return 'employee.dashboard';
             case 'importer':
                 return 'importers.dashboard';
-            case 'customer':
-                return 'importers.dashboard';
+            // تمت إزالة العميل: توجيه غير مستخدم
+            // case 'customer':
+            //     return 'importers.dashboard';
             case 'sales':
                 return 'sales.dashboard';
             case 'marketing':
@@ -231,7 +229,7 @@ class User extends Authenticatable
             'admin' => 'مدير',
             'employee' => 'موظف',
             'importer' => 'مستورد',
-            'customer' => 'عميل',
+            // 'customer' => 'عميل',
             'sales' => 'مندوب مبيعات',
             'marketing' => 'موظف تسويق',
             default => $this->user_type

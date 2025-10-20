@@ -70,7 +70,7 @@ use Illuminate\Support\Facades\Storage;
                 <!-- Video Section -->
                 <div class="infinity-hero-video" style="width: 100%; margin-top: 2rem;">
                     <div class="video-container">
-                        <video id="heroVideo" class="hero-video" preload="metadata" poster="{{ asset('images/video/video-poster.jpg') }}">
+                        <video id="heroVideo" class="hero-video" preload="metadata" poster="{{ asset('images/hero/home-hero.svg') }}">
                             <source src="{{ asset('videos/intro.mp4') }}" type="video/mp4">
                             متصفحك لا يدعم تشغيل الفيديو
                         </video>

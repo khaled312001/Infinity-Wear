@@ -15,7 +15,7 @@
                     <div class="d-flex align-items-center justify-content-center mb-2">
                         <i class="fas fa-ticket-alt fa-2x text-primary me-3"></i>
                         <div>
-                            <h4 class="mb-0">{{ count($supportTickets) }}</h4>
+                            <h4 class="mb-0">{{ $ticketStats['totalCount'] ?? $supportTickets->total() }}</h4>
                             <small class="text-muted">إجمالي التذاكر</small>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
                     <div class="d-flex align-items-center justify-content-center mb-2">
                         <i class="fas fa-clock fa-2x text-warning me-3"></i>
                         <div>
-                            <h4 class="mb-0">{{ collect($supportTickets)->where('status', 'open')->count() }}</h4>
+                            <h4 class="mb-0">{{ $ticketStats['openCount'] ?? 0 }}</h4>
                             <small class="text-muted">مفتوحة</small>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                     <div class="d-flex align-items-center justify-content-center mb-2">
                         <i class="fas fa-cog fa-2x text-info me-3"></i>
                         <div>
-                            <h4 class="mb-0">{{ collect($supportTickets)->where('status', 'in_progress')->count() }}</h4>
+                            <h4 class="mb-0">{{ $ticketStats['inProgressCount'] ?? 0 }}</h4>
                             <small class="text-muted">قيد المعالجة</small>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                     <div class="d-flex align-items-center justify-content-center mb-2">
                         <i class="fas fa-check-circle fa-2x text-success me-3"></i>
                         <div>
-                            <h4 class="mb-0">{{ collect($supportTickets)->where('status', 'resolved')->count() }}</h4>
+                            <h4 class="mb-0">{{ $ticketStats['resolvedCount'] ?? 0 }}</h4>
                             <small class="text-muted">محلولة</small>
                         </div>
                     </div>
@@ -148,7 +148,7 @@
                 </div>
                 
                 <div class="card-body p-0">
-                    @if(count($supportTickets) > 0)
+                    @if($supportTickets->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead class="table-light">
@@ -166,16 +166,16 @@
                                     @foreach($supportTickets as $ticket)
                                         <tr>
                                             <td>
-                                                <strong>#{{ $ticket['id'] }}</strong>
+                                                <strong>#{{ $ticket->id }}</strong>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-ticket-alt me-2 text-muted"></i>
-                                                    <span>{{ $ticket['subject'] }}</span>
+                                                    <span>{{ $ticket->subject }}</span>
                                                 </div>
                                             </td>
                                             <td>
-                                                @switch($ticket['status'])
+                                                @switch($ticket->status)
                                                     @case('open')
                                                         <span class="badge bg-warning">مفتوحة</span>
                                                         @break
@@ -191,7 +191,7 @@
                                                 @endswitch
                                             </td>
                                             <td>
-                                                @switch($ticket['priority'])
+                                                @switch($ticket->priority)
                                                     @case('low')
                                                         <span class="badge bg-success">منخفضة</span>
                                                         @break
@@ -208,24 +208,24 @@
                                             </td>
                                             <td>
                                                 <small class="text-muted">
-                                                    {{ $ticket['created_at']->format('Y-m-d') }}<br>
-                                                    {{ $ticket['created_at']->format('H:i') }}
+                                                    {{ optional($ticket->created_at)->format('Y-m-d') }}<br>
+                                                    {{ optional($ticket->created_at)->format('H:i') }}
                                                 </small>
                                             </td>
                                             <td>
                                                 <small class="text-muted">
-                                                    {{ $ticket['last_reply']->diffForHumans() }}
+                                                    {{ optional($ticket->updated_at ?? $ticket->replied_at ?? $ticket->read_at ?? $ticket->created_at)->diffForHumans() }}
                                                 </small>
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group">
                                                     <button class="btn btn-outline-primary" 
-                                                            onclick="viewTicket({{ $ticket['id'] }})" 
+                                                            onclick="viewTicket('{{ $ticket->id }}')" 
                                                             title="عرض التفاصيل">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
                                                     <button class="btn btn-outline-success" 
-                                                            onclick="replyTicket({{ $ticket['id'] }})" 
+                                                            onclick="replyTicket('{{ $ticket->id }}')" 
                                                             title="رد">
                                                         <i class="fas fa-reply"></i>
                                                     </button>
@@ -235,6 +235,9 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="p-3">
+                            {{ $supportTickets->links() }}
                         </div>
                     @else
                         <div class="text-center py-5">

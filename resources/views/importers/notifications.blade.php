@@ -139,41 +139,41 @@
                 </div>
                 
                 <div class="card-body p-0">
-                    @if(count($notifications) > 0)
+                    @if($notifications->count() > 0)
                         <div class="list-group list-group-flush">
                             @foreach($notifications as $notification)
-                                <div class="list-group-item notification-item {{ !$notification['is_read'] ? 'unread' : '' }}" 
-                                     data-notification-id="{{ $notification['id'] }}"
-                                     data-type="{{ $notification['type'] }}" 
-                                     data-status="{{ $notification['is_read'] ? 'read' : 'unread' }}"
-                                     data-date="{{ $notification['created_at']->format('Y-m-d') }}">
+                                <div class="list-group-item notification-item {{ !$notification->is_read ? 'unread' : '' }}" 
+                                     data-notification-id="{{ $notification->id }}"
+                                     data-type="{{ $notification->type }}" 
+                                     data-status="{{ $notification->is_read ? 'read' : 'unread' }}"
+                                     data-date="{{ optional($notification->created_at)->format('Y-m-d') }}">
                                     
                                     <div class="d-flex align-items-start">
                                         <div class="notification-icon me-3">
-                                            <div class="icon-wrapper bg-{{ $notification['color'] }}">
-                                                <i class="{{ $notification['icon'] }}"></i>
+                                            <div class="icon-wrapper bg-{{ $notification->color }}">
+                                                <i class="{{ $notification->icon }}"></i>
                                             </div>
-                                            @if(!$notification['is_read'])
+                                            @if(!$notification->is_read)
                                                 <div class="unread-indicator"></div>
                                             @endif
                                         </div>
                                         
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-start mb-1">
-                                                <h6 class="notification-title mb-0 {{ !$notification['is_read'] ? 'fw-bold' : '' }}">
-                                                    {{ $notification['title'] }}
+                                                <h6 class="notification-title mb-0 {{ !$notification->is_read ? 'fw-bold' : '' }}">
+                                                    {{ $notification->title }}
                                                 </h6>
                                                 <div class="notification-actions">
                                                     <div class="btn-group btn-group-sm" role="group">
-                                                        @if(!$notification['is_read'])
+                                                        @if(!$notification->is_read)
                                                             <button class="btn btn-outline-primary btn-sm" 
-                                                                    onclick="markAsRead({{ $notification['id'] }})" 
+                                                                    onclick="markAsRead('{{ $notification->id }}')" 
                                                                     title="تحديد كمقروء">
                                                                 <i class="fas fa-check"></i>
                                                             </button>
                                                         @endif
                                                         <button class="btn btn-outline-danger btn-sm" 
-                                                                onclick="deleteNotification({{ $notification['id'] }})" 
+                                                                onclick="deleteNotification('{{ $notification->id }}')" 
                                                                 title="حذف">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
@@ -182,18 +182,18 @@
                                             </div>
                                             
                                             <p class="notification-message text-muted mb-2">
-                                                {{ $notification['message'] }}
+                                                {{ $notification->message }}
                                             </p>
                                             
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <small class="text-muted">
                                                     <i class="fas fa-clock me-1"></i>
-                                                    {{ $notification['created_at']->diffForHumans() }}
+                                                    {{ optional($notification->created_at)->diffForHumans() }}
                                                 </small>
                                                 
                                                 <div class="notification-badges">
-                                                    <span class="badge bg-{{ $notification['color'] }} me-1">
-                                                        @switch($notification['type'])
+                                                    <span class="badge bg-{{ $notification->color }} me-1">
+                                                        @switch($notification->type)
                                                             @case('order_status')
                                                                 حالة الطلب
                                                                 @break
@@ -212,7 +212,7 @@
                                                         @endswitch
                                                     </span>
                                                     
-                                                    @if(!$notification['is_read'])
+                                                    @if(!$notification->is_read)
                                                         <span class="badge bg-warning">جديد</span>
                                                     @endif
                                                 </div>
@@ -221,6 +221,9 @@
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+                        <div class="p-3">
+                            {{ $notifications->links() }}
                         </div>
                     @else
                         <div class="text-center py-5">

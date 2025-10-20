@@ -90,7 +90,7 @@
                                     <option value="admin" {{ request('user_type') == 'admin' ? 'selected' : '' }}>مدير</option>
                                     <option value="employee" {{ request('user_type') == 'employee' ? 'selected' : '' }}>موظف</option>
                                     <option value="importer" {{ request('user_type') == 'importer' ? 'selected' : '' }}>مستورد</option>
-                                    <option value="customer" {{ request('user_type') == 'customer' ? 'selected' : '' }}>عميل</option>
+                                    
                                     <option value="sales" {{ request('user_type') == 'sales' ? 'selected' : '' }}>مندوب مبيعات</option>
                                     <option value="marketing" {{ request('user_type') == 'marketing' ? 'selected' : '' }}>موظف تسويق</option>
                                 </select>

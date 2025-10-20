@@ -94,10 +94,11 @@ class PushSubscription extends Model
      */
     public static function cleanupOldSubscriptions($days = 30)
     {
-        return self::where('last_used_at', '<', now()->subDays($days))
-                   ->orWhere(function($query) {
+        $thresholdDate = now()->subDays($days);
+        return self::where('last_used_at', '<', $thresholdDate)
+                   ->orWhere(function($query) use ($thresholdDate) {
                        $query->whereNull('last_used_at')
-                             ->where('created_at', '<', now()->subDays($days));
+                             ->where('created_at', '<', $thresholdDate);
                    })
                    ->delete();
     }
@@ -111,7 +112,9 @@ class PushSubscription extends Model
             'total_subscriptions' => self::count(),
             'active_subscriptions' => self::where('is_active', true)->count(),
             'admin_subscriptions' => self::where('user_type', 'admin')->where('is_active', true)->count(),
-            'customer_subscriptions' => self::where('user_type', 'customer')->where('is_active', true)->count(),
+            'importer_subscriptions' => self::where('user_type', 'importer')->where('is_active', true)->count(),
+            'sales_subscriptions' => self::where('user_type', 'sales')->where('is_active', true)->count(),
+            'marketing_subscriptions' => self::where('user_type', 'marketing')->where('is_active', true)->count(),
             'mobile_subscriptions' => self::where('device_type', 'mobile')->where('is_active', true)->count(),
             'desktop_subscriptions' => self::where('device_type', 'desktop')->where('is_active', true)->count(),
         ];
