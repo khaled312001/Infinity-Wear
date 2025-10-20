@@ -114,12 +114,12 @@
             color: #6c757d;
         }
         .order-dropdown .dropdown-divider { height: 1px; margin: 6px 0; background: rgba(0,0,0,0.06); }
-        /* Slight right nudge for the button on desktop */
+        /* Shift button and dropdown 50px to the right on all screens */
         @media (min-width: 992px) {
-            .header-actions .order-dropdown { transform: translateX(8px); }
+            .header-actions .order-dropdown { transform: translateX(50px); }
         }
         @media (max-width: 991.98px) {
-            .header-actions .order-dropdown { transform: none; }
+            .header-actions .order-dropdown { transform: translateX(50px); }
         }
         /* Sidebar mobile login hint under order button */
         .sidebar-user-actions .sidebar-login-link {
