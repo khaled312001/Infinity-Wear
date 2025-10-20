@@ -890,11 +890,14 @@ class AdminController extends Controller
             'role' => 'required|in:super_admin,admin,manager',
         ]);
 
+        // Map super_admin to admin per unification
+        $role = $request->role === 'super_admin' ? 'admin' : $request->role;
+
         $admin = \App\Models\Admin::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role' => $role,
             'is_active' => true,
         ]);
 
@@ -942,10 +945,13 @@ class AdminController extends Controller
             'role' => 'required|in:super_admin,admin,manager',
         ]);
 
+        // Map super_admin to admin per unification
+        $mappedRole = $request->role === 'super_admin' ? 'admin' : $request->role;
+
         $adminData = [
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->role,
+            'role' => $mappedRole,
         ];
 
         if ($request->filled('password')) {

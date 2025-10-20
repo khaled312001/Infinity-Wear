@@ -574,7 +574,7 @@ Route::post('/api/ai/generate-design', [ImporterController::class, 'generateDesi
 
 // لوحة تحكم المستوردين
 Route::middleware(['auth', 'user.type:importer'])->prefix('importers')->name('importers.')->group(function () {
-    Route::get('/dashboard', [ImporterController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [ImporterController::class, 'dashboard'])->name('dashboard')->middleware('user.permission:dashboard');
     Route::get('/orders', [ImporterController::class, 'orders'])->name('orders')->middleware('user.permission:orders');
     Route::get('/tracking', [ImporterController::class, 'tracking'])->name('tracking')->middleware('user.permission:tracking');
     Route::get('/invoices', [ImporterController::class, 'invoices'])->name('invoices')->middleware('user.permission:invoices');

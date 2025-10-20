@@ -54,9 +54,6 @@
                                         @case('marketing')
                                             <i class="fas fa-bullhorn me-2"></i>التسويق
                                             @break
-                                        @case('customer')
-                                            <i class="fas fa-user me-2"></i>العملاء
-                                            @break
                                         @case('importer')
                                             <i class="fas fa-industry me-2"></i>المستوردين
                                             @break
@@ -138,13 +135,16 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
-                                                    <button type="button" class="btn btn-outline-primary" 
-                                                            onclick="editRole({{ $role->id }}, '{{ $role->display_name }}', '{{ $role->description }}', [{{ $role->permissions->pluck('id')->implode(',') }}])">
+                                                    <button type="button" class="btn btn-outline-primary js-edit-role"
+                                                            data-role-id="{{ $role->id }}"
+                                                            data-display-name="{{ e($role->display_name) }}"
+                                                            data-description="{{ e($role->description) }}"
+                                                            data-permissions='@json($role->permissions->pluck('id'))'>
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-                                                    @if(!in_array($role->name, ['super_admin', 'admin', 'sales', 'marketing', 'customer', 'importer']))
-                                                        <button type="button" class="btn btn-outline-danger" 
-                                                                onclick="deleteRole({{ $role->id }})">
+                                                    @if(!in_array($role->name, ['super_admin', 'admin', 'sales', 'marketing', 'importer']))
+                                                        <button type="button" class="btn btn-outline-danger js-delete-role" 
+                                                                data-role-id="{{ $role->id }}">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     @endif
@@ -299,6 +299,20 @@ function editRole(roleId, displayName, description, permissionIds) {
     });
     
     new bootstrap.Modal(document.getElementById('editRoleModal')).show();
+}
+
+function editRoleFromButton(btn) {
+    const roleId = btn.getAttribute('data-role-id');
+    const displayName = btn.getAttribute('data-display-name') || '';
+    const description = btn.getAttribute('data-description') || '';
+    let permissions = [];
+    try {
+        const raw = btn.getAttribute('data-permissions');
+        permissions = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+        permissions = [];
+    }
+    editRole(roleId, displayName, description, permissions);
 }
 
 function deleteRole(roleId) {

@@ -75,7 +75,6 @@
                             <select class="form-select @error('role') is-invalid @enderror" 
                                     id="role" name="role" required>
                                 <option value="">اختر الدور</option>
-                                <option value="super_admin" {{ old('role', $admin->role) == 'super_admin' ? 'selected' : '' }}>مدير عام</option>
                                 <option value="admin" {{ old('role', $admin->role) == 'admin' ? 'selected' : '' }}>مدير</option>
                                 <option value="manager" {{ old('role', $admin->role) == 'manager' ? 'selected' : '' }}>مدير قسم</option>
                             </select>

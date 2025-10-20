@@ -7,6 +7,8 @@ use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
+use Database\Seeders\DashboardPermissionsSeeder;
 
 class PermissionController extends Controller
 {
@@ -23,8 +25,35 @@ class PermissionController extends Controller
             ->get()
             ->groupBy('user_type');
 
+        // Remove customer permissions tab as requested
+        if ($permissionsByUserType->has('customer')) {
+            $permissionsByUserType->forget('customer');
+        }
+
         // Get roles with their permissions
         $roles = Role::with('permissions')->get();
+
+        // Unify super_admin and admin (treat as the same role in the UI)
+        $adminRole = $roles->firstWhere('name', 'admin');
+        $superAdminRole = $roles->firstWhere('name', 'super_admin');
+        if ($adminRole && $superAdminRole) {
+            // Merge permissions for display
+            $mergedPermissions = $adminRole->permissions
+                ->merge($superAdminRole->permissions)
+                ->unique('id')
+                ->values();
+            $adminRole->setRelation('permissions', $mergedPermissions);
+
+            // Hide super_admin from the list (since it's unified with admin)
+            $roles = $roles->reject(function ($role) {
+                return $role->name === 'super_admin';
+            })->values();
+        }
+
+        // Hide customer role from roles list if present
+        $roles = $roles->reject(function ($role) {
+            return $role->name === 'customer';
+        })->values();
 
         // Get current user type permissions from database
         $currentPermissions = $this->getCurrentPermissions();
@@ -48,6 +77,15 @@ class PermissionController extends Controller
             foreach ($request->role_permissions as $roleId => $permissionIds) {
                 $role = Role::findOrFail($roleId);
                 $role->permissions()->sync($permissionIds);
+
+                // Keep admin and super_admin in sync
+                if (in_array($role->name, ['admin', 'super_admin'], true)) {
+                    $peerRoleName = $role->name === 'admin' ? 'super_admin' : 'admin';
+                    $peerRole = Role::where('name', $peerRoleName)->first();
+                    if ($peerRole) {
+                        $peerRole->permissions()->sync($permissionIds);
+                    }
+                }
             }
 
             DB::commit();
@@ -96,7 +134,10 @@ class PermissionController extends Controller
             DB::beginTransaction();
 
             // Run the seeder to reset permissions
-            $this->call(DashboardPermissionsSeeder::class);
+            Artisan::call('db:seed', [
+                '--class' => DashboardPermissionsSeeder::class,
+                '--force' => true,
+            ]);
 
             DB::commit();
 
