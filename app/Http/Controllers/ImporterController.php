@@ -499,23 +499,23 @@ class ImporterController extends Controller
         }
         
         // الحصول على الإشعارات الحقيقية من قاعدة البيانات مع ترقيم الصفحات
-        $notifications = \App\Models\Notification::where('user_id', $user->id)
-            ->where('is_archived', false)
+        $notifications = \App\Models\Notification::forUser($user->id)
+            ->notArchived()
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
         // إحصائيات الإشعارات الحقيقية
-        $unreadCount = \App\Models\Notification::where('user_id', $user->id)
-            ->where('is_archived', false)
-            ->where('is_read', false)
+        $unreadCount = \App\Models\Notification::forUser($user->id)
+            ->notArchived()
+            ->unread()
             ->count();
-        $totalCount = \App\Models\Notification::where('user_id', $user->id)
-            ->where('is_archived', false)
+        $totalCount = \App\Models\Notification::forUser($user->id)
+            ->notArchived()
             ->count();
         
         // أنواع الإشعارات المتوفرة ديناميكياً لاستخدامها في فلاتر الواجهة
-        $types = \App\Models\Notification::where('user_id', $user->id)
-            ->where('is_archived', false)
+        $types = \App\Models\Notification::forUser($user->id)
+            ->notArchived()
             ->distinct()
             ->pluck('type')
             ->filter()
@@ -867,7 +867,7 @@ class ImporterController extends Controller
         // التحقق من صحة البيانات
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users',
+            'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
             'subject' => 'required|string|max:255',
             'message' => 'required|string|max:2000',
@@ -882,13 +882,20 @@ class ImporterController extends Controller
             $contact = \App\Models\Contact::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'phone' => $validated['phone'],
+                'phone' => $validated['phone'] ?? ($importer?->phone),
+                'company' => $importer?->company_name,
                 'subject' => $validated['subject'],
                 'message' => $validated['message'],
                 'status' => 'new',
+                'contact_type' => 'inquiry',
+                'assigned_to' => 'both',
+                'priority' => 'medium',
+                'source' => 'website',
+                'tags' => ['importer_support'],
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
-                'admin_notes' => 'تم إنشاؤها من نموذج الدعم الفني'
+                'admin_notes' => 'تم إنشاؤها من نموذج الدعم الفني',
+                'created_by' => $user?->id,
             ]);
 
             // إنشاء إشعار للمدير

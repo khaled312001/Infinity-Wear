@@ -56,6 +56,14 @@ class Notification extends Model
     }
 
     /**
+     * Scope لتقييد الإشعارات بمستخدم محدد
+     */
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
+
+    /**
      * Scope للحصول على إشعارات من نوع معين
      */
     public function scopeOfType($query, $type)
