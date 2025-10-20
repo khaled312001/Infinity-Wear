@@ -408,53 +408,8 @@ Route::prefix('api')->group(function () {
         ]);
     })->name('api.testimonials');
 
-    // إرسال رسالة التواصل
-    Route::post('/contact', function (Request $request) {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            'company' => 'nullable|string|max:255',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string|max:1000'
-        ]);
-
-        // حفظ الرسالة في قاعدة البيانات
-        try {
-            $contact = \App\Models\Contact::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'phone' => $validated['phone'],
-                'company' => $validated['company'],
-                'subject' => $validated['subject'],
-                'message' => $validated['message'],
-                'status' => 'new',
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent()
-            ]);
-
-            // إنشاء إشعار للمدير
-            $notificationService = app(\App\Services\NotificationService::class);
-            $notificationService->createContactNotification($contact);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.',
-                'data' => [
-                    'id' => $contact->id,
-                    'timestamp' => now()->toISOString()
-                ]
-            ], 201);
-        } catch (\Exception $e) {
-            Log::error('Contact form submission error: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.',
-                'error' => 'Database error'
-            ], 500);
-        }
-    })->name('api.contact');
+    // إرسال رسالة التواصل - تُدار عبر ContactController@store
+    // Route removed to avoid duplication with Route::post('/contact', [ContactController::class, 'store']) below
 
     // نقطة وصول الدعم الفني العامة
     // Route::post('/importers/support', [ImporterController::class, 'createSupportTicket'])->name('api.support');
@@ -691,6 +646,8 @@ Route::middleware(['auth', 'user.type:employee'])->prefix('employee')->name('emp
 Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/employees', [App\Http\Controllers\Admin\DashboardController::class, 'employees'])->name('employees');
+    // صفحة الدعم الفني للأدمن
+    Route::get('/support', function () { return view('admin.support'); })->name('support');
     Route::get('/reports', [App\Http\Controllers\Admin\ReportsController::class, 'index'])->name('reports')->middleware('user.permission:reports');
     Route::get('/reports/export/excel', [App\Http\Controllers\Admin\ReportsController::class, 'exportExcel'])->name('reports.export.excel')->middleware('user.permission:reports');
     Route::get('/reports/export/pdf', [App\Http\Controllers\Admin\ReportsController::class, 'exportPdf'])->name('reports.export.pdf')->middleware('user.permission:reports');

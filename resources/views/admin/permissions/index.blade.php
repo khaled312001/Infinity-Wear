@@ -37,6 +37,9 @@
                     <!-- Tabs for different user types -->
                     <ul class="nav nav-tabs" id="permissionsTabs" role="tablist">
                         @foreach($permissionsByUserType as $userType => $permissions)
+                            @if($userType === 'customer')
+                                @continue
+                            @endif
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link {{ $loop->first ? 'active' : '' }}" 
                                         id="{{ $userType }}-tab" 
@@ -67,6 +70,9 @@
 
                     <div class="tab-content" id="permissionsTabsContent">
                         @foreach($permissionsByUserType as $userType => $permissions)
+                            @if($userType === 'customer')
+                                @continue
+                            @endif
                             <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" 
                                  id="{{ $userType }}" 
                                  role="tabpanel">
@@ -195,6 +201,9 @@
                         <label class="form-label">الصلاحيات</label>
                         <div class="row">
                             @foreach($permissionsByUserType as $userType => $permissions)
+                                @if($userType === 'customer')
+                                    @continue
+                                @endif
                                 <div class="col-md-6">
                                     <h6>{{ ucfirst($userType) }}</h6>
                                     @foreach($permissions as $permission)
@@ -252,6 +261,9 @@
                         <label class="form-label">الصلاحيات</label>
                         <div class="row">
                             @foreach($permissionsByUserType as $userType => $permissions)
+                                @if($userType === 'customer')
+                                    @continue
+                                @endif
                                 <div class="col-md-6">
                                     <h6>{{ ucfirst($userType) }}</h6>
                                     @foreach($permissions as $permission)

@@ -18,6 +18,10 @@
         <i class="fas fa-comments me-2"></i>
         رسائل الواتساب
     </a>
+    <a href="{{ route('admin.support') }}" class="nav-link {{ request()->routeIs('admin.support') ? 'active' : '' }}" target="_self">
+        <i class="fas fa-life-ring me-2"></i>
+        الدعم الفني
+    </a>
 </div>
 
 <!-- إدارة المحتوى -->
