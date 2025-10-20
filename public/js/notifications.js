@@ -473,6 +473,10 @@ class NotificationManager {
             });
             
             if (!response.ok) {
+                // If unauthorized, likely no admin session on public pages — skip silently
+                if (response.status === 401) {
+                    return;
+                }
                 // If API endpoint doesn't exist, just log and continue
                 if (response.status === 404 || response.status === 500) {
                     console.log('Notifications API not available, continuing without loading existing notifications');
