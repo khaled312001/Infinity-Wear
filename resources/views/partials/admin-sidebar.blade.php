@@ -18,10 +18,12 @@
         <i class="fas fa-comments me-2"></i>
         رسائل الواتساب
     </a>
+    @if (\Illuminate\Support\Facades\Route::has('admin.support'))
     <a href="{{ route('admin.support') }}" class="nav-link {{ request()->routeIs('admin.support') ? 'active' : '' }}" target="_self">
         <i class="fas fa-life-ring me-2"></i>
         الدعم الفني
     </a>
+    @endif
 </div>
 
 <!-- إدارة المحتوى -->

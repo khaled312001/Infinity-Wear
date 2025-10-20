@@ -106,7 +106,7 @@ class WhatsAppController extends Controller
             $validated = $request->validate([
                 'to_number' => 'required|string',
                 'message_content' => 'required|string|max:4096',
-                'contact_type' => 'required|in:importer,marketing,sales,customer,external',
+                'contact_type' => 'required|in:importer,marketing,sales,external',
                 'contact_id' => 'nullable|exists:users,id',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -298,23 +298,7 @@ class WhatsAppController extends Controller
                 ];
             });
 
-        // العملاء
-        $customers = User::where('user_type', 'customer')
-            ->whereNotNull('phone')
-            ->select('id', 'name', 'phone', 'email')
-            ->get()
-            ->map(function ($customer) {
-                return [
-                    'id' => $customer->id,
-                    'name' => $customer->name,
-                    'phone' => $customer->phone,
-                    'email' => $customer->email,
-                    'type' => 'customer',
-                    'type_label' => 'عميل'
-                ];
-            });
-
-        return $contacts->merge($importers)->merge($marketing)->merge($sales)->merge($customers);
+        return $contacts->merge($importers)->merge($marketing)->merge($sales);
     }
 
     /**

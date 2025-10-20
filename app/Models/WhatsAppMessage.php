@@ -105,7 +105,6 @@ class WhatsAppMessage extends Model
             'importer' => 'مستورد',
             'marketing' => 'تسويق',
             'sales' => 'مبيعات',
-            'customer' => 'عميل',
             'external' => 'خارجي',
             default => $this->contact_type
         };
@@ -146,7 +145,6 @@ class WhatsAppMessage extends Model
             'importer' => 'warning',
             'marketing' => 'info',
             'sales' => 'success',
-            'customer' => 'primary',
             'external' => 'secondary',
             default => 'secondary'
         };

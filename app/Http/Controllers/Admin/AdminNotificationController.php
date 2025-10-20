@@ -87,7 +87,6 @@ class AdminNotificationController extends Controller
             'admin' => 'مدير',
             'employee' => 'موظف',
             'importer' => 'مستورد',
-            'customer' => 'عميل',
             'sales' => 'مندوب مبيعات',
             'marketing' => 'موظف تسويق',
         ];

@@ -36,7 +36,7 @@ class PushNotificationController extends Controller
             'keys' => 'required|array',
             'keys.p256dh' => 'required|string',
             'keys.auth' => 'required|string',
-            'user_type' => 'required|string|in:admin,customer,importer',
+            'user_type' => 'required|string|in:admin,importer',
             'device_type' => 'nullable|string|in:mobile,desktop,tablet'
         ]);
 
@@ -148,7 +148,7 @@ class PushNotificationController extends Controller
             'body' => 'required|string|max:500',
             'icon' => 'nullable|string',
             'url' => 'nullable|string',
-            'user_type' => 'nullable|string|in:admin,customer,importer',
+            'user_type' => 'nullable|string|in:admin,importer',
             'user_id' => 'nullable|integer'
         ]);
 
