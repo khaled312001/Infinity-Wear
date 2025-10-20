@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="is-admin" content="{{ Auth::guard('admin')->check() ? '1' : '0' }}">
     <meta name="vapid-public-key" content="{{ config('push.vapid.public_key') }}">
     <title>@yield('title', \App\Helpers\SiteSettingsHelper::getPageTitle())</title>
     <meta name="description" content="@yield('description', \App\Helpers\SiteSettingsHelper::getSiteDescription())">
@@ -228,7 +229,7 @@
                             </form>
                         @else
                             <div class="order-dropdown">
-                                <a href="{{ route('importers.form') }}" class="btn btn-primary">أطلب الآن</a>
+                                <a href="{{ route('importers.form') }}" class="btn btn-primary" style="transform: translateX(8px);">أطلب الآن</a>
                                 <div class="dropdown-menu" role="menu" aria-label="خيارات إضافية">
                                     <div class="dropdown-header">هل لديك حساب؟</div>
                                     <a href="{{ route('login') }}" class="dropdown-item">

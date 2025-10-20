@@ -800,7 +800,11 @@ class NotificationManager {
 
 // Initialize notification system when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.notificationManager = new NotificationManager();
+    const isAdminMeta = document.querySelector('meta[name="is-admin"]');
+    const isAdmin = isAdminMeta && isAdminMeta.getAttribute('content') === '1';
+    if (isAdmin) {
+        window.notificationManager = new NotificationManager();
+    }
 });
 
 // Export for global access
