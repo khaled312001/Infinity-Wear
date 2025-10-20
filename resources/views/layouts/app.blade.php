@@ -116,10 +116,10 @@
         .order-dropdown .dropdown-divider { height: 1px; margin: 6px 0; background: rgba(0,0,0,0.06); }
         /* Shift button and dropdown 50px to the right on all screens */
         @media (min-width: 992px) {
-            .header-actions .order-dropdown { transform: translateX(50px); }
+            .header-actions .order-dropdown { transform: translateX(100px); }
         }
         @media (max-width: 991.98px) {
-            .header-actions .order-dropdown { transform: translateX(50px); }
+            .header-actions .order-dropdown { transform: translateX(100px); }
         }
         /* Sidebar mobile login hint under order button */
         .sidebar-user-actions .sidebar-login-link {
