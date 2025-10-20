@@ -67,6 +67,14 @@ class CheckUserTypePermission
     private function hasPermission(string $userType, string $permission): bool
     {
         try {
+            // If no permissions are defined for this user type yet, allow by default
+            $definedForType = DB::table('user_type_permissions')
+                ->where('user_type', $userType)
+                ->count();
+            if ($definedForType === 0) {
+                return true;
+            }
+
             $hasPermission = DB::table('user_type_permissions')
                 ->where('user_type', $userType)
                 ->where('permission', $permission)
