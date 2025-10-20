@@ -229,7 +229,7 @@
                             </form>
                         @else
                             <div class="order-dropdown">
-                                <a href="{{ route('importers.form') }}" class="btn btn-primary" style="transform: translateX(30px);">أطلب الآن</a>
+                                <a href="{{ route('importers.form') }}" class="btn btn-primary" style="transform: translateX(100px);">أطلب الآن</a>
                                 <div class="dropdown-menu" role="menu" aria-label="خيارات إضافية">
                                     <div class="dropdown-header">هل لديك حساب؟</div>
                                     <a href="{{ route('login') }}" class="dropdown-item">
