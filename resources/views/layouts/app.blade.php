@@ -64,6 +64,38 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Main CSS -->
     <link href="{{ asset('css/infinity-home.css') }}" rel="stylesheet">
+    <style>
+        /* Hover dropdown for header order button */
+        .order-dropdown { position: relative; display: inline-block; }
+        .order-dropdown .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 220px;
+            padding: 8px 0;
+            margin-top: 6px;
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            display: none;
+            z-index: 1000;
+        }
+        .order-dropdown:hover .dropdown-menu { display: block; }
+        .order-dropdown .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            color: #212529;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .order-dropdown .dropdown-item:hover { background-color: #f7f7f7; }
+        .order-dropdown .dropdown-divider {
+            height: 1px; margin: 6px 0; background: rgba(0,0,0,0.06);
+        }
+    </style>
     <!-- Football Animation CSS -->
     <!-- WhatsApp Button CSS -->
     <link href="{{ asset('css/whatsapp-button.css') }}" rel="stylesheet">
@@ -158,7 +190,15 @@
                                 <button type="submit" class="btn btn-primary">تسجيل الخروج</button>
                             </form>
                         @else
-                            <a href="{{ route('importers.form') }}" class="btn btn-primary">أطلب الآن</a>
+                            <div class="order-dropdown">
+                                <a href="{{ route('importers.form') }}" class="btn btn-primary">أطلب الآن</a>
+                                <div class="dropdown-menu" role="menu" aria-label="خيارات إضافية">
+                                    <a href="{{ route('login') }}" class="dropdown-item">
+                                        <i class="fas fa-sign-in-alt ms-1"></i>
+                                        تسجيل الدخول (عميل سابق)
+                                    </a>
+                                </div>
+                            </div>
                         @endauth
                     </div>
                 </div>
