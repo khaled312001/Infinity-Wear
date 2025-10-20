@@ -15,7 +15,13 @@
                         <i class="fas fa-shopping-cart me-2"></i>
                         طلباتي
                     </h5>
-                    <span class="badge bg-primary">{{ $orders->total() }} طلب</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-primary">{{ $orders->total() }} طلب</span>
+                        <a href="{{ route('importers.form') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus me-1"></i>
+                            إنشاء طلب جديد
+                        </a>
+                    </div>
                 </div>
                 
                 <div class="card-body">

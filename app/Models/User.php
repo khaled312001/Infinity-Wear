@@ -212,13 +212,13 @@ class User extends Authenticatable
             case 'importer':
                 return 'importers.dashboard';
             case 'customer':
-                return 'customer.dashboard';
+                return 'importers.dashboard';
             case 'sales':
                 return 'sales.dashboard';
             case 'marketing':
                 return 'marketing.dashboard';
             default:
-                return 'customer.dashboard';
+                return 'importers.dashboard';
         }
     }
 

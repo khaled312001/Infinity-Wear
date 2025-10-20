@@ -548,19 +548,7 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name(
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout')->middleware('admin.auth');
 
-// لوحات التحكم للعملاء
-Route::middleware(['auth', 'user.type:customer'])->prefix('customer')->name('customer.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\CustomerController::class, 'dashboard'])->name('dashboard');
-    Route::get('/orders', [App\Http\Controllers\CustomerController::class, 'orders'])->name('orders');
-    Route::get('/designs', [App\Http\Controllers\CustomerController::class, 'designs'])->name('designs');
-    Route::get('/profile', [App\Http\Controllers\CustomerController::class, 'profile'])->name('profile');
-    Route::put('/profile', [App\Http\Controllers\CustomerController::class, 'updateProfile'])->name('profile.update');
-    Route::get('/settings', [App\Http\Controllers\CustomerController::class, 'settings'])->name('settings');
-    Route::put('/settings/notifications', [App\Http\Controllers\CustomerController::class, 'updateNotifications'])->name('settings.notifications');
-    Route::put('/settings/privacy', [App\Http\Controllers\CustomerController::class, 'updatePrivacy'])->name('settings.privacy');
-    Route::put('/password', [App\Http\Controllers\CustomerController::class, 'updatePassword'])->name('password.update');
-    Route::delete('/account', [App\Http\Controllers\CustomerController::class, 'deleteAccount'])->name('account.delete');
-});
+// لوحات تحكم العملاء تم إلغاؤها
 
 // المستوردين
 use App\Http\Controllers\ImporterController;

@@ -49,10 +49,16 @@
                         <i class="fas fa-truck me-2"></i>
                         الشحنات النشطة
                     </h5>
-                    <button class="btn btn-sm btn-outline-primary" onclick="refreshTracking()">
-                        <i class="fas fa-sync-alt me-1"></i>
-                        تحديث
-                    </button>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="{{ route('importers.form') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus me-1"></i>
+                            إنشاء طلب جديد
+                        </a>
+                        <button class="btn btn-sm btn-outline-primary" onclick="refreshTracking()">
+                            <i class="fas fa-sync-alt me-1"></i>
+                            تحديث
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="card-body">
@@ -69,6 +75,9 @@
                                                 </div>
                                                 <div>
                                                     @switch($order->status)
+                                                        @case('in_progress')
+                                                            <span class="badge bg-secondary">قيد التجهيز</span>
+                                                            @break
                                                         @case('shipped')
                                                             <span class="badge bg-info">تم الشحن</span>
                                                             @break
@@ -95,14 +104,15 @@
                                                     @php
                                                         $progress = 0;
                                                         switch($order->status) {
+                                                            case 'in_progress': $progress = 10; break;
                                                             case 'shipped': $progress = 25; break;
                                                             case 'in_transit': $progress = 50; break;
                                                             case 'out_for_delivery': $progress = 75; break;
                                                             case 'delivered': $progress = 100; break;
                                                         }
                                                     @endphp
-                                                    <div class="progress-bar bg-primary" role="progressbar" 
-                                                         style="width: {{ $progress }}%" 
+                                                    <div class="progress-bar bg-primary js-progress" role="progressbar" 
+                                                         data-progress="{{ $progress }}" 
                                                          aria-valuenow="{{ $progress }}" 
                                                          aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
@@ -110,7 +120,7 @@
                                             
                                             <!-- تفاصيل التتبع -->
                                             <div class="tracking-timeline">
-                                                <div class="timeline-item {{ $order->status == 'shipped' || in_array($order->status, ['in_transit', 'out_for_delivery', 'delivered']) ? 'active' : '' }}">
+                                                <div class="timeline-item {{ in_array($order->status, ['in_progress', 'shipped', 'in_transit', 'out_for_delivery', 'delivered']) ? 'active' : '' }}">
                                                     <div class="timeline-marker">
                                                         <i class="fas fa-box"></i>
                                                     </div>
@@ -217,8 +227,8 @@
                                         <td>{{ $order->quantity }} قطعة</td>
                                         <td>TRK{{ $order->id }}{{ $order->order_number }}</td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary" 
-                                                    onclick="viewOrderDetails({{ $order->id }})">
+                                            <button class="btn btn-sm btn-outline-primary js-view-order" 
+                                                    data-order-id="{{ $order->id }}">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </td>
@@ -330,6 +340,22 @@ function viewOrderDetails(orderId) {
     // يمكن إضافة modal أو redirect لصفحة التفاصيل
     // window.location.href = '/importers/orders/' + orderId;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.js-progress').forEach(function(el){
+        var p = parseInt(el.getAttribute('data-progress') || '0', 10);
+        if (!isNaN(p)) {
+            el.style.width = p + '%';
+        }
+    });
+
+    document.querySelectorAll('.js-view-order').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var id = this.getAttribute('data-order-id');
+            viewOrderDetails(id);
+        });
+    });
+});
 
 // تحديث تلقائي كل 30 ثانية
 setInterval(function() {

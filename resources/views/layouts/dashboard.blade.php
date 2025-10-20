@@ -1271,7 +1271,7 @@
                             </div>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route((Auth::user()->user_type === 'importer' ? 'importers' : Auth::user()->user_type) . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
+                        <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route((in_array(Auth::user()->user_type, ['importer','sales','marketing']) ? Auth::user()->user_type : 'importers') . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
                         @if(Auth::guard('admin')->check())
                             <li><a class="dropdown-item" href="{{ route('admin.admin-settings') }}"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
                         @endif
@@ -1310,7 +1310,7 @@
                 @endif
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route((Auth::user()->user_type === 'importer' ? 'importers' : Auth::user()->user_type) . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
+                <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route((in_array(Auth::user()->user_type, ['importer','sales','marketing']) ? Auth::user()->user_type : 'importers') . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
                 @if(Auth::guard('admin')->check())
                     <li><a class="dropdown-item" href="{{ route('admin.admin-settings') }}"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
                 @endif
@@ -1343,9 +1343,6 @@
                                 لوحة التحكم الإدارية
                             @else
                                 @switch(Auth::user()->user_type)
-                                    @case('customer')
-                                        لوحة تحكم العميل
-                                        @break
                                     @case('importer')
                                         لوحة تحكم المستورد
                                         @break
@@ -1356,7 +1353,7 @@
                                         لوحة تحكم المبيعات
                                         @break
                                     @default
-                                        لوحة التحكم
+                                        لوحة تحكم المستورد
                                 @endswitch
                             @endif
                         </h5>
@@ -1367,9 +1364,6 @@
                             @include('partials.admin-sidebar')
                         @else
                             @switch(Auth::user()->user_type)
-                                @case('customer')
-                                    @include('partials.customer-sidebar')
-                                    @break
                                 @case('importer')
                                     @include('partials.importer-sidebar')
                                     @break
@@ -1380,7 +1374,7 @@
                                     @include('partials.sales-sidebar')
                                     @break
                                 @default
-                                    @include('partials.admin-sidebar')
+                                    @include('partials.importer-sidebar')
                             @endswitch
                         @endif
                     </nav>

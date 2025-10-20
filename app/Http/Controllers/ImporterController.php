@@ -295,9 +295,9 @@ class ImporterController extends Controller
                 ->with('error', 'يرجى إكمال بيانات المستورد أولاً');
         }
         
-        // جلب الطلبات التي تم شحنها أو في طريقها للتسليم
+        // جلب الطلبات التي تم شحنها أو قيد التنفيذ أو في طريقها للتسليم
         $shippedOrders = $importer->orders()
-            ->whereIn('status', ['shipped', 'in_transit', 'out_for_delivery', 'delivered'])
+            ->whereIn('status', ['in_progress', 'shipped', 'in_transit', 'out_for_delivery', 'delivered'])
             ->latest()
             ->get();
         

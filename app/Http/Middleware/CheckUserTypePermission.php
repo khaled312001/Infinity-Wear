@@ -97,7 +97,7 @@ class CheckUserTypePermission
             'importer' => 'importers.dashboard',
             'sales' => 'sales.dashboard',
             'marketing' => 'marketing.dashboard',
-            default => 'customer.dashboard'
+            default => 'importers.dashboard'
         };
     }
 }
