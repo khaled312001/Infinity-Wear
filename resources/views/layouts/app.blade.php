@@ -113,6 +113,25 @@
             color: #6c757d;
         }
         .order-dropdown .dropdown-divider { height: 1px; margin: 6px 0; background: rgba(0,0,0,0.06); }
+        /* Slight right nudge for the button on desktop */
+        @media (min-width: 992px) {
+            .header-actions .order-dropdown { transform: translateX(8px); }
+        }
+        @media (max-width: 991.98px) {
+            .header-actions .order-dropdown { transform: none; }
+        }
+        /* Sidebar mobile login hint under order button */
+        .sidebar-user-actions .sidebar-login-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            color: #0d6efd;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .sidebar-user-actions .sidebar-login-link:hover { text-decoration: underline; }
+        .sidebar-user-actions .sidebar-login-link i { color: #0d6efd; }
     </style>
     <!-- Football Animation CSS -->
     <!-- WhatsApp Button CSS -->
@@ -315,6 +334,10 @@
                     </form>
                 @else
                     <a href="{{ route('importers.form') }}" class="btn btn-sidebar-primary">أطلب الآن</a>
+                    <a href="{{ route('login') }}" class="sidebar-login-link" aria-label="تسجيل الدخول للعملاء السابقين">
+                        <i class="fas fa-sign-in-alt ms-1"></i>
+                        تسجيل الدخول (عميل سابق)
+                    </a>
                 @endauth
             </div>
         </div>
