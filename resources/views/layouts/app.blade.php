@@ -69,19 +69,32 @@
         .order-dropdown { position: relative; display: inline-block; }
         .order-dropdown .dropdown-menu {
             position: absolute;
-            top: 100%;
-            right: 0;
-            min-width: 220px;
+            top: 100%; /* directly under the button, no gap to avoid hover flicker */
+            right: 0;  /* align under the button on RTL (not left) */
+            min-width: 240px;
             padding: 8px 0;
-            margin-top: 6px;
             background: #ffffff;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 10px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
             display: none;
-            z-index: 1000;
+            z-index: 1050;
         }
-        .order-dropdown:hover .dropdown-menu { display: block; }
+        /* Keep visible when hovering parent, the menu itself, or focusing within for keyboard */
+        .order-dropdown:hover .dropdown-menu,
+        .order-dropdown:focus-within .dropdown-menu,
+        .order-dropdown .dropdown-menu:hover { display: block; }
+        /* Small arrow */
+        .order-dropdown .dropdown-menu::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            right: 14px; /* arrow aligns to the right side under the button */
+            border-width: 8px;
+            border-style: solid;
+            border-color: transparent transparent #ffffff transparent;
+            filter: drop-shadow(0 -1px 0 rgba(0,0,0,0.08));
+        }
         .order-dropdown .dropdown-item {
             display: flex;
             align-items: center;
@@ -90,11 +103,16 @@
             color: #212529;
             text-decoration: none;
             white-space: nowrap;
+            font-weight: 500;
         }
-        .order-dropdown .dropdown-item:hover { background-color: #f7f7f7; }
-        .order-dropdown .dropdown-divider {
-            height: 1px; margin: 6px 0; background: rgba(0,0,0,0.06);
+        .order-dropdown .dropdown-item i { color: #0d6efd; }
+        .order-dropdown .dropdown-item:hover { background-color: #f5f7fb; }
+        .order-dropdown .dropdown-header {
+            padding: 10px 14px 6px;
+            font-size: 13px;
+            color: #6c757d;
         }
+        .order-dropdown .dropdown-divider { height: 1px; margin: 6px 0; background: rgba(0,0,0,0.06); }
     </style>
     <!-- Football Animation CSS -->
     <!-- WhatsApp Button CSS -->
@@ -193,6 +211,7 @@
                             <div class="order-dropdown">
                                 <a href="{{ route('importers.form') }}" class="btn btn-primary">أطلب الآن</a>
                                 <div class="dropdown-menu" role="menu" aria-label="خيارات إضافية">
+                                    <div class="dropdown-header">هل لديك حساب؟</div>
                                     <a href="{{ route('login') }}" class="dropdown-item">
                                         <i class="fas fa-sign-in-alt ms-1"></i>
                                         تسجيل الدخول (عميل سابق)

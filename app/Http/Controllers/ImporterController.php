@@ -218,6 +218,27 @@ class ImporterController extends Controller
         // إنشاء إشعار لطلب المستورد الجديد
         $this->notificationService->createImporterOrderNotification($order);
 
+        // إرسال بريد وإشعار فوري للإدارة بطلب المستورد الجديد
+        try {
+            $emailService = app(\App\Services\EmailService::class);
+            $emailService->sendImporterRequest([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'company' => $validated['company_name'],
+                'requirements' => $validated['requirements'],
+                'quantity' => $validated['quantity'],
+                'design_option' => $validated['design_option'],
+                'importer_id' => $importer->id,
+                'order_id' => $order->id,
+            ]);
+        } catch (\Exception $e) {
+            Log::warning('Failed to send importer request admin notification/email', [
+                'error' => $e->getMessage(),
+                'order_id' => $order->id,
+            ]);
+        }
+
         // تسجيل الدخول للمستخدم
         Auth::login($user);
 
@@ -904,7 +925,7 @@ class ImporterController extends Controller
                 
                 $whatsappService->sendMessage($adminPhone, $message);
             } catch (\Exception $e) {
-                \Log::warning('Failed to send WhatsApp notification: ' . $e->getMessage());
+                Log::warning('Failed to send WhatsApp notification: ' . $e->getMessage());
             }
 
             // إرجاع استجابة JSON للطلبات AJAX
@@ -924,7 +945,7 @@ class ImporterController extends Controller
                 ->with('success', 'تم إرسال تذكرة الدعم بنجاح! سنتواصل معك قريباً.');
 
         } catch (\Exception $e) {
-            \Log::error('Support ticket creation error: ' . $e->getMessage());
+            Log::error('Support ticket creation error: ' . $e->getMessage());
             
             if ($request->expectsJson()) {
                 return response()->json([
@@ -1014,8 +1035,8 @@ class ImporterController extends Controller
      */
     public function updateProfile(Request $request)
     {
-        $user = Auth::user();
-        $importer = Importer::where('user_id', $user->id)->first();
+        $authUser = Auth::user();
+        $importer = Importer::where('user_id', $authUser->id)->first();
         
         if (!$importer) {
             return redirect()->route('importers.form')
@@ -1024,7 +1045,7 @@ class ImporterController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,' . $authUser->id,
             'phone' => 'required|string|max:20',
             'company_name' => 'required|string|max:255',
             'business_type' => 'required|string|in:academy,school,store,hospital,other',
@@ -1035,13 +1056,16 @@ class ImporterController extends Controller
         ]);
 
         // تحديث بيانات المستخدم
-        $user->update([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'address' => $validated['address'],
-            'city' => $validated['city'],
-        ]);
+        $user = User::find($authUser->id);
+        if ($user) {
+            $user->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'address' => $validated['address'],
+                'city' => $validated['city'],
+            ]);
+        }
 
         // تحديث بيانات المستورد
         $importer->update([
