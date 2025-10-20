@@ -286,8 +286,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 الكمية المطلوبة <span class="text-danger">*</span>
                                             </label>
                                             <input type="number" class="form-control form-control-lg" id="quantity" name="quantity" 
-                                                   value="{{ old('quantity', 100) }}" min="100" required>
-                                            <div class="form-text">الحد الأدنى 100 قطعة</div>
+                                                   value="{{ old('quantity', 1) }}" min="1" required>
+                                            <div class="form-text">الحد الأدنى 1 قطعة</div>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         
@@ -681,7 +681,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <ol>
                     <li>يجب أن تكون جميع المعلومات المقدمة في نموذج الطلب صحيحة ودقيقة.</li>
                     <li>يجب أن يكون العميل كيانًا تجاريًا قانونيًا مسجلًا.</li>
-                    <li>الحد الأدنى للطلب هو 100 قطعة للمنتج الواحد.</li>
+                    <li>لا يوجد حد أدنى لكمية الطلب.</li>
                     <li>تخضع جميع الطلبات للمراجعة والموافقة من قبل فريقنا.</li>
                     <li>سيتم التواصل معك خلال 48 ساعة من تقديم الطلب.</li>
                     <li>تحتفظ Infinity Wear بالحق في رفض أي طلب دون إبداء الأسباب.</li>

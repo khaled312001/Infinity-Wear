@@ -197,8 +197,8 @@ class MultiStepForm {
         }
         
         // Quantity validation
-        if (field.name === 'quantity' && value && (parseInt(value) < 100)) {
-            errorMessage = 'الحد الأدنى للكمية هو 100 قطعة';
+        if (field.name === 'quantity' && value && (parseInt(value) < 1)) {
+            errorMessage = 'الحد الأدنى للكمية هو 1 قطعة';
             isValid = false;
         }
         

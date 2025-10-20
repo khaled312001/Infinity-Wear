@@ -118,8 +118,8 @@
                                                 الكمية المطلوبة <span class="text-danger">*</span>
                                             </label>
                                             <input type="number" class="form-control form-control-lg" id="quantity" name="quantity" 
-                                                   value="{{ old('quantity', 100) }}" min="100" required>
-                                            <div class="form-text">الحد الأدنى 100 قطعة</div>
+                                                   value="{{ old('quantity', 1) }}" min="1" required>
+                                            <div class="form-text">الحد الأدنى 1 قطعة</div>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                         
