@@ -78,11 +78,26 @@
                             <label for="typeFilter" class="form-label">فلتر حسب النوع</label>
                             <select class="form-select" id="typeFilter" onchange="filterNotifications()">
                                 <option value="">جميع الإشعارات</option>
-                                <option value="order_status">حالة الطلبات</option>
-                                <option value="payment">المدفوعات</option>
-                                <option value="shipping">الشحن</option>
-                                <option value="invoice">الفواتير</option>
-                                <option value="system">النظام</option>
+                                @if(isset($types) && count($types))
+                                    @foreach($types as $type)
+                                        <option value="{{ $type }}">
+                                            @switch($type)
+                                                @case('order_status') حالة الطلبات @break
+                                                @case('payment') المدفوعات @break
+                                                @case('shipping') الشحن @break
+                                                @case('invoice') الفواتير @break
+                                                @case('system') النظام @break
+                                                @default {{ ucfirst($type) }}
+                                            @endswitch
+                                        </option>
+                                    @endforeach
+                                @else
+                                    <option value="order_status">حالة الطلبات</option>
+                                    <option value="payment">المدفوعات</option>
+                                    <option value="shipping">الشحن</option>
+                                    <option value="invoice">الفواتير</option>
+                                    <option value="system">النظام</option>
+                                @endif
                             </select>
                         </div>
                         <div class="col-md-3">

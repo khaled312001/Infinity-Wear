@@ -513,7 +513,15 @@ class ImporterController extends Controller
             ->where('is_archived', false)
             ->count();
         
-        return view('importers.notifications', compact('importer', 'notifications', 'unreadCount', 'totalCount'));
+        // أنواع الإشعارات المتوفرة ديناميكياً لاستخدامها في فلاتر الواجهة
+        $types = \App\Models\Notification::where('user_id', $user->id)
+            ->where('is_archived', false)
+            ->distinct()
+            ->pluck('type')
+            ->filter()
+            ->values();
+        
+        return view('importers.notifications', compact('importer', 'notifications', 'unreadCount', 'totalCount', 'types'));
     }
 
     /**

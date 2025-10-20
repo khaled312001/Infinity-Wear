@@ -19,7 +19,6 @@ class EmailMarketingController extends Controller
         // Get user counts by type
         $userCounts = [
             'all' => User::count(),
-            'customers' => User::where('user_type', 'customer')->count(),
             'importers' => User::where('user_type', 'importer')->count(),
             'sales' => User::where('user_type', 'sales')->count(),
             'marketing' => User::where('user_type', 'marketing')->count(),
@@ -45,7 +44,7 @@ class EmailMarketingController extends Controller
             'subject' => 'required|string|max:255',
             'content' => 'required|string|min:10',
             'recipients' => 'required|array|min:1',
-            'recipients.*' => 'in:all,customers,importers,sales,marketing',
+            'recipients.*' => 'in:all,importers,sales,marketing',
             'send_immediately' => 'boolean',
             'scheduled_at' => 'nullable|date|after:now'
         ], [
@@ -76,7 +75,7 @@ class EmailMarketingController extends Controller
             }
 
             // Send emails
-            $sentCount = $this->sendEmails($recipients, $request->subject, $request->content);
+            $sentCount = $this->sendEmails($recipients, $request->input('subject'), $request->input('content'));
 
             return redirect()->route('admin.email-marketing.index')
                 ->with('success', "تم إرسال الرسالة بنجاح إلى {$sentCount} مستلم");

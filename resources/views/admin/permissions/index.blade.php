@@ -34,39 +34,7 @@
                         </div>
                     @endif
 
-                    <!-- Tabs for different user types -->
-                    <ul class="nav nav-tabs" id="permissionsTabs" role="tablist">
-                        @foreach($permissionsByUserType as $userType => $permissions)
-                            @if($userType === 'customer')
-                                @continue
-                            @endif
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link {{ $loop->first ? 'active' : '' }}" 
-                                        id="{{ $userType }}-tab" 
-                                        data-bs-toggle="tab" 
-                                        data-bs-target="#{{ $userType }}" 
-                                        type="button" 
-                                        role="tab">
-                                    @switch($userType)
-                                        @case('admin')
-                                            <i class="fas fa-user-shield me-2"></i>الأدمن
-                                            @break
-                                        @case('sales')
-                                            <i class="fas fa-chart-line me-2"></i>المبيعات
-                                            @break
-                                        @case('marketing')
-                                            <i class="fas fa-bullhorn me-2"></i>التسويق
-                                            @break
-                                        @case('importer')
-                                            <i class="fas fa-industry me-2"></i>المستوردين
-                                            @break
-                                        @default
-                                            {{ ucfirst($userType) }}
-                                    @endswitch
-                                </button>
-                            </li>
-                        @endforeach
-                    </ul>
+                  
 
                     <div class="tab-content" id="permissionsTabsContent">
                         @foreach($permissionsByUserType as $userType => $permissions)

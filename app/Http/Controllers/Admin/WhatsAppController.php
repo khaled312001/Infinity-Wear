@@ -13,6 +13,7 @@ use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
 
@@ -168,7 +169,7 @@ class WhatsAppController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            \Log::error('WhatsApp send message error: ' . $e->getMessage());
+            Log::error('WhatsApp send message error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'حدث خطأ في إرسال الرسالة: ' . $e->getMessage()
@@ -349,7 +350,7 @@ class WhatsAppController extends Controller
             }
         } catch (\Exception $e) {
             $message->update(['status' => 'failed']);
-            \Log::error('WhatsApp send error: ' . $e->getMessage());
+            Log::error('WhatsApp send error: ' . $e->getMessage());
             return false;
         }
     }
@@ -375,7 +376,7 @@ class WhatsAppController extends Controller
                     return $this->sendViaFreeAPI($message);
             }
         } catch (\Exception $e) {
-            \Log::error('WhatsApp API exception: ' . $e->getMessage());
+            Log::error('WhatsApp API exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -393,7 +394,7 @@ class WhatsAppController extends Controller
             ]);
 
             if ($response->successful()) {
-                \Log::info('WhatsApp message sent successfully via Free API', [
+                Log::info('WhatsApp message sent successfully via Free API', [
                     'message_id' => $message->message_id,
                     'to' => $message->to_number,
                     'response' => $response->json()
@@ -404,7 +405,7 @@ class WhatsAppController extends Controller
                 return $this->sendViaWhatsAppWebURL($message);
             }
         } catch (\Exception $e) {
-            \Log::error('Free API exception: ' . $e->getMessage());
+            Log::error('Free API exception: ' . $e->getMessage());
             // محاولة بديلة
             return $this->sendViaWhatsAppWebURL($message);
         }
@@ -422,7 +423,7 @@ class WhatsAppController extends Controller
             // حفظ الرابط في قاعدة البيانات للرجوع إليه
             $message->update(['whatsapp_url' => $whatsappUrl]);
             
-            \Log::info('WhatsApp Web URL generated', [
+            Log::info('WhatsApp Web URL generated', [
                 'message_id' => $message->message_id,
                 'to' => $message->to_number,
                 'url' => $whatsappUrl
@@ -430,7 +431,7 @@ class WhatsAppController extends Controller
             
             return true;
         } catch (\Exception $e) {
-            \Log::error('WhatsApp Web URL exception: ' . $e->getMessage());
+            Log::error('WhatsApp Web URL exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -451,7 +452,7 @@ class WhatsAppController extends Controller
             ]);
 
             if ($response->successful()) {
-                \Log::info('WhatsApp message sent successfully via Web API', [
+                Log::info('WhatsApp message sent successfully via Web API', [
                     'message_id' => $message->message_id,
                     'to' => $message->to_number,
                     'response' => $response->json()
@@ -461,7 +462,7 @@ class WhatsAppController extends Controller
                 return $this->sendViaWhatsAppWebURL($message);
             }
         } catch (\Exception $e) {
-            \Log::error('WhatsApp Web API exception: ' . $e->getMessage());
+            Log::error('WhatsApp Web API exception: ' . $e->getMessage());
             return $this->sendViaWhatsAppWebURL($message);
         }
     }
@@ -481,21 +482,21 @@ class WhatsAppController extends Controller
             ]);
 
             if ($response->successful()) {
-                \Log::info('WhatsApp message sent successfully via AiSensy', [
+                Log::info('WhatsApp message sent successfully via AiSensy', [
                     'message_id' => $message->message_id,
                     'to' => $message->to_number,
                     'response' => $response->json()
                 ]);
                 return true;
             } else {
-                \Log::error('AiSensy API error', [
+                Log::error('AiSensy API error', [
                     'status' => $response->status(),
                     'response' => $response->body()
                 ]);
                 return false;
             }
         } catch (\Exception $e) {
-            \Log::error('AiSensy API exception: ' . $e->getMessage());
+            Log::error('AiSensy API exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -515,21 +516,21 @@ class WhatsAppController extends Controller
             ]);
 
             if ($response->successful()) {
-                \Log::info('WhatsApp message sent successfully via Whapi', [
+                Log::info('WhatsApp message sent successfully via Whapi', [
                     'message_id' => $message->message_id,
                     'to' => $message->to_number,
                     'response' => $response->json()
                 ]);
                 return true;
             } else {
-                \Log::error('Whapi API error', [
+                Log::error('Whapi API error', [
                     'status' => $response->status(),
                     'response' => $response->body()
                 ]);
                 return false;
             }
         } catch (\Exception $e) {
-            \Log::error('Whapi API exception: ' . $e->getMessage());
+            Log::error('Whapi API exception: ' . $e->getMessage());
             return false;
         }
     }
@@ -867,7 +868,7 @@ class WhatsAppController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            \Log::error('WhatsApp test message error: ' . $e->getMessage());
+            Log::error('WhatsApp test message error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'حدث خطأ في إرسال الرسالة التجريبية: ' . $e->getMessage()
