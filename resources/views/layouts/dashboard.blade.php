@@ -1271,7 +1271,13 @@
                             </div>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route((in_array(Auth::user()->user_type, ['importer','sales','marketing']) ? Auth::user()->user_type : 'importers') . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
+                        <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() 
+                            ? route('admin.profile') 
+                            : route([
+                                'importer' => 'importers.profile',
+                                'sales' => 'sales.profile',
+                                'marketing' => 'marketing.profile',
+                            ][Auth::user()->user_type] ?? 'importers.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
                         @if(Auth::guard('admin')->check())
                             <li><a class="dropdown-item" href="{{ route('admin.admin-settings') }}"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
                         @endif
@@ -1310,7 +1316,13 @@
                 @endif
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() ? route('admin.profile') : route((in_array(Auth::user()->user_type, ['importer','sales','marketing']) ? Auth::user()->user_type : 'importers') . '.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
+                <li><a class="dropdown-item" href="{{ Auth::guard('admin')->check() 
+                    ? route('admin.profile') 
+                    : route([
+                        'importer' => 'importers.profile',
+                        'sales' => 'sales.profile',
+                        'marketing' => 'marketing.profile',
+                    ][Auth::user()->user_type] ?? 'importers.profile') }}"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
                 @if(Auth::guard('admin')->check())
                     <li><a class="dropdown-item" href="{{ route('admin.admin-settings') }}"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
                 @endif

@@ -116,10 +116,10 @@
         .order-dropdown .dropdown-divider { height: 1px; margin: 6px 0; background: rgba(0,0,0,0.06); }
         /* Shift button and dropdown 50px to the right on all screens */
         @media (min-width: 992px) {
-            .header-actions .order-dropdown { transform: translateX(100px); }
+            .header-actions .order-dropdown { transform: translateX(70px); }
         }
         @media (max-width: 991.98px) {
-            .header-actions .order-dropdown { transform: translateX(100px); }
+            .header-actions .order-dropdown { transform: translateX(120px); }
         }
         /* Sidebar mobile login hint under order button */
         .sidebar-user-actions .sidebar-login-link {
@@ -726,10 +726,10 @@
     <!-- Push Notifications JavaScript -->
     <script src="{{ asset('js/push-notifications.js') }}"></script>
     <script>
-        // Initialize push notifications for contact forms
+        // Initialize push notifications for contact forms (graceful fallback safe)
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize push notification manager
-            if (window.PushNotificationManager) {
+            // Avoid double init; manager self-guards unavailable sessions
+            if (!window.pushNotificationManager && window.PushNotificationManager) {
                 window.pushNotificationManager = new PushNotificationManager();
             }
 
@@ -742,7 +742,7 @@
                     if (window.pushNotificationManager) {
                         // Try to subscribe to notifications if not already subscribed
                         window.pushNotificationManager.getSubscriptionStatus().then(function(status) {
-                            if (!status.isSubscribed && status.canSubscribe) {
+                            if (!status.isSubscribed && status.canSubscribe && !status.unavailableReason) {
                                 // Auto-subscribe to notifications when user submits contact form
                                 window.pushNotificationManager.subscribe('admin').then(function(success) {
                                     if (success) {

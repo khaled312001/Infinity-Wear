@@ -9,6 +9,7 @@ class PushNotificationManager {
         this.registration = null;
         this.subscription = null;
         this.vapidPublicKey = null;
+		this.unavailableReason = null;
         
         this.init();
     }
@@ -17,10 +18,19 @@ class PushNotificationManager {
      * Initialize push notifications
      */
     async init() {
-        if (!this.isSupported) {
+		if (!this.isSupported) {
             console.log('Push notifications are not supported in this browser');
             return false;
         }
+
+		// Respect session-scoped unavailability (e.g., private mode or prior hard failure)
+		try {
+			const storedReason = sessionStorage.getItem('push_unavailable_reason');
+			if (storedReason) {
+				this.unavailableReason = storedReason;
+				return false;
+			}
+		} catch (e) {}
 
         try {
             // Register service worker
@@ -37,10 +47,10 @@ class PushNotificationManager {
             this.setupEventListeners();
 
             return true;
-        } catch (error) {
-            console.error('Error initializing push notifications:', error);
-            return false;
-        }
+		} catch (error) {
+			console.error('Error initializing push notifications:', error);
+			return false;
+		}
     }
 
     /**
@@ -84,6 +94,11 @@ class PushNotificationManager {
             throw new Error('Push notifications are not supported');
         }
 
+		// Skip permission prompts if previously marked unavailable for this session
+		if (this.unavailableReason) {
+			return false;
+		}
+
         try {
             const permission = await Notification.requestPermission();
             
@@ -97,19 +112,25 @@ class PushNotificationManager {
                 console.log('Push notification permission dismissed');
                 return false;
             }
-        } catch (error) {
-            console.error('Error requesting permission:', error);
-            return false;
-        }
+		} catch (error) {
+			console.error('Error requesting permission:', error);
+			return false;
+		}
     }
 
     /**
      * Subscribe to push notifications
      */
     async subscribe(userType = 'admin') {
-        if (!this.isSupported || !this.vapidPublicKey) {
+		if (!this.isSupported || !this.vapidPublicKey) {
             throw new Error('Push notifications not supported or VAPID key not available');
         }
+
+		// Avoid repeated attempts within same session
+		if (this.unavailableReason) {
+			this.showErrorMessage('الإشعارات غير متاحة حالياً');
+			return false;
+		}
 
         try {
             // Request permission first
@@ -118,11 +139,14 @@ class PushNotificationManager {
                 throw new Error('Permission denied for push notifications');
             }
 
-            // Create subscription
-            this.subscription = await this.registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
-            });
+			// Create subscription with a timeout guard
+			this.subscription = await this.withTimeout(
+				this.registration.pushManager.subscribe({
+					userVisibleOnly: true,
+					applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
+				}),
+				5000
+			);
 
             // Send subscription to server
             const success = await this.sendSubscriptionToServer(this.subscription, userType);
@@ -135,11 +159,13 @@ class PushNotificationManager {
                 throw new Error('Failed to save subscription to server');
             }
 
-        } catch (error) {
-            console.error('Error subscribing to push notifications:', error);
-            this.showErrorMessage('حدث خطأ في الاشتراك في الإشعارات: ' + error.message);
-            return false;
-        }
+		} catch (error) {
+			console.error('Error subscribing to push notifications:', error);
+			const reason = this.normalizePushError(error);
+			this.setUnavailableReason(reason);
+			this.showErrorMessage('حدث خطأ في الاشتراك في الإشعارات');
+			return false;
+		}
     }
 
     /**
@@ -246,16 +272,17 @@ class PushNotificationManager {
      * Get subscription status
      */
     async getSubscriptionStatus() {
-        const isSubscribed = await this.isSubscribed();
-        const permission = Notification.permission;
+		const isSubscribed = await this.isSubscribed();
+		const permission = Notification.permission;
 
-        return {
-            isSupported: this.isSupported,
-            isSubscribed: isSubscribed,
-            permission: permission,
-            canSubscribe: this.isSupported && permission === 'granted' && !isSubscribed,
-            canUnsubscribe: this.isSupported && isSubscribed
-        };
+		return {
+			isSupported: this.isSupported,
+			isSubscribed: isSubscribed,
+			permission: permission,
+			canSubscribe: this.isSupported && permission === 'granted' && !isSubscribed && !this.unavailableReason,
+			canUnsubscribe: this.isSupported && isSubscribed,
+			unavailableReason: this.unavailableReason || null
+		};
     }
 
     /**
@@ -362,8 +389,35 @@ class PushNotificationManager {
 
 // Initialize push notification manager when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    window.pushNotificationManager = new PushNotificationManager();
+	if (!window.pushNotificationManager && window.PushNotificationManager) {
+		window.pushNotificationManager = new PushNotificationManager();
+	}
 });
 
 // Export for use in other scripts
 window.PushNotificationManager = PushNotificationManager;
+
+// Helper methods added to the class prototype without changing existing style
+PushNotificationManager.prototype.withTimeout = function(promise, ms) {
+	return new Promise((resolve, reject) => {
+		const timer = setTimeout(() => {
+			reject(new DOMException('Timeout', 'AbortError'));
+		}, ms);
+		promise.then(
+			(value) => { clearTimeout(timer); resolve(value); },
+			(error) => { clearTimeout(timer); reject(error); }
+		);
+	});
+};
+
+PushNotificationManager.prototype.normalizePushError = function(error) {
+	if (error && (error.name === 'AbortError')) return 'timeout';
+	if (error && (error.name === 'NotAllowedError')) return 'blocked_or_private';
+	if (error && (error.name === 'InvalidStateError' || error.name === 'SecurityError')) return 'blocked_or_private';
+	return 'unknown';
+};
+
+PushNotificationManager.prototype.setUnavailableReason = function(reason) {
+	this.unavailableReason = reason || 'unknown';
+	try { sessionStorage.setItem('push_unavailable_reason', this.unavailableReason); } catch (e) {}
+};
