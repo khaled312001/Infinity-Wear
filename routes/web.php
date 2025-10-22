@@ -29,4 +29,7 @@ Route::get('/importers/register', function () {
 })->name('importers.register');
 
 // Handle form submission
-Route::post('/importers/register', [DesignController::class, 'saveDesign'])->name('importers.register.submit');
+Route::post('/importers/register', function () {
+    // This will be handled by the API endpoint
+    return redirect()->route('dashboard');
+})->name('importers.register.submit');

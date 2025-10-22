@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
 
-                        <form action="{{ route('importers.register.submit') }}" method="POST" class="needs-validation" enctype="multipart/form-data" id="multiStepForm">
+                        <form action="{{ route('importers.submit') }}" method="POST" class="needs-validation" enctype="multipart/form-data" id="multiStepForm">
                             @csrf
                             
                             <!-- Step 1: Order Details -->
@@ -438,45 +438,45 @@ document.addEventListener('DOMContentLoaded', function() {
                                                                             <label for="piece_shirt">
                                                                                 <i class="fas fa-tshirt"></i>
                                                                                 قميص/تيشرت
-                                                                </label>
-                                                            </div>
+                                                                            </label>
+                                                                        </div>
                                                                         <div class="piece-item" data-piece="pants">
                                                                             <input type="checkbox" id="piece_pants" name="clothing_pieces[]" value="pants">
                                                                             <label for="piece_pants">
                                                                                 <i class="fas fa-user-tie"></i>
                                                                                 بنطلون
                                                                             </label>
-                                                        </div>
+                                                                        </div>
                                                                         <div class="piece-item" data-piece="shorts">
                                                                             <input type="checkbox" id="piece_shorts" name="clothing_pieces[]" value="shorts">
                                                                             <label for="piece_shorts">
                                                                                 <i class="fas fa-running"></i>
                                                                                 شورت
-                                                                </label>
-                                                            </div>
+                                                                            </label>
+                                                                        </div>
                                                                         <div class="piece-item" data-piece="jacket">
                                                                             <input type="checkbox" id="piece_jacket" name="clothing_pieces[]" value="jacket">
                                                                             <label for="piece_jacket">
                                                                                 <i class="fas fa-vest"></i>
                                                                                 جاكيت
                                                                             </label>
-                                                        </div>
+                                                                        </div>
                                                                         <div class="piece-item" data-piece="shoes">
                                                                             <input type="checkbox" id="piece_shoes" name="clothing_pieces[]" value="shoes">
                                                                             <label for="piece_shoes">
                                                                                 <i class="fas fa-shoe-prints"></i>
                                                                                 حذاء
-                                                                </label>
-                                                            </div>
+                                                                            </label>
+                                                                        </div>
                                                                         <div class="piece-item" data-piece="socks">
                                                                             <input type="checkbox" id="piece_socks" name="clothing_pieces[]" value="socks">
                                                                             <label for="piece_socks">
                                                                                 <i class="fas fa-socks"></i>
                                                                                 شراب
                                                                             </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
 
                                                                 <!-- Sizes and Quantities Management -->
                                                                 <div class="control-group mb-4">
@@ -490,17 +490,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                                                                     <label class="size-label">XS</label>
                                                                                     <input type="number" class="form-control size-quantity" 
                                                                                            name="shirt_sizes[XS]" min="0" value="0" placeholder="0">
-                                            </div>
+                                                                                </div>
                                                                                 <div class="size-item">
                                                                                     <label class="size-label">S</label>
                                                                                     <input type="number" class="form-control size-quantity" 
                                                                                            name="shirt_sizes[S]" min="0" value="0" placeholder="0">
-                                        </div>
+                                                                                </div>
                                                                                 <div class="size-item">
                                                                                     <label class="size-label">M</label>
                                                                                     <input type="number" class="form-control size-quantity" 
                                                                                            name="shirt_sizes[M]" min="0" value="0" placeholder="0">
-                                    </div>
+                                                                                </div>
                                                                                 <div class="size-item">
                                                                                     <label class="size-label">L</label>
                                                                                     <input type="number" class="form-control size-quantity" 
