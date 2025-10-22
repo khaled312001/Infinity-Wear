@@ -1570,7 +1570,7 @@ function uploadFileToCloudinary(file) {
     uploadStatus.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري رفع الملف إلى السحابة...';
     filePreview.appendChild(uploadStatus);
     
-    fetch('{{ route("importers.register.submit") }}', {
+    fetch('{{ route("importers.upload-design") }}', {
         method: 'POST',
         body: formData,
         headers: {

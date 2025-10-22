@@ -15,7 +15,7 @@ use App\Http\Controllers\DesignController;
 */
 
 Route::get('/', function () {
-    return redirect()->route('importers.register');
+    return view('welcome');
 });
 
 // Dashboard route
