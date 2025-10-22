@@ -509,6 +509,7 @@ Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admi
 use App\Http\Controllers\ImporterController;
 Route::get('/importers/register', [ImporterController::class, 'showImporterForm'])->name('importers.form');
 Route::post('/importers/register', [ImporterController::class, 'submitImporterForm'])->name('importers.submit');
+Route::post('/importers/upload-design', [ImporterController::class, 'uploadDesignFile'])->name('importers.upload-design');
 
 // AI API endpoints for importer form
 Route::post('/api/ai/design-assistance', [ImporterController::class, 'aiDesignAssistance'])->name('api.ai.design-assistance');

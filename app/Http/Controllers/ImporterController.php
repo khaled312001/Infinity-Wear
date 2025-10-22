@@ -43,6 +43,94 @@ class ImporterController extends Controller
     }
 
     /**
+     * رفع ملف التصميم فوراً إلى Cloudinary
+     */
+    public function uploadDesignFile(Request $request)
+    {
+        try {
+            $request->validate([
+                'design_file' => 'required|file|mimes:jpeg,png,jpg,pdf,gif,bmp,tiff,webp,svg,ico,psd,ai,eps|max:5120',
+            ]);
+
+            if ($request->hasFile('design_file')) {
+                $file = $request->file('design_file');
+                
+                // رفع الملف إلى Cloudinary
+                $uploadResult = $this->cloudinaryService->uploadFile($file, 'infinitywearsa/designs');
+                
+                if ($uploadResult['success']) {
+                    // حفظ الملف محلياً كـ backup
+                    $filePath = $file->store('designs', 'public');
+                    
+                    Log::info('Design file uploaded to Cloudinary immediately', [
+                        'public_id' => $uploadResult['public_id'],
+                        'original_name' => $file->getClientOriginalName(),
+                        'file_size' => $file->getSize(),
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'تم رفع الملف بنجاح',
+                        'data' => [
+                            'cloudinary' => [
+                                'public_id' => $uploadResult['public_id'],
+                                'secure_url' => $uploadResult['secure_url'],
+                                'url' => $uploadResult['url'],
+                                'format' => $uploadResult['format'],
+                                'width' => $uploadResult['width'],
+                                'height' => $uploadResult['height'],
+                                'bytes' => $uploadResult['bytes'],
+                            ],
+                            'local' => [
+                                'file_path' => $filePath,
+                                'original_name' => $file->getClientOriginalName(),
+                                'file_size' => $file->getSize(),
+                            ]
+                        ]
+                    ]);
+                } else {
+                    // في حالة فشل Cloudinary، استخدم التخزين المحلي
+                    $filePath = $file->store('designs', 'public');
+                    
+                    Log::warning('Cloudinary upload failed, using local storage', [
+                        'error' => $uploadResult['error'] ?? 'Unknown error',
+                        'file' => $file->getClientOriginalName(),
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'تم رفع الملف محلياً (Cloudinary غير متاح)',
+                        'data' => [
+                            'local' => [
+                                'file_path' => $filePath,
+                                'original_name' => $file->getClientOriginalName(),
+                                'file_size' => $file->getSize(),
+                            ],
+                            'cloudinary_error' => $uploadResult['error'] ?? 'Unknown error'
+                        ]
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'لم يتم العثور على ملف للرفع'
+            ], 400);
+
+        } catch (\Exception $e) {
+            Log::error('Error uploading design file', [
+                'error' => $e->getMessage(),
+                'file' => $request->file('design_file')?->getClientOriginalName()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء رفع الملف: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * حفظ مستورد جديد
      */
     public function store(Request $request)
@@ -227,7 +315,30 @@ class ImporterController extends Controller
                 $designDetails['text'] = $validated['design_details_text'];
                 break;
             case 'upload':
-                if ($request->hasFile('design_file')) {
+                // التحقق من وجود بيانات Cloudinary المحفوظة مسبقاً
+                if ($request->has('cloudinary_data')) {
+                    $cloudinaryData = json_decode($request->input('cloudinary_data'), true);
+                    if ($cloudinaryData) {
+                        $designDetails['cloudinary'] = $cloudinaryData;
+                        Log::info('Using pre-uploaded Cloudinary data', [
+                            'public_id' => $cloudinaryData['public_id'] ?? 'N/A',
+                        ]);
+                    }
+                }
+                
+                // التحقق من وجود بيانات المحلي المحفوظة مسبقاً
+                if ($request->has('local_data')) {
+                    $localData = json_decode($request->input('local_data'), true);
+                    if ($localData && isset($localData['file_path'])) {
+                        $designDetails['file_path'] = $localData['file_path'];
+                        Log::info('Using pre-uploaded local data', [
+                            'file_path' => $localData['file_path'],
+                        ]);
+                    }
+                }
+                
+                // في حالة عدم وجود بيانات محفوظة مسبقاً، رفع الملف الآن
+                if (!$request->has('cloudinary_data') && $request->hasFile('design_file')) {
                     $file = $request->file('design_file');
                     
                     // رفع الملف إلى Cloudinary
@@ -248,7 +359,7 @@ class ImporterController extends Controller
                         $filePath = $file->store('designs', 'public');
                         $designDetails['file_path'] = $filePath;
                         
-                        Log::info('File uploaded to Cloudinary successfully', [
+                        Log::info('File uploaded to Cloudinary during form submission', [
                             'public_id' => $uploadResult['public_id'],
                             'original_name' => $file->getClientOriginalName(),
                         ]);
@@ -257,12 +368,13 @@ class ImporterController extends Controller
                         $filePath = $file->store('designs', 'public');
                         $designDetails['file_path'] = $filePath;
                         
-                        Log::warning('Cloudinary upload failed, using local storage', [
+                        Log::warning('Cloudinary upload failed during form submission, using local storage', [
                             'error' => $uploadResult['error'] ?? 'Unknown error',
                             'file' => $file->getClientOriginalName(),
                         ]);
                     }
                 }
+                
                 $designDetails['notes'] = $validated['design_upload_notes'];
                 break;
             case 'template':

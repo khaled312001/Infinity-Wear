@@ -717,7 +717,7 @@ document.addEventListener('DOMContentLoaded', function() {
 @endsection
 
 <script>
-// معاينة الملف المرفوع
+// معاينة الملف المرفوع ورفعه فوراً إلى Cloudinary
 function previewFile(input) {
     const filePreview = document.getElementById('file-preview');
     const fileName = document.getElementById('file-name');
@@ -750,9 +750,82 @@ function previewFile(input) {
         }
         
         filePreview.style.display = 'block';
+        
+        // رفع الملف فوراً إلى Cloudinary
+        uploadFileToCloudinary(file);
     } else {
         filePreview.style.display = 'none';
     }
+}
+
+// رفع الملف فوراً إلى Cloudinary
+function uploadFileToCloudinary(file) {
+    const formData = new FormData();
+    formData.append('design_file', file);
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+    
+    // إظهار مؤشر التحميل
+    const filePreview = document.getElementById('file-preview');
+    const uploadStatus = document.createElement('div');
+    uploadStatus.id = 'upload-status';
+    uploadStatus.className = 'alert alert-info mt-2';
+    uploadStatus.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري رفع الملف إلى السحابة...';
+    filePreview.appendChild(uploadStatus);
+    
+    fetch('{{ route("importers.upload-design") }}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const uploadStatus = document.getElementById('upload-status');
+        
+        if (data.success) {
+            uploadStatus.className = 'alert alert-success mt-2';
+            uploadStatus.innerHTML = '<i class="fas fa-check-circle me-2"></i>تم رفع الملف بنجاح إلى السحابة!';
+            
+            // حفظ بيانات Cloudinary في hidden input
+            if (data.data.cloudinary) {
+                let cloudinaryData = document.getElementById('cloudinary_data');
+                if (!cloudinaryData) {
+                    cloudinaryData = document.createElement('input');
+                    cloudinaryData.type = 'hidden';
+                    cloudinaryData.name = 'cloudinary_data';
+                    cloudinaryData.id = 'cloudinary_data';
+                    document.getElementById('multiStepForm').appendChild(cloudinaryData);
+                }
+                cloudinaryData.value = JSON.stringify(data.data.cloudinary);
+            }
+            
+            // حفظ بيانات المحلي في hidden input
+            if (data.data.local) {
+                let localData = document.getElementById('local_data');
+                if (!localData) {
+                    localData = document.createElement('input');
+                    localData.type = 'hidden';
+                    localData.name = 'local_data';
+                    localData.id = 'local_data';
+                    document.getElementById('multiStepForm').appendChild(localData);
+                }
+                localData.value = JSON.stringify(data.data.local);
+            }
+            
+            console.log('File uploaded successfully:', data);
+        } else {
+            uploadStatus.className = 'alert alert-warning mt-2';
+            uploadStatus.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>' + data.message;
+            console.error('Upload failed:', data);
+        }
+    })
+    .catch(error => {
+        const uploadStatus = document.getElementById('upload-status');
+        uploadStatus.className = 'alert alert-danger mt-2';
+        uploadStatus.innerHTML = '<i class="fas fa-times-circle me-2"></i>حدث خطأ أثناء رفع الملف';
+        console.error('Upload error:', error);
+    });
 }
 
 // التأكد من صحة الملف عند إرسال النموذج
