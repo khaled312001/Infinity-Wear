@@ -829,15 +829,20 @@ function uploadFileToCloudinary(file) {
 }
 
 // التأكد من صحة الملف عند إرسال النموذج
-document.getElementById('multiStepForm').addEventListener('submit', function(e) {
-    const designOption = document.querySelector('input[name="design_option"]:checked');
-    const designFile = document.getElementById('design_file');
-    
-    if (designOption && designOption.value === 'upload' && !designFile.files[0]) {
-        e.preventDefault();
-        alert('يرجى اختيار ملف تصميم');
-        designFile.focus();
-        return false;
+document.addEventListener('DOMContentLoaded', function() {
+    const multiStepForm = document.getElementById('multiStepForm');
+    if (multiStepForm) {
+        multiStepForm.addEventListener('submit', function(e) {
+            const designOption = document.querySelector('input[name="design_option"]:checked');
+            const designFile = document.getElementById('design_file');
+            
+            if (designOption && designOption.value === 'upload' && !designFile.files[0]) {
+                e.preventDefault();
+                alert('يرجى اختيار ملف تصميم');
+                designFile.focus();
+                return false;
+            }
+        });
     }
 });
 

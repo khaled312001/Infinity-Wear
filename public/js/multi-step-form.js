@@ -19,14 +19,22 @@ class MultiStepForm {
 
     bindEvents() {
         // Navigation buttons
-        document.getElementById('nextBtn').addEventListener('click', () => this.nextStep());
-        document.getElementById('prevBtn').addEventListener('click', () => this.prevStep());
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        if (nextBtn) nextBtn.addEventListener('click', () => this.nextStep());
+        if (prevBtn) prevBtn.addEventListener('click', () => this.prevStep());
         
         // Form submission
-        document.getElementById('multiStepForm').addEventListener('submit', (e) => this.handleSubmit(e));
+        const multiStepForm = document.getElementById('multiStepForm');
+        if (multiStepForm) {
+            multiStepForm.addEventListener('submit', (e) => this.handleSubmit(e));
+        }
         
         // Business type change
-        document.getElementById('business_type').addEventListener('change', (e) => this.handleBusinessTypeChange(e));
+        const businessType = document.getElementById('business_type');
+        if (businessType) {
+            businessType.addEventListener('change', (e) => this.handleBusinessTypeChange(e));
+        }
         
         // Design option changes
         document.querySelectorAll('.design-option').forEach(option => {
@@ -34,7 +42,10 @@ class MultiStepForm {
         });
         
         // Password toggle
-        document.getElementById('togglePassword').addEventListener('click', () => this.togglePassword());
+        const togglePassword = document.getElementById('togglePassword');
+        if (togglePassword) {
+            togglePassword.addEventListener('click', () => this.togglePassword());
+        }
         
         // Real-time validation
         document.querySelectorAll('input, select, textarea').forEach(field => {
@@ -43,7 +54,10 @@ class MultiStepForm {
         });
         
         // Terms agreement
-        document.getElementById('terms_agreement').addEventListener('change', () => this.handleTermsChange());
+        const termsAgreement = document.getElementById('terms_agreement');
+        if (termsAgreement) {
+            termsAgreement.addEventListener('change', () => this.handleTermsChange());
+        }
     }
 
     initializeForm() {
@@ -55,6 +69,103 @@ class MultiStepForm {
         
         this.showStep(this.currentStep);
         this.updateProgressBar();
+    }
+
+    setupValidation() {
+        // Add real-time validation to form inputs
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('blur', () => this.validateField(input));
+            input.addEventListener('input', () => this.clearFieldError(input));
+        });
+    }
+
+    validateField(field) {
+        const value = field.value.trim();
+        const fieldName = field.name;
+        let isValid = true;
+        let errorMessage = '';
+
+        // Required field validation
+        if (field.hasAttribute('required') && !value) {
+            isValid = false;
+            errorMessage = 'هذا الحقل مطلوب';
+        }
+
+        // Email validation
+        if (fieldName === 'email' && value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                isValid = false;
+                errorMessage = 'يرجى إدخال بريد إلكتروني صحيح';
+            }
+        }
+
+        // Phone validation
+        if (fieldName === 'phone' && value) {
+            const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+            if (!phoneRegex.test(value)) {
+                isValid = false;
+                errorMessage = 'يرجى إدخال رقم هاتف صحيح';
+            }
+        }
+
+        // Password validation
+        if (fieldName === 'password' && value) {
+            if (value.length < 8) {
+                isValid = false;
+                errorMessage = 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
+            }
+        }
+
+        // Password confirmation validation
+        if (fieldName === 'password_confirmation' && value) {
+            const password = document.getElementById('password').value;
+            if (value !== password) {
+                isValid = false;
+                errorMessage = 'كلمة المرور غير متطابقة';
+            }
+        }
+
+        // Quantity validation
+        if (fieldName === 'quantity' && value) {
+            const quantity = parseInt(value);
+            if (isNaN(quantity) || quantity < 1) {
+                isValid = false;
+                errorMessage = 'الكمية يجب أن تكون رقم أكبر من 0';
+            }
+        }
+
+        if (!isValid) {
+            this.showFieldError(field, errorMessage);
+        } else {
+            this.clearFieldError(field);
+        }
+
+        return isValid;
+    }
+
+    showFieldError(field, message) {
+        field.classList.add('is-invalid');
+        field.classList.remove('is-valid');
+        
+        let feedback = field.parentNode.querySelector('.invalid-feedback');
+        if (!feedback) {
+            feedback = document.createElement('div');
+            feedback.className = 'invalid-feedback';
+            field.parentNode.appendChild(feedback);
+        }
+        feedback.textContent = message;
+    }
+
+    clearFieldError(field) {
+        field.classList.remove('is-invalid');
+        field.classList.add('is-valid');
+        
+        const feedback = field.parentNode.querySelector('.invalid-feedback');
+        if (feedback) {
+            feedback.textContent = '';
+        }
     }
 
     showStep(step) {
@@ -475,6 +586,9 @@ window.MultiStepFormUtils = {
 };
 
 // Make the form instance globally available for debugging
-window.addEventListener('load', function() {
-    window.multiStepForm = new MultiStepForm();
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if the form exists before initializing
+    if (document.getElementById('multiStepForm')) {
+        window.multiStepForm = new MultiStepForm();
+    }
 });
