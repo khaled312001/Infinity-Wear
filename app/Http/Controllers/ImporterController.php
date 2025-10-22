@@ -231,7 +231,7 @@ class ImporterController extends Controller
                     $file = $request->file('design_file');
                     
                     // رفع الملف إلى Cloudinary
-                    $uploadResult = $this->cloudinaryService->uploadFile($file, 'infinity-wear/designs');
+                    $uploadResult = $this->cloudinaryService->uploadFile($file, 'infinitywearsa/designs');
                     
                     if ($uploadResult['success']) {
                         $designDetails['cloudinary'] = [

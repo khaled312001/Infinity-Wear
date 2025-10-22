@@ -2,27 +2,38 @@
 
 namespace App\Services;
 
-use Cloudinary\Cloudinary;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 
 class CloudinaryService
 {
     private $cloudinary;
+    private $isAvailable = false;
 
     public function __construct()
     {
-        // تكوين Cloudinary باستخدام v3 API
-        $this->cloudinary = new Cloudinary([
-            'cloud' => [
-                'cloud_name' => config('cloudinary.cloud_name', 'infinity-wear'),
-                'api_key' => config('cloudinary.api_key', '787844769525158'),
-                'api_secret' => config('cloudinary.api_secret', 'uZa3Vo50vIgiE4UizMtVMW_OAHI'),
-            ],
-            'url' => [
-                'secure' => config('cloudinary.secure', true),
-            ],
-        ]);
+        // التحقق من توفر Cloudinary
+        if (class_exists('Cloudinary\Cloudinary')) {
+            try {
+                $this->cloudinary = new \Cloudinary\Cloudinary([
+                    'cloud' => [
+                        'cloud_name' => config('cloudinary.cloud_name', 'infinity-wear'),
+                        'api_key' => config('cloudinary.api_key', '787844769525158'),
+                        'api_secret' => config('cloudinary.api_secret', 'uZa3Vo50vIgiE4UizMtVMW_OAHI'),
+                    ],
+                    'url' => [
+                        'secure' => config('cloudinary.secure', true),
+                    ],
+                ]);
+                $this->isAvailable = true;
+            } catch (\Exception $e) {
+                Log::error('Failed to initialize Cloudinary', ['error' => $e->getMessage()]);
+                $this->isAvailable = false;
+            }
+        } else {
+            Log::warning('Cloudinary class not found. Image uploads will use local storage.');
+            $this->isAvailable = false;
+        }
     }
 
     /**
@@ -30,6 +41,22 @@ class CloudinaryService
      */
     public function uploadFile(UploadedFile $file, string $folder = 'designs', array $options = [])
     {
+        if (!$this->isAvailable) {
+            // Fallback to local storage
+            $filePath = $file->store($folder, 'public');
+            return [
+                'success' => true,
+                'public_id' => $filePath,
+                'secure_url' => asset('storage/' . $filePath),
+                'url' => asset('storage/' . $filePath),
+                'format' => $file->getClientOriginalExtension(),
+                'width' => null,
+                'height' => null,
+                'bytes' => $file->getSize(),
+                'local_storage' => true,
+            ];
+        }
+
         try {
             $uploadOptions = array_merge([
                 'folder' => $folder,
@@ -59,9 +86,19 @@ class CloudinaryService
                 'file' => $file->getClientOriginalName(),
             ]);
 
+            // Fallback to local storage
+            $filePath = $file->store($folder, 'public');
             return [
-                'success' => false,
-                'error' => $e->getMessage(),
+                'success' => true,
+                'public_id' => $filePath,
+                'secure_url' => asset('storage/' . $filePath),
+                'url' => asset('storage/' . $filePath),
+                'format' => $file->getClientOriginalExtension(),
+                'width' => null,
+                'height' => null,
+                'bytes' => $file->getSize(),
+                'local_storage' => true,
+                'cloudinary_error' => $e->getMessage(),
             ];
         }
     }
@@ -71,6 +108,13 @@ class CloudinaryService
      */
     public function uploadFromPath(string $filePath, string $folder = 'designs', array $options = [])
     {
+        if (!$this->isAvailable) {
+            return [
+                'success' => false,
+                'error' => 'Cloudinary not available',
+            ];
+        }
+
         try {
             $uploadOptions = array_merge([
                 'folder' => $folder,
@@ -109,6 +153,13 @@ class CloudinaryService
      */
     public function deleteFile(string $publicId)
     {
+        if (!$this->isAvailable) {
+            return [
+                'success' => false,
+                'error' => 'Cloudinary not available',
+            ];
+        }
+
         try {
             $result = $this->cloudinary->uploadApi()->destroy($publicId);
             
@@ -134,6 +185,14 @@ class CloudinaryService
      */
     public function getOptimizedUrl(string $publicId, array $transformations = [])
     {
+        if (!$this->isAvailable) {
+            // Return local storage URL if it's a local file
+            if (strpos($publicId, 'designs/') === 0) {
+                return asset('storage/' . $publicId);
+            }
+            return null;
+        }
+
         try {
             $defaultTransformations = [
                 'quality' => 'auto',
@@ -198,5 +257,13 @@ class CloudinaryService
         }
 
         return $this->uploadFromPath($localPath, $folder);
+    }
+
+    /**
+     * التحقق من توفر Cloudinary
+     */
+    public function isAvailable(): bool
+    {
+        return $this->isAvailable;
     }
 }

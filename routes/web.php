@@ -883,6 +883,7 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     // إدارة أيقونة الموقع
     Route::post('/favicon/upload', [App\Http\Controllers\FaviconController::class, 'uploadFavicon'])->name('favicon.upload');
     Route::delete('/favicon/delete', [App\Http\Controllers\FaviconController::class, 'deleteFavicon'])->name('favicon.delete');
+    Route::get('/favicon/info', [App\Http\Controllers\FaviconController::class, 'getFaviconInfo'])->name('favicon.info');
     
     // إدارة الإعدادات
     Route::post('/settings/general', [App\Http\Controllers\SettingsController::class, 'updateGeneral'])->name('settings.general');

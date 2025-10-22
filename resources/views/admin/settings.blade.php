@@ -193,6 +193,18 @@
                                                     <i class="fas fa-trash me-1"></i>
                                                     حذف الشعار
                                                 </button>
+                                                <button type="button" class="btn btn-outline-info btn-sm ms-2" onclick="getLogoInfo()">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    معلومات الشعار
+                                                </button>
+                                            </div>
+                                            <!-- معلومات Cloudinary -->
+                                            <div id="logoCloudinaryInfo" class="mt-2" style="display: none;">
+                                                <div class="alert alert-info alert-sm">
+                                                    <i class="fas fa-cloud me-1"></i>
+                                                    <strong>مخزن في السحابة:</strong>
+                                                    <div id="logoCloudinaryDetails"></div>
+                                                </div>
                                             </div>
                                         </div>
                                         
@@ -260,6 +272,18 @@
                                                     <i class="fas fa-trash me-1"></i>
                                                     حذف الأيقونة
                                                 </button>
+                                                <button type="button" class="btn btn-outline-info btn-sm ms-2" onclick="getFaviconInfo()">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    معلومات الأيقونة
+                                                </button>
+                                            </div>
+                                            <!-- معلومات Cloudinary -->
+                                            <div id="faviconCloudinaryInfo" class="mt-2" style="display: none;">
+                                                <div class="alert alert-info alert-sm">
+                                                    <i class="fas fa-cloud me-1"></i>
+                                                    <strong>مخزن في السحابة:</strong>
+                                                    <div id="faviconCloudinaryDetails"></div>
+                                                </div>
                                             </div>
                                         </div>
                                         
@@ -1616,6 +1640,85 @@
                 reader.readAsDataURL(file);
             }
         });
+
+        // دوال معلومات Cloudinary
+        function getLogoInfo() {
+            fetch('{{ route("admin.logo.info") }}', {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.is_cloudinary) {
+                    const detailsDiv = document.getElementById('logoCloudinaryDetails');
+                    detailsDiv.innerHTML = `
+                        <div class="row">
+                            <div class="col-6">
+                                <small><strong>الأبعاد:</strong> ${data.cloudinary_data.width}x${data.cloudinary_data.height}</small>
+                            </div>
+                            <div class="col-6">
+                                <small><strong>الحجم:</strong> ${formatFileSize(data.cloudinary_data.bytes)}</small>
+                            </div>
+                            <div class="col-6">
+                                <small><strong>الصيغة:</strong> ${data.cloudinary_data.format.toUpperCase()}</small>
+                            </div>
+                            <div class="col-6">
+                                <small><strong>تاريخ الرفع:</strong> ${new Date(data.uploaded_at).toLocaleDateString('ar-SA')}</small>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('logoCloudinaryInfo').style.display = 'block';
+                } else {
+                    showLogoMessage('الشعار محفوظ محلياً فقط', 'info');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showLogoMessage('حدث خطأ أثناء الحصول على معلومات الشعار', 'error');
+            });
+        }
+
+        function getFaviconInfo() {
+            fetch('{{ route("admin.favicon.info") }}', {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.is_cloudinary) {
+                    const detailsDiv = document.getElementById('faviconCloudinaryDetails');
+                    detailsDiv.innerHTML = `
+                        <div class="row">
+                            <div class="col-6">
+                                <small><strong>الأبعاد:</strong> ${data.cloudinary_data.width}x${data.cloudinary_data.height}</small>
+                            </div>
+                            <div class="col-6">
+                                <small><strong>الحجم:</strong> ${formatFileSize(data.cloudinary_data.bytes)}</small>
+                            </div>
+                            <div class="col-6">
+                                <small><strong>الصيغة:</strong> ${data.cloudinary_data.format.toUpperCase()}</small>
+                            </div>
+                            <div class="col-6">
+                                <small><strong>تاريخ الرفع:</strong> ${new Date(data.uploaded_at).toLocaleDateString('ar-SA')}</small>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('faviconCloudinaryInfo').style.display = 'block';
+                } else {
+                    showFaviconMessage('الأيقونة محفوظة محلياً فقط', 'info');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showFaviconMessage('حدث خطأ أثناء الحصول على معلومات الأيقونة', 'error');
+            });
+        }
 
         // دالة إظهار الرسائل
         function showMessage(message, type = 'info') {

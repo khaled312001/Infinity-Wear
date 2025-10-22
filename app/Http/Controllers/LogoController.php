@@ -70,7 +70,7 @@ class LogoController extends Controller
             }
 
             // رفع الشعار إلى Cloudinary
-            $uploadResult = $this->cloudinaryService->uploadFile($logoFile, 'infinity-wear/logos');
+            $uploadResult = $this->cloudinaryService->uploadFile($logoFile, 'infinitywearsa/logos');
             
             if ($uploadResult['success']) {
                 // حفظ الشعار محلياً كـ backup
@@ -160,19 +160,37 @@ class LogoController extends Controller
     public function deleteLogo()
     {
         try {
-            $currentLogo = Setting::get('site_logo');
+            $logoData = Setting::get('site_logo_data');
             
-            if ($currentLogo && Storage::disk('public')->exists($currentLogo)) {
-                Storage::disk('public')->delete($currentLogo);
+            if ($logoData) {
+                $data = json_decode($logoData, true);
+                
+                // حذف من Cloudinary
+                if (isset($data['cloudinary']['public_id'])) {
+                    $deleteResult = $this->cloudinaryService->deleteFile($data['cloudinary']['public_id']);
+                    if ($deleteResult['success']) {
+                        Log::info('Logo deleted from Cloudinary', ['public_id' => $data['cloudinary']['public_id']]);
+                    } else {
+                        Log::warning('Failed to delete logo from Cloudinary', ['error' => $deleteResult['error']]);
+                    }
+                }
+                
+                // حذف من التخزين المحلي
+                if (isset($data['file_path']) && Storage::disk('public')->exists($data['file_path'])) {
+                    Storage::disk('public')->delete($data['file_path']);
+                    Log::info('Logo deleted from local storage', ['path' => $data['file_path']]);
+                }
             }
             
+            // حذف البيانات من قاعدة البيانات
             Setting::set('site_logo', '');
+            Setting::set('site_logo_data', '');
             Setting::clearCache();
             \App\Helpers\SiteSettingsHelper::clearCache();
 
             return response()->json([
                 'success' => true,
-                'message' => 'تم حذف الشعار بنجاح'
+                'message' => 'تم حذف الشعار بنجاح من السحابة والمحلي'
             ]);
 
         } catch (\Exception $e) {
@@ -192,13 +210,30 @@ class LogoController extends Controller
      */
     public function getLogoInfo()
     {
-        $logo = Setting::get('site_logo');
+        $logoData = Setting::get('site_logo_data');
+        $legacyLogo = Setting::get('site_logo');
         
+        if ($logoData) {
+            $data = json_decode($logoData, true);
+            
+            return response()->json([
+                'success' => true,
+                'has_logo' => true,
+                'logo_url' => $data['cloudinary']['secure_url'] ?? asset('storage/' . $data['file_path']),
+                'logo_path' => $data['file_path'] ?? $legacyLogo,
+                'cloudinary_data' => $data['cloudinary'] ?? null,
+                'is_cloudinary' => isset($data['cloudinary']['secure_url']),
+                'uploaded_at' => $data['uploaded_at'] ?? null
+            ]);
+        }
+        
+        // للتوافق مع النظام القديم
         return response()->json([
             'success' => true,
-            'has_logo' => !empty($logo),
+            'has_logo' => !empty($legacyLogo),
             'logo_url' => \App\Helpers\SiteSettingsHelper::getLogoUrl(),
-            'logo_path' => $logo
+            'logo_path' => $legacyLogo,
+            'is_cloudinary' => false
         ]);
     }
 }
