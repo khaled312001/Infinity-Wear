@@ -468,37 +468,594 @@ document.addEventListener('DOMContentLoaded', function() {
                                                                                 حذاء
                                                                             </label>
                                                                         </div>
+                                                                        <div class="piece-item" data-piece="socks">
+                                                                            <input type="checkbox" id="piece_socks" name="clothing_pieces[]" value="socks">
+                                                                            <label for="piece_socks">
+                                                                                <i class="fas fa-socks"></i>
+                                                                                شراب
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
 
-                                                                <!-- Color Selection -->
+                                                                <!-- Sizes and Quantities Management -->
                                                                 <div class="control-group mb-4">
-                                                                    <label class="control-label fw-semibold">الألوان</label>
-                                                                    <div class="color-palette">
-                                                                        <div class="color-option" data-color="#FF0000" style="background-color: #FF0000;"></div>
-                                                                        <div class="color-option" data-color="#0000FF" style="background-color: #0000FF;"></div>
-                                                                        <div class="color-option" data-color="#00FF00" style="background-color: #00FF00;"></div>
-                                                                        <div class="color-option" data-color="#FFFF00" style="background-color: #FFFF00;"></div>
-                                                                        <div class="color-option" data-color="#FF00FF" style="background-color: #FF00FF;"></div>
-                                                                        <div class="color-option" data-color="#00FFFF" style="background-color: #00FFFF;"></div>
-                                                                        <div class="color-option" data-color="#000000" style="background-color: #000000;"></div>
-                                                                        <div class="color-option" data-color="#FFFFFF" style="background-color: #FFFFFF;"></div>
+                                                                    <label class="control-label fw-semibold">المقاسات والكميات</label>
+                                                                    <div class="sizes-quantities-container">
+                                                                        <!-- Shirt Sizes -->
+                                                                        <div class="piece-sizes-group" data-piece="shirt" style="display: none;">
+                                                                            <h6 class="piece-sizes-title">مقاسات القميص</h6>
+                                                                            <div class="sizes-grid">
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XS</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shirt_sizes[XS]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">S</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shirt_sizes[S]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">M</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shirt_sizes[M]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">L</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shirt_sizes[L]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XL</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shirt_sizes[XL]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XXL</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shirt_sizes[XXL]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XXXL</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shirt_sizes[XXXL]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="total-quantity">
+                                                                                <span class="total-label">المجموع:</span>
+                                                                                <span class="total-value" id="shirt_total">0</span>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Pants Sizes -->
+                                                                        <div class="piece-sizes-group" data-piece="pants" style="display: none;">
+                                                                            <h6 class="piece-sizes-title">مقاسات البنطلون</h6>
+                                                                            <div class="sizes-grid">
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">28</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="pants_sizes[28]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">30</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="pants_sizes[30]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">32</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="pants_sizes[32]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">34</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="pants_sizes[34]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">36</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="pants_sizes[36]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">38</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="pants_sizes[38]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">40</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="pants_sizes[40]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">42</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="pants_sizes[42]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="total-quantity">
+                                                                                <span class="total-label">المجموع:</span>
+                                                                                <span class="total-value" id="pants_total">0</span>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Shorts Sizes -->
+                                                                        <div class="piece-sizes-group" data-piece="shorts" style="display: none;">
+                                                                            <h6 class="piece-sizes-title">مقاسات الشورت</h6>
+                                                                            <div class="sizes-grid">
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XS</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shorts_sizes[XS]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">S</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shorts_sizes[S]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">M</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shorts_sizes[M]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">L</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shorts_sizes[L]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XL</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shorts_sizes[XL]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XXL</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shorts_sizes[XXL]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="total-quantity">
+                                                                                <span class="total-label">المجموع:</span>
+                                                                                <span class="total-value" id="shorts_total">0</span>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Jacket Sizes -->
+                                                                        <div class="piece-sizes-group" data-piece="jacket" style="display: none;">
+                                                                            <h6 class="piece-sizes-title">مقاسات الجاكيت</h6>
+                                                                            <div class="sizes-grid">
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XS</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="jacket_sizes[XS]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">S</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="jacket_sizes[S]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">M</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="jacket_sizes[M]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">L</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="jacket_sizes[L]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XL</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="jacket_sizes[XL]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XXL</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="jacket_sizes[XXL]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="total-quantity">
+                                                                                <span class="total-label">المجموع:</span>
+                                                                                <span class="total-value" id="jacket_total">0</span>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Shoes Sizes -->
+                                                                        <div class="piece-sizes-group" data-piece="shoes" style="display: none;">
+                                                                            <h6 class="piece-sizes-title">مقاسات الحذاء</h6>
+                                                                            <div class="sizes-grid">
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">36</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shoes_sizes[36]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">37</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shoes_sizes[37]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">38</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shoes_sizes[38]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">39</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shoes_sizes[39]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">40</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shoes_sizes[40]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">41</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shoes_sizes[41]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">42</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shoes_sizes[42]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">43</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shoes_sizes[43]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">44</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shoes_sizes[44]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">45</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="shoes_sizes[45]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="total-quantity">
+                                                                                <span class="total-label">المجموع:</span>
+                                                                                <span class="total-value" id="shoes_total">0</span>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Socks Sizes -->
+                                                                        <div class="piece-sizes-group" data-piece="socks" style="display: none;">
+                                                                            <h6 class="piece-sizes-title">مقاسات الشراب</h6>
+                                                                            <div class="sizes-grid">
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">S</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="socks_sizes[S]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">M</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="socks_sizes[M]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">L</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="socks_sizes[L]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                                <div class="size-item">
+                                                                                    <label class="size-label">XL</label>
+                                                                                    <input type="number" class="form-control size-quantity" 
+                                                                                           name="socks_sizes[XL]" min="0" value="0" placeholder="0">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="total-quantity">
+                                                                                <span class="total-label">المجموع:</span>
+                                                                                <span class="total-value" id="socks_total">0</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Order Summary -->
+                                                                    <div class="order-summary mt-4">
+                                                                        <h6 class="summary-title">ملخص الطلب</h6>
+                                                                        <div class="summary-content">
+                                                                            <div class="summary-item">
+                                                                                <span class="item-label">إجمالي القطع:</span>
+                                                                                <span class="item-value" id="total_pieces">0</span>
+                                                                            </div>
+                                                                            <div class="summary-item">
+                                                                                <span class="item-label">عدد الأصناف:</span>
+                                                                                <span class="item-value" id="total_varieties">0</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Advanced Color Selection -->
+                                                                <div class="control-group mb-4">
+                                                                    <label class="control-label fw-semibold">تخصيص الألوان لكل قطعة</label>
+                                                                    
+                                                                    <!-- Color Palette -->
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">لوحة الألوان</label>
+                                                                        <div class="color-palette">
+                                                                            <div class="color-option" data-color="#FF0000" style="background-color: #FF0000;"></div>
+                                                                            <div class="color-option" data-color="#0000FF" style="background-color: #0000FF;"></div>
+                                                                            <div class="color-option" data-color="#00FF00" style="background-color: #00FF00;"></div>
+                                                                            <div class="color-option" data-color="#FFFF00" style="background-color: #FFFF00;"></div>
+                                                                            <div class="color-option" data-color="#FF00FF" style="background-color: #FF00FF;"></div>
+                                                                            <div class="color-option" data-color="#00FFFF" style="background-color: #00FFFF;"></div>
+                                                                            <div class="color-option" data-color="#000000" style="background-color: #000000;"></div>
+                                                                            <div class="color-option" data-color="#FFFFFF" style="background-color: #FFFFFF;"></div>
+                                                                            <div class="color-option" data-color="#800080" style="background-color: #800080;"></div>
+                                                                            <div class="color-option" data-color="#FFA500" style="background-color: #FFA500;"></div>
+                                                                            <div class="color-option" data-color="#A52A2A" style="background-color: #A52A2A;"></div>
+                                                                            <div class="color-option" data-color="#808080" style="background-color: #808080;"></div>
+                                                                            <div class="color-option" data-color="#FFD700" style="background-color: #FFD700;"></div>
+                                                                            <div class="color-option" data-color="#FF6B6B" style="background-color: #FF6B6B;"></div>
+                                                                            <div class="color-option" data-color="#4ECDC4" style="background-color: #4ECDC4;"></div>
+                                                                            <div class="color-option" data-color="#45B7D1" style="background-color: #45B7D1;"></div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Piece-specific Color Controls -->
+                                                                    <div class="piece-color-controls">
+                                                                        <!-- Shirt Colors -->
+                                                                        <div class="piece-color-group" data-piece="shirt" style="display: none;">
+                                                                            <h6 class="piece-color-title">ألوان القميص</h6>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الجسم</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="shirt_body_color" data-piece="shirt" data-part="body" value="#667eea">
+                                                                                        <span class="color-preview" id="shirt_body_preview" style="background-color: #667eea;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الأكمام</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="shirt_sleeves_color" data-piece="shirt" data-part="sleeves" value="#667eea">
+                                                                                        <span class="color-preview" id="shirt_sleeves_preview" style="background-color: #667eea;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row mt-2">
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الياقة</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="shirt_collar_color" data-piece="shirt" data-part="collar" value="#ffffff">
+                                                                                        <span class="color-preview" id="shirt_collar_preview" style="background-color: #ffffff;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الزخارف</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="shirt_trim_color" data-piece="shirt" data-part="trim" value="#000000">
+                                                                                        <span class="color-preview" id="shirt_trim_preview" style="background-color: #000000;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Pants Colors -->
+                                                                        <div class="piece-color-group" data-piece="pants" style="display: none;">
+                                                                            <h6 class="piece-color-title">ألوان البنطلون</h6>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الجسم</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="pants_body_color" data-piece="pants" data-part="body" value="#2c3e50">
+                                                                                        <span class="color-preview" id="pants_body_preview" style="background-color: #2c3e50;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الحزام</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="pants_waist_color" data-piece="pants" data-part="waist" value="#34495e">
+                                                                                        <span class="color-preview" id="pants_waist_preview" style="background-color: #34495e;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Shorts Colors -->
+                                                                        <div class="piece-color-group" data-piece="shorts" style="display: none;">
+                                                                            <h6 class="piece-color-title">ألوان الشورت</h6>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الجسم</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="shorts_body_color" data-piece="shorts" data-part="body" value="#e74c3c">
+                                                                                        <span class="color-preview" id="shorts_body_preview" style="background-color: #e74c3c;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الحزام</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="shorts_waist_color" data-piece="shorts" data-part="waist" value="#c0392b">
+                                                                                        <span class="color-preview" id="shorts_waist_preview" style="background-color: #c0392b;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Jacket Colors -->
+                                                                        <div class="piece-color-group" data-piece="jacket" style="display: none;">
+                                                                            <h6 class="piece-color-title">ألوان الجاكيت</h6>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الجسم</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="jacket_body_color" data-piece="jacket" data-part="body" value="#8e44ad">
+                                                                                        <span class="color-preview" id="jacket_body_preview" style="background-color: #8e44ad;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الأكمام</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="jacket_sleeves_color" data-piece="jacket" data-part="sleeves" value="#8e44ad">
+                                                                                        <span class="color-preview" id="jacket_sleeves_preview" style="background-color: #8e44ad;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Shoes Colors -->
+                                                                        <div class="piece-color-group" data-piece="shoes" style="display: none;">
+                                                                            <h6 class="piece-color-title">ألوان الحذاء</h6>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الجسم</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="shoes_body_color" data-piece="shoes" data-part="body" value="#2c3e50">
+                                                                                        <span class="color-preview" id="shoes_body_preview" style="background-color: #2c3e50;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">النعل</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="shoes_sole_color" data-piece="shoes" data-part="sole" value="#34495e">
+                                                                                        <span class="color-preview" id="shoes_sole_preview" style="background-color: #34495e;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Socks Colors -->
+                                                                        <div class="piece-color-group" data-piece="socks" style="display: none;">
+                                                                            <h6 class="piece-color-title">ألوان الشراب</h6>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الجسم</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="socks_body_color" data-piece="socks" data-part="body" value="#f39c12">
+                                                                                        <span class="color-preview" id="socks_body_preview" style="background-color: #f39c12;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label">الحافة</label>
+                                                                                    <div class="color-picker-group">
+                                                                                        <input type="color" class="form-control form-control-color piece-color-input" 
+                                                                                               id="socks_cuff_color" data-piece="socks" data-part="cuff" value="#e67e22">
+                                                                                        <span class="color-preview" id="socks_cuff_preview" style="background-color: #e67e22;"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Pattern Selection -->
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">الزخارف</label>
+                                                                        <div class="pattern-options">
+                                                                            <div class="pattern-option" data-pattern="solid">
+                                                                                <div class="pattern-preview solid"></div>
+                                                                                <span>لون موحد</span>
+                                                                            </div>
+                                                                            <div class="pattern-option" data-pattern="stripes">
+                                                                                <div class="pattern-preview stripes"></div>
+                                                                                <span>خطوط</span>
+                                                                            </div>
+                                                                            <div class="pattern-option" data-pattern="dots">
+                                                                                <div class="pattern-preview dots"></div>
+                                                                                <span>نقاط</span>
+                                                                            </div>
+                                                                            <div class="pattern-option" data-pattern="gradient">
+                                                                                <div class="pattern-preview gradient"></div>
+                                                                                <span>تدرج</span>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                     <input type="hidden" id="selected_colors" name="selected_colors">
+                                                                    <input type="hidden" id="selected_pattern" name="selected_pattern">
                                                                 </div>
 
-                                                                <!-- Logo Upload -->
+                                                                <!-- Logo Upload and Positioning -->
                                                                 <div class="control-group mb-4">
-                                                                    <label class="control-label fw-semibold">رفع الشعار</label>
-                                                                    <input type="file" class="form-control" id="logo_upload" name="logo_upload" accept="image/*">
-                                                                    <div class="form-text">يمكنك رفع شعار المؤسسة</div>
+                                                                    <label class="control-label fw-semibold">الشعار والمواضع</label>
+                                                                    <input type="file" class="form-control mb-3" id="logo_upload" name="logo_upload" accept="image/*">
+                                                                    
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">موضع الشعار</label>
+                                                                            <select class="form-select" id="logo_position" name="logo_position">
+                                                                                <option value="">اختر الموضع</option>
+                                                                                <option value="front">منتصف الصدر</option>
+                                                                                <option value="back">منتصف الظهر</option>
+                                                                                <option value="leftSleeve">الذراع الأيسر</option>
+                                                                                <option value="rightSleeve">الذراع الأيمن</option>
+                                                                                <option value="collar">الياقة</option>
+                                                                                <option value="leftSock">الشراب الأيسر</option>
+                                                                                <option value="rightSock">الشراب الأيمن</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">حجم الشعار</label>
+                                                                            <select class="form-select" id="logo_size" name="logo_size">
+                                                                                <option value="small">صغير</option>
+                                                                                <option value="medium" selected>متوسط</option>
+                                                                                <option value="large">كبير</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
 
-                                                                <!-- Text Addition -->
+                                                                <!-- Text Addition and Positioning -->
                                                                 <div class="control-group mb-4">
-                                                                    <label class="control-label fw-semibold">إضافة نص</label>
-                                                                    <input type="text" class="form-control" id="design_text" name="design_text" placeholder="مثال: اسم المؤسسة">
-                                                                    <div class="form-text">يمكنك إضافة نص مخصص</div>
+                                                                    <label class="control-label fw-semibold">النصوص والمواضع</label>
+                                                                    <input type="text" class="form-control mb-3" id="design_text" name="design_text" placeholder="مثال: اسم المؤسسة">
+                                                                    
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">موضع النص</label>
+                                                                            <select class="form-select" id="text_position" name="text_position">
+                                                                                <option value="">اختر الموضع</option>
+                                                                                <option value="front">منتصف الصدر</option>
+                                                                                <option value="back">منتصف الظهر</option>
+                                                                                <option value="leftSleeve">الذراع الأيسر</option>
+                                                                                <option value="rightSleeve">الذراع الأيمن</option>
+                                                                                <option value="collar">الياقة</option>
+                                                                                <option value="leftSock">الشراب الأيسر</option>
+                                                                                <option value="rightSock">الشراب الأيمن</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">لون النص</label>
+                                                                            <input type="color" class="form-control form-control-color" id="text_color" name="text_color" value="#000000">
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="row mt-2">
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">حجم النص</label>
+                                                                            <select class="form-select" id="text_size" name="text_size">
+                                                                                <option value="small">صغير</option>
+                                                                                <option value="medium" selected>متوسط</option>
+                                                                                <option value="large">كبير</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">نمط النص</label>
+                                                                            <select class="form-select" id="text_style" name="text_style">
+                                                                                <option value="normal">عادي</option>
+                                                                                <option value="bold">عريض</option>
+                                                                                <option value="italic">مائل</option>
+                                                                                <option value="outline">محدود</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -569,11 +1126,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 نوع النشاط <span class="text-danger">*</span>
                                             </label>
                                             <select class="form-select form-select-lg" id="business_type" name="business_type" required>
-                                                <option value="" selected disabled>اختر نوع النشاط</option>
+                                                <option value="">اختر نوع النشاط</option>
                                                 <option value="academy" {{ old('business_type') == 'academy' ? 'selected' : '' }}>أكاديمية رياضية</option>
                                                 <option value="school" {{ old('business_type') == 'school' ? 'selected' : '' }}>مدرسة</option>
                                                 <option value="store" {{ old('business_type') == 'store' ? 'selected' : '' }}>متجر ملابس</option>
                                                 <option value="hospital" {{ old('business_type') == 'hospital' ? 'selected' : '' }}>مستشفى</option>
+                                                <option value="company" {{ old('business_type') == 'company' ? 'selected' : '' }}>شركة</option>
                                                 <option value="other" {{ old('business_type') == 'other' ? 'selected' : '' }}>أخرى</option>
                                             </select>
                                             <div class="invalid-feedback"></div>
@@ -806,6 +1364,149 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Design Notes Section -->
+<div class="row justify-content-center mt-4" id="design_notes_section" style="display: none;">
+    <div class="col-lg-10">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <h4 class="fw-bold text-primary">
+                        <i class="fas fa-sticky-note me-2"></i>
+                        ملاحظات على التصميم
+                    </h4>
+                    <p class="text-muted">يمكنك إضافة ملاحظات أو تعليمات خاصة للتصميم</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group mb-4">
+                            <label for="design_notes" class="form-label fw-semibold">
+                                <i class="fas fa-edit me-2"></i>
+                                ملاحظات التصميم
+                            </label>
+                            <textarea 
+                                class="form-control" 
+                                id="design_notes" 
+                                name="design_notes" 
+                                rows="6" 
+                                placeholder="اكتب هنا أي ملاحظات أو تعليمات خاصة للتصميم...&#10;مثال:&#10;- تفضيل وضع الشعار في الوسط&#10;- استخدام ألوان مخصصة للشركة&#10;- إضافة تفاصيل معينة للزخارف&#10;- أي متطلبات خاصة أخرى"
+                                style="resize: vertical; min-height: 150px;"></textarea>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                هذه الملاحظات ستساعد فريق التصميم في فهم متطلباتك بشكل أفضل
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Design Preferences -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="design_priority" class="form-label fw-semibold">
+                                <i class="fas fa-star me-2"></i>
+                                أولوية التصميم
+                            </label>
+                            <select class="form-select" id="design_priority" name="design_priority">
+                                <option value="normal">عادية</option>
+                                <option value="high">عالية</option>
+                                <option value="urgent">عاجلة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="delivery_preference" class="form-label fw-semibold">
+                                <i class="fas fa-clock me-2"></i>
+                                تفضيل التسليم
+                            </label>
+                            <select class="form-select" id="delivery_preference" name="delivery_preference">
+                                <option value="standard">عادي (7-10 أيام)</option>
+                                <option value="fast">سريع (3-5 أيام)</option>
+                                <option value="express">عاجل (1-2 أيام)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Requirements -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-list-check me-2"></i>
+                                متطلبات إضافية
+                            </label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="require_sample" name="additional_requirements[]" value="sample">
+                                        <label class="form-check-label" for="require_sample">
+                                            <i class="fas fa-cut me-1"></i>
+                                            عينة قبل الإنتاج
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="require_packaging" name="additional_requirements[]" value="packaging">
+                                        <label class="form-check-label" for="require_packaging">
+                                            <i class="fas fa-box me-1"></i>
+                                            تغليف مخصص
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="require_delivery" name="additional_requirements[]" value="delivery">
+                                        <label class="form-check-label" for="require_delivery">
+                                            <i class="fas fa-truck me-1"></i>
+                                            توصيل خاص
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Design Summary -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="design-summary-card">
+                            <h6 class="summary-title">
+                                <i class="fas fa-clipboard-list me-2"></i>
+                                ملخص التصميم
+                            </h6>
+                            <div class="summary-content" id="design_summary_content">
+                                <!-- سيتم ملؤها بواسطة JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <button type="button" class="btn btn-outline-secondary me-3" id="back_to_design_btn">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            العودة للتصميم
+                        </button>
+                        <button type="button" class="btn btn-primary me-3" id="save_design_btn">
+                            <i class="fas fa-save me-2"></i>
+                            حفظ التصميم
+                        </button>
+                        <button type="submit" class="btn btn-success" id="submit_design_btn">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            إرسال الطلب
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

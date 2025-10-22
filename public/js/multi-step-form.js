@@ -282,6 +282,13 @@ class MultiStepForm {
             if (designOption && designOption.value === 'custom') {
                 isValid = this.validateCustomDesign() && isValid;
             }
+        } else if (step === 2) {
+            // Validate business type specifically
+            const businessType = document.getElementById('business_type');
+            if (businessType && !businessType.value) {
+                this.showFieldError(businessType, 'يرجى اختيار نوع النشاط');
+                isValid = false;
+            }
         } else if (step === 3) {
             isValid = this.validateDesignOption() && isValid;
         }
@@ -296,7 +303,11 @@ class MultiStepForm {
         
         // Required field validation
         if (field.hasAttribute('required') && !value) {
-            errorMessage = 'هذا الحقل مطلوب';
+            if (field.name === 'business_type') {
+                errorMessage = 'يرجى اختيار نوع النشاط';
+            } else {
+                errorMessage = 'هذا الحقل مطلوب';
+            }
             isValid = false;
         }
         
@@ -571,11 +582,15 @@ class MultiStepForm {
     // Custom Design Interface Methods
     initializeCustomDesignInterface() {
         this.setupClothingPiecesSelection();
+        this.setupSizesAndQuantities();
         this.setupColorSelection();
+        this.setupPieceColorControls();
+        this.setupPatternSelection();
         this.setupLogoUpload();
         this.setupTextAddition();
         this.setup3DViewer();
         this.setupViewerControls();
+        this.setupDesignNotes();
     }
 
     setupClothingPiecesSelection() {
@@ -587,17 +602,217 @@ class MultiStepForm {
         });
     }
 
+    setupSizesAndQuantities() {
+        // Show/hide size groups based on selected pieces
+        const clothingPieces = document.querySelectorAll('.piece-item input[type="checkbox"]');
+        clothingPieces.forEach(piece => {
+            if (piece.checked) {
+                this.showPieceSizesGroup(piece.value);
+            }
+        });
+
+        // Setup quantity input listeners
+        const quantityInputs = document.querySelectorAll('.size-quantity');
+        quantityInputs.forEach(input => {
+            input.addEventListener('input', (e) => {
+                this.updateQuantityTotals(e.target);
+            });
+        });
+    }
+
+    showPieceSizesGroup(pieceType) {
+        const sizesGroup = document.querySelector(`.piece-sizes-group[data-piece="${pieceType}"]`);
+        if (sizesGroup) {
+            sizesGroup.style.display = 'block';
+            sizesGroup.classList.add('active');
+        }
+    }
+
+    hidePieceSizesGroup(pieceType) {
+        const sizesGroup = document.querySelector(`.piece-sizes-group[data-piece="${pieceType}"]`);
+        if (sizesGroup) {
+            sizesGroup.style.display = 'none';
+            sizesGroup.classList.remove('active');
+        }
+    }
+
+    updateQuantityTotals(input) {
+        const pieceType = input.name.split('_')[0]; // Extract piece type from name
+        const totalElement = document.getElementById(`${pieceType}_total`);
+        
+        if (totalElement) {
+            const pieceGroup = input.closest('.piece-sizes-group');
+            const quantityInputs = pieceGroup.querySelectorAll('.size-quantity');
+            let total = 0;
+            
+            quantityInputs.forEach(input => {
+                const value = parseInt(input.value) || 0;
+                total += value;
+            });
+            
+            totalElement.textContent = total;
+        }
+        
+        this.updateOrderSummary();
+    }
+
+    updateOrderSummary() {
+        const totalPiecesElement = document.getElementById('total_pieces');
+        const totalVarietiesElement = document.getElementById('total_varieties');
+        
+        let totalPieces = 0;
+        let totalVarieties = 0;
+        
+        // Calculate totals for each piece type
+        const pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        
+        pieceTypes.forEach(pieceType => {
+            const totalElement = document.getElementById(`${pieceType}_total`);
+            if (totalElement) {
+                const pieceTotal = parseInt(totalElement.textContent) || 0;
+                totalPieces += pieceTotal;
+                
+                if (pieceTotal > 0) {
+                    totalVarieties++;
+                }
+            }
+        });
+        
+        if (totalPiecesElement) {
+            totalPiecesElement.textContent = totalPieces;
+        }
+        
+        if (totalVarietiesElement) {
+            totalVarietiesElement.textContent = totalVarieties;
+        }
+    }
+
+    setupPieceColorControls() {
+        // Show/hide color controls based on selected pieces
+        const clothingPieces = document.querySelectorAll('.piece-item input[type="checkbox"]');
+        clothingPieces.forEach(piece => {
+            if (piece.checked) {
+                this.showPieceColorControls(piece.value);
+            }
+        });
+
+        // Setup color input listeners
+        const colorInputs = document.querySelectorAll('.piece-color-input');
+        colorInputs.forEach(input => {
+            input.addEventListener('input', (e) => {
+                this.updatePieceColor(e.target);
+            });
+        });
+
+        // Setup color palette selection
+        const colorOptions = document.querySelectorAll('.color-option');
+        colorOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                this.selectColorFromPalette(e.target);
+            });
+        });
+    }
+
+    showPieceColorControls(pieceType) {
+        const colorGroup = document.querySelector(`.piece-color-group[data-piece="${pieceType}"]`);
+        if (colorGroup) {
+            colorGroup.style.display = 'block';
+            colorGroup.classList.add('active');
+        }
+    }
+
+    hidePieceColorControls(pieceType) {
+        const colorGroup = document.querySelector(`.piece-color-group[data-piece="${pieceType}"]`);
+        if (colorGroup) {
+            colorGroup.style.display = 'none';
+            colorGroup.classList.remove('active');
+        }
+    }
+
+    updatePieceColor(input) {
+        const pieceType = input.dataset.piece;
+        const part = input.dataset.part;
+        const color = input.value;
+        
+        // Update color preview
+        const preview = document.getElementById(`${pieceType}_${part}_preview`);
+        if (preview) {
+            preview.style.backgroundColor = color;
+        }
+
+        // Update 3D model
+        if (this.viewer3D) {
+            this.viewer3D.updateClothingPieceColor(pieceType, color, part);
+        }
+
+        // Update selected colors data
+        this.updateSelectedColorsData();
+    }
+
+    selectColorFromPalette(option) {
+        const color = option.dataset.color;
+        
+        // Remove previous selection
+        document.querySelectorAll('.color-option.selected').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        
+        // Select current option
+        option.classList.add('selected');
+        
+        // Apply to currently selected piece
+        const selectedPiece = this.getSelectedClothingPiece();
+        if (selectedPiece) {
+            const colorInput = document.querySelector(`#${selectedPiece}_body_color`);
+            if (colorInput) {
+                colorInput.value = color;
+                this.updatePieceColor(colorInput);
+            }
+        }
+    }
+
+    getSelectedClothingPiece() {
+        const checkedPieces = document.querySelectorAll('.piece-item input[type="checkbox"]:checked');
+        if (checkedPieces.length > 0) {
+            return checkedPieces[0].value; // Return first selected piece
+        }
+        return null;
+    }
+
+    updateSelectedColorsData() {
+        const colorData = {};
+        const colorGroups = document.querySelectorAll('.piece-color-group[style*="block"]');
+        
+        colorGroups.forEach(group => {
+            const pieceType = group.dataset.piece;
+            const colorInputs = group.querySelectorAll('.piece-color-input');
+            colorData[pieceType] = {};
+            
+            colorInputs.forEach(input => {
+                const part = input.dataset.part;
+                colorData[pieceType][part] = input.value;
+            });
+        });
+        
+        document.getElementById('selected_colors').value = JSON.stringify(colorData);
+    }
+
     handleClothingPieceChange(e) {
         const pieceType = e.target.value;
         const isChecked = e.target.checked;
         
         if (isChecked) {
             this.addClothingPieceToViewer(pieceType);
+            this.showPieceColorControls(pieceType);
+            this.showPieceSizesGroup(pieceType);
         } else {
             this.removeClothingPieceFromViewer(pieceType);
+            this.hidePieceColorControls(pieceType);
+            this.hidePieceSizesGroup(pieceType);
         }
         
         this.update3DViewer();
+        this.updateOrderSummary();
     }
 
     addClothingPieceToViewer(pieceType) {
@@ -643,6 +858,14 @@ class MultiStepForm {
                 this.handleColorSelection(e);
             });
         });
+
+        // Setup pattern selection
+        const patternOptions = document.querySelectorAll('.pattern-option');
+        patternOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                this.handlePatternSelection(e);
+            });
+        });
     }
 
     handleColorSelection(e) {
@@ -678,6 +901,32 @@ class MultiStepForm {
         }
     }
 
+    handlePatternSelection(e) {
+        const selectedPattern = e.target.closest('.pattern-option').dataset.pattern;
+        
+        // Remove previous selection
+        document.querySelectorAll('.pattern-option.selected').forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // Select current pattern
+        e.target.closest('.pattern-option').classList.add('selected');
+        
+        // Update hidden input
+        const hiddenInput = document.getElementById('selected_pattern');
+        if (hiddenInput) {
+            hiddenInput.value = selectedPattern;
+        }
+        
+        // Apply pattern to selected piece
+        if (this.viewer3D && this.selectedPiece) {
+            const pieceType = this.selectedPiece.userData?.type;
+            if (pieceType) {
+                this.viewer3D.updateClothingPiecePattern(pieceType, selectedPattern);
+            }
+        }
+    }
+
     setupLogoUpload() {
         const logoUpload = document.getElementById('logo_upload');
         if (logoUpload) {
@@ -700,8 +949,23 @@ class MultiStepForm {
 
     addLogoToViewer(logoDataUrl) {
         if (this.viewer3D) {
-            this.viewer3D.addLogo(logoDataUrl);
+            const position = document.getElementById('logo_position').value;
+            const size = document.getElementById('logo_size').value;
+            const pieceType = this.getSelectedClothingPiece();
+            
+            const sizeMap = { small: 0.1, medium: 0.15, large: 0.2 };
+            
+            this.viewer3D.addLogo(logoDataUrl, {
+                pieceType: pieceType,
+                location: position,
+                size: sizeMap[size] || 0.15
+            });
         }
+    }
+
+    getSelectedClothingPiece() {
+        const checkedPieces = document.querySelectorAll('input[name="clothing_pieces[]"]:checked');
+        return checkedPieces.length > 0 ? checkedPieces[0].value : 'shirt';
     }
 
     setupTextAddition() {
@@ -718,7 +982,23 @@ class MultiStepForm {
         
         if (this.viewer3D) {
             if (text) {
-                this.viewer3D.addText(text);
+                const position = document.getElementById('text_position').value;
+                const color = document.getElementById('text_color').value;
+                const size = document.getElementById('text_size').value;
+                const style = document.getElementById('text_style').value;
+                const pieceType = this.getSelectedClothingPiece();
+                
+                const sizeMap = { small: 0.15, medium: 0.2, large: 0.25 };
+                const fontSizeMap = { small: 18, medium: 24, large: 30 };
+                
+                this.viewer3D.addText(text, {
+                    pieceType: pieceType,
+                    location: position,
+                    size: sizeMap[size] || 0.2,
+                    color: color,
+                    fontSize: fontSizeMap[size] || 24,
+                    style: style
+                });
             }
         }
     }
@@ -815,7 +1095,685 @@ class MultiStepForm {
             return false;
         }
         
-        return true;
+        // Check if quantities are specified for selected pieces
+        let isValid = true;
+        clothingPieces.forEach(piece => {
+            const pieceType = piece.value;
+            const sizesGroup = document.querySelector(`.piece-sizes-group[data-piece="${pieceType}"]`);
+            
+            if (sizesGroup && sizesGroup.style.display !== 'none') {
+                const quantityInputs = sizesGroup.querySelectorAll('.size-quantity');
+                let hasQuantity = false;
+                
+                quantityInputs.forEach(input => {
+                    if (parseInt(input.value) > 0) {
+                        hasQuantity = true;
+                    }
+                });
+                
+                if (!hasQuantity) {
+                    this.showStepError(1, `يرجى تحديد الكميات لمقاسات ${this.getPieceName(pieceType)}`);
+                    isValid = false;
+                }
+            }
+        });
+        
+        return isValid;
+    }
+
+    getPieceName(pieceType) {
+        const names = {
+            'shirt': 'القميص',
+            'pants': 'البنطلون',
+            'shorts': 'الشورت',
+            'jacket': 'الجاكيت',
+            'shoes': 'الحذاء',
+            'socks': 'الشراب'
+        };
+        return names[pieceType] || pieceType;
+    }
+
+    setupDesignNotes() {
+        // Show design notes section when design is complete
+        this.setupDesignNotesButtons();
+        this.setupDesignSummary();
+    }
+
+    setupDesignNotesButtons() {
+        // Add button to show design notes section
+        const designOption = document.querySelector('input[name="design_option"][value="custom"]');
+        if (designOption) {
+            // Add "Add Notes" button after 3D viewer
+            const viewerContainer = document.querySelector('.viewer-container');
+            if (viewerContainer && !document.getElementById('add_notes_btn')) {
+                const addNotesBtn = document.createElement('button');
+                addNotesBtn.id = 'add_notes_btn';
+                addNotesBtn.type = 'button';
+                addNotesBtn.className = 'btn btn-primary mt-3';
+                addNotesBtn.innerHTML = '<i class="fas fa-sticky-note me-2"></i>إضافة ملاحظات على التصميم';
+                addNotesBtn.addEventListener('click', () => this.showDesignNotes());
+                viewerContainer.appendChild(addNotesBtn);
+            }
+        }
+
+        // Setup action buttons in notes section
+        const backToDesignBtn = document.getElementById('back_to_design_btn');
+        const saveDesignBtn = document.getElementById('save_design_btn');
+        const submitDesignBtn = document.getElementById('submit_design_btn');
+
+        if (backToDesignBtn) {
+            backToDesignBtn.addEventListener('click', () => this.hideDesignNotes());
+        }
+
+        if (saveDesignBtn) {
+            saveDesignBtn.addEventListener('click', () => this.saveDesign());
+        }
+
+        if (submitDesignBtn) {
+            submitDesignBtn.addEventListener('click', () => this.submitDesign());
+        }
+    }
+
+    showDesignNotes() {
+        const notesSection = document.getElementById('design_notes_section');
+        if (notesSection) {
+            notesSection.style.display = 'block';
+            notesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            this.updateDesignSummary();
+        }
+    }
+
+    hideDesignNotes() {
+        const notesSection = document.getElementById('design_notes_section');
+        if (notesSection) {
+            notesSection.style.display = 'none';
+        }
+    }
+
+    setupDesignSummary() {
+        // This will be called when showing design notes
+    }
+
+    updateDesignSummary() {
+        const summaryContent = document.getElementById('design_summary_content');
+        if (!summaryContent) return;
+
+        let summaryHTML = '';
+
+        // Get selected pieces
+        const selectedPieces = document.querySelectorAll('.piece-item input[type="checkbox"]:checked');
+        if (selectedPieces.length > 0) {
+            summaryHTML += '<div class="design-summary-item">';
+            summaryHTML += '<span class="item-label">القطع المختارة:</span>';
+            summaryHTML += '<div class="item-value">';
+            selectedPieces.forEach((piece, index) => {
+                if (index > 0) summaryHTML += '، ';
+                summaryHTML += this.getPieceName(piece.value);
+            });
+            summaryHTML += '</div></div>';
+        }
+
+        // Get quantities
+        const pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        pieceTypes.forEach(pieceType => {
+            const totalElement = document.getElementById(`${pieceType}_total`);
+            if (totalElement && parseInt(totalElement.textContent) > 0) {
+                summaryHTML += '<div class="design-summary-item">';
+                summaryHTML += `<span class="item-label">${this.getPieceName(pieceType)}:</span>`;
+                summaryHTML += `<div class="item-value">${totalElement.textContent} قطعة</div>`;
+                summaryHTML += '</div>';
+            }
+        });
+
+        // Get colors
+        const colorData = this.getColorData();
+        if (Object.keys(colorData).length > 0) {
+            summaryHTML += '<div class="design-summary-item">';
+            summaryHTML += '<span class="item-label">الألوان المختارة:</span>';
+            summaryHTML += '<div class="item-value">مخصصة</div>';
+            summaryHTML += '</div>';
+        }
+
+        // Get business type
+        const businessType = document.getElementById('design_business_type');
+        if (businessType && businessType.value) {
+            const businessTypes = {
+                'academy': 'أكاديمية رياضية',
+                'school': 'مدرسة',
+                'store': 'متجر ملابس',
+                'hospital': 'مستشفى',
+                'company': 'شركة',
+                'other': 'أخرى'
+            };
+            summaryHTML += '<div class="design-summary-item">';
+            summaryHTML += '<span class="item-label">نوع النشاط:</span>';
+            summaryHTML += `<div class="item-value">${businessTypes[businessType.value] || businessType.value}</div>`;
+            summaryHTML += '</div>';
+        }
+
+        summaryContent.innerHTML = summaryHTML;
+    }
+
+    getColorData() {
+        const colorData = {};
+        const colorGroups = document.querySelectorAll('.piece-color-group[style*="block"]');
+        
+        colorGroups.forEach(group => {
+            const pieceType = group.dataset.piece;
+            const colorInputs = group.querySelectorAll('.piece-color-input');
+            colorData[pieceType] = {};
+            
+            colorInputs.forEach(input => {
+                const part = input.dataset.part;
+                colorData[pieceType][part] = input.value;
+            });
+        });
+        
+        return colorData;
+    }
+
+    saveDesign() {
+        // Collect complete form data
+        const completeData = this.collectCompleteFormData();
+        
+        // Save to localStorage for backup
+        localStorage.setItem('saved_design_complete', JSON.stringify(completeData));
+        
+        // Send to server for permanent storage
+        this.sendDataToServer(completeData, 'save');
+        
+        // Show success message
+        this.showSuccessMessage('تم حفظ التصميم والبيانات بنجاح!');
+    }
+
+    submitDesign() {
+        // Validate design notes section
+        if (this.validateDesignNotes()) {
+            // Collect complete form data
+            const completeData = this.collectCompleteFormData();
+            
+            // Save to localStorage for backup
+            localStorage.setItem('submitted_design_complete', JSON.stringify(completeData));
+            
+            // Send to server for processing
+            this.sendDataToServer(completeData, 'submit');
+            
+            // Show success message
+            this.showSuccessMessage('تم إرسال الطلب بنجاح! سيتم التواصل معك قريباً.');
+        }
+    }
+
+    sendDataToServer(data, action) {
+        // Create FormData for file uploads
+        const formData = new FormData();
+        
+        // Add JSON data
+        formData.append('form_data', JSON.stringify(data));
+        formData.append('action', action);
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+        
+        // Add files
+        this.addFilesToFormData(formData);
+        
+        // Send to server
+        fetch('/api/save-design', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                console.log('Data saved successfully:', result);
+                if (action === 'submit') {
+                    // Redirect to dashboard or success page
+                    window.location.href = '/dashboard?design_id=' + result.design_id;
+                }
+            } else {
+                console.error('Error saving data:', result.error);
+                this.showErrorMessage('حدث خطأ في حفظ البيانات. يرجى المحاولة مرة أخرى.');
+            }
+        })
+        .catch(error => {
+            console.error('Network error:', error);
+            this.showErrorMessage('حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.');
+        });
+    }
+
+    addFilesToFormData(formData) {
+        // Add logo file
+        const logoFile = document.getElementById('logo_upload').files[0];
+        if (logoFile) {
+            formData.append('logo_file', logoFile);
+        }
+        
+        // Add business license file
+        const licenseFile = document.getElementById('business_license').files[0];
+        if (licenseFile) {
+            formData.append('license_file', licenseFile);
+        }
+        
+        // Add additional files
+        const additionalFiles = document.querySelectorAll('input[type="file"]:not(#logo_upload):not(#business_license)');
+        additionalFiles.forEach(input => {
+            if (input.files.length > 0) {
+                Array.from(input.files).forEach((file, index) => {
+                    formData.append(`additional_file_${index}`, file);
+                });
+            }
+        });
+    }
+
+    showErrorMessage(message) {
+        // Create and show error message
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alert.innerHTML = `
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        // Auto remove after 7 seconds
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.parentNode.removeChild(alert);
+            }
+        }, 7000);
+    }
+
+    validateDesignNotes() {
+        // Basic validation for design notes section
+        return true; // Add specific validation if needed
+    }
+
+    collectDesignData() {
+        return {
+            clothingPieces: Array.from(document.querySelectorAll('input[name="clothing_pieces[]"]:checked')).map(cb => cb.value),
+            sizes: this.collectSizesData(),
+            colors: this.getColorData(),
+            businessType: document.getElementById('design_business_type').value,
+            designNotes: document.getElementById('design_notes').value,
+            priority: document.getElementById('design_priority').value,
+            delivery: document.getElementById('delivery_preference').value,
+            requirements: Array.from(document.querySelectorAll('input[name="additional_requirements[]"]:checked')).map(cb => cb.value)
+        };
+    }
+
+    // Comprehensive data collection for dashboard storage
+    collectCompleteFormData() {
+        const formData = {
+            // Basic Information
+            personalInfo: {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                password: document.getElementById('password').value // Will be hashed on server
+            },
+            
+            // Business Information
+            businessInfo: {
+                businessName: document.getElementById('business_name').value,
+                businessType: document.getElementById('business_type').value,
+                businessTypeOther: document.getElementById('business_type_other').value || null,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                country: document.getElementById('country').value,
+                website: document.getElementById('website').value || null
+            },
+            
+            // Design Information
+            designInfo: {
+                designOption: document.querySelector('input[name="design_option"]:checked')?.value,
+                businessType: document.getElementById('design_business_type').value,
+                clothingPieces: Array.from(document.querySelectorAll('input[name="clothing_pieces[]"]:checked')).map(cb => cb.value),
+                sizes: this.collectSizesData(),
+                colors: this.getColorData(),
+                patterns: this.collectPatternData(),
+                logos: this.collectLogoData(),
+                texts: this.collectTextData(),
+                designNotes: document.getElementById('design_notes').value || null,
+                priority: document.getElementById('design_priority').value || 'normal',
+                delivery: document.getElementById('delivery_preference').value || 'standard',
+                requirements: Array.from(document.querySelectorAll('input[name="additional_requirements[]"]:checked')).map(cb => cb.value)
+            },
+            
+            // 3D Design Data
+            design3D: {
+                modelData: this.collect3DModelData(),
+                cameraPosition: this.collectCameraData(),
+                lightingSettings: this.collectLightingData(),
+                renderSettings: this.collectRenderData()
+            },
+            
+            // File Uploads
+            uploads: {
+                logo: this.collectFileData('logo_upload'),
+                businessLicense: this.collectFileData('business_license'),
+                additionalFiles: this.collectAdditionalFiles()
+            },
+            
+            // Order Summary
+            orderSummary: {
+                totalPieces: this.calculateTotalPieces(),
+                totalVarieties: this.calculateTotalVarieties(),
+                estimatedCost: this.calculateEstimatedCost(),
+                estimatedDelivery: this.calculateEstimatedDelivery()
+            },
+            
+            // Metadata
+            metadata: {
+                createdAt: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                screenResolution: `${screen.width}x${screen.height}`,
+                formVersion: '2.0',
+                designComplete: this.isDesignComplete(),
+                notesComplete: this.isNotesComplete()
+            }
+        };
+        
+        return formData;
+    }
+
+    collectPatternData() {
+        const patternData = {};
+        const selectedPattern = document.querySelector('.pattern-option.selected');
+        if (selectedPattern) {
+            patternData.selected = selectedPattern.dataset.pattern;
+            patternData.customizations = this.getPatternCustomizations();
+        }
+        return patternData;
+    }
+
+    collectLogoData() {
+        const logoData = {
+            uploaded: null,
+            position: document.getElementById('logo_position').value,
+            size: document.getElementById('logo_size').value,
+            customizations: {}
+        };
+        
+        const logoFile = document.getElementById('logo_upload').files[0];
+        if (logoFile) {
+            logoData.uploaded = {
+                name: logoFile.name,
+                size: logoFile.size,
+                type: logoFile.type,
+                lastModified: logoFile.lastModified
+            };
+        }
+        
+        return logoData;
+    }
+
+    collectTextData() {
+        return {
+            text: document.getElementById('design_text').value || null,
+            position: document.getElementById('text_position').value,
+            color: document.getElementById('text_color').value,
+            size: document.getElementById('text_size').value,
+            style: document.getElementById('text_style').value
+        };
+    }
+
+    collect3DModelData() {
+        if (!this.viewer3D) return null;
+        
+        return {
+            clothingPieces: Array.from(this.viewer3D.clothingPieces.entries()).map(([type, piece]) => ({
+                type: type,
+                position: piece.position,
+                rotation: piece.rotation,
+                scale: piece.scale,
+                material: this.extractMaterialData(piece),
+                userData: piece.userData
+            })),
+            sceneSettings: {
+                background: this.viewer3D.scene.background,
+                fog: this.viewer3D.scene.fog
+            }
+        };
+    }
+
+    collectCameraData() {
+        if (!this.viewer3D) return null;
+        
+        return {
+            position: this.viewer3D.camera.position,
+            rotation: this.viewer3D.camera.rotation,
+            zoom: this.viewer3D.camera.zoom
+        };
+    }
+
+    collectLightingData() {
+        if (!this.viewer3D) return null;
+        
+        const lights = [];
+        this.viewer3D.scene.traverse((child) => {
+            if (child.isLight) {
+                lights.push({
+                    type: child.type,
+                    position: child.position,
+                    color: child.color,
+                    intensity: child.intensity
+                });
+            }
+        });
+        
+        return { lights };
+    }
+
+    collectRenderData() {
+        if (!this.viewer3D) return null;
+        
+        return {
+            antialias: this.viewer3D.renderer.antialias,
+            shadowMap: {
+                enabled: this.viewer3D.renderer.shadowMap.enabled,
+                type: this.viewer3D.renderer.shadowMap.type
+            },
+            outputEncoding: this.viewer3D.renderer.outputEncoding
+        };
+    }
+
+    collectFileData(inputId) {
+        const input = document.getElementById(inputId);
+        if (!input || !input.files[0]) return null;
+        
+        const file = input.files[0];
+        return {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            lastModified: file.lastModified,
+            url: URL.createObjectURL(file) // For preview purposes
+        };
+    }
+
+    collectAdditionalFiles() {
+        const files = [];
+        const fileInputs = document.querySelectorAll('input[type="file"]:not(#logo_upload)');
+        
+        fileInputs.forEach(input => {
+            if (input.files.length > 0) {
+                Array.from(input.files).forEach(file => {
+                    files.push({
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        lastModified: file.lastModified,
+                        inputName: input.name
+                    });
+                });
+            }
+        });
+        
+        return files;
+    }
+
+    extractMaterialData(mesh) {
+        if (!mesh.material) return null;
+        
+        const material = mesh.material;
+        return {
+            type: material.type,
+            color: material.color?.getHexString(),
+            map: material.map ? 'texture_loaded' : null,
+            normalMap: material.normalMap ? 'normal_loaded' : null,
+            roughness: material.roughness,
+            metalness: material.metalness,
+            transparent: material.transparent,
+            opacity: material.opacity
+        };
+    }
+
+    calculateTotalPieces() {
+        let total = 0;
+        const pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        
+        pieceTypes.forEach(pieceType => {
+            const totalElement = document.getElementById(`${pieceType}_total`);
+            if (totalElement) {
+                total += parseInt(totalElement.textContent) || 0;
+            }
+        });
+        
+        return total;
+    }
+
+    calculateTotalVarieties() {
+        let varieties = 0;
+        const pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        
+        pieceTypes.forEach(pieceType => {
+            const totalElement = document.getElementById(`${pieceType}_total`);
+            if (totalElement && parseInt(totalElement.textContent) > 0) {
+                varieties++;
+            }
+        });
+        
+        return varieties;
+    }
+
+    calculateEstimatedCost() {
+        // Basic cost calculation based on pieces and quantities
+        const baseCosts = {
+            'shirt': 25,
+            'pants': 30,
+            'shorts': 20,
+            'jacket': 45,
+            'shoes': 35,
+            'socks': 8
+        };
+        
+        let totalCost = 0;
+        const pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        
+        pieceTypes.forEach(pieceType => {
+            const totalElement = document.getElementById(`${pieceType}_total`);
+            if (totalElement) {
+                const quantity = parseInt(totalElement.textContent) || 0;
+                const baseCost = baseCosts[pieceType] || 20;
+                totalCost += quantity * baseCost;
+            }
+        });
+        
+        return totalCost;
+    }
+
+    calculateEstimatedDelivery() {
+        const deliveryPreference = document.getElementById('delivery_preference').value;
+        const totalPieces = this.calculateTotalPieces();
+        
+        let baseDays = 7; // Standard delivery
+        
+        switch (deliveryPreference) {
+            case 'fast':
+                baseDays = 5;
+                break;
+            case 'express':
+                baseDays = 2;
+                break;
+        }
+        
+        // Add extra days based on quantity
+        if (totalPieces > 100) baseDays += 2;
+        if (totalPieces > 500) baseDays += 3;
+        
+        return baseDays;
+    }
+
+    isDesignComplete() {
+        const selectedPieces = document.querySelectorAll('input[name="clothing_pieces[]"]:checked');
+        return selectedPieces.length > 0;
+    }
+
+    isNotesComplete() {
+        const notes = document.getElementById('design_notes').value;
+        return notes && notes.trim().length > 0;
+    }
+
+    getPatternCustomizations() {
+        // Extract pattern customizations if any
+        return {
+            stripeWidth: this.getCustomValue('stripe_width'),
+            dotSize: this.getCustomValue('dot_size'),
+            gradientDirection: this.getCustomValue('gradient_direction')
+        };
+    }
+
+    getCustomValue(key) {
+        const element = document.getElementById(key);
+        return element ? element.value : null;
+    }
+
+    collectSizesData() {
+        const sizesData = {};
+        const pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        
+        pieceTypes.forEach(pieceType => {
+            const sizesGroup = document.querySelector(`.piece-sizes-group[data-piece="${pieceType}"]`);
+            if (sizesGroup && sizesGroup.style.display !== 'none') {
+                const quantityInputs = sizesGroup.querySelectorAll('.size-quantity');
+                sizesData[pieceType] = {};
+                
+                quantityInputs.forEach(input => {
+                    const size = input.name.split('[')[1].split(']')[0];
+                    const quantity = parseInt(input.value) || 0;
+                    if (quantity > 0) {
+                        sizesData[pieceType][size] = quantity;
+                    }
+                });
+            }
+        });
+        
+        return sizesData;
+    }
+
+    showSuccessMessage(message) {
+        // Create and show success message
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alert.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.parentNode.removeChild(alert);
+            }
+        }, 5000);
     }
 }
 
