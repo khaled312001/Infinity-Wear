@@ -232,21 +232,13 @@
                                                 <label class="form-label fw-bold text-muted">الملف المرفوع:</label>
                                                 <div class="p-3 bg-light rounded">
                                                     @if($fileExists)
-                                                        <div class="d-flex gap-2 mb-2">
-                                                            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary">
-                                                                <i class="fas fa-eye me-1"></i> عرض الملف
-                                                            </a>
-                                                            <a href="{{ $fileUrl }}" download class="btn btn-outline-success">
-                                                                <i class="fas fa-download me-1"></i> تحميل الملف
-                                                            </a>
-                                                        </div>
                                                         
                                                         @if($isCloudinary && $cloudinaryData)
                                                             @if(str_contains($cloudinaryData['format'] ?? '', 'jpg') || str_contains($cloudinaryData['format'] ?? '', 'png') || str_contains($cloudinaryData['format'] ?? '', 'gif') || str_contains($cloudinaryData['format'] ?? '', 'webp'))
-                                                                <div class="mt-2">
-                                                                    <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-thumbnail" style="max-width: 400px; max-height: 400px;" 
+                                                                <div class="mt-3">
+                                                                    <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-fluid rounded border" style="max-width: 100%; max-height: 500px; object-fit: contain;" 
                                                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                                    <div style="display: none;" class="alert alert-info alert-sm">
+                                                                    <div style="display: none;" class="alert alert-info">
                                                                         <i class="fas fa-info-circle me-1"></i>
                                                                         لا يمكن عرض معاينة الصورة، لكن يمكنك تحميل الملف
                                                                     </div>
@@ -254,10 +246,10 @@
                                                             @endif
                                                         @elseif($filePath)
                                                             @if(str_contains($filePath, '.jpg') || str_contains($filePath, '.jpeg') || str_contains($filePath, '.png') || str_contains($filePath, '.gif') || str_contains($filePath, '.webp'))
-                                                                <div class="mt-2">
-                                                                    <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-thumbnail" style="max-width: 400px; max-height: 400px;" 
+                                                                <div class="mt-3">
+                                                                    <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-fluid rounded border" style="max-width: 100%; max-height: 500px; object-fit: contain;" 
                                                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                                    <div style="display: none;" class="alert alert-info alert-sm">
+                                                                    <div style="display: none;" class="alert alert-info">
                                                                         <i class="fas fa-info-circle me-1"></i>
                                                                         لا يمكن عرض معاينة الصورة، لكن يمكنك تحميل الملف
                                                                     </div>
