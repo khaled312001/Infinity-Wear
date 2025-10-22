@@ -396,7 +396,8 @@ class MultiStepForm {
         // Add visual feedback
         this.highlightDesignOption(e.target);
         
-        // Update summary if we're on step 4
+        // Update summary immediately and if we're on step 4
+        this.updateSummary();
         if (this.currentStep === 4) {
             setTimeout(() => {
                 this.updateSummary();
@@ -480,14 +481,22 @@ class MultiStepForm {
             console.log('Design option:', designOption);
             let designOptionText = '-';
             if (designOption) {
-                if (designOption.value === 'text') {
-                    designOptionText = 'وصف نصي';
-                } else if (designOption.value === 'file') {
-                    designOptionText = 'رفع ملف';
-                } else if (designOption.value === 'custom') {
-                    designOptionText = 'صمم بنفسك';
+                // Get the text from the label next to the radio button
+                const label = designOption.closest('.design-option-card')?.querySelector('.fw-semibold');
+                if (label) {
+                    designOptionText = label.textContent.trim();
+                } else {
+                    // Fallback to value-based mapping
+                    if (designOption.value === 'text') {
+                        designOptionText = 'وصف نصي';
+                    } else if (designOption.value === 'file') {
+                        designOptionText = 'رفع ملف';
+                    } else if (designOption.value === 'custom') {
+                        designOptionText = 'صمم بنفسك';
+                    }
                 }
             }
+            console.log('Design option text:', designOptionText);
             designOptionElement.textContent = designOptionText;
         }
 
@@ -1481,6 +1490,22 @@ document.addEventListener('DOMContentLoaded', function() {
         window.testSummary = function() {
             console.log('Testing summary update...');
             window.multiStepForm.updateSummary();
+        };
+        
+        // Add design option test function
+        window.testDesignOption = function() {
+            console.log('=== DESIGN OPTION TEST ===');
+            const designOption = document.querySelector('input[name="design_option"]:checked');
+            console.log('Selected design option:', designOption);
+            if (designOption) {
+                console.log('Value:', designOption.value);
+                const label = designOption.closest('.design-option-card')?.querySelector('.fw-semibold');
+                console.log('Label element:', label);
+                if (label) {
+                    console.log('Label text:', label.textContent.trim());
+                }
+            }
+            console.log('=== END TEST ===');
         };
         
         // Auto debug when reaching step 4
