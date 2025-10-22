@@ -35,10 +35,7 @@
 @endsection
 
 @section('page-actions')
-    <a href="#" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i>
-        طلب استيراد جديد
-    </a>
+   
 @endsection
 
 @section('content')
