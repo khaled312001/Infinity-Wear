@@ -277,6 +277,11 @@ class MultiStepForm {
         // Step-specific validation
         if (step === 1) {
             isValid = this.validatePasswordMatch() && isValid;
+            // Add custom design validation if custom option is selected
+            const designOption = document.querySelector('input[name="design_option"]:checked');
+            if (designOption && designOption.value === 'custom') {
+                isValid = this.validateCustomDesign() && isValid;
+            }
         } else if (step === 3) {
             isValid = this.validateDesignOption() && isValid;
         }
@@ -435,6 +440,11 @@ class MultiStepForm {
         const selectedDetail = document.getElementById(`design_${selectedOption}_detail`);
         if (selectedDetail) {
             selectedDetail.style.display = 'block';
+            
+            // Initialize custom design interface if selected
+            if (selectedOption === 'custom') {
+                this.initializeCustomDesignInterface();
+            }
         }
         
         // Add visual feedback
@@ -556,6 +566,256 @@ class MultiStepForm {
         if (formContainer) {
             formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+    }
+
+    // Custom Design Interface Methods
+    initializeCustomDesignInterface() {
+        this.setupClothingPiecesSelection();
+        this.setupColorSelection();
+        this.setupLogoUpload();
+        this.setupTextAddition();
+        this.setup3DViewer();
+        this.setupViewerControls();
+    }
+
+    setupClothingPiecesSelection() {
+        const clothingPieces = document.querySelectorAll('.piece-item input[type="checkbox"]');
+        clothingPieces.forEach(piece => {
+            piece.addEventListener('change', (e) => {
+                this.handleClothingPieceChange(e);
+            });
+        });
+    }
+
+    handleClothingPieceChange(e) {
+        const pieceType = e.target.value;
+        const isChecked = e.target.checked;
+        
+        if (isChecked) {
+            this.addClothingPieceToViewer(pieceType);
+        } else {
+            this.removeClothingPieceFromViewer(pieceType);
+        }
+        
+        this.update3DViewer();
+    }
+
+    addClothingPieceToViewer(pieceType) {
+        if (this.viewer3D) {
+            const piece = this.viewer3D.addClothingPiece(pieceType);
+            if (piece) {
+                // Store reference for later use
+                this.clothingPieces = this.clothingPieces || new Map();
+                this.clothingPieces.set(pieceType, piece);
+            }
+        }
+    }
+
+    removeClothingPieceFromViewer(pieceType) {
+        if (this.viewer3D) {
+            this.viewer3D.removeClothingPiece(pieceType);
+            if (this.clothingPieces) {
+                this.clothingPieces.delete(pieceType);
+            }
+        }
+    }
+
+    selectClothingPiece(pieceElement) {
+        // Remove previous selection
+        document.querySelectorAll('.clothing-piece.selected').forEach(piece => {
+            piece.classList.remove('selected');
+        });
+        
+        // Select current piece
+        pieceElement.classList.add('selected');
+        this.selectedPiece = pieceElement;
+        
+        // Update 3D viewer selection
+        if (this.viewer3D) {
+            this.viewer3D.selectPiece(pieceElement);
+        }
+    }
+
+    setupColorSelection() {
+        const colorOptions = document.querySelectorAll('.color-option');
+        colorOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                this.handleColorSelection(e);
+            });
+        });
+    }
+
+    handleColorSelection(e) {
+        const selectedColor = e.target.dataset.color;
+        
+        // Remove previous selection
+        document.querySelectorAll('.color-option.selected').forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        // Select current color
+        e.target.classList.add('selected');
+        
+        // Apply color to selected piece in 3D viewer
+        if (this.viewer3D && this.selectedPiece) {
+            const pieceType = this.selectedPiece.userData?.type;
+            if (pieceType) {
+                this.viewer3D.updateClothingPieceColor(pieceType, selectedColor);
+            }
+        }
+        
+        // Update selected colors hidden input
+        this.updateSelectedColors();
+    }
+
+    updateSelectedColors() {
+        const selectedColors = Array.from(document.querySelectorAll('.color-option.selected'))
+            .map(option => option.dataset.color);
+        
+        const hiddenInput = document.getElementById('selected_colors');
+        if (hiddenInput) {
+            hiddenInput.value = JSON.stringify(selectedColors);
+        }
+    }
+
+    setupLogoUpload() {
+        const logoUpload = document.getElementById('logo_upload');
+        if (logoUpload) {
+            logoUpload.addEventListener('change', (e) => {
+                this.handleLogoUpload(e);
+            });
+        }
+    }
+
+    handleLogoUpload(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                this.addLogoToViewer(event.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    addLogoToViewer(logoDataUrl) {
+        if (this.viewer3D) {
+            this.viewer3D.addLogo(logoDataUrl);
+        }
+    }
+
+    setupTextAddition() {
+        const designText = document.getElementById('design_text');
+        if (designText) {
+            designText.addEventListener('input', (e) => {
+                this.handleTextAddition(e);
+            });
+        }
+    }
+
+    handleTextAddition(e) {
+        const text = e.target.value;
+        
+        if (this.viewer3D) {
+            if (text) {
+                this.viewer3D.addText(text);
+            }
+        }
+    }
+
+    setup3DViewer() {
+        const viewer = document.getElementById('3d-viewer');
+        if (viewer && window.Design3DViewer) {
+            // Initialize 3D viewer with Three.js
+            this.viewer3D = new Design3DViewer('3d-viewer');
+            this.viewer3D.loadHumanModel();
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                this.viewer3D.resize();
+            });
+        }
+    }
+
+    update3DViewer() {
+        const viewer = document.getElementById('3d-viewer');
+        const placeholder = viewer.querySelector('.model-placeholder');
+        const hasPieces = this.clothingPieces && this.clothingPieces.size > 0;
+        
+        if (hasPieces) {
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
+        } else {
+            if (placeholder) {
+                placeholder.style.display = 'block';
+            }
+        }
+    }
+
+    setupViewerControls() {
+        const rotateBtn = document.getElementById('rotate-model');
+        const zoomInBtn = document.getElementById('zoom-in');
+        const zoomOutBtn = document.getElementById('zoom-out');
+        const resetBtn = document.getElementById('reset-view');
+        
+        if (rotateBtn) {
+            rotateBtn.addEventListener('click', () => this.rotateModel());
+        }
+        
+        if (zoomInBtn) {
+            zoomInBtn.addEventListener('click', () => this.zoomIn());
+        }
+        
+        if (zoomOutBtn) {
+            zoomOutBtn.addEventListener('click', () => this.zoomOut());
+        }
+        
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => this.resetView());
+        }
+    }
+
+    rotateModel() {
+        if (this.viewer3D) {
+            this.viewer3D.rotateModel(90, 0);
+        }
+    }
+
+    zoomIn() {
+        if (this.viewer3D) {
+            this.viewer3D.zoomModel(-1);
+        }
+    }
+
+    zoomOut() {
+        if (this.viewer3D) {
+            this.viewer3D.zoomModel(1);
+        }
+    }
+
+    resetView() {
+        if (this.viewer3D) {
+            this.viewer3D.resetView();
+        }
+    }
+
+    // Enhanced validation for custom design
+    validateCustomDesign() {
+        const clothingPieces = document.querySelectorAll('input[name="clothing_pieces[]"]:checked');
+        const businessType = document.getElementById('design_business_type').value;
+        
+        if (clothingPieces.length === 0) {
+            this.showStepError(1, 'يرجى اختيار قطعة ملابس واحدة على الأقل');
+            return false;
+        }
+        
+        if (!businessType) {
+            this.showStepError(1, 'يرجى اختيار نوع النشاط');
+            return false;
+        }
+        
+        return true;
     }
 }
 

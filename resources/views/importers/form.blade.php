@@ -7,6 +7,8 @@
 @endpush
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="{{ asset('js/3d-design-viewer.js') }}"></script>
 <script src="{{ asset('js/multi-step-form.js') }}"></script>
 @endpush
 
@@ -332,16 +334,16 @@ document.addEventListener('DOMContentLoaded', function() {
                                                     </div>
                                                     
                                                     <div class="col-md-4 mb-3">
-                                                        <div class="design-option-card" data-option="template">
+                                                        <div class="design-option-card" data-option="custom">
                                                             <div class="form-check">
                                                                 <input class="form-check-input design-option" type="radio" 
-                                                                       name="design_option" id="design_option_template" value="template" 
-                                                                       {{ old('design_option') == 'template' ? 'checked' : '' }}>
-                                                                <label class="form-check-label w-100" for="design_option_template">
+                                                                       name="design_option" id="design_option_custom" value="custom" 
+                                                                       {{ old('design_option') == 'custom' ? 'checked' : '' }}>
+                                                                <label class="form-check-label w-100" for="design_option_custom">
                                                                     <div class="text-center p-3">
-                                                                        <i class="fas fa-cube fa-2x text-info mb-2"></i>
-                                                                        <div class="fw-semibold">قالب جاهز</div>
-                                                                        <small class="text-muted">اختر من القوالب</small>
+                                                                        <i class="fas fa-paint-brush fa-2x text-warning mb-2"></i>
+                                                                        <div class="fw-semibold">صمم بنفسك</div>
+                                                                        <small class="text-muted">تصميم تفاعلي للزي</small>
                                                                     </div>
                                                                 </label>
                                                             </div>
@@ -403,39 +405,134 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 </div>
                                             </div>
                                             
-                                            <!-- Template Design -->
-                                            <div class="design-detail" id="design_template_detail" style="display: none;">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold">اختر القالب</label>
+                                            <!-- Custom Design Interface -->
+                                            <div class="design-detail" id="design_custom_detail" style="display: none;">
+                                                <div class="custom-design-interface">
                                                     <div class="row">
-                                                        <div class="col-md-4 mb-3">
-                                                            <div class="template-card">
-                                                                <input type="radio" class="form-check-input" name="template_selected" 
-                                                                       id="template1" value="template1">
-                                                                <label for="template1" class="w-100">
-                                                                    <img src="{{ asset('images/template1.jpg') }}" class="img-fluid rounded" alt="قالب 1">
-                                                                    <div class="text-center mt-2 fw-semibold">قالب رياضي كلاسيكي</div>
-                                                                </label>
+                                                        <!-- Design Controls Panel -->
+                                                        <div class="col-lg-4">
+                                                            <div class="design-controls-panel">
+                                                                <h5 class="panel-title mb-3">
+                                                                    <i class="fas fa-cogs me-2"></i>
+                                                                    أدوات التصميم
+                                                                </h5>
+                                                                
+                                                                <!-- Business Type Selection -->
+                                                                <div class="control-group mb-4">
+                                                                    <label class="control-label fw-semibold">نوع النشاط</label>
+                                                                    <select class="form-select" id="design_business_type" name="design_business_type">
+                                                                        <option value="">اختر نوع النشاط</option>
+                                                                        <option value="academy">أكاديمية رياضية</option>
+                                                                        <option value="school">مدرسة</option>
+                                                                        <option value="hospital">مستشفى</option>
+                                                                        <option value="company">شركة</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- Clothing Pieces Selection -->
+                                                                <div class="control-group mb-4">
+                                                                    <label class="control-label fw-semibold">قطع الملابس</label>
+                                                                    <div class="clothing-pieces">
+                                                                        <div class="piece-item" data-piece="shirt">
+                                                                            <input type="checkbox" id="piece_shirt" name="clothing_pieces[]" value="shirt">
+                                                                            <label for="piece_shirt">
+                                                                                <i class="fas fa-tshirt"></i>
+                                                                                قميص/تيشرت
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="piece-item" data-piece="pants">
+                                                                            <input type="checkbox" id="piece_pants" name="clothing_pieces[]" value="pants">
+                                                                            <label for="piece_pants">
+                                                                                <i class="fas fa-user-tie"></i>
+                                                                                بنطلون
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="piece-item" data-piece="shorts">
+                                                                            <input type="checkbox" id="piece_shorts" name="clothing_pieces[]" value="shorts">
+                                                                            <label for="piece_shorts">
+                                                                                <i class="fas fa-running"></i>
+                                                                                شورت
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="piece-item" data-piece="jacket">
+                                                                            <input type="checkbox" id="piece_jacket" name="clothing_pieces[]" value="jacket">
+                                                                            <label for="piece_jacket">
+                                                                                <i class="fas fa-vest"></i>
+                                                                                جاكيت
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="piece-item" data-piece="shoes">
+                                                                            <input type="checkbox" id="piece_shoes" name="clothing_pieces[]" value="shoes">
+                                                                            <label for="piece_shoes">
+                                                                                <i class="fas fa-shoe-prints"></i>
+                                                                                حذاء
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Color Selection -->
+                                                                <div class="control-group mb-4">
+                                                                    <label class="control-label fw-semibold">الألوان</label>
+                                                                    <div class="color-palette">
+                                                                        <div class="color-option" data-color="#FF0000" style="background-color: #FF0000;"></div>
+                                                                        <div class="color-option" data-color="#0000FF" style="background-color: #0000FF;"></div>
+                                                                        <div class="color-option" data-color="#00FF00" style="background-color: #00FF00;"></div>
+                                                                        <div class="color-option" data-color="#FFFF00" style="background-color: #FFFF00;"></div>
+                                                                        <div class="color-option" data-color="#FF00FF" style="background-color: #FF00FF;"></div>
+                                                                        <div class="color-option" data-color="#00FFFF" style="background-color: #00FFFF;"></div>
+                                                                        <div class="color-option" data-color="#000000" style="background-color: #000000;"></div>
+                                                                        <div class="color-option" data-color="#FFFFFF" style="background-color: #FFFFFF;"></div>
+                                                                    </div>
+                                                                    <input type="hidden" id="selected_colors" name="selected_colors">
+                                                                </div>
+
+                                                                <!-- Logo Upload -->
+                                                                <div class="control-group mb-4">
+                                                                    <label class="control-label fw-semibold">رفع الشعار</label>
+                                                                    <input type="file" class="form-control" id="logo_upload" name="logo_upload" accept="image/*">
+                                                                    <div class="form-text">يمكنك رفع شعار المؤسسة</div>
+                                                                </div>
+
+                                                                <!-- Text Addition -->
+                                                                <div class="control-group mb-4">
+                                                                    <label class="control-label fw-semibold">إضافة نص</label>
+                                                                    <input type="text" class="form-control" id="design_text" name="design_text" placeholder="مثال: اسم المؤسسة">
+                                                                    <div class="form-text">يمكنك إضافة نص مخصص</div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <div class="template-card">
-                                                                <input type="radio" class="form-check-input" name="template_selected" 
-                                                                       id="template2" value="template2">
-                                                                <label for="template2" class="w-100">
-                                                                    <img src="{{ asset('images/template2.jpg') }}" class="img-fluid rounded" alt="قالب 2">
-                                                                    <div class="text-center mt-2 fw-semibold">قالب عصري</div>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4 mb-3">
-                                                            <div class="template-card">
-                                                                <input type="radio" class="form-check-input" name="template_selected" 
-                                                                       id="template3" value="template3">
-                                                                <label for="template3" class="w-100">
-                                                                    <img src="{{ asset('images/template3.jpg') }}" class="img-fluid rounded" alt="قالب 3">
-                                                                    <div class="text-center mt-2 fw-semibold">قالب احترافي</div>
-                                                                </label>
+
+                                                        <!-- 3D Preview Panel -->
+                                                        <div class="col-lg-8">
+                                                            <div class="preview-panel">
+                                                                <h5 class="panel-title mb-3">
+                                                                    <i class="fas fa-cube me-2"></i>
+                                                                    معاينة ثلاثية الأبعاد
+                                                                </h5>
+                                                                <div class="viewer-container">
+                                                                    <div id="3d-viewer" class="viewer-3d">
+                                                                        <!-- 3D Model will be loaded here -->
+                                                                        <div class="model-placeholder">
+                                                                            <i class="fas fa-user fa-5x text-muted"></i>
+                                                                            <p class="mt-3">اختر قطع الملابس لبدء التصميم</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="viewer-controls">
+                                                                        <button type="button" class="btn btn-sm btn-outline-primary" id="rotate-model">
+                                                                            <i class="fas fa-sync-alt"></i> تدوير
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-outline-primary" id="zoom-in">
+                                                                            <i class="fas fa-search-plus"></i> تكبير
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-outline-primary" id="zoom-out">
+                                                                            <i class="fas fa-search-minus"></i> تصغير
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-outline-primary" id="reset-view">
+                                                                            <i class="fas fa-home"></i> إعادة تعيين
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
