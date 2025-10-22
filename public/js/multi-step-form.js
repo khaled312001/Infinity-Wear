@@ -549,16 +549,22 @@ class MultiStepForm {
     }
 
     updateSummary() {
+        console.log('Updating summary...');
+        
         // Order details (step 1)
         const quantityElement = document.getElementById('summary_quantity');
+        console.log('Quantity element:', quantityElement);
         if (quantityElement) {
             const quantity = document.getElementById('quantity')?.value || '-';
+            console.log('Quantity value:', quantity);
             quantityElement.textContent = quantity + ' قطعة';
         }
 
         const designOptionElement = document.getElementById('summary_design_option');
+        console.log('Design option element:', designOptionElement);
         if (designOptionElement) {
             const designOption = document.querySelector('input[name="design_option"]:checked');
+            console.log('Design option:', designOption);
             let designOptionText = '-';
             if (designOption) {
                 if (designOption.value === 'text') {
@@ -573,21 +579,27 @@ class MultiStepForm {
         }
 
         const requirementsElement = document.getElementById('summary_requirements');
+        console.log('Requirements element:', requirementsElement);
         if (requirementsElement) {
             const requirements = document.getElementById('requirements')?.value || '-';
+            console.log('Requirements value:', requirements);
             requirementsElement.textContent = requirements;
         }
         
         // Company info (step 2)
         const companyElement = document.getElementById('summary_company');
+        console.log('Company element:', companyElement);
         if (companyElement) {
             const companyName = document.getElementById('company_name')?.value || '-';
+            console.log('Company name value:', companyName);
             companyElement.textContent = companyName;
         }
 
         const businessTypeElement = document.getElementById('summary_business_type');
+        console.log('Business type element:', businessTypeElement);
         if (businessTypeElement) {
             const businessTypeSelect = document.getElementById('business_type');
+            console.log('Business type select:', businessTypeSelect);
             let businessTypeText = '-';
             if (businessTypeSelect && businessTypeSelect.value) {
                 const businessTypes = {
@@ -604,29 +616,39 @@ class MultiStepForm {
         }
 
         const cityElement = document.getElementById('summary_city');
+        console.log('City element:', cityElement);
         if (cityElement) {
             const city = document.getElementById('city')?.value || '-';
+            console.log('City value:', city);
             cityElement.textContent = city;
         }
         
         // Personal info (step 3)
         const nameElement = document.getElementById('summary_name');
+        console.log('Name element:', nameElement);
         if (nameElement) {
             const name = document.getElementById('name')?.value || '-';
+            console.log('Name value:', name);
             nameElement.textContent = name;
         }
 
         const emailElement = document.getElementById('summary_email');
+        console.log('Email element:', emailElement);
         if (emailElement) {
             const email = document.getElementById('email')?.value || '-';
+            console.log('Email value:', email);
             emailElement.textContent = email;
         }
 
         const phoneElement = document.getElementById('summary_phone');
+        console.log('Phone element:', phoneElement);
         if (phoneElement) {
             const phone = document.getElementById('phone')?.value || '-';
+            console.log('Phone value:', phone);
             phoneElement.textContent = phone;
         }
+        
+        console.log('Summary update completed');
     }
 
     handleSubmit(e) {
@@ -1500,5 +1522,58 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if the form exists before initializing
     if (document.getElementById('multiStepForm')) {
         window.multiStepForm = new MultiStepForm();
+        
+        // Add debug function
+        window.debugForm = function() {
+            console.log('=== FORM DEBUG ===');
+            console.log('Current step:', window.multiStepForm.currentStep);
+            console.log('Form data:', window.multiStepForm.formData);
+            
+            // Check all form elements
+            const elements = [
+                'quantity', 'requirements', 'company_name', 'business_type', 'city', 'name', 'email', 'phone'
+            ];
+            
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                console.log(`${id}:`, element ? element.value : 'NOT FOUND');
+            });
+            
+            // Check design option
+            const designOption = document.querySelector('input[name="design_option"]:checked');
+            console.log('Design option:', designOption ? designOption.value : 'NOT SELECTED');
+            
+            // Check summary elements
+            const summaryElements = [
+                'summary_quantity', 'summary_design_option', 'summary_requirements',
+                'summary_company', 'summary_business_type', 'summary_city',
+                'summary_name', 'summary_email', 'summary_phone'
+            ];
+            
+            summaryElements.forEach(id => {
+                const element = document.getElementById(id);
+                console.log(`${id}:`, element ? element.textContent : 'NOT FOUND');
+            });
+            
+            console.log('=== END DEBUG ===');
+        };
+        
+        // Add test function
+        window.testSummary = function() {
+            console.log('Testing summary update...');
+            window.multiStepForm.updateSummary();
+        };
+        
+        // Auto debug when reaching step 4
+        const originalShowStep = window.multiStepForm.showStep.bind(window.multiStepForm);
+        window.multiStepForm.showStep = function(step) {
+            originalShowStep(step);
+            if (step === 4) {
+                setTimeout(() => {
+                    console.log('Auto debug on step 4:');
+                    window.debugForm();
+                }, 500);
+            }
+        };
     }
 });
