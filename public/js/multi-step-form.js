@@ -587,6 +587,59 @@ class MultiStepForm {
         for (let i = 1; i <= this.totalSteps; i++) {
             this.saveStepData(i);
         }
+        
+        // Reset form after successful submission
+        setTimeout(() => {
+            this.resetForm();
+        }, 2000);
+    }
+
+    resetForm() {
+        console.log('Resetting form...');
+        
+        // Reset form data
+        this.formData = {};
+        
+        // Reset current step
+        this.currentStep = 1;
+        
+        // Clear all form inputs
+        const allInputs = document.querySelectorAll('input, select, textarea');
+        allInputs.forEach(input => {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                input.checked = false;
+            } else {
+                input.value = '';
+            }
+            this.clearFieldError(input);
+        });
+        
+        // Reset design option highlights
+        document.querySelectorAll('.design-option-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // Reset design details visibility
+        document.querySelectorAll('.design-detail').forEach(detail => {
+            detail.style.display = 'none';
+        });
+        
+        // Reset 3D viewer
+        if (this.viewer3D) {
+            this.viewer3D.dispose();
+            this.viewer3D = null;
+        }
+        
+        // Reset clothing pieces
+        this.clothingPieces = new Map();
+        
+        // Show first step
+        this.showStep(1);
+        
+        // Reset progress bar
+        this.updateProgressBar(1);
+        
+        console.log('Form reset completed');
     }
 
     showLoadingState() {
@@ -1508,6 +1561,60 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('=== END TEST ===');
         };
         
+        // Add comprehensive test function
+        window.testAllInputs = function() {
+            console.log('=== COMPREHENSIVE FORM TEST ===');
+            console.log('Current step:', window.multiStepForm.currentStep);
+            console.log('Form data:', window.multiStepForm.formData);
+            
+            // Test all form inputs
+            const allInputs = document.querySelectorAll('input, select, textarea');
+            console.log('Total inputs found:', allInputs.length);
+            
+            allInputs.forEach((input, index) => {
+                console.log(`Input ${index + 1}:`, {
+                    id: input.id,
+                    name: input.name,
+                    type: input.type,
+                    value: input.value,
+                    checked: input.checked,
+                    required: input.hasAttribute('required'),
+                    visible: input.offsetParent !== null
+                });
+            });
+            
+            // Test design options specifically
+            console.log('=== DESIGN OPTIONS TEST ===');
+            const designOptions = document.querySelectorAll('input[name="design_option"]');
+            designOptions.forEach((option, index) => {
+                console.log(`Design option ${index + 1}:`, {
+                    value: option.value,
+                    checked: option.checked,
+                    visible: option.offsetParent !== null,
+                    parent: option.closest('.design-option-card')?.querySelector('.fw-semibold')?.textContent
+                });
+            });
+            
+            // Test summary elements
+            console.log('=== SUMMARY ELEMENTS TEST ===');
+            const summaryElements = [
+                'summary_quantity', 'summary_design_option', 'summary_requirements',
+                'summary_company', 'summary_business_type', 'summary_city',
+                'summary_name', 'summary_email', 'summary_phone'
+            ];
+            
+            summaryElements.forEach(id => {
+                const element = document.getElementById(id);
+                console.log(`${id}:`, element ? {
+                    exists: true,
+                    textContent: element.textContent,
+                    visible: element.offsetParent !== null
+                } : 'NOT FOUND');
+            });
+            
+            console.log('=== END COMPREHENSIVE TEST ===');
+        };
+        
         // Auto debug when reaching step 4
         const originalShowStep = window.multiStepForm.showStep.bind(window.multiStepForm);
         window.multiStepForm.showStep = function(step) {
@@ -1518,6 +1625,66 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.debugForm();
                 }, 500);
             }
+        };
+        
+        // Add reset form test function
+        window.testResetForm = function() {
+            console.log('Testing form reset...');
+            window.multiStepForm.resetForm();
+        };
+        
+        // Add comprehensive test function
+        window.testAllInputs = function() {
+            console.log('=== COMPREHENSIVE FORM TEST ===');
+            console.log('Current step:', window.multiStepForm.currentStep);
+            console.log('Form data:', window.multiStepForm.formData);
+            
+            // Test all form inputs
+            const allInputs = document.querySelectorAll('input, select, textarea');
+            console.log('Total inputs found:', allInputs.length);
+            
+            allInputs.forEach((input, index) => {
+                console.log(`Input ${index + 1}:`, {
+                    id: input.id,
+                    name: input.name,
+                    type: input.type,
+                    value: input.value,
+                    checked: input.checked,
+                    required: input.hasAttribute('required'),
+                    visible: input.offsetParent !== null
+                });
+            });
+            
+            // Test design options specifically
+            console.log('=== DESIGN OPTIONS TEST ===');
+            const designOptions = document.querySelectorAll('input[name="design_option"]');
+            designOptions.forEach((option, index) => {
+                console.log(`Design option ${index + 1}:`, {
+                    value: option.value,
+                    checked: option.checked,
+                    visible: option.offsetParent !== null,
+                    parent: option.closest('.design-option-card')?.querySelector('.fw-semibold')?.textContent
+                });
+            });
+            
+            // Test summary elements
+            console.log('=== SUMMARY ELEMENTS TEST ===');
+            const summaryElements = [
+                'summary_quantity', 'summary_design_option', 'summary_requirements',
+                'summary_company', 'summary_business_type', 'summary_city',
+                'summary_name', 'summary_email', 'summary_phone'
+            ];
+            
+            summaryElements.forEach(id => {
+                const element = document.getElementById(id);
+                console.log(`${id}:`, element ? {
+                    exists: true,
+                    textContent: element.textContent,
+                    visible: element.offsetParent !== null
+                } : 'NOT FOUND');
+            });
+            
+            console.log('=== END COMPREHENSIVE TEST ===');
         };
     }
 });
