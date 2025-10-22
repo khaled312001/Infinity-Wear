@@ -208,22 +208,31 @@
                                             $fileExists = true;
                                             $isCloudinary = true;
                                         } else {
-                                            $fullPath = public_path('storage/' . $filePath);
-                                            $fileExists = file_exists($fullPath);
+                                            // محاولة مسارات متعددة للعثور على الصورة
+                                            $possiblePaths = [
+                                                public_path('storage/' . $filePath),
+                                                public_path('storage/designs/' . basename($filePath)),
+                                                public_path('storage/infinitywearsa/designs/' . basename($filePath)),
+                                                storage_path('app/public/' . $filePath),
+                                                storage_path('app/public/designs/' . basename($filePath)),
+                                            ];
+                                            
+                                            $fileExists = false;
                                             $fileUrl = asset('storage/' . $filePath);
                                             $isCloudinary = false;
                                             
-                                            // معالجة إضافية للتحقق من وجود الملف المحلي
-                                            if (!$fileExists) {
-                                                $alternativePath1 = public_path('storage/designs/' . basename($filePath));
-                                                $alternativePath2 = storage_path('app/public/' . $filePath);
-                                                
-                                                if (file_exists($alternativePath1)) {
+                                            foreach ($possiblePaths as $path) {
+                                                if (file_exists($path)) {
                                                     $fileExists = true;
-                                                    $fileUrl = asset('storage/designs/' . basename($filePath));
-                                                } elseif (file_exists($alternativePath2)) {
-                                                    $fileExists = true;
-                                                    $fileUrl = asset('storage/' . $filePath);
+                                                    // تحديد URL الصحيح بناءً على المسار
+                                                    if (strpos($path, 'public/storage/designs/') !== false) {
+                                                        $fileUrl = asset('storage/designs/' . basename($filePath));
+                                                    } elseif (strpos($path, 'public/storage/infinitywearsa/designs/') !== false) {
+                                                        $fileUrl = asset('storage/infinitywearsa/designs/' . basename($filePath));
+                                                    } else {
+                                                        $fileUrl = asset('storage/' . $filePath);
+                                                    }
+                                                    break;
                                                 }
                                             }
                                         }
