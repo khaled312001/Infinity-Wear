@@ -49,11 +49,21 @@ class Design3DViewer {
 
     setupRenderer() {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+        
+        // Set size with proper dimensions
+        const width = this.container.clientWidth || 400;
+        const height = this.container.clientHeight || 400;
+        
+        this.renderer.setSize(width, height);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         
+        // Clear any existing content
+        this.container.innerHTML = '';
         this.container.appendChild(this.renderer.domElement);
+        
+        console.log('3D Renderer setup complete:', width, 'x', height);
     }
 
     setupLighting() {
@@ -89,8 +99,9 @@ class Design3DViewer {
     }
 
     loadHumanModel() {
-        // Create a professional human figure with better proportions
-        const humanGroup = new THREE.Group();
+        try {
+            // Create a professional human figure with better proportions
+            const humanGroup = new THREE.Group();
 
         // Head with better shape
         const headGeometry = new THREE.SphereGeometry(0.25, 32, 32);
@@ -199,6 +210,11 @@ class Design3DViewer {
 
         this.model = humanGroup;
         this.scene.add(this.model);
+        
+        console.log('Human model loaded successfully');
+        } catch (error) {
+            console.error('Error loading human model:', error);
+        }
     }
 
     addClothingPiece(pieceType, options = {}) {
@@ -846,14 +862,16 @@ class Design3DViewer {
     }
 
     resize() {
-        if (this.container && this.camera && this.renderer) {
-            const width = this.container.clientWidth;
-            const height = this.container.clientHeight;
-            
-            this.camera.aspect = width / height;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(width, height);
-        }
+        if (!this.container || !this.camera || !this.renderer) return;
+        
+        const width = this.container.clientWidth;
+        const height = this.container.clientHeight;
+        
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(width, height);
+        
+        console.log('3D Viewer resized to:', width, 'x', height);
     }
 
     dispose() {

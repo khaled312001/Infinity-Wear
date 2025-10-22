@@ -858,7 +858,9 @@ class MultiStepForm {
                 this.handleColorSelection(e);
             });
         });
+    }
 
+    setupPatternSelection() {
         // Setup pattern selection
         const patternOptions = document.querySelectorAll('.pattern-option');
         patternOptions.forEach(option => {
@@ -1005,16 +1007,42 @@ class MultiStepForm {
 
     setup3DViewer() {
         const viewer = document.getElementById('3d-viewer');
-        if (viewer && window.Design3DViewer) {
-            // Initialize 3D viewer with Three.js
-            this.viewer3D = new Design3DViewer('3d-viewer');
-            this.viewer3D.loadHumanModel();
-            
-            // Handle window resize
-            window.addEventListener('resize', () => {
-                this.viewer3D.resize();
-            });
+        if (!viewer) {
+            console.error('3D viewer container not found');
+            return;
         }
+
+        // Check if Three.js is loaded
+        if (typeof THREE === 'undefined') {
+            console.error('Three.js is not loaded');
+            return;
+        }
+
+        // Check if Design3DViewer class is available
+        if (typeof Design3DViewer === 'undefined') {
+            console.error('Design3DViewer class is not loaded');
+            return;
+        }
+
+        // Wait a bit for the container to be fully rendered
+        setTimeout(() => {
+            try {
+                // Initialize 3D viewer with Three.js
+                this.viewer3D = new Design3DViewer('3d-viewer');
+                this.viewer3D.loadHumanModel();
+                
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    if (this.viewer3D && this.viewer3D.resize) {
+                        this.viewer3D.resize();
+                    }
+                });
+                
+                console.log('3D Viewer initialized successfully');
+            } catch (error) {
+                console.error('Error initializing 3D viewer:', error);
+            }
+        }, 100);
     }
 
     update3DViewer() {
