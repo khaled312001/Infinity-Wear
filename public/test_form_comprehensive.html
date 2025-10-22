@@ -346,78 +346,115 @@
         
         // Initialize test interface
         function initializeTestInterface() {
-            const testItemsContainer = document.getElementById('testItems');
-            
-            testItems.forEach((item, index) => {
-                const testItem = document.createElement('div');
-                testItem.className = 'test-item';
-                testItem.id = `test-${item.id}`;
-                testItem.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-1">${item.name}</h6>
-                            <p class="mb-0 text-muted">${item.description}</p>
-                            <small class="badge bg-${item.required ? 'danger' : 'secondary'}">${item.required ? 'مطلوب' : 'اختياري'}</small>
+            try {
+                const testItemsContainer = document.getElementById('testItems');
+                if (!testItemsContainer) {
+                    console.error('Test items container not found');
+                    return;
+                }
+                
+                testItems.forEach((item, index) => {
+                    const testItem = document.createElement('div');
+                    testItem.className = 'test-item';
+                    testItem.id = `test-${item.id}`;
+                    testItem.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">${item.name}</h6>
+                                <p class="mb-0 text-muted">${item.description}</p>
+                                <small class="badge bg-${item.required ? 'danger' : 'secondary'}">${item.required ? 'مطلوب' : 'اختياري'}</small>
+                            </div>
+                            <div>
+                                <button class="test-button" onclick="runSingleTest('${item.id}')">
+                                    <i class="fas fa-play me-1"></i>تشغيل
+                                </button>
+                            </div>
                         </div>
-                        <div>
-                            <button class="test-button" onclick="runSingleTest('${item.id}')">
-                                <i class="fas fa-play me-1"></i>تشغيل
-                            </button>
-                        </div>
-                    </div>
-                `;
-                testItemsContainer.appendChild(testItem);
-            });
+                    `;
+                    testItemsContainer.appendChild(testItem);
+                });
+            } catch (error) {
+                console.error('Error initializing test interface:', error);
+            }
         }
         
         // Log function
         function log(message, type = 'info') {
-            const testResults = document.getElementById('testResults');
-            const logEntry = document.createElement('div');
-            logEntry.className = `log-entry log-${type}`;
-            
-            const icon = type === 'success' ? 'check-circle' : 
-                        type === 'error' ? 'times-circle' : 
-                        type === 'warning' ? 'exclamation-triangle' : 'info-circle';
-            
-            logEntry.innerHTML = `
-                <i class="fas fa-${icon} me-2"></i>
-                <span class="timestamp">[${new Date().toLocaleTimeString()}]</span>
-                ${message}
-            `;
-            
-            testResults.appendChild(logEntry);
-            testResults.scrollTop = testResults.scrollHeight;
+            try {
+                const testResults = document.getElementById('testResults');
+                if (!testResults) {
+                    console.log(`[${type.toUpperCase()}] ${message}`);
+                    return;
+                }
+                
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry log-${type}`;
+                
+                const icon = type === 'success' ? 'check-circle' : 
+                            type === 'error' ? 'times-circle' : 
+                            type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+                
+                logEntry.innerHTML = `
+                    <i class="fas fa-${icon} me-2"></i>
+                    <span class="timestamp">[${new Date().toLocaleTimeString()}]</span>
+                    ${message}
+                `;
+                
+                testResults.appendChild(logEntry);
+                testResults.scrollTop = testResults.scrollHeight;
+            } catch (error) {
+                console.error('Error in log function:', error);
+                console.log(`[${type.toUpperCase()}] ${message}`);
+            }
         }
         
         // Update progress
         function updateProgress() {
-            const progress = testResults.total > 0 ? (testResults.passed / testResults.total) * 100 : 0;
-            document.getElementById('progressFill').style.width = `${progress}%`;
-            
-            document.getElementById('totalTests').textContent = testResults.total;
-            document.getElementById('passedTests').textContent = testResults.passed;
-            document.getElementById('failedTests').textContent = testResults.failed;
-            document.getElementById('skippedTests').textContent = testResults.skipped;
+            try {
+                const progress = testResults.total > 0 ? (testResults.passed / testResults.total) * 100 : 0;
+                const progressFill = document.getElementById('progressFill');
+                if (progressFill) {
+                    progressFill.style.width = `${progress}%`;
+                }
+                
+                const totalTests = document.getElementById('totalTests');
+                const passedTests = document.getElementById('passedTests');
+                const failedTests = document.getElementById('failedTests');
+                const skippedTests = document.getElementById('skippedTests');
+                
+                if (totalTests) totalTests.textContent = testResults.total;
+                if (passedTests) passedTests.textContent = testResults.passed;
+                if (failedTests) failedTests.textContent = testResults.failed;
+                if (skippedTests) skippedTests.textContent = testResults.skipped;
+            } catch (error) {
+                console.error('Error updating progress:', error);
+            }
         }
         
         // Update test item status
         function updateTestItemStatus(testId, status) {
-            const testItem = document.getElementById(`test-${testId}`);
-            if (testItem) {
-                testItem.className = `test-item ${status}`;
+            try {
+                const testItem = document.getElementById(`test-${testId}`);
+                if (testItem) {
+                    testItem.className = `test-item ${status}`;
+                }
+            } catch (error) {
+                console.error('Error updating test item status:', error);
             }
         }
         
         // Run single test
         async function runSingleTest(testId) {
-            const testItem = testItems.find(item => item.id === testId);
-            if (!testItem) return;
-            
-            log(`بدء اختبار: ${testItem.name}`, 'info');
-            updateTestItemStatus(testId, 'running');
-            
             try {
+                const testItem = testItems.find(item => item.id === testId);
+                if (!testItem) {
+                    console.error('Test item not found:', testId);
+                    return;
+                }
+                
+                log(`بدء اختبار: ${testItem.name}`, 'info');
+                updateTestItemStatus(testId, 'running');
+                
                 const result = await executeTest(testId);
                 
                 if (result.success) {
@@ -434,7 +471,8 @@
                 updateProgress();
                 
             } catch (error) {
-                log(`❌ خطأ في اختبار: ${testItem.name} - ${error.message}`, 'error');
+                console.error('Error in runSingleTest:', error);
+                log(`❌ خطأ في اختبار: ${testId} - ${error.message}`, 'error');
                 updateTestItemStatus(testId, 'failed');
                 testResults.failed++;
                 testResults.total++;
@@ -444,35 +482,40 @@
         
         // Execute specific test
         async function executeTest(testId) {
-            switch (testId) {
-                case 'page_load':
-                    return await testPageLoad();
-                case 'form_structure':
-                    return await testFormStructure();
-                case 'step_navigation':
-                    return await testStepNavigation();
-                case 'quantity_input':
-                    return await testQuantityInput();
-                case 'design_options':
-                    return await testDesignOptions();
-                case 'custom_design_interface':
-                    return await testCustomDesignInterface();
-                case 'business_type':
-                    return await testBusinessType();
-                case 'company_info':
-                    return await testCompanyInfo();
-                case 'personal_info':
-                    return await testPersonalInfo();
-                case 'form_validation':
-                    return await testFormValidation();
-                case 'summary_display':
-                    return await testSummaryDisplay();
-                case 'form_submission':
-                    return await testFormSubmission();
-                case 'form_reset':
-                    return await testFormReset();
-                default:
-                    return { success: false, error: 'اختبار غير معروف' };
+            try {
+                switch (testId) {
+                    case 'page_load':
+                        return await testPageLoad();
+                    case 'form_structure':
+                        return await testFormStructure();
+                    case 'step_navigation':
+                        return await testStepNavigation();
+                    case 'quantity_input':
+                        return await testQuantityInput();
+                    case 'design_options':
+                        return await testDesignOptions();
+                    case 'custom_design_interface':
+                        return await testCustomDesignInterface();
+                    case 'business_type':
+                        return await testBusinessType();
+                    case 'company_info':
+                        return await testCompanyInfo();
+                    case 'personal_info':
+                        return await testPersonalInfo();
+                    case 'form_validation':
+                        return await testFormValidation();
+                    case 'summary_display':
+                        return await testSummaryDisplay();
+                    case 'form_submission':
+                        return await testFormSubmission();
+                    case 'form_reset':
+                        return await testFormReset();
+                    default:
+                        return { success: false, error: 'اختبار غير معروف' };
+                }
+            } catch (error) {
+                console.error('Error in executeTest:', error);
+                return { success: false, error: error.message };
             }
         }
         
@@ -482,142 +525,235 @@
                 const response = await fetch(testConfig.baseUrl);
                 return { success: response.ok, error: response.ok ? null : `HTTP ${response.status}` };
             } catch (error) {
+                console.error('Error in testPageLoad:', error);
                 return { success: false, error: error.message };
             }
         }
         
         async function testFormStructure() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testFormStructure:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testStepNavigation() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testStepNavigation:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testQuantityInput() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testQuantityInput:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testDesignOptions() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testDesignOptions:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testCustomDesignInterface() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testCustomDesignInterface:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testBusinessType() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testBusinessType:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testCompanyInfo() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testCompanyInfo:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testPersonalInfo() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testPersonalInfo:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testFormValidation() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testFormValidation:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testSummaryDisplay() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testSummaryDisplay:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testFormSubmission() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testFormSubmission:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         async function testFormReset() {
-            // This would need to be run in the actual page context
-            return { success: true, error: null };
+            try {
+                // This would need to be run in the actual page context
+                return { success: true, error: null };
+            } catch (error) {
+                console.error('Error in testFormReset:', error);
+                return { success: false, error: error.message };
+            }
         }
         
         // Run quick tests
         async function runQuickTests() {
-            log('🚀 بدء الاختبارات السريعة...', 'info');
-            clearResults();
-            
-            const quickTests = ['page_load', 'form_structure', 'step_navigation'];
-            
-            for (const testId of quickTests) {
-                await runSingleTest(testId);
-                await new Promise(resolve => setTimeout(resolve, 500));
+            try {
+                log('🚀 بدء الاختبارات السريعة...', 'info');
+                clearResults();
+                
+                const quickTests = ['page_load', 'form_structure', 'step_navigation'];
+                
+                for (const testId of quickTests) {
+                    await runSingleTest(testId);
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                
+                log('✅ انتهت الاختبارات السريعة', 'success');
+            } catch (error) {
+                console.error('Error in runQuickTests:', error);
+                log('❌ خطأ في الاختبارات السريعة', 'error');
             }
-            
-            log('✅ انتهت الاختبارات السريعة', 'success');
         }
         
         // Run comprehensive tests
         async function runComprehensiveTests() {
-            log('🔍 بدء الاختبارات الشاملة...', 'info');
-            clearResults();
-            
-            for (const testItem of testItems) {
-                await runSingleTest(testItem.id);
-                await new Promise(resolve => setTimeout(resolve, 1000));
+            try {
+                log('🔍 بدء الاختبارات الشاملة...', 'info');
+                clearResults();
+                
+                for (const testItem of testItems) {
+                    await runSingleTest(testItem.id);
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+                
+                log('✅ انتهت الاختبارات الشاملة', 'success');
+            } catch (error) {
+                console.error('Error in runComprehensiveTests:', error);
+                log('❌ خطأ في الاختبارات الشاملة', 'error');
             }
-            
-            log('✅ انتهت الاختبارات الشاملة', 'success');
         }
         
         // Test form reset
         async function testFormReset() {
-            log('🔄 اختبار إعادة تعيين النموذج...', 'info');
-            await runSingleTest('form_reset');
+            try {
+                log('🔄 اختبار إعادة تعيين النموذج...', 'info');
+                await runSingleTest('form_reset');
+            } catch (error) {
+                console.error('Error in testFormReset:', error);
+                log('❌ خطأ في اختبار إعادة التعيين', 'error');
+            }
         }
         
         // Test design options
         async function testDesignOptions() {
-            log('🎨 اختبار خيارات التصميم...', 'info');
-            await runSingleTest('design_options');
+            try {
+                log('🎨 اختبار خيارات التصميم...', 'info');
+                await runSingleTest('design_options');
+            } catch (error) {
+                console.error('Error in testDesignOptions:', error);
+                log('❌ خطأ في اختبار خيارات التصميم', 'error');
+            }
         }
         
         // Clear results
         function clearResults() {
-            testResults = {
-                total: 0,
-                passed: 0,
-                failed: 0,
-                skipped: 0,
-                tests: []
-            };
-            
-            document.getElementById('testResults').innerHTML = `
-                <div class="log-entry log-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    تم مسح النتائج. جاهز للاختبار الجديد.
-                </div>
-            `;
-            
-            // Reset all test items
-            testItems.forEach(item => {
-                const testItem = document.getElementById(`test-${item.id}`);
-                if (testItem) {
-                    testItem.className = 'test-item';
+            try {
+                testResults = {
+                    total: 0,
+                    passed: 0,
+                    failed: 0,
+                    skipped: 0,
+                    tests: []
+                };
+                
+                const testResultsElement = document.getElementById('testResults');
+                if (testResultsElement) {
+                    testResultsElement.innerHTML = `
+                        <div class="log-entry log-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            تم مسح النتائج. جاهز للاختبار الجديد.
+                        </div>
+                    `;
                 }
-            });
-            
-            updateProgress();
+                
+                // Reset all test items
+                testItems.forEach(item => {
+                    const testItem = document.getElementById(`test-${item.id}`);
+                    if (testItem) {
+                        testItem.className = 'test-item';
+                    }
+                });
+                
+                updateProgress();
+            } catch (error) {
+                console.error('Error in clearResults:', error);
+            }
         }
         
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            initializeTestInterface();
-            log('🎯 تم تحميل واجهة الاختبار بنجاح', 'success');
+            try {
+                initializeTestInterface();
+                log('🎯 تم تحميل واجهة الاختبار بنجاح', 'success');
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                log('❌ خطأ في تحميل واجهة الاختبار', 'error');
+            }
         });
     </script>
 </body>
