@@ -17,7 +17,7 @@ class CloudinaryService
             try {
                 $this->cloudinary = new \Cloudinary\Cloudinary([
                     'cloud' => [
-                        'cloud_name' => config('cloudinary.cloud_name', 'infinity-wear'),
+                        'cloud_name' => config('cloudinary.cloud_name', 'dhx24m770'),
                         'api_key' => config('cloudinary.api_key', '787844769525158'),
                         'api_secret' => config('cloudinary.api_secret', 'uZa3Vo50vIgiE4UizMtVMW_OAHI'),
                     ],
@@ -62,7 +62,6 @@ class CloudinaryService
                 'folder' => $folder,
                 'resource_type' => 'auto',
                 'quality' => 'auto',
-                'fetch_format' => 'auto',
             ], $options);
 
             $result = $this->cloudinary->uploadApi()->upload(
@@ -120,7 +119,6 @@ class CloudinaryService
                 'folder' => $folder,
                 'resource_type' => 'auto',
                 'quality' => 'auto',
-                'fetch_format' => 'auto',
             ], $options);
 
             $result = $this->cloudinary->uploadApi()->upload($filePath, $uploadOptions);
