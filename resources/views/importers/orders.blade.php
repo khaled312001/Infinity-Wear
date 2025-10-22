@@ -198,12 +198,35 @@
                                 @endif
                                 
                                 @if(isset($designDetails['file_path']))
-                                    <p><strong>الملف:</strong> 
-                                        <a href="{{ asset('storage/' . $designDetails['file_path']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-download me-1"></i>
-                                            تحميل الملف
-                                        </a>
-                                    </p>
+                                    @php
+                                        $filePath = $designDetails['file_path'];
+                                        $fullPath = public_path('storage/' . $filePath);
+                                        $fileExists = file_exists($fullPath);
+                                        $fileUrl = asset('storage/' . $filePath);
+                                    @endphp
+                                    
+                                    <p><strong>الملف:</strong></p>
+                                    @if($fileExists)
+                                        <div class="d-flex gap-2 mb-2">
+                                            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye me-1"></i> عرض الملف
+                                            </a>
+                                            <a href="{{ $fileUrl }}" download class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-download me-1"></i> تحميل الملف
+                                            </a>
+                                        </div>
+                                        
+                                        @if(str_contains($filePath, '.jpg') || str_contains($filePath, '.jpeg') || str_contains($filePath, '.png') || str_contains($filePath, '.gif') || str_contains($filePath, '.webp'))
+                                            <div class="mt-2">
+                                                <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-thumbnail" style="max-width: 300px; max-height: 300px;">
+                                            </div>
+                                        @endif
+                                    @else
+                                        <div class="alert alert-warning alert-sm">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            الملف غير متاح حالياً. يرجى التواصل مع فريق الدعم.
+                                        </div>
+                                    @endif
                                 @endif
                                 
                                 @if(isset($designDetails['notes']))

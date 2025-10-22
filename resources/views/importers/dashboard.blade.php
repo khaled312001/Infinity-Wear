@@ -309,9 +309,39 @@
                                                                             @break
                                                                         @case('upload')
                                                                             @if(isset($designDetails['file_path']))
-                                                                                <a href="{{ asset('storage/' . $designDetails['file_path']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                                                    <i class="fas fa-download me-1"></i> عرض الملف
-                                                                                </a>
+                                                                                @php
+                                                                                    $filePath = $designDetails['file_path'];
+                                                                                    $fullPath = public_path('storage/' . $filePath);
+                                                                                    $fileExists = file_exists($fullPath);
+                                                                                    $fileUrl = asset('storage/' . $filePath);
+                                                                                @endphp
+                                                                                
+                                                                                @if($fileExists)
+                                                                                    <div class="d-flex gap-2">
+                                                                                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                                                            <i class="fas fa-eye me-1"></i> عرض الملف
+                                                                                        </a>
+                                                                                        <a href="{{ $fileUrl }}" download class="btn btn-sm btn-outline-success">
+                                                                                            <i class="fas fa-download me-1"></i> تحميل
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    
+                                                                                    @if(str_contains($filePath, '.jpg') || str_contains($filePath, '.jpeg') || str_contains($filePath, '.png') || str_contains($filePath, '.gif') || str_contains($filePath, '.webp'))
+                                                                                        <div class="mt-2">
+                                                                                            <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                                                                        </div>
+                                                                                    @endif
+                                                                                @else
+                                                                                    <div class="alert alert-warning alert-sm">
+                                                                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                                                                        الملف غير متاح حالياً. يرجى التواصل مع فريق الدعم.
+                                                                                    </div>
+                                                                                @endif
+                                                                            @else
+                                                                                <div class="alert alert-info alert-sm">
+                                                                                    <i class="fas fa-info-circle me-1"></i>
+                                                                                    لم يتم رفع ملف تصميم
+                                                                                </div>
                                                                             @endif
                                                                             @break
                                                                         @case('template')

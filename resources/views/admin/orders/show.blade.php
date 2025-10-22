@@ -188,12 +188,37 @@
                                         
                                     @case('upload')
                                         @if(isset($designDetails['file_path']))
+                                            @php
+                                                $filePath = $designDetails['file_path'];
+                                                $fullPath = public_path('storage/' . $filePath);
+                                                $fileExists = file_exists($fullPath);
+                                                $fileUrl = asset('storage/' . $filePath);
+                                            @endphp
+                                            
                                             <div class="info-item mb-3">
                                                 <label class="form-label fw-bold text-muted">الملف المرفوع:</label>
                                                 <div class="p-3 bg-light rounded">
-                                                    <a href="{{ Storage::url($designDetails['file_path']) }}" target="_blank" class="btn btn-outline-primary">
-                                                        <i class="fas fa-download me-1"></i>تحميل الملف
-                                                    </a>
+                                                    @if($fileExists)
+                                                        <div class="d-flex gap-2 mb-2">
+                                                            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary">
+                                                                <i class="fas fa-eye me-1"></i> عرض الملف
+                                                            </a>
+                                                            <a href="{{ $fileUrl }}" download class="btn btn-outline-success">
+                                                                <i class="fas fa-download me-1"></i> تحميل الملف
+                                                            </a>
+                                                        </div>
+                                                        
+                                                        @if(str_contains($filePath, '.jpg') || str_contains($filePath, '.jpeg') || str_contains($filePath, '.png') || str_contains($filePath, '.gif') || str_contains($filePath, '.webp'))
+                                                            <div class="mt-2">
+                                                                <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-thumbnail" style="max-width: 400px; max-height: 400px;">
+                                                            </div>
+                                                        @endif
+                                                    @else
+                                                        <div class="alert alert-warning alert-sm">
+                                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                                            الملف غير متاح حالياً. يرجى التواصل مع فريق الدعم.
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         @endif
