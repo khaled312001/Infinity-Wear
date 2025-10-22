@@ -106,8 +106,7 @@ class Design3DViewer {
         // Head with better shape
         const headGeometry = new THREE.SphereGeometry(0.25, 32, 32);
         const headMaterial = new THREE.MeshLambertMaterial({ 
-            color: 0xffdbac,
-            shininess: 30
+            color: 0xffdbac
         });
         const head = new THREE.Mesh(headGeometry, headMaterial);
         head.position.y = 1.4;
@@ -125,8 +124,7 @@ class Design3DViewer {
         // Torso with better proportions
         const torsoGeometry = new THREE.CylinderGeometry(0.35, 0.4, 1.0, 32);
         const torsoMaterial = new THREE.MeshLambertMaterial({ 
-            color: 0xffdbac,
-            shininess: 20
+            color: 0xffdbac
         });
         const torso = new THREE.Mesh(torsoGeometry, torsoMaterial);
         torso.position.y = 0.4;
