@@ -4,793 +4,243 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="is-admin" content="{{ Auth::guard('admin')->check() ? '1' : '0' }}">
-    <meta name="vapid-public-key" content="{{ config('push.vapid.public_key') }}">
-    <title>@yield('title', \App\Helpers\SiteSettingsHelper::getPageTitle())</title>
-    <meta name="description" content="@yield('description', \App\Helpers\SiteSettingsHelper::getSiteDescription())">
+    <title>@yield('title', 'Infinity Wear')</title>
     
-    <!-- SEO Meta Tags -->
-    <meta name="keywords" content="@yield('keywords', app('seo')['site_keywords'] ?? 'ملابس رياضية، زي موحد، أكاديميات رياضية، السعودية، كرة قدم، تصميم ملابس، infinity wear، الزي اللامحدود')">
-    <meta name="author" content="{{ \App\Helpers\SiteSettingsHelper::getSiteName() }}">
-    <meta name="robots" content="index, follow">
-    <meta name="language" content="Arabic">
-    <meta name="revisit-after" content="7 days">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="@yield('title', \App\Helpers\SiteSettingsHelper::getPageTitle())">
-    <meta property="og:description" content="@yield('description', \App\Helpers\SiteSettingsHelper::getSiteDescription())">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:image" content="{{ \App\Helpers\SiteSettingsHelper::getLogoUrl() }}">
-    <meta property="og:site_name" content="{{ \App\Helpers\SiteSettingsHelper::getSiteName() }}">
-    <meta property="og:locale" content="ar_SA">
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('title', \App\Helpers\SiteSettingsHelper::getPageTitle())">
-    <meta name="twitter:description" content="@yield('description', \App\Helpers\SiteSettingsHelper::getSiteDescription())">
-    <meta name="twitter:image" content="{{ \App\Helpers\SiteSettingsHelper::getLogoUrl() }}">
-    
-    <!-- Google Site Verification -->
-    @if(app('seo')['google_site_verification'] ?? false)
-    <meta name="google-site-verification" content="{{ app('seo')['google_site_verification'] }}">
-    @endif
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{{ url()->current() }}">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo.png') }}">
-    <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo.svg') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('images/logo.png') }}">
-    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-    
-    <!-- Bootstrap RTL CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <!-- Main CSS -->
-    <link href="{{ asset('css/infinity-home.css') }}" rel="stylesheet">
-    <style>
-        /* Hover dropdown for header order button */
-        .order-dropdown { position: relative; display: inline-block; }
-        .order-dropdown .dropdown-menu {
-            position: absolute;
-            top: 100%; /* directly under the button, no gap to avoid hover flicker */
-            right: 0;  /* align under the button on RTL (not left) */
-            min-width: 240px;
-            padding: 8px 0;
-            background: #ffffff;
-            border: 1px solid rgba(0,0,0,0.08);
-            border-radius: 10px;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-            display: none;
-            z-index: 1050;
-        }
-        /* Keep visible when hovering parent, the menu itself, or focusing within for keyboard */
-        .order-dropdown:hover .dropdown-menu,
-        .order-dropdown:focus-within .dropdown-menu,
-        .order-dropdown .dropdown-menu:hover { display: block; }
-        /* Small arrow */
-        .order-dropdown .dropdown-menu::before {
-            content: "";
-            position: absolute;
-            top: -8px;
-            right: 14px; /* arrow aligns to the right side under the button */
-            border-width: 8px;
-            border-style: solid;
-            border-color: transparent transparent #ffffff transparent;
-            filter: drop-shadow(0 -1px 0 rgba(0,0,0,0.08));
-        }
-        .order-dropdown .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 14px;
-            color: #212529;
-            text-decoration: none;
-            white-space: nowrap;
-            font-weight: 500;
-        }
-        .order-dropdown .dropdown-item i { color: #0d6efd; }
-        .order-dropdown .dropdown-item:hover { background-color: #f5f7fb; }
-        .order-dropdown .dropdown-header {
-            padding: 10px 14px 6px;
-            font-size: 13px;
-            color: #6c757d;
-        }
-        .order-dropdown .dropdown-divider { height: 1px; margin: 6px 0; background: rgba(0,0,0,0.06); }
-        /* Shift button and dropdown 50px to the right on all screens */
-        @media (min-width: 992px) {
-            .header-actions .order-dropdown { transform: translateX(70px); }
-        }
-        @media (max-width: 991.98px) {
-            .header-actions .order-dropdown { transform: translateX(120px); }
-        }
-        /* Sidebar mobile login hint under order button */
-        .sidebar-user-actions .sidebar-login-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 8px;
-            color: #0d6efd;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .sidebar-user-actions .sidebar-login-link:hover { text-decoration: underline; }
-        .sidebar-user-actions .sidebar-login-link i { color: #0d6efd; }
-    </style>
-    <!-- Football Animation CSS -->
-    <!-- WhatsApp Button CSS -->
-    <link href="{{ asset('css/whatsapp-button.css') }}" rel="stylesheet">
-    <!-- Push Notifications CSS -->
-    <link href="{{ asset('css/push-notifications.css') }}" rel="stylesheet">
     
-    <!-- Pusher Beams SDK -->
-    <script src="https://js.pusher.com/beams/2.1.0/push-notifications-cdn.js"></script>
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: #667eea !important;
+        }
+        
+        .main-content {
+            margin-top: 80px;
+        }
+        
+        .alert {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            margin-top: 50px;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #667eea;
+        }
+    </style>
     
     @yield('styles')
 </head>
 <body>
-    <!-- Header -->
-    <header class="infinity-header">
-
-        <!-- Main Navigation -->
-        <nav class="infinity-navbar">
-            <div class="container">
-                <div class="infinity-navbar-content">
-                    <!-- Logo -->
-                    <div class="logo">
-                        <a href="{{ route('home') }}">
-                            <img src="{{ \App\Helpers\SiteSettingsHelper::getLogoUrl() }}" 
-                                 alt="{{ \App\Helpers\SiteSettingsHelper::getSiteName() }}" 
-                                 style="height: 50px;">
-                        </a>
-                    </div>
-
-                    <!-- Navigation Menu -->
-                    <ul class="nav-menu">
-                        <li>
-                            <a href="{{ route('home') }}" class="nav-link{{ request()->routeIs('home') ? ' active' : '' }}">
-                                <div class="nav-icon">
-                                    <i class="fas fa-home"></i>
-                                </div>
-                                <span class="nav-text">الرئيسية</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('about') }}" class="nav-link{{ request()->routeIs('about') ? ' active' : '' }}">
-                                <div class="nav-icon">
-                                    <i class="fas fa-info-circle"></i>
-                                </div>
-                                <span class="nav-text">من نحن</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('services') }}" class="nav-link{{ request()->routeIs('services') ? ' active' : '' }}">
-                                <div class="nav-icon">
-                                    <i class="fas fa-cogs"></i>
-                                </div>
-                                <span class="nav-text">خدماتنا</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('portfolio.index') }}" class="nav-link{{ request()->routeIs('portfolio.index') ? ' active' : '' }}">
-                                <div class="nav-icon">
-                                    <i class="fas fa-briefcase"></i>
-                                </div>
-                                <span class="nav-text">أعمالنا</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('contact.index') }}" class="nav-link{{ request()->routeIs('contact.index') ? ' active' : '' }}">
-                                <div class="nav-icon">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <span class="nav-text">تواصل معنا</span>
-                            </a>
-                        </li>
-                    </ul>
-
-                    <!-- Mobile Menu Toggle Button -->
-                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="فتح القائمة">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-
-                    <!-- Action Buttons -->
-                    <div class="header-actions">
-                        @auth
-                            <a href="{{ route(Auth::user()->getDashboardRoute()) }}" class="btn btn-outline">لوحة التحكم</a>ا
-                            <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-primary">تسجيل الخروج</button>
-                            </form>
-                        @elseif(Auth::guard('admin')->check())
-                            <a href="{{ route('admin.dashboard') }}" class="btn btn-outline">لوحة التحكم</a>
-                            <form method="POST" action="{{ route('admin.logout') }}" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-primary">تسجيل الخروج</button>
-                            </form>
-                        @else
-                            <div class="order-dropdown">
-                                <a href="{{ route('importers.form') }}" class="btn btn-primary">أطلب الآن</a>
-                                <div class="dropdown-menu" role="menu" aria-label="خيارات إضافية">
-                                    <div class="dropdown-header">هل لديك حساب؟</div>
-                                    <a href="{{ route('login') }}" class="dropdown-item">
-                                        <i class="fas fa-sign-in-alt ms-1"></i>
-                                        تسجيل الدخول (عميل سابق)
-                                    </a>
-                                </div>
-                            </div>
-                        @endauth
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Mobile Sidebar -->
-    <div class="mobile-sidebar-overlay" id="mobileSidebarOverlay"></div>
-    <div class="mobile-sidebar" id="mobileSidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">
-                <div class="infinity-logo">IW</div>
-                <div class="sidebar-logo-text">إنفينيتي وير</div>
-            </div>
-            <button class="sidebar-close" id="sidebarClose" aria-label="إغلاق القائمة">
-                <i class="fas fa-times"></i>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ route('dashboard') }}">
+                <i class="fas fa-infinity me-2"></i>
+                Infinity Wear
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
             </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-1"></i>
+                            لوحة التحكم
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('importers.register') }}">
+                            <i class="fas fa-plus me-1"></i>
+                            تصميم جديد
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            حسابي
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>الملف الشخصي</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>الإعدادات</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
-        
-        <nav class="sidebar-nav">
-            <div class="sidebar-nav-item">
-                <a href="{{ route('home') }}" class="sidebar-nav-link{{ request()->routeIs('home') ? ' active' : '' }}">
-                    <div class="sidebar-nav-icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <span class="sidebar-nav-text">الرئيسية</span>
-                </a>
-            </div>
-            <div class="sidebar-nav-item">
-                <a href="{{ route('about') }}" class="sidebar-nav-link{{ request()->routeIs('about') ? ' active' : '' }}">
-                    <div class="sidebar-nav-icon">
-                        <i class="fas fa-info-circle"></i>
-                    </div>
-                    <span class="sidebar-nav-text">من نحن</span>
-                </a>
-            </div>
-            <div class="sidebar-nav-item">
-                <a href="{{ route('services') }}" class="sidebar-nav-link{{ request()->routeIs('services') ? ' active' : '' }}">
-                    <div class="sidebar-nav-icon">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <span class="sidebar-nav-text">خدماتنا</span>
-                </a>
-            </div>
-            <div class="sidebar-nav-item">
-                <a href="{{ route('portfolio.index') }}" class="sidebar-nav-link{{ request()->routeIs('portfolio.index') ? ' active' : '' }}">
-                    <div class="sidebar-nav-icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <span class="sidebar-nav-text">أعمالنا</span>
-                </a>
-            </div>
-            <div class="sidebar-nav-item">
-                <a href="{{ route('contact.index') }}" class="sidebar-nav-link{{ request()->routeIs('contact.index') ? ' active' : '' }}">
-                    <div class="sidebar-nav-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <span class="sidebar-nav-text">تواصل معنا</span>
-                </a>
-            </div>
-        </nav>
-        
-        <div class="sidebar-user">
-            <div class="sidebar-user-info">
-                <div class="sidebar-user-avatar">
-                    @auth
-                        {{ substr(Auth::user()->name, 0, 1) }}
-                    @else
-                        <i class="fas fa-user"></i>
-                    @endauth
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Success/Error Messages -->
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-                <div class="sidebar-user-details">
-                    @auth
-                        <h6>{{ Auth::user()->name }}</h6>
-                        <p>مرحباً بك</p>
-                    @else
-                        <h6>زائر</h6>
-                        <p>مرحباً بك</p>
-                    @endauth
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-            </div>
-            <div class="sidebar-user-actions">
-                @auth
-                    <a href="{{ route(Auth::user()->getDashboardRoute()) }}" class="btn btn-sidebar-primary">لوحة التحكم</a>
-                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-sidebar-outline">تسجيل الخروج</button>
-                    </form>
-                @elseif(Auth::guard('admin')->check())
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-sidebar-primary">لوحة التحكم</a>
-                    <form method="POST" action="{{ route('admin.logout') }}" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-sidebar-outline">تسجيل الخروج</button>
-                    </form>
-                @else
-                    <a href="{{ route('importers.form') }}" class="btn btn-sidebar-primary">أطلب الآن</a>
-                    <a href="{{ route('login') }}" class="sidebar-login-link" aria-label="تسجيل الدخول للعملاء السابقين">
-                        <i class="fas fa-sign-in-alt ms-1"></i>
-                        تسجيل الدخول (عميل سابق)
-                    </a>
-                @endauth
-            </div>
+            @endif
+
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <ul class="mb-0">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @yield('content')
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main>
-        @yield('content')
-    </main>
-
     <!-- Footer -->
-    <footer class="site-footer modern-footer">
+    <footer class="footer py-4">
         <div class="container">
-            <div class="row gy-4 footer-main-content">
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="footer-brand-section">
-                        <div class="brand-logo-container">
-                            <img src="{{ \App\Helpers\SiteSettingsHelper::getLogoUrl() }}" 
-                                 alt="{{ \App\Helpers\SiteSettingsHelper::getSiteName() }}" 
-                                 class="brand-logo">
-                            <div class="brand-text-content">
-                                <h3 class="brand-title">{{ \App\Helpers\SiteSettingsHelper::getSiteName() }}</h3>
-                                <p class="brand-subtitle">{{ \App\Helpers\SiteSettingsHelper::getSiteTagline() }}</p>
-                            </div>
-                        </div>
-                        <p class="footer-description">{{ \App\Helpers\SiteSettingsHelper::getSiteDescription() }}</p>
-                        <div class="social-media-links">
-                            @php
-                                $facebookUrl = \App\Models\Setting::get('facebook_url');
-                                $twitterUrl = \App\Models\Setting::get('twitter_url');
-                                $instagramUrl = \App\Models\Setting::get('instagram_url');
-                                $linkedinUrl = \App\Models\Setting::get('linkedin_url');
-                                $youtubeUrl = \App\Models\Setting::get('youtube_url');
-                                $whatsappNumber = \App\Models\Setting::get('whatsapp_number');
-                            @endphp
-                            
-                            @if($facebookUrl && !empty(trim($facebookUrl)))
-                                <a href="{{ $facebookUrl }}" aria-label="Facebook" class="social-link facebook" target="_blank" rel="noopener noreferrer" title="تابعنا على فيسبوك">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                            @endif
-                            
-                            @if($twitterUrl && !empty(trim($twitterUrl)))
-                                <a href="{{ $twitterUrl }}" aria-label="Twitter" class="social-link twitter" target="_blank" rel="noopener noreferrer" title="تابعنا على تويتر">
-                                    <i class="fab fa-twitter"></i>
-                                </a>
-                            @endif
-                            
-                            @if($instagramUrl && !empty(trim($instagramUrl)))
-                                <a href="{{ $instagramUrl }}" aria-label="Instagram" class="social-link instagram" target="_blank" rel="noopener noreferrer" title="تابعنا على إنستغرام">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                            @endif
-                            
-                            @if($linkedinUrl && !empty(trim($linkedinUrl)))
-                                <a href="{{ $linkedinUrl }}" aria-label="LinkedIn" class="social-link linkedin" target="_blank" rel="noopener noreferrer" title="تابعنا على لينكد إن">
-                                    <i class="fab fa-linkedin-in"></i>
-                                </a>
-                            @endif
-                            
-                            @if($youtubeUrl && !empty(trim($youtubeUrl)))
-                                <a href="{{ $youtubeUrl }}" aria-label="YouTube" class="social-link youtube" target="_blank" rel="noopener noreferrer" title="تابعنا على يوتيوب">
-                                    <i class="fab fa-youtube"></i>
-                                </a>
-                            @endif
-                            
-                            @if($whatsappNumber && !empty(trim($whatsappNumber)))
-                                <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $whatsappNumber) }}" aria-label="WhatsApp" class="social-link whatsapp" target="_blank" rel="noopener noreferrer" title="تواصل معنا عبر واتساب">
-                                    <i class="fab fa-whatsapp"></i>
-                                </a>
-                            @endif
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-infinity me-2"></i>Infinity Wear</h5>
+                    <p class="mb-0">نحن متخصصون في تصميم وتصنيع الملابس الموحدة بجودة عالية</p>
                 </div>
-                
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="footer-nav-section">
-                        <h5 class="footer-section-heading">التنقل</h5>
-                        <ul class="footer-nav-links">
-                            <li><a href="{{ route('home') }}">الرئيسية</a></li>
-                            <li><a href="{{ route('about') }}">من نحن</a></li>
-                            <li><a href="{{ route('services') }}">خدماتنا</a></li>
-                            <li><a href="{{ route('products.index') }}">منتجاتنا</a></li>
-                            <li><a href="{{ route('portfolio.index') }}">معرض أعمالنا</a></li>
-                            <li><a href="{{ route('testimonials.index') }}">آراء العملاء</a></li>
-                            <li><a href="{{ route('contact.index') }}">اتصل بنا</a></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="footer-services-section">
-                        <h5 class="footer-section-heading">خدماتنا</h5>
-                        <ul class="footer-services-links">
-                            <li><a href="{{ route('services') }}#fashion-design">تصميم الأزياء</a></li>
-                            <li><a href="{{ route('services') }}#academy-uniforms">الزي الموحد للأكاديميات</a></li>
-                            <li><a href="{{ route('services') }}#sports-teams">ملابس الفرق الرياضية</a></li>
-                            <li><a href="{{ route('services') }}#clothing-printing">الطباعة على الملابس</a></li>
-                            <li><a href="{{ route('services') }}#custom-design">التصميم المخصص</a></li>
-                            <li><a href="{{ route('services') }}#ai-design">التصميم بالذكاء الاصطناعي</a></li>
-                            <li><a href="{{ route('importers.form') }}">أطلب الآن</a></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="footer-contact-section">
-                        <h5 class="footer-section-heading">معلومات التواصل</h5>
-                        <div class="footer-contact-info-list">
-                            @if(\App\Models\Setting::get('contact_phone'))
-                                <div class="footer-contact-info-item">
-                                    <i class="fas fa-phone-alt footer-contact-icon"></i>
-                                    <span class="footer-contact-text">{{ \App\Models\Setting::get('contact_phone') }}</span>
-                                </div>
-                            @endif
-                            @if(\App\Models\Setting::get('contact_email'))
-                                <div class="footer-contact-info-item">
-                                    <i class="fas fa-envelope footer-contact-icon"></i>
-                                    <span class="footer-contact-text">{{ \App\Models\Setting::get('contact_email') }}</span>
-                                </div>
-                            @endif
-                            @if(\App\Models\Setting::get('address'))
-                                <div class="footer-contact-info-item">
-                                    <i class="fas fa-map-marker-alt footer-contact-icon"></i>
-                                    <span class="footer-contact-text">{{ \App\Models\Setting::get('address') }}</span>
-                                </div>
-                            @endif
-                            @if(\App\Models\Setting::get('business_hours'))
-                                <div class="footer-contact-info-item">
-                                    <i class="fas fa-clock footer-contact-icon"></i>
-                                    <span class="footer-contact-text">{{ \App\Models\Setting::get('business_hours') }}</span>
-                                </div>
-                            @endif
-                        </div>
-                        
-                        <!-- Quick Links Section -->
-                        <div class="footer-quick-links mt-4">
-                            <h6 class="footer-section-heading mb-3">روابط سريعة</h6>
-                            <div class="quick-links-grid">
-                                <a href="{{ route('login') }}" class="quick-link">
-                                    <i class="fas fa-sign-in-alt"></i>
-                                    تسجيل الدخول
-                                </a>
-                                <a href="{{ route('register') }}" class="quick-link">
-                                    <i class="fas fa-user-plus"></i>
-                                    إنشاء حساب
-                                </a>
-                                <a href="{{ route('testimonials.create') }}" class="quick-link">
-                                    <i class="fas fa-star"></i>
-                                    إضافة تقييم
-                                </a>
-                                <a href="{{ route('contact.index') }}" class="quick-link">
-                                    <i class="fas fa-headset"></i>
-                                    الدعم الفني
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <hr class="footer-divider">
-            <div class="footer-bottom-section d-flex justify-content-center align-items-center" style="min-height: 50px;">
-                <div class="footer-bottom-content">
-                    <p class="copyright-text m-0 text-center">
-                        &copy; {{ date('Y') }} {{ \App\Helpers\SiteSettingsHelper::getSiteName() }}. جميع الحقوق محفوظة.
-                    </p>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">&copy; {{ date('Y') }} Infinity Wear. جميع الحقوق محفوظة.</p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <!-- Bootstrap JS Bundle with Popper -->
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">جاري التحميل...</span>
+            </div>
+            <p class="mt-3">جاري التحميل...</p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- AOS Animation Library -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <!-- Main JavaScript -->
-    <script src="{{ asset('js/infinity-home.js') }}"></script>
     
-    <!-- Responsive Navigation Script -->
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    
+    <!-- Custom Scripts -->
     <script>
+        // Show loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+        
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+        
+        // Auto-hide alerts after 5 seconds
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile sidebar elements
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileSidebar = document.getElementById('mobileSidebar');
-            const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
-            const sidebarClose = document.getElementById('sidebarClose');
-            
-            // Navbar scroll effect
-            const navbar = document.querySelector('.infinity-navbar');
-            let lastScrollTop = 0;
-            
-            window.addEventListener('scroll', function() {
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                
-                if (scrollTop > 100) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-                
-                lastScrollTop = scrollTop;
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
             });
-            
-            // Mobile sidebar functions
-            function openSidebar() {
-                mobileSidebar.classList.add('show');
-                mobileSidebarOverlay.classList.add('show');
-                mobileMenuToggle.classList.add('active');
-                document.body.style.overflow = 'hidden';
+        });
+        
+        // CSRF token setup for AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-            
-            function closeSidebar() {
-                mobileSidebar.classList.remove('show');
-                mobileSidebarOverlay.classList.remove('show');
-                mobileMenuToggle.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-            
-            // Event listeners for mobile sidebar
-            if (mobileMenuToggle) {
-                mobileMenuToggle.addEventListener('click', openSidebar);
-            }
-            
-            if (sidebarClose) {
-                sidebarClose.addEventListener('click', closeSidebar);
-            }
-            
-            if (mobileSidebarOverlay) {
-                mobileSidebarOverlay.addEventListener('click', closeSidebar);
-            }
-            
-            // Close sidebar on link click
-            const sidebarLinks = document.querySelectorAll('.sidebar-nav-link');
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', closeSidebar);
-            });
-            
-            // Close sidebar on escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && mobileSidebar.classList.contains('show')) {
-                    closeSidebar();
-                }
-            });
-            
-            // Mobile menu close on link click (for desktop navbar)
-            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-            const navbarCollapse = document.querySelector('.navbar-collapse');
-            
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (navbarCollapse && navbarCollapse.classList.contains('show')) {
-                        const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
-                            toggle: false
-                        });
-                        bsCollapse.hide();
-                    }
-                });
-            });
-            
-            // Smooth scroll for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-            
-            // Add animation classes on scroll
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-            
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-in');
-                    }
-                });
-            }, observerOptions);
-            
-            // Observe footer elements
-            document.querySelectorAll('.infinity-footer-content > *').forEach(el => {
-                observer.observe(el);
-            });
-            
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 991) {
-                    closeSidebar();
-                }
-            });
         });
     </script>
     
     @yield('scripts')
-    @stack('scripts')
-    
-    <!-- Google Analytics -->
-    @if(app('seo')['google_analytics_id'] ?? false)
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ app("seo")["google_analytics_id"] }}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '{{ app("seo")["google_analytics_id"] }}');
-    </script>
-    @endif
-    
-    <!-- Facebook Pixel -->
-    @if(app('seo')['facebook_pixel_id'] ?? false)
-    <script>
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '{{ app("seo")["facebook_pixel_id"] }}');
-        fbq('track', 'PageView');
-    </script>
-    <noscript>
-        <img height="1" width="1" style="display:none" 
-             src="https://www.facebook.com/tr?id={{ app("seo")["facebook_pixel_id"] }}&ev=PageView&noscript=1" />
-    </noscript>
-    @endif
-    
-    <!-- Structured Data (JSON-LD) -->
-    @php
-        $structuredData = [
-            "@context" => "https://schema.org",
-            "@type" => "Organization",
-            "name" => "Infinity Wear",
-            "alternateName" => "مؤسسة الزي اللامحدود",
-            "url" => url('/'),
-            "logo" => asset('images/infinity-wear-logo.png'),
-            "description" => app('seo')['site_description'] ?? 'مؤسسة متخصصة في توريد الملابس الرياضية والزي الموحد للأكاديميات الرياضية في المملكة العربية السعودية',
-            "address" => [
-                "@type" => "PostalAddress",
-                "addressCountry" => "SA",
-                "addressLocality" => "مكة المكرمة"
-            ],
-            "contactPoint" => [
-                "@type" => "ContactPoint",
-                "telephone" => "+966501234567",
-                "contactType" => "customer service",
-                "availableLanguage" => ["Arabic", "English"]
-            ],
-            "sameAs" => [
-                "https://facebook.com/infinitywear",
-                "https://twitter.com/infinitywear",
-                "https://instagram.com/infinitywear"
-            ]
-        ];
-    @endphp
-    <script type="application/ld+json">
-    {!! json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
-    </script>
-    
-    <!-- WhatsApp Floating Button - Only show on non-admin pages and if enabled -->
-    @if(!request()->is('admin*') && !request()->is('dashboard*') && !request()->is('customer*') && !request()->is('importer*') && !request()->is('employee*') && !request()->is('marketing*') && !request()->is('sales*') && \App\Models\Setting::get('whatsapp_floating_enabled', 1))
-    <div id="whatsapp-float" class="whatsapp-float">
-        <div class="whatsapp-button" onclick="openWhatsApp()">
-            <i class="fab fa-whatsapp"></i>
-            <span class="whatsapp-text">تواصل معنا</span>
-        </div>
-        <div class="whatsapp-tooltip">
-            <span>أرسل لنا رسالة على واتساب</span>
-            <div class="tooltip-arrow"></div>
-        </div>
-    </div>
-    @endif
-    
-    <!-- WhatsApp Button JavaScript -->
-    <script>
-        function openWhatsApp() {
-            // Get WhatsApp number and message from settings
-            const phoneNumber = '{{ str_replace(["+", " ", "-"], "", \App\Models\Setting::get("whatsapp_number", "+966501234567")) }}';
-            const message = encodeURIComponent('{{ \App\Models\Setting::get("whatsapp_message", "مرحباً، أريد الاستفسار عن خدماتكم في الملابس الرياضية والزي الموحد") }}');
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-            window.open(whatsappUrl, '_blank');
-        }
-        
-        // Show/hide tooltip on hover - only if button exists
-        document.addEventListener('DOMContentLoaded', function() {
-            const whatsappButton = document.querySelector('.whatsapp-button');
-            const tooltip = document.querySelector('.whatsapp-tooltip');
-            
-            if (whatsappButton && tooltip) {
-                whatsappButton.addEventListener('mouseenter', function() {
-                    tooltip.style.opacity = '1';
-                    tooltip.style.visibility = 'visible';
-                });
-                
-                whatsappButton.addEventListener('mouseleave', function() {
-                    tooltip.style.opacity = '0';
-                    tooltip.style.visibility = 'hidden';
-                });
-            }
-        });
-    </script>
-
-    <!-- Push Notifications JavaScript -->
-    <script src="{{ asset('js/push-notifications.js') }}"></script>
-    <script>
-        // Initialize push notifications for contact forms (graceful fallback safe)
-        document.addEventListener('DOMContentLoaded', function() {
-            // Avoid double init; manager self-guards unavailable sessions
-            if (!window.pushNotificationManager && window.PushNotificationManager) {
-                window.pushNotificationManager = new PushNotificationManager();
-            }
-
-            // Handle contact form submissions
-            const contactForms = document.querySelectorAll('form[id*="contact"], form[action*="contact"]');
-            
-            contactForms.forEach(function(form) {
-                form.addEventListener('submit', function(e) {
-                    // Check if push notifications are available and user is subscribed
-                    if (window.pushNotificationManager) {
-                        // Try to subscribe to notifications if not already subscribed
-                        window.pushNotificationManager.getSubscriptionStatus().then(function(status) {
-                            if (!status.isSubscribed && status.canSubscribe && !status.unavailableReason) {
-                                // Auto-subscribe to notifications when user submits contact form
-                                window.pushNotificationManager.subscribe('admin').then(function(success) {
-                                    if (success) {
-                                        console.log('Auto-subscribed to push notifications');
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            });
-        });
-    </script>
-    
-    <!-- Notification System -->
-    <script src="{{ asset('js/notifications.js') }}"></script>
-    <link href="{{ asset('css/notifications.css') }}" rel="stylesheet">
-    
-    <!-- Pusher Beams Configuration -->
-    <script src="{{ asset('js/pusher-beams.js') }}"></script>
 </body>
 </html>
