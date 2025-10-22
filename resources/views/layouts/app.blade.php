@@ -115,16 +115,16 @@
                         <a class="nav-link" href="{{ route('dashboard') }}">
                             <i class="fas fa-tachometer-alt me-1"></i>
                             لوحة التحكم
-                        </a>
-                    </li>
+                            </a>
+                        </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('importers.register') }}">
                             <i class="fas fa-plus me-1"></i>
                             تصميم جديد
-                        </a>
-                    </li>
-                </ul>
-                
+                            </a>
+                        </li>
+                    </ul>
+
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
@@ -140,9 +140,9 @@
                     </li>
                 </ul>
             </div>
-        </div>
-    </nav>
-
+            </div>
+        </nav>
+        
     <!-- Main Content -->
     <div class="main-content">
         <div class="container-fluid">
@@ -172,7 +172,7 @@
                         @endforeach
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            </div>
             @endif
 
             @yield('content')
