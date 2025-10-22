@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use App\Models\Setting;
+use App\Services\CloudinaryService;
 
 class LogoController extends Controller
 {
+    protected $cloudinaryService;
+
+    public function __construct(CloudinaryService $cloudinaryService)
+    {
+        $this->cloudinaryService = $cloudinaryService;
+    }
     /**
      * رفع شعار جديد
      */
@@ -50,33 +57,89 @@ class LogoController extends Controller
                 ], 400);
             }
 
-            // حذف الشعار القديم
-            $oldLogo = Setting::get('site_logo');
-            if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
-                Storage::disk('public')->delete($oldLogo);
+            // حذف الشعار القديم من Cloudinary والمحلي
+            $oldLogoData = Setting::get('site_logo_data');
+            if ($oldLogoData) {
+                $oldData = json_decode($oldLogoData, true);
+                if (isset($oldData['cloudinary']['public_id'])) {
+                    $this->cloudinaryService->deleteFile($oldData['cloudinary']['public_id']);
+                }
+                if (isset($oldData['file_path']) && Storage::disk('public')->exists($oldData['file_path'])) {
+                    Storage::disk('public')->delete($oldData['file_path']);
+                }
             }
 
-            // حفظ الشعار الجديد
-            $logoPath = $logoFile->store('logos', 'public');
+            // رفع الشعار إلى Cloudinary
+            $uploadResult = $this->cloudinaryService->uploadFile($logoFile, 'infinity-wear/logos');
             
-            // حفظ المسار في قاعدة البيانات
-            Setting::set('site_logo', $logoPath);
-            
-            // مسح الكاش
-            Setting::clearCache();
-            \App\Helpers\SiteSettingsHelper::clearCache();
+            if ($uploadResult['success']) {
+                // حفظ الشعار محلياً كـ backup
+                $logoPath = $logoFile->store('logos', 'public');
+                
+                // حفظ بيانات Cloudinary والمحلي
+                $logoData = [
+                    'cloudinary' => [
+                        'public_id' => $uploadResult['public_id'],
+                        'secure_url' => $uploadResult['secure_url'],
+                        'url' => $uploadResult['url'],
+                        'format' => $uploadResult['format'],
+                        'width' => $uploadResult['width'],
+                        'height' => $uploadResult['height'],
+                        'bytes' => $uploadResult['bytes'],
+                    ],
+                    'file_path' => $logoPath,
+                    'uploaded_at' => now()->toISOString(),
+                ];
+                
+                Setting::set('site_logo', $logoPath); // للتوافق مع النظام القديم
+                Setting::set('site_logo_data', json_encode($logoData));
+                
+                // مسح الكاش
+                Setting::clearCache();
+                \App\Helpers\SiteSettingsHelper::clearCache();
 
-            Log::info('Logo uploaded successfully', [
-                'logo_path' => $logoPath,
-                'file_name' => $logoFile->getClientOriginalName(),
-                'file_size' => $logoFile->getSize()
-            ]);
+                Log::info('Logo uploaded to Cloudinary successfully', [
+                    'public_id' => $uploadResult['public_id'],
+                    'file_name' => $logoFile->getClientOriginalName(),
+                    'file_size' => $logoFile->getSize(),
+                    'cloudinary_url' => $uploadResult['secure_url']
+                ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم رفع الشعار بنجاح',
-                'logo_url' => asset('storage/' . $logoPath)
-            ]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم رفع الشعار بنجاح إلى السحابة',
+                    'logo_url' => $uploadResult['secure_url'],
+                    'cloudinary_data' => $logoData['cloudinary']
+                ]);
+            } else {
+                // في حالة فشل الرفع إلى Cloudinary، استخدم التخزين المحلي فقط
+                $logoPath = $logoFile->store('logos', 'public');
+                
+                $logoData = [
+                    'file_path' => $logoPath,
+                    'uploaded_at' => now()->toISOString(),
+                    'cloudinary_error' => $uploadResult['error'] ?? 'Unknown error',
+                ];
+                
+                Setting::set('site_logo', $logoPath);
+                Setting::set('site_logo_data', json_encode($logoData));
+                
+                Setting::clearCache();
+                \App\Helpers\SiteSettingsHelper::clearCache();
+
+                Log::warning('Cloudinary upload failed, using local storage', [
+                    'error' => $uploadResult['error'] ?? 'Unknown error',
+                    'file_name' => $logoFile->getClientOriginalName(),
+                    'local_path' => $logoPath
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم رفع الشعار محلياً (فشل الرفع إلى السحابة)',
+                    'logo_url' => asset('storage/' . $logoPath),
+                    'warning' => 'تم الحفظ محلياً فقط'
+                ]);
+            }
 
         } catch (\Exception $e) {
             Log::error('Logo upload failed', [

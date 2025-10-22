@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Cloudinary\Cloudinary;
-use Cloudinary\Configuration\Configuration;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 
@@ -13,8 +12,8 @@ class CloudinaryService
 
     public function __construct()
     {
-        // تكوين Cloudinary
-        Configuration::instance([
+        // تكوين Cloudinary باستخدام v3 API
+        $this->cloudinary = new Cloudinary([
             'cloud' => [
                 'cloud_name' => config('cloudinary.cloud_name', 'infinity-wear'),
                 'api_key' => config('cloudinary.api_key', '787844769525158'),
@@ -24,8 +23,6 @@ class CloudinaryService
                 'secure' => config('cloudinary.secure', true),
             ],
         ]);
-
-        $this->cloudinary = new Cloudinary();
     }
 
     /**
@@ -145,7 +142,26 @@ class CloudinaryService
 
             $transformations = array_merge($defaultTransformations, $transformations);
 
-            return $this->cloudinary->image($publicId)->resize($transformations)->toUrl();
+            $image = $this->cloudinary->image($publicId);
+            
+            // Apply transformations
+            foreach ($transformations as $key => $value) {
+                if ($key === 'quality') {
+                    $image = $image->quality($value);
+                } elseif ($key === 'fetch_format') {
+                    $image = $image->format($value);
+                } elseif ($key === 'width') {
+                    $image = $image->resize(\Cloudinary\Transformation\Resize::scale()->width($value));
+                } elseif ($key === 'height') {
+                    $image = $image->resize(\Cloudinary\Transformation\Resize::scale()->height($value));
+                } elseif ($key === 'crop') {
+                    $image = $image->resize(\Cloudinary\Transformation\Resize::fill());
+                } elseif ($key === 'gravity') {
+                    $image = $image->resize(\Cloudinary\Transformation\Resize::fill()->gravity($value));
+                }
+            }
+
+            return $image->toUrl();
         } catch (\Exception $e) {
             Log::error('Cloudinary URL generation failed', [
                 'error' => $e->getMessage(),
