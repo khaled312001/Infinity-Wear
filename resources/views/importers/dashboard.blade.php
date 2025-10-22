@@ -308,27 +308,34 @@
                                                                             </div>
                                                                             @break
                                                                         @case('upload')
-                                                                            @if(isset($designDetails['file_path']))
+                                                                            @if(isset($designDetails['file_path']) || isset($designDetails['cloudinary']))
                                                                                 @php
-                                                                                    $filePath = $designDetails['file_path'];
-                                                                                    $fullPath = public_path('storage/' . $filePath);
-                                                                                    $fileExists = file_exists($fullPath);
-                                                                                    $fileUrl = asset('storage/' . $filePath);
+                                                                                    $filePath = $designDetails['file_path'] ?? null;
+                                                                                    $cloudinaryData = $designDetails['cloudinary'] ?? null;
                                                                                     
-                                                                                    // معالجة إضافية للتحقق من وجود الملف
-                                                                                    if (!$fileExists) {
-                                                                                        // محاولة مسارات بديلة
-                                                                                        $alternativePath1 = public_path('storage/designs/' . basename($filePath));
-                                                                                        $alternativePath2 = storage_path('app/public/' . $filePath);
+                                                                                    // تحديد مصدر الصورة (Cloudinary أولاً، ثم المحلي)
+                                                                                    if ($cloudinaryData && isset($cloudinaryData['secure_url'])) {
+                                                                                        $fileUrl = $cloudinaryData['secure_url'];
+                                                                                        $fileExists = true;
+                                                                                        $isCloudinary = true;
+                                                                                    } else {
+                                                                                        $fullPath = public_path('storage/' . $filePath);
+                                                                                        $fileExists = file_exists($fullPath);
+                                                                                        $fileUrl = asset('storage/' . $filePath);
+                                                                                        $isCloudinary = false;
                                                                                         
-                                                                                        if (file_exists($alternativePath1)) {
-                                                                                            $fileExists = true;
-                                                                                            $fullPath = $alternativePath1;
-                                                                                            $fileUrl = asset('storage/designs/' . basename($filePath));
-                                                                                        } elseif (file_exists($alternativePath2)) {
-                                                                                            $fileExists = true;
-                                                                                            $fullPath = $alternativePath2;
-                                                                                            $fileUrl = asset('storage/' . $filePath);
+                                                                                        // معالجة إضافية للتحقق من وجود الملف المحلي
+                                                                                        if (!$fileExists) {
+                                                                                            $alternativePath1 = public_path('storage/designs/' . basename($filePath));
+                                                                                            $alternativePath2 = storage_path('app/public/' . $filePath);
+                                                                                            
+                                                                                            if (file_exists($alternativePath1)) {
+                                                                                                $fileExists = true;
+                                                                                                $fileUrl = asset('storage/designs/' . basename($filePath));
+                                                                                            } elseif (file_exists($alternativePath2)) {
+                                                                                                $fileExists = true;
+                                                                                                $fileUrl = asset('storage/' . $filePath);
+                                                                                            }
                                                                                         }
                                                                                     }
                                                                                 @endphp
@@ -343,28 +350,50 @@
                                                                                         </a>
                                                                                     </div>
                                                                                     
-                                                                                    @if(str_contains($filePath, '.jpg') || str_contains($filePath, '.jpeg') || str_contains($filePath, '.png') || str_contains($filePath, '.gif') || str_contains($filePath, '.webp'))
-                                                                                        <div class="mt-2">
-                                                                                            <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" 
-                                                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                                                            <div style="display: none;" class="alert alert-info alert-sm">
-                                                                                                <i class="fas fa-info-circle me-1"></i>
-                                                                                                لا يمكن عرض معاينة الصورة، لكن يمكنك تحميل الملف
+                                                                                    @if($isCloudinary && $cloudinaryData)
+                                                                                        @if(str_contains($cloudinaryData['format'] ?? '', 'jpg') || str_contains($cloudinaryData['format'] ?? '', 'png') || str_contains($cloudinaryData['format'] ?? '', 'gif') || str_contains($cloudinaryData['format'] ?? '', 'webp'))
+                                                                                            <div class="mt-2">
+                                                                                                <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" 
+                                                                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                                                                <div style="display: none;" class="alert alert-info alert-sm">
+                                                                                                    <i class="fas fa-info-circle me-1"></i>
+                                                                                                    لا يمكن عرض معاينة الصورة، لكن يمكنك تحميل الملف
+                                                                                                </div>
                                                                                             </div>
-                                                                                        </div>
+                                                                                        @endif
+                                                                                    @elseif($filePath)
+                                                                                        @if(str_contains($filePath, '.jpg') || str_contains($filePath, '.jpeg') || str_contains($filePath, '.png') || str_contains($filePath, '.gif') || str_contains($filePath, '.webp'))
+                                                                                            <div class="mt-2">
+                                                                                                <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" 
+                                                                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                                                                <div style="display: none;" class="alert alert-info alert-sm">
+                                                                                                    <i class="fas fa-info-circle me-1"></i>
+                                                                                                    لا يمكن عرض معاينة الصورة، لكن يمكنك تحميل الملف
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        @endif
                                                                                     @endif
                                                                                     
                                                                                     <div class="mt-1">
                                                                                         <small class="text-muted">
                                                                                             <i class="fas fa-info-circle me-1"></i>
-                                                                                            {{ $filePath }}
+                                                                                            @if($isCloudinary)
+                                                                                                <i class="fas fa-cloud me-1"></i> مخزن في السحابة
+                                                                                                @if($cloudinaryData['width'] && $cloudinaryData['height'])
+                                                                                                    ({{ $cloudinaryData['width'] }}x{{ $cloudinaryData['height'] }})
+                                                                                                @endif
+                                                                                            @else
+                                                                                                {{ $filePath }}
+                                                                                            @endif
                                                                                         </small>
                                                                                     </div>
                                                                                 @else
                                                                                     <div class="alert alert-warning alert-sm">
                                                                                         <i class="fas fa-exclamation-triangle me-1"></i>
                                                                                         الملف غير متاح حالياً. يرجى التواصل مع فريق الدعم.
-                                                                                        <br><small class="text-muted">{{ $filePath }}</small>
+                                                                                        @if($filePath)
+                                                                                            <br><small class="text-muted">{{ $filePath }}</small>
+                                                                                        @endif
                                                                                     </div>
                                                                                 @endif
                                                                             @else

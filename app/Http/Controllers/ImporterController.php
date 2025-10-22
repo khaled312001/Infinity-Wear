@@ -7,6 +7,7 @@ use App\Models\ImporterOrder;
 use App\Models\TaskCard;
 use App\Models\User;
 use App\Services\AIDesignService;
+use App\Services\CloudinaryService;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,10 +18,12 @@ use Illuminate\Support\Facades\Log;
 class ImporterController extends Controller
 {
     protected $notificationService;
+    protected $cloudinaryService;
 
-    public function __construct(NotificationService $notificationService)
+    public function __construct(NotificationService $notificationService, CloudinaryService $cloudinaryService)
     {
         $this->notificationService = $notificationService;
+        $this->cloudinaryService = $cloudinaryService;
     }
     /**
      * عرض قائمة المستوردين
@@ -225,8 +228,40 @@ class ImporterController extends Controller
                 break;
             case 'upload':
                 if ($request->hasFile('design_file')) {
-                    $filePath = $request->file('design_file')->store('designs', 'public');
-                    $designDetails['file_path'] = $filePath;
+                    $file = $request->file('design_file');
+                    
+                    // رفع الملف إلى Cloudinary
+                    $uploadResult = $this->cloudinaryService->uploadFile($file, 'infinity-wear/designs');
+                    
+                    if ($uploadResult['success']) {
+                        $designDetails['cloudinary'] = [
+                            'public_id' => $uploadResult['public_id'],
+                            'secure_url' => $uploadResult['secure_url'],
+                            'url' => $uploadResult['url'],
+                            'format' => $uploadResult['format'],
+                            'width' => $uploadResult['width'],
+                            'height' => $uploadResult['height'],
+                            'bytes' => $uploadResult['bytes'],
+                        ];
+                        
+                        // الاحتفاظ بالمسار المحلي كـ backup
+                        $filePath = $file->store('designs', 'public');
+                        $designDetails['file_path'] = $filePath;
+                        
+                        Log::info('File uploaded to Cloudinary successfully', [
+                            'public_id' => $uploadResult['public_id'],
+                            'original_name' => $file->getClientOriginalName(),
+                        ]);
+                    } else {
+                        // في حالة فشل الرفع إلى Cloudinary، استخدم التخزين المحلي
+                        $filePath = $file->store('designs', 'public');
+                        $designDetails['file_path'] = $filePath;
+                        
+                        Log::warning('Cloudinary upload failed, using local storage', [
+                            'error' => $uploadResult['error'] ?? 'Unknown error',
+                            'file' => $file->getClientOriginalName(),
+                        ]);
+                    }
                 }
                 $designDetails['notes'] = $validated['design_upload_notes'];
                 break;
