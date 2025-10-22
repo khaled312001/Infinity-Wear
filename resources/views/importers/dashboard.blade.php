@@ -314,6 +314,23 @@
                                                                                     $fullPath = public_path('storage/' . $filePath);
                                                                                     $fileExists = file_exists($fullPath);
                                                                                     $fileUrl = asset('storage/' . $filePath);
+                                                                                    
+                                                                                    // معالجة إضافية للتحقق من وجود الملف
+                                                                                    if (!$fileExists) {
+                                                                                        // محاولة مسارات بديلة
+                                                                                        $alternativePath1 = public_path('storage/designs/' . basename($filePath));
+                                                                                        $alternativePath2 = storage_path('app/public/' . $filePath);
+                                                                                        
+                                                                                        if (file_exists($alternativePath1)) {
+                                                                                            $fileExists = true;
+                                                                                            $fullPath = $alternativePath1;
+                                                                                            $fileUrl = asset('storage/designs/' . basename($filePath));
+                                                                                        } elseif (file_exists($alternativePath2)) {
+                                                                                            $fileExists = true;
+                                                                                            $fullPath = $alternativePath2;
+                                                                                            $fileUrl = asset('storage/' . $filePath);
+                                                                                        }
+                                                                                    }
                                                                                 @endphp
                                                                                 
                                                                                 @if($fileExists)
@@ -328,13 +345,26 @@
                                                                                     
                                                                                     @if(str_contains($filePath, '.jpg') || str_contains($filePath, '.jpeg') || str_contains($filePath, '.png') || str_contains($filePath, '.gif') || str_contains($filePath, '.webp'))
                                                                                         <div class="mt-2">
-                                                                                            <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                                                                            <img src="{{ $fileUrl }}" alt="تصميم مرفوع" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" 
+                                                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                                                            <div style="display: none;" class="alert alert-info alert-sm">
+                                                                                                <i class="fas fa-info-circle me-1"></i>
+                                                                                                لا يمكن عرض معاينة الصورة، لكن يمكنك تحميل الملف
+                                                                                            </div>
                                                                                         </div>
                                                                                     @endif
+                                                                                    
+                                                                                    <div class="mt-1">
+                                                                                        <small class="text-muted">
+                                                                                            <i class="fas fa-info-circle me-1"></i>
+                                                                                            {{ $filePath }}
+                                                                                        </small>
+                                                                                    </div>
                                                                                 @else
                                                                                     <div class="alert alert-warning alert-sm">
                                                                                         <i class="fas fa-exclamation-triangle me-1"></i>
                                                                                         الملف غير متاح حالياً. يرجى التواصل مع فريق الدعم.
+                                                                                        <br><small class="text-muted">{{ $filePath }}</small>
                                                                                     </div>
                                                                                 @endif
                                                                             @else
