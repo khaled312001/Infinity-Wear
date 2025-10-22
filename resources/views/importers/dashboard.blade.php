@@ -166,10 +166,7 @@
                             <i class="fas fa-list me-2 text-primary"></i>
                             الطلبات
                         </h5>
-                        <a href="#" class="btn btn-sm btn-primary">
-                            <i class="fas fa-plus me-2"></i>
-                            طلب جديد
-                        </a>
+                       
                     </div>
                 </div>
                     @if($orders->count() > 0)
@@ -445,16 +442,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>
-                    @else
-                        <div class="text-center py-5">
-                            <i class="fas fa-clipboard-list fa-4x text-muted mb-3"></i>
-                            <h4 class="text-muted">لا توجد طلبات حتى الآن</h4>
-                            <p class="text-muted mb-4">ابدأ بإنشاء طلب استيراد جديد</p>
-                            <a href="#" class="btn btn-primary">
-                                <i class="fas fa-plus me-2"></i>
-                                طلب استيراد جديد
-                            </a>
                         </div>
                     @endif
                 </div>
