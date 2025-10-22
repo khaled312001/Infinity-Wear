@@ -13,31 +13,40 @@ class DesignController extends Controller
     public function saveDesign(Request $request)
     {
         try {
-            // Validate the request
-            $validator = Validator::make($request->all(), [
-                'form_data' => 'required|string',
-                'action' => 'required|in:save,submit',
-                'logo_file' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'license_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
-                'additional_file_*' => 'nullable|file|max:10240'
-            ]);
+            // Check if this is a web form submission or API call
+            if ($request->has('form_data')) {
+                // API call - decode JSON data
+                $validator = Validator::make($request->all(), [
+                    'form_data' => 'required|string',
+                    'action' => 'required|in:save,submit',
+                    'logo_file' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'license_file' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
+                    'additional_file_*' => 'nullable|file|max:10240'
+                ]);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Validation failed',
-                    'details' => $validator->errors()
-                ], 400);
+                if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Validation failed',
+                        'details' => $validator->errors()
+                    ], 400);
+                }
+
+                $formData = json_decode($request->input('form_data'), true);
+            } else {
+                // Web form submission - collect data from form fields
+                $formData = $this->collectFormDataFromRequest($request);
             }
-
-            // Decode form data
-            $formData = json_decode($request->input('form_data'), true);
             
             if (!$formData) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Invalid form data'
-                ], 400);
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Invalid form data'
+                    ], 400);
+                } else {
+                    return redirect()->back()->with('error', 'بيانات النموذج غير صحيحة');
+                }
             }
 
             // Start database transaction
@@ -67,11 +76,15 @@ class DesignController extends Controller
 
                 DB::commit();
 
-                return response()->json([
-                    'success' => true,
-                    'design_id' => $designId,
-                    'message' => 'Design saved successfully'
-                ]);
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'success' => true,
+                        'design_id' => $designId,
+                        'message' => 'Design saved successfully'
+                    ]);
+                } else {
+                    return redirect()->route('dashboard')->with('success', 'تم حفظ التصميم بنجاح!');
+                }
 
             } catch (\Exception $e) {
                 DB::rollback();
@@ -79,11 +92,270 @@ class DesignController extends Controller
             }
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Server error: ' . $e->getMessage()
-            ], 500);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Server error: ' . $e->getMessage()
+                ], 500);
+            } else {
+                return redirect()->back()->with('error', 'حدث خطأ في الخادم: ' . $e->getMessage());
+            }
         }
+    }
+
+    private function collectFormDataFromRequest(Request $request)
+    {
+        // Collect basic information
+        $personalInfo = [
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
+            'password' => $request->input('password')
+        ];
+
+        // Collect business information
+        $businessInfo = [
+            'businessName' => $request->input('business_name'),
+            'businessType' => $request->input('business_type'),
+            'businessTypeOther' => $request->input('business_type_other'),
+            'address' => $request->input('address'),
+            'city' => $request->input('city'),
+            'country' => $request->input('country'),
+            'website' => $request->input('website')
+        ];
+
+        // Collect design information
+        $designInfo = [
+            'designOption' => $request->input('design_option'),
+            'businessType' => $request->input('design_business_type'),
+            'clothingPieces' => $request->input('clothing_pieces', []),
+            'sizes' => $this->collectSizesFromRequest($request),
+            'colors' => $this->collectColorsFromRequest($request),
+            'patterns' => $this->collectPatternsFromRequest($request),
+            'logos' => $this->collectLogosFromRequest($request),
+            'texts' => $this->collectTextsFromRequest($request),
+            'designNotes' => $request->input('design_notes'),
+            'priority' => $request->input('design_priority', 'normal'),
+            'delivery' => $request->input('delivery_preference', 'standard'),
+            'requirements' => $request->input('additional_requirements', [])
+        ];
+
+        // Collect 3D design data (simplified for web form)
+        $design3D = [
+            'modelData' => null,
+            'cameraPosition' => null,
+            'lightingSettings' => null,
+            'renderSettings' => null
+        ];
+
+        // Collect uploads
+        $uploads = [
+            'logo' => $request->hasFile('logo_upload') ? $this->collectFileData($request->file('logo_upload')) : null,
+            'businessLicense' => $request->hasFile('business_license') ? $this->collectFileData($request->file('business_license')) : null,
+            'additionalFiles' => $this->collectAdditionalFilesFromRequest($request)
+        ];
+
+        // Calculate order summary
+        $orderSummary = [
+            'totalPieces' => $this->calculateTotalPiecesFromRequest($request),
+            'totalVarieties' => $this->calculateTotalVarietiesFromRequest($request),
+            'estimatedCost' => $this->calculateEstimatedCostFromRequest($request),
+            'estimatedDelivery' => $this->calculateEstimatedDeliveryFromRequest($request)
+        ];
+
+        // Collect metadata
+        $metadata = [
+            'createdAt' => now()->toISOString(),
+            'userAgent' => $request->userAgent(),
+            'screenResolution' => 'unknown',
+            'formVersion' => '2.0',
+            'designComplete' => !empty($request->input('clothing_pieces')),
+            'notesComplete' => !empty($request->input('design_notes'))
+        ];
+
+        return [
+            'personalInfo' => $personalInfo,
+            'businessInfo' => $businessInfo,
+            'designInfo' => $designInfo,
+            'design3D' => $design3D,
+            'uploads' => $uploads,
+            'orderSummary' => $orderSummary,
+            'metadata' => $metadata
+        ];
+    }
+
+    private function collectSizesFromRequest(Request $request)
+    {
+        $sizes = [];
+        $pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        
+        foreach ($pieceTypes as $pieceType) {
+            $pieceSizes = $request->input($pieceType . '_sizes', []);
+            if (!empty($pieceSizes)) {
+                $sizes[$pieceType] = array_filter($pieceSizes, function($quantity) {
+                    return $quantity > 0;
+                });
+            }
+        }
+        
+        return $sizes;
+    }
+
+    private function collectColorsFromRequest(Request $request)
+    {
+        $colors = [];
+        $pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        
+        foreach ($pieceTypes as $pieceType) {
+            $pieceColors = [];
+            $colorInputs = $request->all();
+            
+            foreach ($colorInputs as $key => $value) {
+                if (strpos($key, $pieceType . '_') === 0 && strpos($key, '_color') !== false) {
+                    $part = str_replace([$pieceType . '_', '_color'], '', $key);
+                    $pieceColors[$part] = $value;
+                }
+            }
+            
+            if (!empty($pieceColors)) {
+                $colors[$pieceType] = $pieceColors;
+            }
+        }
+        
+        return $colors;
+    }
+
+    private function collectPatternsFromRequest(Request $request)
+    {
+        return [
+            'selected' => $request->input('selected_pattern'),
+            'customizations' => []
+        ];
+    }
+
+    private function collectLogosFromRequest(Request $request)
+    {
+        return [
+            'uploaded' => null,
+            'position' => $request->input('logo_position'),
+            'size' => $request->input('logo_size'),
+            'customizations' => []
+        ];
+    }
+
+    private function collectTextsFromRequest(Request $request)
+    {
+        return [
+            'text' => $request->input('design_text'),
+            'position' => $request->input('text_position'),
+            'color' => $request->input('text_color'),
+            'size' => $request->input('text_size'),
+            'style' => $request->input('text_style')
+        ];
+    }
+
+    private function collectAdditionalFilesFromRequest(Request $request)
+    {
+        $files = [];
+        $allFiles = $request->allFiles();
+        
+        foreach ($allFiles as $key => $file) {
+            if ($key !== 'logo_upload' && $key !== 'business_license') {
+                if (is_array($file)) {
+                    foreach ($file as $f) {
+                        $files[] = $this->collectFileData($f);
+                    }
+                } else {
+                    $files[] = $this->collectFileData($file);
+                }
+            }
+        }
+        
+        return $files;
+    }
+
+    private function collectFileData($file)
+    {
+        return [
+            'name' => $file->getClientOriginalName(),
+            'size' => $file->getSize(),
+            'type' => $file->getMimeType(),
+            'lastModified' => $file->getMTime(),
+            'url' => null
+        ];
+    }
+
+    private function calculateTotalPiecesFromRequest(Request $request)
+    {
+        $total = 0;
+        $pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        
+        foreach ($pieceTypes as $pieceType) {
+            $sizes = $request->input($pieceType . '_sizes', []);
+            $total += array_sum(array_filter($sizes, function($q) { return $q > 0; }));
+        }
+        
+        return $total;
+    }
+
+    private function calculateTotalVarietiesFromRequest(Request $request)
+    {
+        $varieties = 0;
+        $pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        
+        foreach ($pieceTypes as $pieceType) {
+            $sizes = $request->input($pieceType . '_sizes', []);
+            if (array_sum(array_filter($sizes, function($q) { return $q > 0; })) > 0) {
+                $varieties++;
+            }
+        }
+        
+        return $varieties;
+    }
+
+    private function calculateEstimatedCostFromRequest(Request $request)
+    {
+        $baseCosts = [
+            'shirt' => 25,
+            'pants' => 30,
+            'shorts' => 20,
+            'jacket' => 45,
+            'shoes' => 35,
+            'socks' => 8
+        ];
+        
+        $totalCost = 0;
+        $pieceTypes = ['shirt', 'pants', 'shorts', 'jacket', 'shoes', 'socks'];
+        
+        foreach ($pieceTypes as $pieceType) {
+            $sizes = $request->input($pieceType . '_sizes', []);
+            $quantity = array_sum(array_filter($sizes, function($q) { return $q > 0; }));
+            $baseCost = $baseCosts[$pieceType] ?? 20;
+            $totalCost += $quantity * $baseCost;
+        }
+        
+        return $totalCost;
+    }
+
+    private function calculateEstimatedDeliveryFromRequest(Request $request)
+    {
+        $deliveryPreference = $request->input('delivery_preference', 'standard');
+        $totalPieces = $this->calculateTotalPiecesFromRequest($request);
+        
+        $baseDays = 7;
+        switch ($deliveryPreference) {
+            case 'fast':
+                $baseDays = 5;
+                break;
+            case 'express':
+                $baseDays = 2;
+                break;
+        }
+        
+        if ($totalPieces > 100) $baseDays += 2;
+        if ($totalPieces > 500) $baseDays += 3;
+        
+        return $baseDays;
     }
 
     private function saveUserInfo($personalInfo)

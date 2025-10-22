@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
 
-                        <form action="{{ route('importers.submit') }}" method="POST" class="needs-validation" enctype="multipart/form-data" id="multiStepForm">
+                        <form action="{{ route('importers.register.submit') }}" method="POST" class="needs-validation" enctype="multipart/form-data" id="multiStepForm">
                             @csrf
                             
                             <!-- Step 1: Order Details -->
