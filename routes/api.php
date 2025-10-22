@@ -33,3 +33,6 @@ Route::prefix('design')->group(function () {
 
 // Public routes (no authentication required for form submission)
 Route::post('/save-design', [DesignController::class, 'saveDesign']);
+
+// Upload design route (alias for save-design)
+Route::post('/upload-design', [DesignController::class, 'saveDesign']);

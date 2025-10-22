@@ -30,3 +30,6 @@ Route::get('/importers/register', function () {
 
 // Handle form submission
 Route::post('/importers/register', [DesignController::class, 'saveDesign'])->name('importers.register.submit');
+
+// Upload design route (for AJAX requests)
+Route::post('/importers/upload-design', [DesignController::class, 'saveDesign'])->name('importers.upload-design');
