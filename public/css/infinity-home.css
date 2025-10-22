@@ -3406,6 +3406,7 @@ textarea.form-control {
 .social-link.twitter:hover::before { background: linear-gradient(45deg, #1da1f2, #0d47a1); }
 .social-link.instagram:hover::before { background: linear-gradient(45deg, #e4405f, #833ab4); }
 .social-link.linkedin:hover::before { background: linear-gradient(45deg, #0077b5, #004182); }
+.social-link.youtube:hover::before { background: linear-gradient(45deg, #ff0000, #cc0000); }
 .social-link.whatsapp:hover::before { background: linear-gradient(45deg, #25d366, #128c7e); }
 
 .section-heading {

@@ -366,20 +366,49 @@
                         </div>
                         <p class="footer-description">{{ \App\Helpers\SiteSettingsHelper::getSiteDescription() }}</p>
                         <div class="social-media-links">
-                            @if(\App\Models\Setting::get('facebook_url'))
-                                <a href="{{ \App\Models\Setting::get('facebook_url') }}" aria-label="Facebook" class="social-link facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                            @php
+                                $facebookUrl = \App\Models\Setting::get('facebook_url');
+                                $twitterUrl = \App\Models\Setting::get('twitter_url');
+                                $instagramUrl = \App\Models\Setting::get('instagram_url');
+                                $linkedinUrl = \App\Models\Setting::get('linkedin_url');
+                                $youtubeUrl = \App\Models\Setting::get('youtube_url');
+                                $whatsappNumber = \App\Models\Setting::get('whatsapp_number');
+                            @endphp
+                            
+                            @if($facebookUrl && !empty(trim($facebookUrl)))
+                                <a href="{{ $facebookUrl }}" aria-label="Facebook" class="social-link facebook" target="_blank" rel="noopener noreferrer" title="تابعنا على فيسبوك">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
                             @endif
-                            @if(\App\Models\Setting::get('twitter_url'))
-                                <a href="{{ \App\Models\Setting::get('twitter_url') }}" aria-label="Twitter" class="social-link twitter" target="_blank"><i class="fab fa-twitter"></i></a>
+                            
+                            @if($twitterUrl && !empty(trim($twitterUrl)))
+                                <a href="{{ $twitterUrl }}" aria-label="Twitter" class="social-link twitter" target="_blank" rel="noopener noreferrer" title="تابعنا على تويتر">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
                             @endif
-                            @if(\App\Models\Setting::get('instagram_url'))
-                                <a href="{{ \App\Models\Setting::get('instagram_url') }}" aria-label="Instagram" class="social-link instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                            
+                            @if($instagramUrl && !empty(trim($instagramUrl)))
+                                <a href="{{ $instagramUrl }}" aria-label="Instagram" class="social-link instagram" target="_blank" rel="noopener noreferrer" title="تابعنا على إنستغرام">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
                             @endif
-                            @if(\App\Models\Setting::get('linkedin_url'))
-                                <a href="{{ \App\Models\Setting::get('linkedin_url') }}" aria-label="LinkedIn" class="social-link linkedin" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                            
+                            @if($linkedinUrl && !empty(trim($linkedinUrl)))
+                                <a href="{{ $linkedinUrl }}" aria-label="LinkedIn" class="social-link linkedin" target="_blank" rel="noopener noreferrer" title="تابعنا على لينكد إن">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
                             @endif
-                            @if(\App\Models\Setting::get('whatsapp_number'))
-                                <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', \App\Models\Setting::get('whatsapp_number')) }}" aria-label="WhatsApp" class="social-link whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                            
+                            @if($youtubeUrl && !empty(trim($youtubeUrl)))
+                                <a href="{{ $youtubeUrl }}" aria-label="YouTube" class="social-link youtube" target="_blank" rel="noopener noreferrer" title="تابعنا على يوتيوب">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            @endif
+                            
+                            @if($whatsappNumber && !empty(trim($whatsappNumber)))
+                                <a href="https://wa.me/{{ str_replace(['+', ' ', '-'], '', $whatsappNumber) }}" aria-label="WhatsApp" class="social-link whatsapp" target="_blank" rel="noopener noreferrer" title="تواصل معنا عبر واتساب">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
                             @endif
                         </div>
                     </div>
