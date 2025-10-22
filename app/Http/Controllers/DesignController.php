@@ -358,6 +358,42 @@ class DesignController extends Controller
         return $baseDays;
     }
 
+    public function uploadDesign(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'design_file' => 'required|file|mimes:jpeg,png,jpg,pdf,psd,ai,eps|max:10240'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Validation failed',
+                    'details' => $validator->errors()
+                ], 400);
+            }
+
+            $file = $request->file('design_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('designs/temp', $fileName, 'public');
+
+            return response()->json([
+                'success' => true,
+                'file_path' => $filePath,
+                'file_name' => $file->getClientOriginalName(),
+                'file_size' => $file->getSize(),
+                'file_type' => $file->getMimeType(),
+                'url' => asset('storage/' . $filePath)
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Upload failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     private function saveUserInfo($personalInfo)
     {
         $user = DB::table('users')->insertGetId([
