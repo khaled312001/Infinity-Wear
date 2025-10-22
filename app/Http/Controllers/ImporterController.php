@@ -134,7 +134,7 @@ class ImporterController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users',
+            'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
             'company_name' => 'required|string|max:255',
             'business_type' => 'required|string|in:academy,school,store,hospital,other',
@@ -154,31 +154,65 @@ class ImporterController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // إنشاء حساب مستخدم للمستورد
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'phone' => $validated['phone'],
-            'address' => $validated['address'] ?? null,
-            'city' => $validated['city'] ?? null,
-            'user_type' => 'importer',
-        ]);
+        // البحث عن مستخدم موجود أو إنشاء مستخدم جديد
+        $user = User::where('email', $validated['email'])->first();
+        $isNewUser = !$user;
+        
+        if ($user) {
+            // تحديث بيانات المستخدم الموجود
+            $user->update([
+                'name' => $validated['name'],
+                'password' => Hash::make($validated['password']),
+                'phone' => $validated['phone'],
+                'address' => $validated['address'] ?? $user->address,
+                'city' => $validated['city'] ?? $user->city,
+                'user_type' => 'importer',
+            ]);
+        } else {
+            // إنشاء مستخدم جديد
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'phone' => $validated['phone'],
+                'address' => $validated['address'] ?? null,
+                'city' => $validated['city'] ?? null,
+                'user_type' => 'importer',
+            ]);
+        }
 
-        // إنشاء سجل المستورد
-        $importer = Importer::create([
-            'user_id' => $user->id,
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'company_name' => $validated['company_name'],
-            'business_type' => $validated['business_type'],
-            'business_type_other' => $validated['business_type_other'] ?? null,
-            'address' => $validated['address'] ?? null,
-            'city' => $validated['city'] ?? null,
-            'country' => $validated['country'] ?? null,
-            'status' => 'new',
-        ]);
+        // البحث عن مستورد موجود أو إنشاء مستورد جديد
+        $importer = Importer::where('user_id', $user->id)->first();
+        
+        if ($importer) {
+            // تحديث بيانات المستورد الموجود
+            $importer->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'company_name' => $validated['company_name'],
+                'business_type' => $validated['business_type'],
+                'business_type_other' => $validated['business_type_other'] ?? $importer->business_type_other,
+                'address' => $validated['address'] ?? $importer->address,
+                'city' => $validated['city'] ?? $importer->city,
+                'country' => $validated['country'] ?? $importer->country,
+            ]);
+        } else {
+            // إنشاء مستورد جديد
+            $importer = Importer::create([
+                'user_id' => $user->id,
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'company_name' => $validated['company_name'],
+                'business_type' => $validated['business_type'],
+                'business_type_other' => $validated['business_type_other'] ?? null,
+                'address' => $validated['address'] ?? null,
+                'city' => $validated['city'] ?? null,
+                'country' => $validated['country'] ?? null,
+                'status' => 'new',
+            ]);
+        }
 
         // معالجة تفاصيل التصميم حسب الخيار المحدد
         $designDetails = [
@@ -242,8 +276,13 @@ class ImporterController extends Controller
         // تسجيل الدخول للمستخدم
         Auth::login($user);
 
+        // تحديد نوع الرسالة حسب ما إذا كان المستخدم موجود أم لا
+        $message = $isNewUser ? 
+            'تم إنشاء حسابك وتسجيل طلبك بنجاح' : 
+            'تم تحديث حسابك وتسجيل طلبك بنجاح';
+
         return redirect()->route('importers.dashboard')
-            ->with('success', 'تم إنشاء حسابك وتسجيل طلبك بنجاح');
+            ->with('success', $message);
     }
 
     /**

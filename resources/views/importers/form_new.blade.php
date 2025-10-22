@@ -599,4 +599,25 @@ document.getElementById('multiStepForm').addEventListener('submit', function(e) 
         return false;
     }
 });
+
+// معالجة خطأ 419 (Page Expired)
+window.addEventListener('load', function() {
+    // فحص إذا كان هناك خطأ 419 في URL
+    if (window.location.search.includes('error=419') || window.location.hash.includes('error=419')) {
+        alert('انتهت صلاحية الجلسة. يرجى إعادة تحميل الصفحة والمحاولة مرة أخرى.');
+        window.location.href = window.location.pathname;
+    }
+});
+
+// إضافة CSRF token جديد عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    // تحديث CSRF token في النموذج
+    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    if (csrfToken) {
+        const tokenInput = document.querySelector('input[name="_token"]');
+        if (tokenInput) {
+            tokenInput.value = csrfToken.getAttribute('content');
+        }
+    }
+});
 </script>
