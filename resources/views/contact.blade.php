@@ -228,7 +228,6 @@
                         <div class="contact-card-content">
                             <h4 class="contact-card-title">راسلنا</h4>
                             <div class="contact-card-links">
-                                <a href="mailto:{{ \App\Models\Setting::get('contact_email') }}" class="contact-card-link">{{ \App\Models\Setting::get('contact_email') }}</a>
                                 @if(\App\Models\Setting::get('support_email'))
                                     <a href="mailto:{{ \App\Models\Setting::get('support_email') }}" class="contact-card-link">{{ \App\Models\Setting::get('support_email') }}</a>
                                 @endif

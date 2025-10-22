@@ -91,37 +91,7 @@ use Illuminate\Support\Facades\Storage;
                     </div>
                 </div>
 
-                <!-- Stats Section -->
-                <div class="infinity-hero-stats" style="width: 100%; margin-top: 2rem;">
-                    <div class="stat-item animate-counter">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-number" data-target="173">0</div>
-                        <div class="stat-label">عميل راضي</div>
-                    </div>
-                    <div class="stat-item animate-counter">
-                        <div class="stat-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <div class="stat-number" data-target="952">0</div>
-                        <div class="stat-label">مشروع مكتمل</div>
-                    </div>
-                    <div class="stat-item animate-counter">
-                        <div class="stat-icon">
-                            <i class="fas fa-user-friends"></i>
-                        </div>
-                        <div class="stat-number" data-target="50">0</div>
-                        <div class="stat-label">فريق عمل</div>
-                    </div>
-                    <div class="stat-item animate-counter">
-                        <div class="stat-icon">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        <div class="stat-number" data-target="5">0</div>
-                        <div class="stat-label">سنوات خبرة</div>
-                    </div>
-                </div>
+                
             </div>
         </div>
 
