@@ -50,7 +50,13 @@ class MultiStepForm {
         // Real-time validation
         document.querySelectorAll('input, select, textarea').forEach(field => {
             field.addEventListener('blur', () => this.validateField(field));
-            field.addEventListener('input', () => this.clearFieldError(field));
+            field.addEventListener('input', () => {
+                this.clearFieldError(field);
+                // Update summary if we're on step 4
+                if (this.currentStep === 4) {
+                    this.updateSummary();
+                }
+            });
         });
         
         // Terms agreement
@@ -196,7 +202,9 @@ class MultiStepForm {
         
         // Update summary if on confirmation step
         if (step === 4) {
-            this.updateSummary();
+            setTimeout(() => {
+                this.updateSummary();
+            }, 100);
         }
         
         // Add animation
@@ -245,6 +253,13 @@ class MultiStepForm {
                 this.currentStep++;
                 this.showStep(this.currentStep);
                 this.scrollToTop();
+                
+                // Update summary when going to step 4
+                if (this.currentStep === 4) {
+                    setTimeout(() => {
+                        this.updateSummary();
+                    }, 200);
+                }
             }
         } else {
             this.showValidationErrors();
@@ -436,6 +451,13 @@ class MultiStepForm {
             otherInput.required = false;
             otherInput.value = '';
         }
+        
+        // Update summary if we're on step 4
+        if (this.currentStep === 4) {
+            setTimeout(() => {
+                this.updateSummary();
+            }, 100);
+        }
     }
 
     handleDesignOptionChange(e) {
@@ -460,6 +482,13 @@ class MultiStepForm {
         
         // Add visual feedback
         this.highlightDesignOption(e.target);
+        
+        // Update summary if we're on step 4
+        if (this.currentStep === 4) {
+            setTimeout(() => {
+                this.updateSummary();
+            }, 100);
+        }
     }
 
     highlightDesignOption(selectedInput) {
@@ -521,23 +550,83 @@ class MultiStepForm {
 
     updateSummary() {
         // Order details (step 1)
-        document.getElementById('summary_quantity').textContent = this.formData.quantity || '-';
-        const designOption = document.querySelector('input[name="design_option"]:checked');
-        const designOptionText = designOption ? designOption.nextElementSibling.querySelector('.fw-semibold').textContent : '-';
-        document.getElementById('summary_design_option').textContent = designOptionText;
-        document.getElementById('summary_requirements').textContent = this.formData.requirements || '-';
+        const quantityElement = document.getElementById('summary_quantity');
+        if (quantityElement) {
+            const quantity = document.getElementById('quantity')?.value || '-';
+            quantityElement.textContent = quantity + ' قطعة';
+        }
+
+        const designOptionElement = document.getElementById('summary_design_option');
+        if (designOptionElement) {
+            const designOption = document.querySelector('input[name="design_option"]:checked');
+            let designOptionText = '-';
+            if (designOption) {
+                if (designOption.value === 'text') {
+                    designOptionText = 'وصف نصي';
+                } else if (designOption.value === 'file') {
+                    designOptionText = 'رفع ملف';
+                } else if (designOption.value === 'custom') {
+                    designOptionText = 'صمم بنفسك';
+                }
+            }
+            designOptionElement.textContent = designOptionText;
+        }
+
+        const requirementsElement = document.getElementById('summary_requirements');
+        if (requirementsElement) {
+            const requirements = document.getElementById('requirements')?.value || '-';
+            requirementsElement.textContent = requirements;
+        }
         
         // Company info (step 2)
-        document.getElementById('summary_company').textContent = this.formData.company_name || '-';
-        const businessTypeSelect = document.getElementById('business_type');
-        const businessTypeText = businessTypeSelect.options[businessTypeSelect.selectedIndex]?.text || '-';
-        document.getElementById('summary_business_type').textContent = businessTypeText;
-        document.getElementById('summary_city').textContent = this.formData.city || '-';
+        const companyElement = document.getElementById('summary_company');
+        if (companyElement) {
+            const companyName = document.getElementById('company_name')?.value || '-';
+            companyElement.textContent = companyName;
+        }
+
+        const businessTypeElement = document.getElementById('summary_business_type');
+        if (businessTypeElement) {
+            const businessTypeSelect = document.getElementById('business_type');
+            let businessTypeText = '-';
+            if (businessTypeSelect && businessTypeSelect.value) {
+                const businessTypes = {
+                    'academy': 'أكاديمية رياضية',
+                    'school': 'مدرسة',
+                    'store': 'متجر ملابس',
+                    'hospital': 'مستشفى',
+                    'company': 'شركة',
+                    'other': 'أخرى'
+                };
+                businessTypeText = businessTypes[businessTypeSelect.value] || businessTypeSelect.value;
+            }
+            businessTypeElement.textContent = businessTypeText;
+        }
+
+        const cityElement = document.getElementById('summary_city');
+        if (cityElement) {
+            const city = document.getElementById('city')?.value || '-';
+            cityElement.textContent = city;
+        }
         
         // Personal info (step 3)
-        document.getElementById('summary_name').textContent = this.formData.name || '-';
-        document.getElementById('summary_email').textContent = this.formData.email || '-';
-        document.getElementById('summary_phone').textContent = this.formData.phone || '-';
+        const nameElement = document.getElementById('summary_name');
+        if (nameElement) {
+            const name = document.getElementById('name')?.value || '-';
+            nameElement.textContent = name;
+        }
+
+        const emailElement = document.getElementById('summary_email');
+        if (emailElement) {
+            const email = document.getElementById('email')?.value || '-';
+            emailElement.textContent = email;
+        }
+
+        const phoneElement = document.getElementById('summary_phone');
+        if (phoneElement) {
+            const phone = document.getElementById('phone')?.value || '-';
+            phoneElement.textContent = phone;
+        }
     }
 
     handleSubmit(e) {
