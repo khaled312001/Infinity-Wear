@@ -1028,7 +1028,3 @@ Route::prefix('daily-report')->name('daily-report.')->group(function () {
     })->name('send');
 });
 
-// Route مؤقت لاختبار عرض ملف التصميم
-Route::get('/test-design', function () {
-    return include public_path('../test_design_display.php');
-});

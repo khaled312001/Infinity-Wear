@@ -209,12 +209,23 @@
                                                         ملف التصميم <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="file" class="form-control form-control-lg" id="design_file" 
-                                                           name="design_file" accept="image/*,application/pdf,.psd,.ai,.eps">
+                                                           name="design_file" accept="image/*,application/pdf,.psd,.ai,.eps" 
+                                                           onchange="previewFile(this)">
                                                     <div class="form-text">
                                                         <i class="fas fa-info-circle me-1"></i>
                                                         الصيغ المدعومة: JPG, PNG, PDF, PSD, AI, EPS
                                                     </div>
                                                     <div class="invalid-feedback"></div>
+                                                    
+                                                    <!-- معاينة الملف -->
+                                                    <div id="file-preview" class="mt-3" style="display: none;">
+                                                        <div class="alert alert-info">
+                                                            <i class="fas fa-file me-1"></i>
+                                                            <span id="file-name"></span>
+                                                            <span id="file-size" class="text-muted"></span>
+                                                        </div>
+                                                        <div id="image-preview" class="mt-2"></div>
+                                                    </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="design_upload_notes" class="form-label fw-semibold">ملاحظات إضافية</label>
@@ -536,3 +547,56 @@
 </div>
 
 @endsection
+
+<script>
+// معاينة الملف المرفوع
+function previewFile(input) {
+    const filePreview = document.getElementById('file-preview');
+    const fileName = document.getElementById('file-name');
+    const fileSize = document.getElementById('file-size');
+    const imagePreview = document.getElementById('image-preview');
+    
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // عرض معلومات الملف
+        fileName.textContent = file.name;
+        fileSize.textContent = `(${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+        
+        // إخفاء معاينة الصورة السابقة
+        imagePreview.innerHTML = '';
+        
+        // معاينة الصور
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'img-thumbnail';
+                img.style.maxWidth = '300px';
+                img.style.maxHeight = '300px';
+                img.alt = 'معاينة التصميم';
+                imagePreview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        filePreview.style.display = 'block';
+    } else {
+        filePreview.style.display = 'none';
+    }
+}
+
+// التأكد من صحة الملف عند إرسال النموذج
+document.getElementById('multiStepForm').addEventListener('submit', function(e) {
+    const designOption = document.querySelector('input[name="design_option"]:checked');
+    const designFile = document.getElementById('design_file');
+    
+    if (designOption && designOption.value === 'upload' && !designFile.files[0]) {
+        e.preventDefault();
+        alert('يرجى اختيار ملف تصميم');
+        designFile.focus();
+        return false;
+    }
+});
+</script>
