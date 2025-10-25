@@ -1373,7 +1373,7 @@
                     
                     <nav class="nav flex-column px-3">
                         @if(Auth::guard('admin')->check())
-                            @include('partials.admin-sidebar')
+                            @include('partials.dynamic-sidebar')
                         @else
                             @switch(Auth::user()->user_type)
                                 @case('importer')
@@ -1386,7 +1386,7 @@
                                     @include('partials.sales-sidebar')
                                     @break
                                 @default
-                                    @include('partials.importer-sidebar')
+                                    @include('partials.dynamic-sidebar')
                             @endswitch
                         @endif
                     </nav>

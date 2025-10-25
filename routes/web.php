@@ -830,6 +830,9 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     Route::resource('company-plans', App\Http\Controllers\Admin\CompanyPlanController::class);
     Route::put('/company-plans/{companyPlan}/status', [App\Http\Controllers\Admin\CompanyPlanController::class, 'updateStatus'])->name('company-plans.update-status');
     
+    // Dynamic Dashboard
+    Route::get('/dashboard', [App\Http\Controllers\DynamicDashboardController::class, 'index'])->name('dashboard')->middleware('user.permission:dashboard.view');
+    
     // إدارة الصلاحيات
     Route::prefix('permissions')->name('permissions.')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('index')->middleware('user.permission:permissions_management');
