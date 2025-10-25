@@ -133,7 +133,17 @@
                                         <div class="card-header">
                                             <h6 class="mb-0">
                                                 <i class="fas fa-user-tag me-2"></i>
-                                                {{ ucfirst($userType) }}
+                                                @if($userType === 'admin')
+                                                    <i class="fas fa-crown me-1"></i>الأدمن
+                                                @elseif($userType === 'sales')
+                                                    <i class="fas fa-handshake me-1"></i>فريق المبيعات
+                                                @elseif($userType === 'marketing')
+                                                    <i class="fas fa-bullhorn me-1"></i>فريق التسويق
+                                                @elseif($userType === 'importer')
+                                                    <i class="fas fa-industry me-1"></i>المستوردين
+                                                @else
+                                                    {{ ucfirst($userType) }}
+                                                @endif
                                                 <span class="badge bg-primary ms-2">{{ $permissions->count() }}</span>
                                             </h6>
                                         </div>
@@ -155,10 +165,15 @@
                                                            name="permissions[]" 
                                                            id="create_permission_{{ $permission->id }}">
                                                     <label class="form-check-label" for="create_permission_{{ $permission->id }}">
-                                                        <strong>{{ $permission->display_name }}</strong>
-                                                        @if($permission->description)
-                                                            <br><small class="text-muted">{{ $permission->description }}</small>
-                                                        @endif
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="fas fa-{{ $permission->module === 'dashboard' ? 'tachometer-alt' : ($permission->module === 'content' ? 'edit' : ($permission->module === 'importers' ? 'industry' : ($permission->module === 'tasks' ? 'tasks' : ($permission->module === 'financial' ? 'chart-pie' : ($permission->module === 'teams' ? 'users' : ($permission->module === 'customers' ? 'user-friends' : ($permission->module === 'system' ? 'cog' : 'file')))))) }} me-2 text-muted"></i>
+                                                            <div>
+                                                                <strong>{{ $permission->display_name }}</strong>
+                                                                @if($permission->description)
+                                                                    <br><small class="text-muted">{{ $permission->description }}</small>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </label>
                                                 </div>
                                             @endforeach
@@ -220,7 +235,17 @@
                                         <div class="card-header">
                                             <h6 class="mb-0">
                                                 <i class="fas fa-user-tag me-2"></i>
-                                                {{ ucfirst($userType) }}
+                                                @if($userType === 'admin')
+                                                    <i class="fas fa-crown me-1"></i>الأدمن
+                                                @elseif($userType === 'sales')
+                                                    <i class="fas fa-handshake me-1"></i>فريق المبيعات
+                                                @elseif($userType === 'marketing')
+                                                    <i class="fas fa-bullhorn me-1"></i>فريق التسويق
+                                                @elseif($userType === 'importer')
+                                                    <i class="fas fa-industry me-1"></i>المستوردين
+                                                @else
+                                                    {{ ucfirst($userType) }}
+                                                @endif
                                                 <span class="badge bg-primary ms-2">{{ $permissions->count() }}</span>
                                             </h6>
                                         </div>
@@ -242,10 +267,15 @@
                                                            name="permissions[]" 
                                                            id="edit_permission_{{ $permission->id }}">
                                                     <label class="form-check-label" for="edit_permission_{{ $permission->id }}">
-                                                        <strong>{{ $permission->display_name }}</strong>
-                                                        @if($permission->description)
-                                                            <br><small class="text-muted">{{ $permission->description }}</small>
-                                                        @endif
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="fas fa-{{ $permission->module === 'dashboard' ? 'tachometer-alt' : ($permission->module === 'content' ? 'edit' : ($permission->module === 'importers' ? 'industry' : ($permission->module === 'tasks' ? 'tasks' : ($permission->module === 'financial' ? 'chart-pie' : ($permission->module === 'teams' ? 'users' : ($permission->module === 'customers' ? 'user-friends' : ($permission->module === 'system' ? 'cog' : 'file')))))) }} me-2 text-muted"></i>
+                                                            <div>
+                                                                <strong>{{ $permission->display_name }}</strong>
+                                                                @if($permission->description)
+                                                                    <br><small class="text-muted">{{ $permission->description }}</small>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </label>
                                                 </div>
                                             @endforeach
