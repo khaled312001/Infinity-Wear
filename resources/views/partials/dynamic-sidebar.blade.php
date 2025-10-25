@@ -9,8 +9,18 @@
         }
     }
     
-    // إذا لم يكن هناك صلاحيات محددة، أظهر جميع الروابط (للحفاظ على التوافق)
-    $showAllLinks = empty($userPermissions);
+    // إذا كان المستخدم admin ولم تكن لديه صلاحيات، أضف صلاحيات admin
+    if ($user && $user->user_type === 'admin' && empty($userPermissions)) {
+        $adminRole = \App\Models\Role::where('name', 'admin')->with('permissions')->first();
+        if ($adminRole) {
+            foreach ($adminRole->permissions as $permission) {
+                $userPermissions[] = $permission->name;
+            }
+        }
+    }
+    
+    // لا تظهر جميع الروابط تلقائياً - اعتمد على الصلاحيات فقط
+    $showAllLinks = false;
     
     // Debug: إظهار الصلاحيات الحالية (يمكن حذفها لاحقاً)
     // dd($userPermissions);
