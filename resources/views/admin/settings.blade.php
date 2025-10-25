@@ -983,9 +983,6 @@
             formData.append('logo', selectedLogoFile);
             formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-            // إظهار حالة التحميل
-            showLogoMessage('جاري رفع الشعار...', 'info');
-
             fetch('{{ route("admin.logo.upload") }}', {
                 method: 'POST',
                 body: formData,
@@ -998,7 +995,29 @@
                 if (data.success) {
                     showLogoMessage(data.message, 'success');
                     // تحديث الشعار الحالي
-                    document.getElementById('currentLogoImage').src = data.logo_url;
+                    const currentLogoImage = document.getElementById('currentLogoImage');
+                    const errorDiv = currentLogoImage.nextElementSibling;
+                    
+                    // إظهار الشعار وإخفاء رسالة الخطأ
+                    currentLogoImage.style.display = 'block';
+                    errorDiv.style.display = 'none';
+                    
+                    // تحديث رابط الشعار مع cache-busting
+                    const logoUrl = data.logo_url + (data.logo_url.includes('?') ? '&' : '?') + 'v=' + Date.now();
+                    currentLogoImage.src = logoUrl;
+                    
+                    console.log('تم تحديث الشعار:', logoUrl);
+                    
+                    // إعادة تحميل الشعار للتأكد من ظهوره
+                    currentLogoImage.onload = function() {
+                        console.log('تم تحميل الشعار بنجاح');
+                    };
+                    currentLogoImage.onerror = function() {
+                        console.log('فشل في تحميل الشعار');
+                        this.style.display = 'none';
+                        this.nextElementSibling.style.display = 'block';
+                    };
+                    
                     // إخفاء المعاينة
                     cancelLogoUpload();
                 } else {
@@ -1057,6 +1076,11 @@
             document.getElementById('logoFile').value = '';
             document.getElementById('logoPreview').style.display = 'none';
             document.getElementById('logoUploadArea').style.display = 'block';
+            
+            // إظهار منطقة الرفع مرة أخرى
+            setTimeout(() => {
+                document.getElementById('logoUploadArea').style.display = 'block';
+            }, 1000);
         }
 
         function showLogoMessage(message, type) {
@@ -1091,10 +1115,8 @@
             const file = e.target.files[0];
             if (file) {
                 handleLogoFile(file);
-                // Auto-upload with confirmation
-                if (confirm('هل تريد رفع الشعار تلقائياً؟')) {
-                    uploadLogo();
-                }
+                // Auto-upload without confirmation
+                uploadLogo();
             }
         });
 
@@ -1122,10 +1144,8 @@
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 handleLogoFile(files[0]);
-                // Auto-upload with confirmation
-                if (confirm('هل تريد رفع الشعار تلقائياً؟')) {
-                    uploadLogo();
-                }
+                // Auto-upload without confirmation
+                uploadLogo();
             }
         });
 
@@ -1148,17 +1168,11 @@
             // حفظ الملف المختار
             selectedLogoFile = file;
             
-            // إظهار المعاينة
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('previewImage').src = e.target.result;
-                document.getElementById('previewFileName').textContent = file.name;
-                document.getElementById('previewFileSize').textContent = formatFileSize(file.size);
-                
-                document.getElementById('logoUploadArea').style.display = 'none';
-                document.getElementById('logoPreview').style.display = 'block';
-            };
-            reader.readAsDataURL(file);
+            // إظهار رسالة التحميل بدلاً من المعاينة
+            showLogoMessage('جاري رفع الشعار...', 'info');
+            
+            // إخفاء منطقة الرفع مؤقتاً
+            document.getElementById('logoUploadArea').style.display = 'none';
         }
 
         function formatFileSize(bytes) {
