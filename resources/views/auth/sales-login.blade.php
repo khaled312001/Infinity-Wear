@@ -319,14 +319,7 @@
             </div>
 
             <div class="login-form">
-                <div class="sales-info">
-                    <h4><i class="fas fa-info-circle"></i> معلومات تسجيل الدخول</h4>
-                    <ul>
-                        <li>البريد الإلكتروني: sales@infinitywear.sa</li>
-                        <li>كلمة المرور: sales123</li>
-                        <li>أو استخدم الحساب الثانوي: sales2@infinitywear.sa</li>
-                    </ul>
-                </div>
+                
 
                 @if ($errors->any())
                     <div class="error-message">
