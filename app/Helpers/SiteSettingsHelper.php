@@ -44,7 +44,7 @@ class SiteSettingsHelper
             if ($data && isset($data['cloudinary']['secure_url'])) {
                 // Add cache-busting parameter for Cloudinary URLs
                 $url = $data['cloudinary']['secure_url'];
-                return $url . (strpos($url, '?') !== false ? '&' : '?') . 'v=' . time();
+                return $url . (strpos($url, '?') !== false ? '&' : '?') . 'v=' . time() . '&cb=' . uniqid();
             }
             if ($data && isset($data['file_path']) && file_exists(storage_path('app/public/' . $data['file_path']))) {
                 $timestamp = filemtime(storage_path('app/public/' . $data['file_path']));
@@ -59,7 +59,7 @@ class SiteSettingsHelper
             $timestamp = filemtime(storage_path('app/public/' . $logo));
             return asset('storage/' . $logo) . '?v=' . $timestamp;
         }
-        return asset('images/logo.svg') . '?v=' . time();
+        return asset('images/logo.svg') . '?v=' . time() . '&cb=' . uniqid();
     }
 
     /**
@@ -74,7 +74,7 @@ class SiteSettingsHelper
             if ($data && isset($data['cloudinary']['secure_url'])) {
                 // Add cache-busting parameter for Cloudinary URLs
                 $url = $data['cloudinary']['secure_url'];
-                return $url . (strpos($url, '?') !== false ? '&' : '?') . 'v=' . time();
+                return $url . (strpos($url, '?') !== false ? '&' : '?') . 'v=' . time() . '&cb=' . uniqid();
             }
             if ($data && isset($data['file_path']) && file_exists(storage_path('app/public/' . $data['file_path']))) {
                 $timestamp = filemtime(storage_path('app/public/' . $data['file_path']));

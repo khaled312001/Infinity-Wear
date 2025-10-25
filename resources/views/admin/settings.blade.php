@@ -7,6 +7,9 @@
 
 @push('head')
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 @endpush
 
 {{-- Sidebar menu is now handled by the unified admin-sidebar partial --}}
@@ -1485,6 +1488,37 @@
         }
 
         // تم حذف كود رفع أيقونة الموقع - الآن الأيقونة تلقائية من الشعار
+        
+        // Force refresh logo images on page load to prevent 403 errors
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== إعادة تحميل صور الشعار ===');
+            
+            // Force refresh current logo image
+            const currentLogoImage = document.getElementById('currentLogoImage');
+            if (currentLogoImage) {
+                const currentSrc = currentLogoImage.src;
+                console.log('الشعار الحالي:', currentSrc);
+                
+                // Add cache-busting parameter
+                const separator = currentSrc.includes('?') ? '&' : '?';
+                const newSrc = currentSrc + separator + 'force_refresh=' + Date.now();
+                currentLogoImage.src = newSrc;
+                console.log('الشعار الجديد:', newSrc);
+            }
+            
+            // Force refresh current favicon image
+            const currentFaviconImage = document.getElementById('currentFaviconImage');
+            if (currentFaviconImage) {
+                const currentSrc = currentFaviconImage.src;
+                console.log('الأيقونة الحالية:', currentSrc);
+                
+                // Add cache-busting parameter
+                const separator = currentSrc.includes('?') ? '&' : '?';
+                const newSrc = currentSrc + separator + 'force_refresh=' + Date.now();
+                currentFaviconImage.src = newSrc;
+                console.log('الأيقونة الجديدة:', newSrc);
+            }
+        });
 
         // دوال معلومات Cloudinary
         function getLogoInfo() {
