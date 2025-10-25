@@ -19,8 +19,22 @@ class CheckUserTypePermission
      */
     public function handle(Request $request, Closure $next, string $permission)
     {
-        // Skip permission check for admin users
+        // Check admin permissions
         if (Auth::guard('admin')->check()) {
+            $admin = Auth::guard('admin')->user();
+            if (!$this->hasAdminPermission($admin, $permission)) {
+                // Handle AJAX requests with JSON response
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'ليس لديك صلاحية للوصول إلى هذه الصفحة.',
+                        'error' => 'permission_denied'
+                    ], 403);
+                }
+                
+                return redirect()->route('admin.dashboard')
+                    ->with('error', 'ليس لديك صلاحية للوصول إلى هذه الصفحة.');
+            }
             return $next($request);
         }
 
@@ -59,6 +73,33 @@ class CheckUserTypePermission
         }
 
         return $next($request);
+    }
+
+    /**
+     * Check if admin has specific permission
+     */
+    private function hasAdminPermission($admin, string $permission): bool
+    {
+        try {
+            // If admin has no roles/permissions defined, allow by default
+            if (!$admin || !method_exists($admin, 'roles')) {
+                return true;
+            }
+
+            // Check if admin has the permission through any of their roles
+            foreach ($admin->roles as $role) {
+                foreach ($role->permissions as $rolePermission) {
+                    if ($rolePermission->name === $permission) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            // If error occurs, allow access
+            return true;
+        }
     }
 
     /**
