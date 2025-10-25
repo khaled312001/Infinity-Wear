@@ -57,7 +57,7 @@
                                             <td>{{ $role->display_name }}</td>
                                             <td>{{ $role->description }}</td>
                                             <td>
-                                                <span class="badge bg-info">{{ $role->permissions->count() }}</span>
+                                                <span class="badge bg-info" id="permission-count-{{ $role->id }}">{{ $role->permissions->count() }}</span>
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
@@ -448,6 +448,15 @@ function editRole(roleId, displayName, description, userType, permissionIds) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // تحديث العدد في الجدول
+                const selectedPermissions = document.querySelectorAll('.edit-permission:checked');
+                const permissionCount = selectedPermissions.length;
+                const roleId = form.action.split('/').pop();
+                const countElement = document.getElementById(`permission-count-${roleId}`);
+                if (countElement) {
+                    countElement.textContent = permissionCount;
+                }
+                
                 // إغلاق المودال
                 const modal = bootstrap.Modal.getInstance(document.getElementById('editRoleModal'));
                 modal.hide();

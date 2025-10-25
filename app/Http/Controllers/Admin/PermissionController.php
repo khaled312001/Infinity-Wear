@@ -34,21 +34,22 @@ class PermissionController extends Controller
         // Ensure all roles have appropriate permissions
         $this->ensureRolePermissions($roles);
 
-        // Unify super_admin and admin (treat as the same role in the UI)
+        // Keep admin and super_admin separate but ensure they have the same permissions
         $adminRole = $roles->firstWhere('name', 'admin');
         $superAdminRole = $roles->firstWhere('name', 'super_admin');
         if ($adminRole && $superAdminRole) {
-            // Merge permissions for display
-            $mergedPermissions = $adminRole->permissions
-                ->merge($superAdminRole->permissions)
-                ->unique('id')
-                ->values();
-            $adminRole->setRelation('permissions', $mergedPermissions);
-
-            // Hide super_admin from the list (since it's unified with admin)
-            $roles = $roles->reject(function ($role) {
-                return $role->name === 'super_admin';
-            })->values();
+            // Ensure both roles have the same permissions
+            $adminPermissions = $adminRole->permissions->pluck('id')->toArray();
+            $superAdminPermissions = $superAdminRole->permissions->pluck('id')->toArray();
+            
+            // If they have different permissions, sync them
+            if ($adminPermissions !== $superAdminPermissions) {
+                $allPermissions = collect($adminPermissions)->merge($superAdminPermissions)->unique()->values()->toArray();
+                $adminRole->permissions()->sync($allPermissions);
+                $superAdminRole->permissions()->sync($allPermissions);
+                $adminRole->load('permissions');
+                $superAdminRole->load('permissions');
+            }
         }
 
         return view('admin.permissions.index', compact('permissionsByUserType', 'roles'));
@@ -209,6 +210,15 @@ class PermissionController extends Controller
             // Always sync permissions, even if empty array
             $permissions = $request->input('permissions', []);
             $role->permissions()->sync($permissions);
+            
+            // Keep admin and super_admin in sync
+            if (in_array($role->name, ['admin', 'super_admin'], true)) {
+                $peerRoleName = $role->name === 'admin' ? 'super_admin' : 'admin';
+                $peerRole = Role::where('name', $peerRoleName)->first();
+                if ($peerRole) {
+                    $peerRole->permissions()->sync($permissions);
+                }
+            }
 
             DB::commit();
 
