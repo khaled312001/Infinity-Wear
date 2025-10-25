@@ -218,44 +218,20 @@
                                             أيقونة الموقع (Favicon)
                                         </label>
                                         
-                                        <!-- منطقة رفع أيقونة الموقع -->
-                                        <div class="favicon-upload-area" id="faviconUploadArea">
-                                            <div class="upload-content">
-                                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                                <p class="mb-2">اسحب وأفلت أيقونة الموقع هنا أو</p>
-                                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('faviconFile').click()">
-                                                    <i class="fas fa-folder-open me-2"></i>
-                                                    اختر ملف
-                                                </button>
-                                                <input type="file" id="faviconFile" accept="image/*" style="display: none;">
-                                                <div class="form-text mt-2">الحد الأقصى: 1MB، الحجم المفضل: 32x32px أو 16x16px</div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- معاينة أيقونة الموقع -->
-                                        <div id="faviconPreview" class="mt-3" style="display: none;">
+                                        <!-- معلومات الأيقونة التلقائية -->
+                                        <div class="alert alert-info">
                                             <div class="d-flex align-items-center">
-                                                <img id="faviconPreviewImage" src="" alt="معاينة أيقونة الموقع" class="img-thumbnail me-3" style="max-width: 32px; max-height: 32px;">
+                                                <i class="fas fa-info-circle fa-2x text-info me-3"></i>
                                                 <div>
-                                                    <h6 id="faviconPreviewFileName" class="mb-1"></h6>
-                                                    <small id="faviconPreviewFileSize" class="text-muted"></small>
-                                                    <div class="mt-2">
-                                                        <button type="button" class="btn btn-success btn-sm" onclick="uploadFavicon()">
-                                                            <i class="fas fa-upload me-1"></i>
-                                                            رفع الأيقونة
-                                                        </button>
-                                                        <button type="button" class="btn btn-outline-secondary btn-sm ms-2" onclick="cancelFaviconUpload()">
-                                                            <i class="fas fa-times me-1"></i>
-                                                            إلغاء
-                                                        </button>
-                                                    </div>
+                                                    <h6 class="mb-1">أيقونة تلقائية</h6>
+                                                    <p class="mb-0">أيقونة الموقع تُعيّن تلقائياً من شعار الموقع الرئيسي. عند تغيير الشعار، ستتغير الأيقونة تلقائياً.</p>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <!-- أيقونة الموقع الحالية -->
                                         <div id="currentFavicon" class="mt-3">
-                                            <small class="text-muted">الأيقونة الحالية:</small>
+                                            <small class="text-muted">الأيقونة الحالية (مُعيّنة تلقائياً من الشعار):</small>
                                             <div class="mt-1">
                                                 <img id="currentFaviconImage" src="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}" 
                                                      alt="الأيقونة الحالية" 
@@ -268,9 +244,9 @@
                                                 </div>
                                             </div>
                                             <div class="mt-2">
-                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteFavicon()">
-                                                    <i class="fas fa-trash me-1"></i>
-                                                    حذف الأيقونة
+                                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="refreshFaviconFromLogo()">
+                                                    <i class="fas fa-sync-alt me-1"></i>
+                                                    تحديث من الشعار
                                                 </button>
                                                 <button type="button" class="btn btn-outline-info btn-sm ms-2" onclick="getFaviconInfo()">
                                                     <i class="fas fa-info-circle me-1"></i>
@@ -1457,27 +1433,14 @@
 
         // تم حذف الكود القديم لأيقونة الموقع - الآن يستخدم النظام الجديد
 
-        // متغيرات أيقونة الموقع
-        let selectedFaviconFile = null;
-
-        // دوال أيقونة الموقع
-        function uploadFavicon() {
-            if (!selectedFaviconFile) {
-                showFaviconMessage('يرجى اختيار ملف أولاً', 'error');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('favicon', selectedFaviconFile);
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-
-            // إظهار حالة التحميل
-            showFaviconMessage('جاري رفع أيقونة الموقع...', 'info');
-
-            fetch('{{ route("admin.favicon.upload") }}', {
+        // دوال أيقونة الموقع (تلقائية من الشعار)
+        function refreshFaviconFromLogo() {
+            showFaviconMessage('جاري تحديث الأيقونة من الشعار...', 'info');
+            
+            fetch('{{ route("admin.favicon.refresh-from-logo") }}', {
                 method: 'POST',
-                body: formData,
                 headers: {
+                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
             })
@@ -1490,62 +1453,16 @@
             .then(data => {
                 if (data.success) {
                     showFaviconMessage(data.message, 'success');
-                    // تحديث أيقونة الموقع الحالية
-                    document.getElementById('currentFaviconImage').src = data.favicon_url;
-                    // إخفاء المعاينة
-                    cancelFaviconUpload();
+                    // تحديث صورة الأيقونة
+                    document.getElementById('currentFaviconImage').src = data.favicon_url + '?v=' + new Date().getTime();
                 } else {
                     showFaviconMessage(data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showFaviconMessage('حدث خطأ أثناء رفع أيقونة الموقع: ' + error.message, 'error');
+                showFaviconMessage('حدث خطأ أثناء تحديث الأيقونة: ' + error.message, 'error');
             });
-        }
-
-        function deleteFavicon() {
-            if (!confirm('هل أنت متأكد من حذف أيقونة الموقع؟')) {
-                return;
-            }
-
-            showFaviconMessage('جاري حذف أيقونة الموقع...', 'info');
-
-            fetch('{{ route("admin.favicon.delete") }}', {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    showFaviconMessage(data.message, 'success');
-                    // إخفاء أيقونة الموقع الحالية
-                    document.getElementById('currentFaviconImage').style.display = 'none';
-                    document.getElementById('currentFaviconImage').nextElementSibling.style.display = 'block';
-                } else {
-                    showFaviconMessage(data.message, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showFaviconMessage('حدث خطأ أثناء حذف أيقونة الموقع: ' + error.message, 'error');
-            });
-        }
-
-        function cancelFaviconUpload() {
-            selectedFaviconFile = null;
-            document.getElementById('faviconFile').value = '';
-            document.getElementById('faviconUploadArea').style.display = 'block';
-            document.getElementById('faviconPreview').style.display = 'none';
-            clearFaviconMessages();
         }
 
         function showFaviconMessage(message, type) {
@@ -1567,79 +1484,7 @@
             document.getElementById('faviconMessages').innerHTML = '';
         }
 
-        // إعداد drag & drop لأيقونة الموقع
-        document.addEventListener('DOMContentLoaded', function() {
-            const faviconUploadArea = document.getElementById('faviconUploadArea');
-            const faviconFileInput = document.getElementById('faviconFile');
-
-            // التحقق من وجود العناصر قبل إضافة event listeners
-            if (faviconUploadArea && faviconFileInput) {
-                // النقر على منطقة الرفع
-                faviconUploadArea.addEventListener('click', function() {
-                    faviconFileInput.click();
-                });
-
-                // تغيير الملف
-                faviconFileInput.addEventListener('change', function() {
-                    if (this.files.length > 0) {
-                        handleFaviconFile(this.files[0]);
-                    }
-                });
-
-                // drag & drop events
-                faviconUploadArea.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    this.classList.add('dragover');
-                });
-
-                faviconUploadArea.addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragover');
-                });
-
-                faviconUploadArea.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragover');
-                    
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        handleFaviconFile(files[0]);
-                    }
-                });
-            }
-
-            function handleFaviconFile(file) {
-                console.log('تم اختيار ملف أيقونة الموقع:', file);
-                
-                // التحقق من حجم الملف
-                if (file.size > 1 * 1024 * 1024) { // 1MB
-                    showFaviconMessage('حجم الملف كبير جداً. الحد الأقصى 1MB', 'error');
-                    return;
-                }
-                
-                // التحقق من نوع الملف
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif'];
-                if (!allowedTypes.includes(file.type)) {
-                    showFaviconMessage('نوع الملف غير مدعوم. يرجى اختيار صورة بصيغة JPG, PNG, SVG, WebP, أو AVIF', 'error');
-                    return;
-                }
-                
-                // حفظ الملف المختار
-                selectedFaviconFile = file;
-                
-                // إظهار المعاينة
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('faviconPreviewImage').src = e.target.result;
-                    document.getElementById('faviconPreviewFileName').textContent = file.name;
-                    document.getElementById('faviconPreviewFileSize').textContent = formatFileSize(file.size);
-                    
-                    document.getElementById('faviconUploadArea').style.display = 'none';
-                    document.getElementById('faviconPreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        // تم حذف كود رفع أيقونة الموقع - الآن الأيقونة تلقائية من الشعار
 
         // دوال معلومات Cloudinary
         function getLogoInfo() {

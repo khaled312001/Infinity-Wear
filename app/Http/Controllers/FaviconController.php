@@ -237,4 +237,75 @@ class FaviconController extends Controller
             'is_cloudinary' => false
         ]);
     }
+
+    /**
+     * تحديث أيقونة الموقع من الشعار
+     */
+    public function refreshFromLogo(Request $request)
+    {
+        try {
+            // الحصول على بيانات الشعار
+            $logoData = Setting::get('site_logo_data');
+            if (!$logoData) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لا يوجد شعار محفوظ لتحديث الأيقونة منه'
+                ], 400);
+            }
+
+            $logo = json_decode($logoData, true);
+            if (!$logo) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'بيانات الشعار غير صحيحة'
+                ], 400);
+            }
+
+            // إنشاء بيانات الأيقونة من الشعار
+            $faviconData = [
+                'cloudinary' => $logo['cloudinary'] ?? null,
+                'file_path' => $logo['file_path'] ?? null,
+                'uploaded_at' => now()->toISOString(),
+                'auto_generated_from_logo' => true,
+            ];
+
+            // إذا كان الشعار في Cloudinary، أنشئ إدخال منفصل للأيقونة
+            if (isset($logo['cloudinary'])) {
+                $faviconCloudinaryData = $logo['cloudinary'];
+                $faviconCloudinaryData['public_id'] = str_replace('infinitywearsa/logos/', 'infinitywearsa/favicons/', $faviconCloudinaryData['public_id']);
+                $faviconData['cloudinary'] = $faviconCloudinaryData;
+            }
+
+            // حفظ بيانات الأيقونة
+            Setting::set('site_favicon', $logo['file_path'] ?? '');
+            Setting::set('site_favicon_data', json_encode($faviconData));
+
+            // الحصول على رابط الأيقونة الجديد
+            $faviconUrl = \App\Helpers\SiteSettingsHelper::getFaviconUrl();
+
+            Log::info('Favicon refreshed from logo', [
+                'logo_cloudinary_id' => $logo['cloudinary']['public_id'] ?? 'none',
+                'favicon_path' => $logo['file_path'] ?? 'none',
+                'auto_generated' => true
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'تم تحديث أيقونة الموقع من الشعار بنجاح',
+                'favicon_url' => $faviconUrl,
+                'auto_generated' => true
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error refreshing favicon from logo', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء تحديث أيقونة الموقع من الشعار'
+            ], 500);
+        }
+    }
 }

@@ -22,6 +22,11 @@ class SiteSettingsHelper
      */
     public static function get($key, $default = null)
     {
+        // Temporarily disable caching for logo-related settings to fix 403 errors
+        if (in_array($key, ['site_logo', 'site_logo_data', 'site_favicon', 'site_favicon_data'])) {
+            return Setting::get($key, $default);
+        }
+        
         return Cache::remember("site_setting_{$key}", 3600, function () use ($key, $default) {
             return Setting::get($key, $default);
         });
@@ -37,7 +42,9 @@ class SiteSettingsHelper
         if ($logoData) {
             $data = json_decode($logoData, true);
             if ($data && isset($data['cloudinary']['secure_url'])) {
-                return $data['cloudinary']['secure_url'];
+                // Add cache-busting parameter for Cloudinary URLs
+                $url = $data['cloudinary']['secure_url'];
+                return $url . (strpos($url, '?') !== false ? '&' : '?') . 'v=' . time();
             }
             if ($data && isset($data['file_path']) && file_exists(storage_path('app/public/' . $data['file_path']))) {
                 $timestamp = filemtime(storage_path('app/public/' . $data['file_path']));
@@ -52,7 +59,7 @@ class SiteSettingsHelper
             $timestamp = filemtime(storage_path('app/public/' . $logo));
             return asset('storage/' . $logo) . '?v=' . $timestamp;
         }
-        return asset('images/logo.svg');
+        return asset('images/logo.svg') . '?v=' . time();
     }
 
     /**
@@ -65,7 +72,9 @@ class SiteSettingsHelper
         if ($faviconData) {
             $data = json_decode($faviconData, true);
             if ($data && isset($data['cloudinary']['secure_url'])) {
-                return $data['cloudinary']['secure_url'];
+                // Add cache-busting parameter for Cloudinary URLs
+                $url = $data['cloudinary']['secure_url'];
+                return $url . (strpos($url, '?') !== false ? '&' : '?') . 'v=' . time();
             }
             if ($data && isset($data['file_path']) && file_exists(storage_path('app/public/' . $data['file_path']))) {
                 $timestamp = filemtime(storage_path('app/public/' . $data['file_path']));
