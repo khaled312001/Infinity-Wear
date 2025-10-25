@@ -140,8 +140,7 @@ class PermissionController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:roles',
             'display_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'permissions' => 'array'
+            'description' => 'nullable|string'
         ]);
 
         try {
@@ -154,9 +153,7 @@ class PermissionController extends Controller
                 'is_active' => true
             ]);
 
-            if ($request->permissions) {
-                $role->permissions()->sync($request->permissions);
-            }
+            // No permissions to sync since we removed the permissions section
 
             DB::commit();
 
@@ -177,8 +174,7 @@ class PermissionController extends Controller
     {
         $request->validate([
             'display_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'permissions' => 'array'
+            'description' => 'nullable|string'
         ]);
 
         try {
@@ -190,9 +186,7 @@ class PermissionController extends Controller
                 'description' => $request->description
             ]);
 
-            if ($request->has('permissions')) {
-                $role->permissions()->sync($request->permissions);
-            }
+            // No permissions to sync since we removed the permissions section
 
             DB::commit();
 
@@ -216,19 +210,25 @@ class PermissionController extends Controller
             
             // Check if role is being used
             if ($role->admins()->count() > 0 || $role->users()->count() > 0) {
-                return redirect()->route('admin.permissions.index')
-                    ->with('error', 'لا يمكن حذف هذا الدور لأنه مستخدم حالياً');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لا يمكن حذف هذا الدور لأنه مستخدم حالياً'
+                ]);
             }
 
             $role->permissions()->detach();
             $role->delete();
 
-            return redirect()->route('admin.permissions.index')
-                ->with('success', 'تم حذف الدور بنجاح');
+            return response()->json([
+                'success' => true,
+                'message' => 'تم حذف الدور بنجاح'
+            ]);
 
         } catch (\Exception $e) {
-            return redirect()->route('admin.permissions.index')
-                ->with('error', 'حدث خطأ أثناء حذف الدور: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء حذف الدور: ' . $e->getMessage()
+            ]);
         }
     }
 }

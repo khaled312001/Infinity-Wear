@@ -164,44 +164,44 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Edit role buttons
+    document.querySelectorAll('.js-edit-role').forEach(button => {
+        button.addEventListener('click', function() {
+            const roleId = this.getAttribute('data-role-id');
+            const displayName = this.getAttribute('data-display-name') || '';
+            const description = this.getAttribute('data-description') || '';
+            let permissions = [];
+            try {
+                const raw = this.getAttribute('data-permissions');
+                permissions = raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                permissions = [];
+            }
+            editRole(roleId, displayName, description, permissions);
+        });
+    });
+
+    // Delete role buttons
+    document.querySelectorAll('.js-delete-role').forEach(button => {
+        button.addEventListener('click', function() {
+            const roleId = this.getAttribute('data-role-id');
+            deleteRole(roleId);
+        });
+    });
+});
+
 function editRole(roleId, displayName, description, permissionIds) {
-    document.getElementById('editRoleForm').action = `/admin/permissions/roles/${roleId}`;
+    document.getElementById('editRoleForm').action = `{{ route('admin.permissions.update-role', '') }}/${roleId}`;
     document.getElementById('edit_display_name').value = displayName;
     document.getElementById('edit_description').value = description;
-    
-    // Clear all checkboxes
-    document.querySelectorAll('.edit-permission').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-    
-    // Check the role's permissions
-    permissionIds.forEach(permissionId => {
-        const checkbox = document.getElementById(`edit_permission_${permissionId}`);
-        if (checkbox) {
-            checkbox.checked = true;
-        }
-    });
     
     new bootstrap.Modal(document.getElementById('editRoleModal')).show();
 }
 
-function editRoleFromButton(btn) {
-    const roleId = btn.getAttribute('data-role-id');
-    const displayName = btn.getAttribute('data-display-name') || '';
-    const description = btn.getAttribute('data-description') || '';
-    let permissions = [];
-    try {
-        const raw = btn.getAttribute('data-permissions');
-        permissions = raw ? JSON.parse(raw) : [];
-    } catch (e) {
-        permissions = [];
-    }
-    editRole(roleId, displayName, description, permissions);
-}
-
 function deleteRole(roleId) {
     if (confirm('هل أنت متأكد من حذف هذا الدور؟')) {
-        fetch(`/admin/permissions/roles/${roleId}`, {
+        fetch(`{{ route('admin.permissions.destroy-role', '') }}/${roleId}`, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
