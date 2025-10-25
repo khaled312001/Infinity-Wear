@@ -1012,6 +1012,13 @@
         }
 
         function deleteLogo() {
+            // Check if there's actually a logo to delete
+            const currentLogoImage = document.getElementById('currentLogoImage');
+            if (!currentLogoImage || currentLogoImage.style.display === 'none' || !currentLogoImage.src.includes('storage') && !currentLogoImage.src.includes('cloudinary')) {
+                showLogoMessage('لا يوجد شعار محفوظ حالياً', 'warning');
+                return;
+            }
+            
             if (!confirm('هل أنت متأكد من حذف الشعار؟')) {
                 return;
             }
@@ -1023,7 +1030,12 @@
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     showLogoMessage(data.message, 'success');
@@ -1031,12 +1043,12 @@
                     document.getElementById('currentLogoImage').style.display = 'none';
                     document.getElementById('currentLogoImage').nextElementSibling.style.display = 'block';
                 } else {
-                    showLogoMessage(data.message, 'error');
+                    showLogoMessage(data.message || 'حدث خطأ أثناء حذف الشعار', 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showLogoMessage('حدث خطأ أثناء حذف الشعار', 'error');
+                showLogoMessage('حدث خطأ أثناء حذف الشعار: ' + error.message, 'error');
             });
         }
 
@@ -1050,9 +1062,11 @@
         function showLogoMessage(message, type) {
             const messagesDiv = document.getElementById('logoMessages');
             const alertClass = type === 'success' ? 'alert-success' : 
-                              type === 'error' ? 'alert-danger' : 'alert-info';
+                              type === 'error' ? 'alert-danger' : 
+                              type === 'warning' ? 'alert-warning' : 'alert-info';
             const icon = type === 'success' ? 'fa-check-circle' : 
-                        type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+                        type === 'error' ? 'fa-exclamation-triangle' : 
+                        type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
             
             messagesDiv.innerHTML = `
                 <div class="alert ${alertClass} alert-dismissible fade show">
@@ -1077,6 +1091,10 @@
             const file = e.target.files[0];
             if (file) {
                 handleLogoFile(file);
+                // Auto-upload with confirmation
+                if (confirm('هل تريد رفع الشعار تلقائياً؟')) {
+                    uploadLogo();
+                }
             }
         });
 
@@ -1104,6 +1122,10 @@
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 handleLogoFile(files[0]);
+                // Auto-upload with confirmation
+                if (confirm('هل تريد رفع الشعار تلقائياً؟')) {
+                    uploadLogo();
+                }
             }
         });
 
@@ -1375,6 +1397,13 @@
                 const newSrc = currentSrc + separator + 'force_refresh=' + Date.now();
                 currentLogoImage.src = newSrc;
                 console.log('الشعار الجديد:', newSrc);
+                
+                // Check if logo exists
+                currentLogoImage.onerror = function() {
+                    console.log('الشعار غير موجود - سيتم إظهار رسالة عدم وجود شعار');
+                    this.style.display = 'none';
+                    this.nextElementSibling.style.display = 'block';
+                };
             }
         });
 

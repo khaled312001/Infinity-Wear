@@ -169,25 +169,39 @@ class LogoController extends Controller
     {
         try {
             $logoData = Setting::get('site_logo_data');
+            $legacyLogo = Setting::get('site_logo');
+            
+            Log::info('Starting logo deletion', [
+                'has_logo_data' => !empty($logoData),
+                'has_legacy_logo' => !empty($legacyLogo)
+            ]);
             
             if ($logoData) {
                 $data = json_decode($logoData, true);
                 
-                // حذف من Cloudinary
-                if (isset($data['cloudinary']['public_id'])) {
-                    $deleteResult = $this->cloudinaryService->deleteFile($data['cloudinary']['public_id']);
-                    if ($deleteResult['success']) {
-                        Log::info('Logo deleted from Cloudinary', ['public_id' => $data['cloudinary']['public_id']]);
-                    } else {
-                        Log::warning('Failed to delete logo from Cloudinary', ['error' => $deleteResult['error']]);
+                if ($data) {
+                    // حذف من Cloudinary
+                    if (isset($data['cloudinary']['public_id'])) {
+                        $deleteResult = $this->cloudinaryService->deleteFile($data['cloudinary']['public_id']);
+                        if ($deleteResult['success']) {
+                            Log::info('Logo deleted from Cloudinary', ['public_id' => $data['cloudinary']['public_id']]);
+                        } else {
+                            Log::warning('Failed to delete logo from Cloudinary', ['error' => $deleteResult['error']]);
+                        }
+                    }
+                    
+                    // حذف من التخزين المحلي
+                    if (isset($data['file_path']) && Storage::disk('public')->exists($data['file_path'])) {
+                        Storage::disk('public')->delete($data['file_path']);
+                        Log::info('Logo deleted from local storage', ['path' => $data['file_path']]);
                     }
                 }
-                
-                // حذف من التخزين المحلي
-                if (isset($data['file_path']) && Storage::disk('public')->exists($data['file_path'])) {
-                    Storage::disk('public')->delete($data['file_path']);
-                    Log::info('Logo deleted from local storage', ['path' => $data['file_path']]);
-                }
+            }
+            
+            // حذف الملف المحلي القديم أيضاً
+            if ($legacyLogo && Storage::disk('public')->exists($legacyLogo)) {
+                Storage::disk('public')->delete($legacyLogo);
+                Log::info('Legacy logo deleted from local storage', ['path' => $legacyLogo]);
             }
             
             // حذف البيانات من قاعدة البيانات
@@ -196,6 +210,8 @@ class LogoController extends Controller
             Setting::clearCache();
             \App\Helpers\SiteSettingsHelper::clearCache();
 
+            Log::info('Logo deletion completed successfully');
+
             return response()->json([
                 'success' => true,
                 'message' => 'تم حذف الشعار بنجاح من السحابة والمحلي'
@@ -203,12 +219,13 @@ class LogoController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Logo deletion failed', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'حدث خطأ أثناء حذف الشعار'
+                'message' => 'حدث خطأ أثناء حذف الشعار: ' . $e->getMessage()
             ], 500);
         }
     }
