@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Permission;
 use App\Models\Role;
@@ -14,7 +15,8 @@ class DynamicDashboardController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
+        // Get the authenticated user (admin or regular user)
+        $user = Auth::guard('admin')->check() ? Auth::guard('admin')->user() : Auth::user();
         
         // Get user permissions
         $permissions = $this->getUserPermissions($user);
@@ -35,14 +37,25 @@ class DynamicDashboardController extends Controller
     {
         $permissions = collect();
         
-        // Get direct permissions
-        $directPermissions = $user->permissions;
-        $permissions = $permissions->merge($directPermissions);
+        // Check if user exists
+        if (!$user) {
+            return $permissions;
+        }
+        
+        // Get direct permissions (if user has direct permissions)
+        if (method_exists($user, 'permissions') && $user->permissions) {
+            $directPermissions = $user->permissions;
+            $permissions = $permissions->merge($directPermissions);
+        }
         
         // Get role permissions
-        foreach ($user->roles as $role) {
-            $rolePermissions = $role->permissions;
-            $permissions = $permissions->merge($rolePermissions);
+        if (method_exists($user, 'roles') && $user->roles) {
+            foreach ($user->roles as $role) {
+                if (method_exists($role, 'permissions') && $role->permissions) {
+                    $rolePermissions = $role->permissions;
+                    $permissions = $permissions->merge($rolePermissions);
+                }
+            }
         }
         
         return $permissions->unique('id');
