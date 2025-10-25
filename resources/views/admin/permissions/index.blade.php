@@ -426,6 +426,17 @@ function editRole(roleId, displayName, description, userType, permissionIds) {
         
         const formData = new FormData(form);
         
+        // Ensure unchecked permissions are not included
+        const uncheckedBoxes = document.querySelectorAll('.edit-permission:not(:checked)');
+        uncheckedBoxes.forEach(checkbox => {
+            // Remove any existing entries for this permission
+            const permissionId = checkbox.value;
+            const existingEntries = Array.from(formData.entries()).filter(([key, value]) => key === 'permissions[]' && value === permissionId);
+            existingEntries.forEach(([key, value]) => {
+                formData.delete(key);
+            });
+        });
+        
         fetch(form.action, {
             method: 'POST',
             body: formData,

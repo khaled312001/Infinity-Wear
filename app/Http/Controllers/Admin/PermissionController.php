@@ -168,9 +168,9 @@ class PermissionController extends Controller
                 'is_active' => true
             ]);
 
-            if ($request->has('permissions')) {
-                $role->permissions()->sync($request->permissions);
-            }
+            // Always sync permissions, even if empty array
+            $permissions = $request->input('permissions', []);
+            $role->permissions()->sync($permissions);
 
             DB::commit();
 
@@ -206,9 +206,9 @@ class PermissionController extends Controller
                 'user_type' => $request->user_type
             ]);
 
-            if ($request->has('permissions')) {
-                $role->permissions()->sync($request->permissions);
-            }
+            // Always sync permissions, even if empty array
+            $permissions = $request->input('permissions', []);
+            $role->permissions()->sync($permissions);
 
             DB::commit();
 
