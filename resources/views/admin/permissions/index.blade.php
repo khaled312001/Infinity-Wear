@@ -34,75 +34,6 @@
                         </div>
                     @endif
 
-                    <!-- User Type Tabs Navigation -->
-                    <ul class="nav nav-tabs" id="permissionsTabs" role="tablist">
-                        @foreach($permissionsByUserType as $userType => $permissions)
-                            {{-- Debug: Skip customer if it somehow appears --}}
-                            @if($userType === 'customer')
-                                @continue
-                            @endif
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link {{ $loop->first ? 'active' : '' }}" 
-                                        id="{{ $userType }}-tab" 
-                                        data-bs-toggle="tab" 
-                                        data-bs-target="#{{ $userType }}" 
-                                        type="button" 
-                                        role="tab" 
-                                        aria-controls="{{ $userType }}" 
-                                        aria-selected="{{ $loop->first ? 'true' : 'false' }}">
-                                    <i class="fas fa-{{ $userType === 'admin' ? 'user-shield' : ($userType === 'importer' ? 'industry' : ($userType === 'sales' ? 'handshake' : 'chart-line')) }} me-2"></i>
-                                    {{ $permissions->first()->display_name ?? ucfirst($userType) }}
-                                </button>
-                            </li>
-                        @endforeach
-                    </ul>
-
-                    <div class="tab-content" id="permissionsTabsContent">
-                        @foreach($permissionsByUserType as $userType => $permissions)
-                            @if($userType === 'customer')
-                                @continue
-                            @endif
-                            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" 
-                                 id="{{ $userType }}" 
-                                 role="tabpanel">
-                                <div class="row mt-4">
-                                    <div class="col-12">
-                                        <h5 class="mb-3">الصلاحيات المتاحة لـ {{ $permissions->first()->display_name ?? ucfirst($userType) }}</h5>
-                                        
-                                        <div class="row">
-                                            @foreach($permissions->groupBy('module') as $module => $modulePermissions)
-                                                <div class="col-md-6 col-lg-4 mb-4">
-                                                    <div class="card border">
-                                                        <div class="card-header bg-light">
-                                                            <h6 class="mb-0">{{ ucfirst($module) }}</h6>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            @foreach($modulePermissions as $permission)
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" 
-                                                                           type="checkbox" 
-                                                                           value="{{ $permission->id }}" 
-                                                                           id="permission_{{ $permission->id }}"
-                                                                           disabled>
-                                                                    <label class="form-check-label" for="permission_{{ $permission->id }}">
-                                                                        {{ $permission->display_name }}
-                                                                    </label>
-                                                                    @if($permission->description)
-                                                                        <small class="text-muted d-block">{{ $permission->description }}</small>
-                                                                    @endif
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
                     <!-- Roles Management Section -->
                     <div class="mt-5">
                         <h5 class="mb-3">إدارة الأدوار</h5>
@@ -186,30 +117,6 @@
                         <label for="description" class="form-label">الوصف</label>
                         <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">الصلاحيات</label>
-                        <div class="row">
-                            @foreach($permissionsByUserType as $userType => $permissions)
-                                @if($userType === 'customer')
-                                    @continue
-                                @endif
-                                <div class="col-md-6">
-                                    <h6>{{ ucfirst($userType) }}</h6>
-                                    @foreach($permissions as $permission)
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" 
-                                                   value="{{ $permission->id }}" 
-                                                   name="permissions[]" 
-                                                   id="create_permission_{{ $permission->id }}">
-                                            <label class="form-check-label" for="create_permission_{{ $permission->id }}">
-                                                {{ $permission->display_name }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
@@ -244,30 +151,6 @@
                                 <label for="edit_description" class="form-label">الوصف</label>
                                 <input type="text" class="form-control" id="edit_description" name="description">
                             </div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">الصلاحيات</label>
-                        <div class="row">
-                            @foreach($permissionsByUserType as $userType => $permissions)
-                                @if($userType === 'customer')
-                                    @continue
-                                @endif
-                                <div class="col-md-6">
-                                    <h6>{{ ucfirst($userType) }}</h6>
-                                    @foreach($permissions as $permission)
-                                        <div class="form-check">
-                                            <input class="form-check-input edit-permission" type="checkbox" 
-                                                   value="{{ $permission->id }}" 
-                                                   name="permissions[]" 
-                                                   id="edit_permission_{{ $permission->id }}">
-                                            <label class="form-check-label" for="edit_permission_{{ $permission->id }}">
-                                                {{ $permission->display_name }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endforeach
                         </div>
                     </div>
                 </div>

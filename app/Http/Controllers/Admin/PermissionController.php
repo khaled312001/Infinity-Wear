@@ -17,16 +17,6 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        // Get permissions grouped by user type (exclude customer)
-        $permissionsByUserType = Permission::where('is_active', true)
-            ->where('user_type', '!=', 'customer')
-            ->orderBy('user_type')
-            ->orderBy('module')
-            ->orderBy('display_name')
-            ->get()
-            ->groupBy('user_type');
-
-
         // Get roles with their permissions (exclude customer)
         $roles = Role::where('name', '!=', 'customer')
             ->with('permissions')
@@ -49,11 +39,7 @@ class PermissionController extends Controller
             })->values();
         }
 
-
-        // Get current user type permissions from database
-        $currentPermissions = $this->getCurrentPermissions();
-
-        return view('admin.permissions.index', compact('permissionsByUserType', 'roles', 'currentPermissions'));
+        return view('admin.permissions.index', compact('roles'));
     }
 
     /**
