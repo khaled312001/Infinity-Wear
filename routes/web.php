@@ -1030,3 +1030,61 @@ Route::prefix('daily-report')->name('daily-report.')->group(function () {
     })->name('send');
 });
 
+// Test route for Services Cloudinary integration
+Route::get('/test-services-cloudinary', function () {
+    try {
+        $cloudinaryService = app(\App\Services\CloudinaryService::class);
+        
+        $result = [
+            'cloudinary_available' => $cloudinaryService->isAvailable(),
+            'service_model_tests' => []
+        ];
+        
+        // Test Service model image URL generation
+        $service = new \App\Models\Service();
+        
+        // Test 1: Cloudinary format
+        $cloudinaryImageData = [
+            'cloudinary' => [
+                'public_id' => 'infinitywearsa/services/test_image',
+                'secure_url' => 'https://res.cloudinary.com/dhx24m770/image/upload/v1234567890/infinitywearsa/services/test_image.jpg',
+                'url' => 'http://res.cloudinary.com/dhx24m770/image/upload/v1234567890/infinitywearsa/services/test_image.jpg',
+                'format' => 'jpg',
+                'width' => 800,
+                'height' => 600,
+                'bytes' => 125000,
+            ],
+            'file_path' => 'images/services/test_image_1234567890.jpg',
+            'uploaded_at' => '2024-01-01T00:00:00.000000Z',
+        ];
+        
+        $service->image = json_encode($cloudinaryImageData);
+        $result['service_model_tests']['cloudinary_format'] = $service->image_url;
+        
+        // Test 2: Legacy format (storage path)
+        $service->image = 'images/services/legacy_image.jpg';
+        $result['service_model_tests']['legacy_storage_format'] = $service->image_url;
+        
+        // Test 3: Legacy format (public path)
+        $service->image = 'images/sections/test_section.jpg';
+        $result['service_model_tests']['legacy_public_format'] = $service->image_url;
+        
+        // Test 4: No image
+        $service->image = null;
+        $result['service_model_tests']['no_image'] = $service->image_url;
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Services Cloudinary integration test completed successfully',
+            'results' => $result
+        ]);
+        
+    } catch (Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error during testing: ' . $e->getMessage(),
+            'error' => $e->getTraceAsString()
+        ], 500);
+    }
+});
+

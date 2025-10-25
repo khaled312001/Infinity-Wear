@@ -6,9 +6,17 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Services\CloudinaryService;
+use Illuminate\Support\Facades\Log;
 
 class ServicesController extends Controller
 {
+    protected $cloudinaryService;
+
+    public function __construct(CloudinaryService $cloudinaryService)
+    {
+        $this->cloudinaryService = $cloudinaryService;
+    }
     /**
      * Display the services page
      */
@@ -70,12 +78,51 @@ class ServicesController extends Controller
             'meta_description' => 'nullable|string|max:500'
         ]);
 
-        // Handle image upload
+        // Handle image upload with Cloudinary
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('images/services', $imageName, 'public');
-            $validated['image'] = $imagePath;
+            
+            // Upload to Cloudinary
+            $uploadResult = $this->cloudinaryService->uploadFile($image, 'infinitywearsa/services');
+            
+            if ($uploadResult['success']) {
+                // Store locally as backup
+                $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('images/services', $imageName, 'public');
+                
+                // Store Cloudinary data in image field
+                $validated['image'] = json_encode([
+                    'cloudinary' => [
+                        'public_id' => $uploadResult['public_id'],
+                        'secure_url' => $uploadResult['secure_url'],
+                        'url' => $uploadResult['url'],
+                        'format' => $uploadResult['format'],
+                        'width' => $uploadResult['width'],
+                        'height' => $uploadResult['height'],
+                        'bytes' => $uploadResult['bytes'],
+                    ],
+                    'file_path' => $imagePath,
+                    'uploaded_at' => now()->toISOString(),
+                ]);
+                
+                Log::info('Service image uploaded to Cloudinary successfully', [
+                    'public_id' => $uploadResult['public_id'],
+                    'file_name' => $image->getClientOriginalName(),
+                    'file_size' => $image->getSize(),
+                    'cloudinary_url' => $uploadResult['secure_url']
+                ]);
+            } else {
+                // Fallback to local storage only
+                $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('images/services', $imageName, 'public');
+                $validated['image'] = $imagePath;
+                
+                Log::warning('Cloudinary upload failed for service image, using local storage', [
+                    'error' => $uploadResult['error'] ?? 'Unknown error',
+                    'file_name' => $image->getClientOriginalName(),
+                    'local_path' => $imagePath
+                ]);
+            }
         }
 
         // Set default order if not provided
@@ -131,17 +178,64 @@ class ServicesController extends Controller
             'meta_description' => 'nullable|string|max:500'
         ]);
 
-        // Handle image upload
+        // Handle image upload with Cloudinary
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($service->image && Storage::disk('public')->exists($service->image)) {
-                Storage::disk('public')->delete($service->image);
-            }
-
             $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('images/services', $imageName, 'public');
-            $validated['image'] = $imagePath;
+            
+            // Delete old image from Cloudinary and local storage
+            if ($service->image) {
+                $oldImageData = json_decode($service->image, true);
+                if ($oldImageData && isset($oldImageData['cloudinary']['public_id'])) {
+                    $this->cloudinaryService->deleteFile($oldImageData['cloudinary']['public_id']);
+                }
+                if ($oldImageData && isset($oldImageData['file_path']) && Storage::disk('public')->exists($oldImageData['file_path'])) {
+                    Storage::disk('public')->delete($oldImageData['file_path']);
+                } elseif (is_string($service->image) && Storage::disk('public')->exists($service->image)) {
+                    Storage::disk('public')->delete($service->image);
+                }
+            }
+            
+            // Upload to Cloudinary
+            $uploadResult = $this->cloudinaryService->uploadFile($image, 'infinitywearsa/services');
+            
+            if ($uploadResult['success']) {
+                // Store locally as backup
+                $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('images/services', $imageName, 'public');
+                
+                // Store Cloudinary data in image field
+                $validated['image'] = json_encode([
+                    'cloudinary' => [
+                        'public_id' => $uploadResult['public_id'],
+                        'secure_url' => $uploadResult['secure_url'],
+                        'url' => $uploadResult['url'],
+                        'format' => $uploadResult['format'],
+                        'width' => $uploadResult['width'],
+                        'height' => $uploadResult['height'],
+                        'bytes' => $uploadResult['bytes'],
+                    ],
+                    'file_path' => $imagePath,
+                    'uploaded_at' => now()->toISOString(),
+                ]);
+                
+                Log::info('Service image updated on Cloudinary successfully', [
+                    'public_id' => $uploadResult['public_id'],
+                    'file_name' => $image->getClientOriginalName(),
+                    'file_size' => $image->getSize(),
+                    'cloudinary_url' => $uploadResult['secure_url']
+                ]);
+            } else {
+                // Fallback to local storage only
+                $imageName = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('images/services', $imageName, 'public');
+                $validated['image'] = $imagePath;
+                
+                Log::warning('Cloudinary upload failed for service image update, using local storage', [
+                    'error' => $uploadResult['error'] ?? 'Unknown error',
+                    'file_name' => $image->getClientOriginalName(),
+                    'local_path' => $imagePath
+                ]);
+            }
         }
 
         // Set active status - convert string to boolean
@@ -162,9 +256,22 @@ class ServicesController extends Controller
      */
     public function destroy(Service $service)
     {
-        // Delete image if exists
-        if ($service->image && Storage::disk('public')->exists($service->image)) {
-            Storage::disk('public')->delete($service->image);
+        // Delete image from Cloudinary and local storage
+        if ($service->image) {
+            $imageData = json_decode($service->image, true);
+            if ($imageData && isset($imageData['cloudinary']['public_id'])) {
+                $deleteResult = $this->cloudinaryService->deleteFile($imageData['cloudinary']['public_id']);
+                if ($deleteResult['success']) {
+                    Log::info('Service image deleted from Cloudinary', ['public_id' => $imageData['cloudinary']['public_id']]);
+                } else {
+                    Log::warning('Failed to delete service image from Cloudinary', ['error' => $deleteResult['error']]);
+                }
+            }
+            if ($imageData && isset($imageData['file_path']) && Storage::disk('public')->exists($imageData['file_path'])) {
+                Storage::disk('public')->delete($imageData['file_path']);
+            } elseif (is_string($service->image) && Storage::disk('public')->exists($service->image)) {
+                Storage::disk('public')->delete($service->image);
+            }
         }
 
         $service->delete();

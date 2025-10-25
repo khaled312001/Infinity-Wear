@@ -33,6 +33,16 @@ class Service extends Model
     public function getImageUrlAttribute()
     {
         if ($this->image) {
+            // Check if image data is JSON (Cloudinary format)
+            $imageData = json_decode($this->image, true);
+            if ($imageData && isset($imageData['cloudinary']['secure_url'])) {
+                return $imageData['cloudinary']['secure_url'];
+            }
+            if ($imageData && isset($imageData['file_path'])) {
+                return asset('storage/' . $imageData['file_path']);
+            }
+            
+            // Legacy format handling
             // إذا كان المسار يحتوي على 'images/services/' فهو في storage/app/public/
             if (strpos($this->image, 'images/services/') === 0) {
                 return asset('storage/' . $this->image);
