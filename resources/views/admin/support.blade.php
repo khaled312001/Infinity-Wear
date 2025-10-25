@@ -86,7 +86,7 @@
                     <div class="col-12">
                         <h6 class="mb-3">روابط سريعة</h6>
                         <div class="d-flex flex-wrap gap-2">
-                            <a href="{{ route('admin.contacts') }}" class="btn btn-outline-primary">
+                            <a href="{{ route('admin.contacts.index') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-envelope me-1"></i>
                                 إدارة رسائل التواصل
                             </a>
@@ -153,7 +153,7 @@
                                         <i class="fas fa-chart-bar me-1"></i>
                                         التقارير
                                     </a>
-                                    <a href="{{ route('admin.notifications') }}" class="btn btn-outline-secondary btn-sm">
+                                    <a href="{{ route('admin.notifications.index') }}" class="btn btn-outline-secondary btn-sm">
                                         <i class="fas fa-bell me-1"></i>
                                         الإشعارات
                                     </a>
