@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function editRole(roleId, displayName, description, permissionIds) {
-    document.getElementById('editRoleForm').action = `{{ route('admin.permissions.update-role', '') }}/${roleId}`;
+    document.getElementById('editRoleForm').action = `/admin/permissions/roles/${roleId}`;
     document.getElementById('edit_display_name').value = displayName;
     document.getElementById('edit_description').value = description;
     
@@ -201,7 +201,7 @@ function editRole(roleId, displayName, description, permissionIds) {
 
 function deleteRole(roleId) {
     if (confirm('هل أنت متأكد من حذف هذا الدور؟')) {
-        fetch(`{{ route('admin.permissions.destroy-role', '') }}/${roleId}`, {
+        fetch(`/admin/permissions/roles/${roleId}`, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
