@@ -117,6 +117,30 @@
                         <label for="description" class="form-label">الوصف</label>
                         <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">الصلاحيات</label>
+                        <div class="row">
+                            @foreach($permissionsByUserType as $userType => $permissions)
+                                @if($userType === 'customer')
+                                    @continue
+                                @endif
+                                <div class="col-md-6">
+                                    <h6>{{ ucfirst($userType) }}</h6>
+                                    @foreach($permissions as $permission)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                   value="{{ $permission->id }}" 
+                                                   name="permissions[]" 
+                                                   id="create_permission_{{ $permission->id }}">
+                                            <label class="form-check-label" for="create_permission_{{ $permission->id }}">
+                                                {{ $permission->display_name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
@@ -152,6 +176,31 @@
                                 <input type="text" class="form-control" id="edit_description" name="description">
                             </div>
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">الصلاحيات</label>
+                        <div class="row">
+                            @foreach($permissionsByUserType as $userType => $permissions)
+                                @if($userType === 'customer')
+                                    @continue
+                                @endif
+                                <div class="col-md-6">
+                                    <h6>{{ ucfirst($userType) }}</h6>
+                                    @foreach($permissions as $permission)
+                                        <div class="form-check">
+                                            <input class="form-check-input edit-permission" type="checkbox" 
+                                                   value="{{ $permission->id }}" 
+                                                   name="permissions[]" 
+                                                   id="edit_permission_{{ $permission->id }}">
+                                            <label class="form-check-label" for="edit_permission_{{ $permission->id }}">
+                                                {{ $permission->display_name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -195,6 +244,19 @@ function editRole(roleId, displayName, description, permissionIds) {
     document.getElementById('editRoleForm').action = `/admin/permissions/roles/${roleId}`;
     document.getElementById('edit_display_name').value = displayName;
     document.getElementById('edit_description').value = description;
+    
+    // Clear all checkboxes
+    document.querySelectorAll('.edit-permission').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Check the role's permissions
+    permissionIds.forEach(permissionId => {
+        const checkbox = document.getElementById(`edit_permission_${permissionId}`);
+        if (checkbox) {
+            checkbox.checked = true;
+        }
+    });
     
     new bootstrap.Modal(document.getElementById('editRoleModal')).show();
 }

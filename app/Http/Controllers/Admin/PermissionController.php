@@ -140,7 +140,8 @@ class PermissionController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:roles',
             'display_name' => 'required|string|max:255',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'permissions' => 'array'
         ]);
 
         try {
@@ -153,7 +154,9 @@ class PermissionController extends Controller
                 'is_active' => true
             ]);
 
-            // No permissions to sync since we removed the permissions section
+            if ($request->has('permissions')) {
+                $role->permissions()->sync($request->permissions);
+            }
 
             DB::commit();
 
@@ -174,7 +177,8 @@ class PermissionController extends Controller
     {
         $request->validate([
             'display_name' => 'required|string|max:255',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'permissions' => 'array'
         ]);
 
         try {
@@ -186,7 +190,9 @@ class PermissionController extends Controller
                 'description' => $request->description
             ]);
 
-            // No permissions to sync since we removed the permissions section
+            if ($request->has('permissions')) {
+                $role->permissions()->sync($request->permissions);
+            }
 
             DB::commit();
 
