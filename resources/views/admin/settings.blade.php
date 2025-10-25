@@ -986,7 +986,7 @@
             // إظهار حالة التحميل
             showLogoMessage('جاري رفع الشعار...', 'info');
 
-            fetch('{{ route("logo.upload") }}', {
+            fetch('{{ route("admin.logo.upload") }}', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -1016,7 +1016,7 @@
                 return;
             }
 
-            fetch('{{ route("logo.delete") }}', {
+            fetch('{{ route("admin.logo.delete") }}', {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -1380,7 +1380,7 @@
 
         // دوال معلومات Cloudinary
         function getLogoInfo() {
-            fetch('{{ route("logo.info") }}', {
+            fetch('{{ route("admin.logo.info") }}', {
                 method: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
