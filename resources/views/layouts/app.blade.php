@@ -40,19 +40,19 @@
     <link rel="canonical" href="{{ url()->current() }}">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo.png') }}">
-    <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo.svg') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('images/logo.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="icon" type="image/svg+xml" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     
     <!-- Bootstrap RTL CSS -->
@@ -119,7 +119,7 @@
             .header-actions .order-dropdown { transform: translateX(70px); }
         }
         @media (max-width: 991.98px) {
-            .header-actions .order-dropdown { transform: translateX(120px); }
+            .header-actions .order-dropdown { transform: translateX(140px); }
         }
         /* Sidebar mobile login hint under order button */
         .sidebar-user-actions .sidebar-login-link {

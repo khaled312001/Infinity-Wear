@@ -223,7 +223,8 @@ class FaviconController extends Controller
                 'favicon_path' => $data['file_path'] ?? $legacyFavicon,
                 'cloudinary_data' => $data['cloudinary'] ?? null,
                 'is_cloudinary' => isset($data['cloudinary']['secure_url']),
-                'uploaded_at' => $data['uploaded_at'] ?? null
+                'uploaded_at' => $data['uploaded_at'] ?? null,
+                'auto_generated' => $data['auto_generated_from_logo'] ?? false
             ]);
         }
         

@@ -7,7 +7,7 @@
     <meta name="description" content="تسجيل دخول لوحة تحكم الأدمن - {{ \App\Helpers\SiteSettingsHelper::getSiteName() }}">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">
     <link rel="icon" type="image/svg+xml" href="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}">

@@ -32,6 +32,20 @@ class SiteSettingsHelper
      */
     public static function getLogoUrl()
     {
+        // First check if there's logo data (Cloudinary)
+        $logoData = self::get('site_logo_data');
+        if ($logoData) {
+            $data = json_decode($logoData, true);
+            if ($data && isset($data['cloudinary']['secure_url'])) {
+                return $data['cloudinary']['secure_url'];
+            }
+            if ($data && isset($data['file_path']) && file_exists(storage_path('app/public/' . $data['file_path']))) {
+                $timestamp = filemtime(storage_path('app/public/' . $data['file_path']));
+                return asset('storage/' . $data['file_path']) . '?v=' . $timestamp;
+            }
+        }
+
+        // Fallback to legacy logo
         $logo = self::get('site_logo');
         if ($logo && file_exists(storage_path('app/public/' . $logo))) {
             // إضافة timestamp لمنع الكاش في المتصفح
@@ -46,13 +60,28 @@ class SiteSettingsHelper
      */
     public static function getFaviconUrl()
     {
+        // First check if there's favicon data (Cloudinary or auto-generated)
+        $faviconData = self::get('site_favicon_data');
+        if ($faviconData) {
+            $data = json_decode($faviconData, true);
+            if ($data && isset($data['cloudinary']['secure_url'])) {
+                return $data['cloudinary']['secure_url'];
+            }
+            if ($data && isset($data['file_path']) && file_exists(storage_path('app/public/' . $data['file_path']))) {
+                $timestamp = filemtime(storage_path('app/public/' . $data['file_path']));
+                return asset('storage/' . $data['file_path']) . '?v=' . $timestamp;
+            }
+        }
+
+        // Fallback to legacy favicon
         $favicon = self::get('site_favicon');
         if ($favicon && file_exists(storage_path('app/public/' . $favicon))) {
-            // إضافة timestamp لمنع الكاش في المتصفح
             $timestamp = filemtime(storage_path('app/public/' . $favicon));
             return asset('storage/' . $favicon) . '?v=' . $timestamp;
         }
-        return asset('images/logo.png');
+
+        // If no favicon, use logo as fallback
+        return self::getLogoUrl();
     }
 
     /**

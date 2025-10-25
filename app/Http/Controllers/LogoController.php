@@ -94,6 +94,9 @@ class LogoController extends Controller
                 Setting::set('site_logo', $logoPath); // للتوافق مع النظام القديم
                 Setting::set('site_logo_data', json_encode($logoData));
                 
+                // Auto-set favicon to use the same logo image
+                $this->setFaviconFromLogo($logoData, $logoPath);
+                
                 // مسح الكاش
                 Setting::clearCache();
                 \App\Helpers\SiteSettingsHelper::clearCache();
@@ -107,9 +110,10 @@ class LogoController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'تم رفع الشعار بنجاح إلى السحابة',
+                    'message' => 'تم رفع الشعار بنجاح إلى السحابة وتم تعيين أيقونة الموقع تلقائياً',
                     'logo_url' => $uploadResult['secure_url'],
-                    'cloudinary_data' => $logoData['cloudinary']
+                    'cloudinary_data' => $logoData['cloudinary'],
+                    'favicon_auto_set' => true
                 ]);
             } else {
                 // في حالة فشل الرفع إلى Cloudinary، استخدم التخزين المحلي فقط
@@ -124,6 +128,9 @@ class LogoController extends Controller
                 Setting::set('site_logo', $logoPath);
                 Setting::set('site_logo_data', json_encode($logoData));
                 
+                // Auto-set favicon to use the same logo image
+                $this->setFaviconFromLogo($logoData, $logoPath);
+                
                 Setting::clearCache();
                 \App\Helpers\SiteSettingsHelper::clearCache();
 
@@ -135,9 +142,10 @@ class LogoController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'تم رفع الشعار محلياً (فشل الرفع إلى السحابة)',
+                    'message' => 'تم رفع الشعار محلياً وتم تعيين أيقونة الموقع تلقائياً (فشل الرفع إلى السحابة)',
                     'logo_url' => asset('storage/' . $logoPath),
-                    'warning' => 'تم الحفظ محلياً فقط'
+                    'warning' => 'تم الحفظ محلياً فقط',
+                    'favicon_auto_set' => true
                 ]);
             }
 
@@ -235,5 +243,45 @@ class LogoController extends Controller
             'logo_path' => $legacyLogo,
             'is_cloudinary' => false
         ]);
+    }
+
+    /**
+     * Set favicon to use the same image as logo
+     */
+    private function setFaviconFromLogo(array $logoData, string $logoPath)
+    {
+        try {
+            // Create favicon data based on logo data
+            $faviconData = [
+                'cloudinary' => $logoData['cloudinary'] ?? null,
+                'file_path' => $logoPath, // Use the same file path
+                'uploaded_at' => now()->toISOString(),
+                'auto_generated_from_logo' => true, // Mark as auto-generated
+            ];
+
+            // If logo has Cloudinary data, create a favicon-specific Cloudinary entry
+            if (isset($logoData['cloudinary'])) {
+                // Create a new Cloudinary entry for favicon with different folder
+                $faviconCloudinaryData = $logoData['cloudinary'];
+                $faviconCloudinaryData['public_id'] = str_replace('infinitywearsa/logos/', 'infinitywearsa/favicons/', $faviconCloudinaryData['public_id']);
+                $faviconData['cloudinary'] = $faviconCloudinaryData;
+            }
+
+            // Save favicon data
+            Setting::set('site_favicon', $logoPath); // Use same path for compatibility
+            Setting::set('site_favicon_data', json_encode($faviconData));
+
+            Log::info('Favicon automatically set from logo', [
+                'logo_cloudinary_id' => $logoData['cloudinary']['public_id'] ?? 'none',
+                'favicon_path' => $logoPath,
+                'auto_generated' => true
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to auto-set favicon from logo', [
+                'error' => $e->getMessage(),
+                'logo_data' => $logoData
+            ]);
+        }
     }
 }
