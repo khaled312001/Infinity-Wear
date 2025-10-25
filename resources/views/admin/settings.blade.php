@@ -1181,8 +1181,14 @@
             
             // التحقق من نوع الملف
             const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif'];
-            if (!allowedTypes.includes(file.type)) {
-                console.log('نوع الملف غير مدعوم:', file.type);
+            const fileExtension = file.name.toLowerCase().split('.').pop();
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'avif'];
+            
+            console.log('نوع الملف:', file.type);
+            console.log('امتداد الملف:', fileExtension);
+            
+            if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+                console.log('نوع الملف غير مدعوم:', file.type, 'امتداد:', fileExtension);
                 showLogoMessage('نوع الملف غير مدعوم. يرجى اختيار صورة بصيغة JPG, PNG, SVG, WebP, أو AVIF', 'error');
                 return false;
             }
@@ -1196,6 +1202,24 @@
             
             // إخفاء منطقة الرفع مؤقتاً
             document.getElementById('logoUploadArea').style.display = 'none';
+            
+            // إظهار معاينة للملفات المدعومة
+            if (file.type.startsWith('image/') || allowedExtensions.includes(fileExtension)) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    console.log('تم تحميل المعاينة بنجاح');
+                    console.log('رابط المعاينة:', e.target.result.substring(0, 100) + '...');
+                };
+                reader.onerror = function() {
+                    console.log('فشل في تحميل المعاينة');
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // معالجة خاصة لملفات SVG
+            if (fileExtension === 'svg') {
+                console.log('ملف SVG تم التعرف عليه بنجاح');
+            }
             
             return true;
         }

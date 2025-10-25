@@ -63,6 +63,12 @@ class CloudinaryService
                 'resource_type' => 'auto',
                 'quality' => 'auto',
             ], $options);
+            
+            // معالجة خاصة لملفات SVG
+            if ($file->getMimeType() === 'image/svg+xml' || strtolower($file->getClientOriginalExtension()) === 'svg') {
+                $uploadOptions['resource_type'] = 'image';
+                $uploadOptions['format'] = 'svg';
+            }
 
             $result = $this->cloudinary->uploadApi()->upload(
                 $file->getRealPath(),

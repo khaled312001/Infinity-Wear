@@ -42,10 +42,24 @@ class LogoController extends Controller
 
             // التحقق من نوع الملف
             $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif'];
-            if (!in_array($logoFile->getMimeType(), $allowedTypes)) {
+            $fileMimeType = $logoFile->getMimeType();
+            $fileExtension = strtolower($logoFile->getClientOriginalExtension());
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'avif'];
+            
+            Log::info('Logo upload validation', [
+                'mime_type' => $fileMimeType,
+                'extension' => $fileExtension,
+                'original_name' => $logoFile->getClientOriginalName()
+            ]);
+            
+            if (!in_array($fileMimeType, $allowedTypes) && !in_array($fileExtension, $allowedExtensions)) {
+                Log::warning('Unsupported file type', [
+                    'mime_type' => $fileMimeType,
+                    'extension' => $fileExtension
+                ]);
                 return response()->json([
                     'success' => false,
-                    'message' => 'نوع الملف غير مدعوم'
+                    'message' => 'نوع الملف غير مدعوم: ' . $fileMimeType . ' (امتداد: ' . $fileExtension . ')'
                 ], 400);
             }
 
