@@ -137,7 +137,7 @@
                             <small class="text-muted">(اختر الصلاحيات المناسبة لهذا الدور)</small>
                         </label>
                         <div class="row">
-                            @foreach($permissionsByUserType as $userType => $permissions)
+                            @foreach($permissionsByUserType as $userType => $sections)
                                 @if($userType === 'customer')
                                     @continue
                                 @endif
@@ -157,11 +157,11 @@
                                                 @else
                                                     {{ ucfirst($userType) }}
                                                 @endif
-                                                <span class="badge bg-primary ms-2">{{ $permissions->count() }}</span>
+                                                <span class="badge bg-primary ms-2">{{ $sections->sum(fn($section) => $section['permissions']->count()) }}</span>
                                             </h6>
                                         </div>
-                                        <div class="card-body" style="max-height: 300px; overflow-y: auto;">
-                                            <div class="mb-2">
+                                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                            <div class="mb-3">
                                                 <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllPermissions('create', '{{ $userType }}')">
                                                     <i class="fas fa-check-double me-1"></i>
                                                     تحديد الكل
@@ -171,44 +171,56 @@
                                                     إلغاء الكل
                                                 </button>
                                             </div>
-                                    @foreach($permissions as $permission)
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input create-permission-{{ $userType }}" type="checkbox" 
-                                                   value="{{ $permission->id }}" 
-                                                   name="permissions[]" 
-                                                   id="create_permission_{{ $permission->id }}">
-                                            <label class="form-check-label" for="create_permission_{{ $permission->id }}">
-                                                        <div class="d-flex align-items-center">
-                                                            @php
-                                                                $icon = match($permission->module) {
-                                                                    'dashboard' => 'tachometer-alt',
-                                                                    'content' => 'edit',
-                                                                    'importers' => 'industry',
-                                                                    'tasks' => 'tasks',
-                                                                    'financial' => 'chart-pie',
-                                                                    'teams' => 'users',
-                                                                    'customers' => 'user-friends',
-                                                                    'system' => 'cog',
-                                                                    'notifications' => 'bell',
-                                                                    'contacts' => 'envelope',
-                                                                    'whatsapp' => 'comments',
-                                                                    'support' => 'life-ring',
-                                                                    'orders' => 'shopping-cart',
-                                                                    'profile' => 'user',
-                                                                    default => 'file'
-                                                                };
-                                                            @endphp
-                                                            <i class="fas fa-{{ $icon }} me-2 text-muted"></i>
-                                                            <div>
-                                                                <strong>{{ $permission->display_name }}</strong>
-                                                                @if($permission->description)
-                                                                    <br><small class="text-muted">{{ $permission->description }}</small>
-                                                                @endif
+                                            
+                                            @foreach($sections as $sectionKey => $section)
+                                                <div class="mb-3">
+                                                    <h6 class="text-primary mb-2">
+                                                        <i class="fas fa-folder me-1"></i>
+                                                        {{ $section['title'] }}
+                                                        <span class="badge bg-light text-dark ms-2">{{ $section['permissions']->count() }}</span>
+                                                    </h6>
+                                                    <div class="ps-3">
+                                                        @foreach($section['permissions'] as $permission)
+                                                            <div class="form-check mb-2">
+                                                                <input class="form-check-input create-permission-{{ $userType }}" type="checkbox" 
+                                                               value="{{ $permission->id }}" 
+                                                               name="permissions[]" 
+                                                               id="create_permission_{{ $permission->id }}">
+                                                                <label class="form-check-label" for="create_permission_{{ $permission->id }}">
+                                                                    <div class="d-flex align-items-center">
+                                                                        @php
+                                                                            $icon = match($permission->module) {
+                                                                                'dashboard' => 'tachometer-alt',
+                                                                                'content' => 'edit',
+                                                                                'importers' => 'industry',
+                                                                                'tasks' => 'tasks',
+                                                                                'financial' => 'chart-pie',
+                                                                                'teams' => 'users',
+                                                                                'customers' => 'user-friends',
+                                                                                'system' => 'cog',
+                                                                                'notifications' => 'bell',
+                                                                                'contacts' => 'envelope',
+                                                                                'whatsapp' => 'comments',
+                                                                                'support' => 'life-ring',
+                                                                                'orders' => 'shopping-cart',
+                                                                                'profile' => 'user',
+                                                                                default => 'file'
+                                                                            };
+                                                                        @endphp
+                                                                        <i class="fas fa-{{ $icon }} me-2 text-muted"></i>
+                                                                        <div>
+                                                                            <strong>{{ $permission->display_name }}</strong>
+                                                                            @if($permission->description)
+                                                                                <br><small class="text-muted">{{ $permission->description }}</small>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </label>
                                                             </div>
-                                                        </div>
-                                            </label>
-                                        </div>
-                                    @endforeach
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -270,7 +282,7 @@
                             <small class="text-muted">(اختر الصلاحيات المناسبة لهذا الدور)</small>
                         </label>
                         <div class="row">
-                            @foreach($permissionsByUserType as $userType => $permissions)
+                            @foreach($permissionsByUserType as $userType => $sections)
                                 @if($userType === 'customer')
                                     @continue
                                 @endif
@@ -290,11 +302,11 @@
                                                 @else
                                                     {{ ucfirst($userType) }}
                                                 @endif
-                                                <span class="badge bg-primary ms-2">{{ $permissions->count() }}</span>
+                                                <span class="badge bg-primary ms-2">{{ $sections->sum(fn($section) => $section['permissions']->count()) }}</span>
                                             </h6>
                                         </div>
-                                        <div class="card-body" style="max-height: 300px; overflow-y: auto;">
-                                            <div class="mb-2">
+                                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                            <div class="mb-3">
                                                 <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllPermissions('edit', '{{ $userType }}')">
                                                     <i class="fas fa-check-double me-1"></i>
                                                     تحديد الكل
@@ -304,44 +316,56 @@
                                                     إلغاء الكل
                                                 </button>
                                             </div>
-                                    @foreach($permissions as $permission)
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input edit-permission edit-permission-{{ $userType }}" type="checkbox" 
-                                                   value="{{ $permission->id }}" 
-                                                   name="permissions[]" 
-                                                   id="edit_permission_{{ $permission->id }}">
-                                            <label class="form-check-label" for="edit_permission_{{ $permission->id }}">
-                                                        <div class="d-flex align-items-center">
-                                                            @php
-                                                                $icon = match($permission->module) {
-                                                                    'dashboard' => 'tachometer-alt',
-                                                                    'content' => 'edit',
-                                                                    'importers' => 'industry',
-                                                                    'tasks' => 'tasks',
-                                                                    'financial' => 'chart-pie',
-                                                                    'teams' => 'users',
-                                                                    'customers' => 'user-friends',
-                                                                    'system' => 'cog',
-                                                                    'notifications' => 'bell',
-                                                                    'contacts' => 'envelope',
-                                                                    'whatsapp' => 'comments',
-                                                                    'support' => 'life-ring',
-                                                                    'orders' => 'shopping-cart',
-                                                                    'profile' => 'user',
-                                                                    default => 'file'
-                                                                };
-                                                            @endphp
-                                                            <i class="fas fa-{{ $icon }} me-2 text-muted"></i>
-                                                            <div>
-                                                                <strong>{{ $permission->display_name }}</strong>
-                                                                @if($permission->description)
-                                                                    <br><small class="text-muted">{{ $permission->description }}</small>
-                                                                @endif
+                                            
+                                            @foreach($sections as $sectionKey => $section)
+                                                <div class="mb-3">
+                                                    <h6 class="text-primary mb-2">
+                                                        <i class="fas fa-folder me-1"></i>
+                                                        {{ $section['title'] }}
+                                                        <span class="badge bg-light text-dark ms-2">{{ $section['permissions']->count() }}</span>
+                                                    </h6>
+                                                    <div class="ps-3">
+                                                        @foreach($section['permissions'] as $permission)
+                                                            <div class="form-check mb-2">
+                                                                <input class="form-check-input edit-permission edit-permission-{{ $userType }}" type="checkbox" 
+                                                               value="{{ $permission->id }}" 
+                                                               name="permissions[]" 
+                                                               id="edit_permission_{{ $permission->id }}">
+                                                                <label class="form-check-label" for="edit_permission_{{ $permission->id }}">
+                                                                    <div class="d-flex align-items-center">
+                                                                        @php
+                                                                            $icon = match($permission->module) {
+                                                                                'dashboard' => 'tachometer-alt',
+                                                                                'content' => 'edit',
+                                                                                'importers' => 'industry',
+                                                                                'tasks' => 'tasks',
+                                                                                'financial' => 'chart-pie',
+                                                                                'teams' => 'users',
+                                                                                'customers' => 'user-friends',
+                                                                                'system' => 'cog',
+                                                                                'notifications' => 'bell',
+                                                                                'contacts' => 'envelope',
+                                                                                'whatsapp' => 'comments',
+                                                                                'support' => 'life-ring',
+                                                                                'orders' => 'shopping-cart',
+                                                                                'profile' => 'user',
+                                                                                default => 'file'
+                                                                            };
+                                                                        @endphp
+                                                                        <i class="fas fa-{{ $icon }} me-2 text-muted"></i>
+                                                                        <div>
+                                                                            <strong>{{ $permission->display_name }}</strong>
+                                                                            @if($permission->description)
+                                                                                <br><small class="text-muted">{{ $permission->description }}</small>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </label>
                                                             </div>
-                                                        </div>
-                                            </label>
-                                        </div>
-                                    @endforeach
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
                                     </div>
                                 </div>

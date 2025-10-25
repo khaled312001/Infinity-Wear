@@ -17,14 +17,8 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        // Get permissions grouped by user type (exclude customer)
-        $permissionsByUserType = Permission::where('is_active', true)
-            ->where('user_type', '!=', 'customer')
-            ->orderBy('user_type')
-            ->orderBy('module')
-            ->orderBy('display_name')
-            ->get()
-            ->groupBy('user_type');
+        // Get permissions grouped by user type (exclude customer) and organized by sidebar structure
+        $permissionsByUserType = $this->getOrganizedPermissions();
 
         // Get roles with their permissions (exclude customer)
         $roles = Role::where('name', '!=', 'customer')
@@ -320,5 +314,130 @@ class PermissionController extends Controller
                 }
             }
         }
+    }
+
+    /**
+     * Get permissions organized by sidebar structure
+     */
+    private function getOrganizedPermissions()
+    {
+        // Define sidebar structure with permissions mapping
+        $sidebarStructure = [
+            'dashboard' => [
+                'title' => 'لوحة التحكم',
+                'permissions' => ['admin.dashboard', 'sales.dashboard', 'marketing.dashboard', 'importer.dashboard']
+            ],
+            'notifications' => [
+                'title' => 'الإشعارات',
+                'permissions' => ['admin.notifications', 'notifications.view', 'importer.notifications']
+            ],
+            'contacts' => [
+                'title' => 'رسائل التواصل',
+                'permissions' => ['admin.contacts', 'sales.contacts', 'marketing.contacts']
+            ],
+            'whatsapp' => [
+                'title' => 'رسائل الواتساب',
+                'permissions' => ['admin.whatsapp']
+            ],
+            'services' => [
+                'title' => 'إدارة الخدمات',
+                'permissions' => ['admin.services']
+            ],
+            'portfolio' => [
+                'title' => 'معرض الأعمال',
+                'permissions' => ['admin.portfolio', 'marketing.portfolio']
+            ],
+            'testimonials' => [
+                'title' => 'التقييمات',
+                'permissions' => ['admin.testimonials', 'marketing.testimonials']
+            ],
+            'importers' => [
+                'title' => 'المستوردين',
+                'permissions' => ['admin.importers', 'sales.importers']
+            ],
+            'importer_orders' => [
+                'title' => 'طلبات المستوردين',
+                'permissions' => ['admin.importers.orders', 'sales.importer-orders', 'importer.orders']
+            ],
+            'tasks' => [
+                'title' => 'المهام',
+                'permissions' => ['admin.tasks', 'marketing.tasks']
+            ],
+            'company_plans' => [
+                'title' => 'خطط الشركة',
+                'permissions' => ['admin.company-plans']
+            ],
+            'financial' => [
+                'title' => 'اللوحة المالية',
+                'permissions' => ['admin.financial.dashboard', 'admin.financial.transactions', 'admin.financial.reports']
+            ],
+            'marketing_team' => [
+                'title' => 'فريق التسويق',
+                'permissions' => ['admin.marketing.team', 'admin.marketing-reports', 'admin.email-marketing']
+            ],
+            'sales_team' => [
+                'title' => 'فريق المبيعات',
+                'permissions' => ['admin.sales.team']
+            ],
+            'users' => [
+                'title' => 'إدارة المستخدمين',
+                'permissions' => ['admin.users', 'admin.customer_notes']
+            ],
+            'reports' => [
+                'title' => 'التقارير',
+                'permissions' => ['admin.reports', 'sales.reports']
+            ],
+            'settings' => [
+                'title' => 'الإعدادات',
+                'permissions' => ['admin.settings', 'admin.permissions', 'admin.admins']
+            ],
+            'profile' => [
+                'title' => 'الملف الشخصي',
+                'permissions' => ['admin.profile', 'sales.profile', 'marketing.profile', 'importer.profile']
+            ],
+            'importer_features' => [
+                'title' => 'مميزات المستوردين',
+                'permissions' => ['importer.tracking', 'importer.invoices', 'importer.payment-methods', 'importer.help', 'importer.support', 'importer.contact']
+            ]
+        ];
+
+        // Get all active permissions
+        $allPermissions = Permission::where('is_active', true)
+            ->where('user_type', '!=', 'customer')
+            ->get()
+            ->keyBy('name');
+
+        // Organize permissions by user type and sidebar structure
+        $permissionsByUserType = collect();
+        
+        foreach (['admin', 'sales', 'marketing', 'importer'] as $userType) {
+            $userTypePermissions = collect();
+            
+            foreach ($sidebarStructure as $sectionKey => $section) {
+                $sectionPermissions = collect();
+                
+                foreach ($section['permissions'] as $permissionName) {
+                    if ($allPermissions->has($permissionName)) {
+                        $permission = $allPermissions->get($permissionName);
+                        if ($permission->user_type === $userType || $permission->user_type === 'admin') {
+                            $sectionPermissions->push($permission);
+                        }
+                    }
+                }
+                
+                if ($sectionPermissions->isNotEmpty()) {
+                    $userTypePermissions->put($sectionKey, [
+                        'title' => $section['title'],
+                        'permissions' => $sectionPermissions
+                    ]);
+                }
+            }
+            
+            if ($userTypePermissions->isNotEmpty()) {
+                $permissionsByUserType->put($userType, $userTypePermissions);
+            }
+        }
+
+        return $permissionsByUserType;
     }
 }
