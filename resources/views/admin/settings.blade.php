@@ -153,6 +153,12 @@
                                                 </button>
                                                 <input type="file" id="logoFile" accept="image/*" style="display: none;">
                                                 <div class="form-text mt-2">الحد الأقصى: 2MB، الصيغ المدعومة: JPG, PNG, SVG, WebP, AVIF</div>
+                                                <div class="mt-2">
+                                                    <small class="text-success">
+                                                        <i class="fas fa-info-circle me-1"></i>
+                                                        سيتم الرفع تلقائياً عند اختيار الملف
+                                                    </small>
+                                                </div>
                                             </div>
                                         </div>
                                         
@@ -974,6 +980,9 @@
 
         // دوال الشعار
         function uploadLogo() {
+            console.log('بدء رفع الشعار...');
+            console.log('الملف المختار:', selectedLogoFile);
+            
             if (!selectedLogoFile) {
                 showLogoMessage('يرجى اختيار ملف أولاً', 'error');
                 return;
@@ -983,6 +992,8 @@
             formData.append('logo', selectedLogoFile);
             formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
+            console.log('تم إعداد البيانات للرفع');
+
             fetch('{{ route("admin.logo.upload") }}', {
                 method: 'POST',
                 body: formData,
@@ -990,8 +1001,15 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('استجابة الخادم:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('بيانات الاستجابة:', data);
                 if (data.success) {
                     showLogoMessage(data.message, 'success');
                     // تحديث الشعار الحالي
@@ -1114,9 +1132,10 @@
         document.getElementById('logoFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                handleLogoFile(file);
-                // Auto-upload without confirmation
-                uploadLogo();
+                if (handleLogoFile(file)) {
+                    // Auto-upload without confirmation
+                    uploadLogo();
+                }
             }
         });
 
@@ -1143,36 +1162,42 @@
             
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                handleLogoFile(files[0]);
-                // Auto-upload without confirmation
-                uploadLogo();
+                if (handleLogoFile(files[0])) {
+                    // Auto-upload without confirmation
+                    uploadLogo();
+                }
             }
         });
 
         function handleLogoFile(file) {
-            console.log('تم اختيار ملف:', file);
+            console.log('معالجة الملف:', file.name, 'الحجم:', file.size, 'النوع:', file.type);
             
             // التحقق من حجم الملف
             if (file.size > 2 * 1024 * 1024) { // 2MB
+                console.log('الملف كبير جداً');
                 showLogoMessage('حجم الملف كبير جداً. الحد الأقصى 2MB', 'error');
-                return;
+                return false;
             }
             
             // التحقق من نوع الملف
             const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif'];
             if (!allowedTypes.includes(file.type)) {
+                console.log('نوع الملف غير مدعوم:', file.type);
                 showLogoMessage('نوع الملف غير مدعوم. يرجى اختيار صورة بصيغة JPG, PNG, SVG, WebP, أو AVIF', 'error');
-                return;
+                return false;
             }
             
             // حفظ الملف المختار
             selectedLogoFile = file;
+            console.log('تم حفظ الملف:', selectedLogoFile);
             
             // إظهار رسالة التحميل بدلاً من المعاينة
             showLogoMessage('جاري رفع الشعار...', 'info');
             
             // إخفاء منطقة الرفع مؤقتاً
             document.getElementById('logoUploadArea').style.display = 'none';
+            
+            return true;
         }
 
         function formatFileSize(bytes) {
