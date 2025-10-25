@@ -166,7 +166,26 @@
                                                            id="create_permission_{{ $permission->id }}">
                                                     <label class="form-check-label" for="create_permission_{{ $permission->id }}">
                                                         <div class="d-flex align-items-center">
-                                                            <i class="fas fa-{{ $permission->module === 'dashboard' ? 'tachometer-alt' : ($permission->module === 'content' ? 'edit' : ($permission->module === 'importers' ? 'industry' : ($permission->module === 'tasks' ? 'tasks' : ($permission->module === 'financial' ? 'chart-pie' : ($permission->module === 'teams' ? 'users' : ($permission->module === 'customers' ? 'user-friends' : ($permission->module === 'system' ? 'cog' : 'file')))))) }} me-2 text-muted"></i>
+                                                            @php
+                                                                $icon = match($permission->module) {
+                                                                    'dashboard' => 'tachometer-alt',
+                                                                    'content' => 'edit',
+                                                                    'importers' => 'industry',
+                                                                    'tasks' => 'tasks',
+                                                                    'financial' => 'chart-pie',
+                                                                    'teams' => 'users',
+                                                                    'customers' => 'user-friends',
+                                                                    'system' => 'cog',
+                                                                    'notifications' => 'bell',
+                                                                    'contacts' => 'envelope',
+                                                                    'whatsapp' => 'comments',
+                                                                    'support' => 'life-ring',
+                                                                    'orders' => 'shopping-cart',
+                                                                    'profile' => 'user',
+                                                                    default => 'file'
+                                                                };
+                                                            @endphp
+                                                            <i class="fas fa-{{ $icon }} me-2 text-muted"></i>
                                                             <div>
                                                                 <strong>{{ $permission->display_name }}</strong>
                                                                 @if($permission->description)
@@ -268,7 +287,26 @@
                                                            id="edit_permission_{{ $permission->id }}">
                                                     <label class="form-check-label" for="edit_permission_{{ $permission->id }}">
                                                         <div class="d-flex align-items-center">
-                                                            <i class="fas fa-{{ $permission->module === 'dashboard' ? 'tachometer-alt' : ($permission->module === 'content' ? 'edit' : ($permission->module === 'importers' ? 'industry' : ($permission->module === 'tasks' ? 'tasks' : ($permission->module === 'financial' ? 'chart-pie' : ($permission->module === 'teams' ? 'users' : ($permission->module === 'customers' ? 'user-friends' : ($permission->module === 'system' ? 'cog' : 'file')))))) }} me-2 text-muted"></i>
+                                                            @php
+                                                                $icon = match($permission->module) {
+                                                                    'dashboard' => 'tachometer-alt',
+                                                                    'content' => 'edit',
+                                                                    'importers' => 'industry',
+                                                                    'tasks' => 'tasks',
+                                                                    'financial' => 'chart-pie',
+                                                                    'teams' => 'users',
+                                                                    'customers' => 'user-friends',
+                                                                    'system' => 'cog',
+                                                                    'notifications' => 'bell',
+                                                                    'contacts' => 'envelope',
+                                                                    'whatsapp' => 'comments',
+                                                                    'support' => 'life-ring',
+                                                                    'orders' => 'shopping-cart',
+                                                                    'profile' => 'user',
+                                                                    default => 'file'
+                                                                };
+                                                            @endphp
+                                                            <i class="fas fa-{{ $icon }} me-2 text-muted"></i>
                                                             <div>
                                                                 <strong>{{ $permission->display_name }}</strong>
                                                                 @if($permission->description)
