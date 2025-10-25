@@ -183,6 +183,7 @@ document.addEventListener('click', function(e) {
                                     <label class="form-check-label" for="is_active">
                                         تفعيل الخدمة
                                     </label>
+                                    <small class="form-text text-muted">الخدمة ستكون مفعلة تلقائياً عند الحفظ</small>
                                 </div>
                                 @error('is_active')
                                     <div class="text-danger">{{ $message }}</div>

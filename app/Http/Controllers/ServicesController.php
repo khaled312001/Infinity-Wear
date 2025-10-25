@@ -130,7 +130,7 @@ class ServicesController extends Controller
             $validated['order'] = Service::max('order') + 1;
         }
 
-        // Set default active status - handle checkbox properly
+        // Set default active status - always keep service active by default
         $isActive = $request->input('is_active', true);
         if (is_array($isActive)) {
             // If it's an array (checkbox + hidden input), check if '1' is in the array
@@ -138,6 +138,12 @@ class ServicesController extends Controller
         } else {
             // If it's a single value, convert to boolean
             $validated['is_active'] = (bool) $isActive;
+        }
+        
+        // Always keep service active unless explicitly unchecked
+        // This ensures services remain active after creation
+        if (!isset($validated['is_active']) || $validated['is_active'] === null) {
+            $validated['is_active'] = true;
         }
 
         Service::create($validated);
@@ -245,7 +251,7 @@ class ServicesController extends Controller
             }
         }
 
-        // Set active status - handle checkbox properly
+        // Set active status - always keep service active by default
         $isActive = $request->input('is_active');
         if (is_array($isActive)) {
             // If it's an array (checkbox + hidden input), check if '1' is in the array
@@ -253,6 +259,12 @@ class ServicesController extends Controller
         } else {
             // If it's a single value, convert to boolean
             $validated['is_active'] = (bool) $isActive;
+        }
+        
+        // Always keep service active unless explicitly unchecked
+        // This ensures services remain active after editing
+        if (!isset($validated['is_active']) || $validated['is_active'] === null) {
+            $validated['is_active'] = true;
         }
 
         $service->update($validated);
