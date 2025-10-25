@@ -22,6 +22,17 @@ class CheckUserTypePermission
         // Check admin permissions
         if (Auth::guard('admin')->check()) {
             $admin = Auth::guard('admin')->user();
+            
+            // Skip permission check for admin dashboard and permissions pages to prevent redirect loop
+            if (in_array($permission, ['admin.dashboard', 'dashboard', 'admin.permissions.index', 'permissions_management'])) {
+                return $next($request);
+            }
+            
+            // If admin has no roles/permissions defined, allow access by default
+            if (!$admin || !method_exists($admin, 'roles') || $admin->roles->isEmpty()) {
+                return $next($request);
+            }
+            
             if (!$this->hasAdminPermission($admin, $permission)) {
                 // Handle AJAX requests with JSON response
                 if ($request->ajax() || $request->wantsJson()) {
