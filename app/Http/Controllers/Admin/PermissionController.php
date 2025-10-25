@@ -321,83 +321,108 @@ class PermissionController extends Controller
      */
     private function getOrganizedPermissions()
     {
-        // Define sidebar structure with permissions mapping
+        // Define sidebar structure with permissions mapping - matches exactly with dynamic-sidebar.blade.php
         $sidebarStructure = [
-            'dashboard' => [
-                'title' => 'لوحة التحكم',
-                'permissions' => ['admin.dashboard', 'sales.dashboard', 'marketing.dashboard', 'importer.dashboard']
+            'main' => [
+                'title' => 'الرئيسية',
+                'permissions' => [
+                    'admin.dashboard',
+                    'admin.notifications', 
+                    'admin.contacts',
+                    'admin.whatsapp',
+                    'admin.support'
+                ]
             ],
-            'notifications' => [
-                'title' => 'الإشعارات',
-                'permissions' => ['admin.notifications', 'notifications.view', 'importer.notifications']
+            'content_management' => [
+                'title' => 'إدارة المحتوى',
+                'permissions' => [
+                    'admin.services.index',
+                    'admin.portfolio.index',
+                    'admin.testimonials.index'
+                ]
             ],
-            'contacts' => [
-                'title' => 'رسائل التواصل',
-                'permissions' => ['admin.contacts', 'sales.contacts', 'marketing.contacts']
+            'importers_management' => [
+                'title' => 'إدارة المستوردين',
+                'permissions' => [
+                    'admin.importers.index',
+                    'admin.importers.orders'
+                ]
             ],
-            'whatsapp' => [
-                'title' => 'رسائل الواتساب',
-                'permissions' => ['admin.whatsapp']
+            'tasks_management' => [
+                'title' => 'إدارة المهام',
+                'permissions' => [
+                    'admin.tasks.index',
+                    'admin.company-plans.index'
+                ]
             ],
-            'services' => [
-                'title' => 'إدارة الخدمات',
-                'permissions' => ['admin.services']
+            'financial_management' => [
+                'title' => 'إدارة المالية',
+                'permissions' => [
+                    'admin.financial.dashboard',
+                    'admin.financial.transactions',
+                    'admin.financial.reports'
+                ]
             ],
-            'portfolio' => [
-                'title' => 'معرض الأعمال',
-                'permissions' => ['admin.portfolio', 'marketing.portfolio']
+            'teams_management' => [
+                'title' => 'إدارة الفرق',
+                'permissions' => [
+                    'admin.marketing.team',
+                    'admin.sales.team'
+                ]
             ],
-            'testimonials' => [
-                'title' => 'التقييمات',
-                'permissions' => ['admin.testimonials', 'marketing.testimonials']
+            'customers_management' => [
+                'title' => 'إدارة العملاء',
+                'permissions' => [
+                    'admin.users.index',
+                    'admin.customer-notes.index'
+                ]
             ],
-            'importers' => [
-                'title' => 'المستوردين',
-                'permissions' => ['admin.importers', 'sales.importers']
+            'system_management' => [
+                'title' => 'إدارة النظام',
+                'permissions' => [
+                    'admin.reports',
+                    'admin.settings',
+                    'admin.permissions.index',
+                    'admin.admins.index',
+                    'admin.profile'
+                ]
             ],
-            'importer_orders' => [
-                'title' => 'طلبات المستوردين',
-                'permissions' => ['admin.importers.orders', 'sales.importer-orders', 'importer.orders']
+            'sales_permissions' => [
+                'title' => 'صلاحيات المبيعات',
+                'permissions' => [
+                    'sales.dashboard',
+                    'sales.importer-orders',
+                    'sales.importers',
+                    'sales.contacts',
+                    'sales.reports',
+                    'sales.profile'
+                ]
             ],
-            'tasks' => [
-                'title' => 'المهام',
-                'permissions' => ['admin.tasks', 'marketing.tasks']
+            'marketing_permissions' => [
+                'title' => 'صلاحيات التسويق',
+                'permissions' => [
+                    'marketing.dashboard',
+                    'marketing.portfolio',
+                    'marketing.testimonials',
+                    'marketing.tasks',
+                    'marketing.contacts',
+                    'marketing.profile'
+                ]
             ],
-            'company_plans' => [
-                'title' => 'خطط الشركة',
-                'permissions' => ['admin.company-plans']
-            ],
-            'financial' => [
-                'title' => 'اللوحة المالية',
-                'permissions' => ['admin.financial.dashboard', 'admin.financial.transactions', 'admin.financial.reports']
-            ],
-            'marketing_team' => [
-                'title' => 'فريق التسويق',
-                'permissions' => ['admin.marketing.team', 'admin.marketing-reports', 'admin.email-marketing']
-            ],
-            'sales_team' => [
-                'title' => 'فريق المبيعات',
-                'permissions' => ['admin.sales.team']
-            ],
-            'users' => [
-                'title' => 'إدارة المستخدمين',
-                'permissions' => ['admin.users', 'admin.customer_notes']
-            ],
-            'reports' => [
-                'title' => 'التقارير',
-                'permissions' => ['admin.reports', 'sales.reports']
-            ],
-            'settings' => [
-                'title' => 'الإعدادات',
-                'permissions' => ['admin.settings', 'admin.permissions', 'admin.admins']
-            ],
-            'profile' => [
-                'title' => 'الملف الشخصي',
-                'permissions' => ['admin.profile', 'sales.profile', 'marketing.profile', 'importer.profile']
-            ],
-            'importer_features' => [
-                'title' => 'مميزات المستوردين',
-                'permissions' => ['importer.tracking', 'importer.invoices', 'importer.payment-methods', 'importer.help', 'importer.support', 'importer.contact']
+            'importer_permissions' => [
+                'title' => 'صلاحيات المستوردين',
+                'permissions' => [
+                    'importer.dashboard',
+                    'importer.orders',
+                    'importer.tracking',
+                    'importer.invoices',
+                    'importer.payment-methods',
+                    'importer.notifications',
+                    'importer.help',
+                    'importer.support',
+                    'importer.contact',
+                    'importer.profile'
+                ]
             ]
         ];
 
