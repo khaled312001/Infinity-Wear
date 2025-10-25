@@ -34,7 +34,27 @@
                         </div>
                     @endif
 
-                  
+                    <!-- User Type Tabs Navigation -->
+                    <ul class="nav nav-tabs" id="permissionsTabs" role="tablist">
+                        @foreach($permissionsByUserType as $userType => $permissions)
+                            @if($userType === 'customer')
+                                @continue
+                            @endif
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link {{ $loop->first ? 'active' : '' }}" 
+                                        id="{{ $userType }}-tab" 
+                                        data-bs-toggle="tab" 
+                                        data-bs-target="#{{ $userType }}" 
+                                        type="button" 
+                                        role="tab" 
+                                        aria-controls="{{ $userType }}" 
+                                        aria-selected="{{ $loop->first ? 'true' : 'false' }}">
+                                    <i class="fas fa-{{ $userType === 'admin' ? 'user-shield' : ($userType === 'importer' ? 'industry' : ($userType === 'sales' ? 'handshake' : 'chart-line')) }} me-2"></i>
+                                    {{ $permissions->first()->display_name ?? ucfirst($userType) }}
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
 
                     <div class="tab-content" id="permissionsTabsContent">
                         @foreach($permissionsByUserType as $userType => $permissions)
