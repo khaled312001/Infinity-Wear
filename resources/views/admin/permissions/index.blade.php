@@ -352,7 +352,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                    <button type="submit" class="btn btn-primary" id="saveEditBtn">
+                        <i class="fas fa-save me-1"></i>
+                        حفظ التغييرات
+                    </button>
                 </div>
             </form>
         </div>
@@ -412,9 +415,14 @@ function editRole(roleId, displayName, description, userType, permissionIds) {
         }
     });
     
-    // إضافة event listener للـ form submit
-    form.onsubmit = function(e) {
+    // إضافة event listener للزر
+    const saveBtn = document.getElementById('saveEditBtn');
+    saveBtn.onclick = function(e) {
         e.preventDefault();
+        
+        // إظهار loading
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>جاري الحفظ...';
+        saveBtn.disabled = true;
         
         const formData = new FormData(form);
         
@@ -429,14 +437,25 @@ function editRole(roleId, displayName, description, userType, permissionIds) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // إغلاق المودال
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editRoleModal'));
+                modal.hide();
+                
+                // إعادة تحميل الصفحة
                 location.reload();
             } else {
-                alert('حدث خطأ أثناء تحديث الدور');
+                alert('حدث خطأ أثناء تحديث الدور: ' + data.message);
+                // إعادة تعيين الزر
+                saveBtn.innerHTML = '<i class="fas fa-save me-1"></i>حفظ التغييرات';
+                saveBtn.disabled = false;
             }
         })
         .catch(error => {
             console.error('Error:', error);
             alert('حدث خطأ أثناء تحديث الدور');
+            // إعادة تعيين الزر
+            saveBtn.innerHTML = '<i class="fas fa-save me-1"></i>حفظ التغييرات';
+            saveBtn.disabled = false;
         });
     };
     
@@ -504,3 +523,22 @@ function filterPermissionsByUserType(modalType) {
 
 </script>
 @endsection
+
+<style>
+#saveEditBtn {
+    position: relative;
+    z-index: 1000;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.modal-footer {
+    position: relative;
+    z-index: 1000;
+}
+
+.modal-footer .btn {
+    position: relative;
+    z-index: 1001;
+}
+</style>
