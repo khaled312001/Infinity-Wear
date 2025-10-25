@@ -17,21 +17,20 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        // Get permissions grouped by user type
+        // Get permissions grouped by user type (exclude customer)
         $permissionsByUserType = Permission::where('is_active', true)
+            ->where('user_type', '!=', 'customer')
             ->orderBy('user_type')
             ->orderBy('module')
             ->orderBy('display_name')
             ->get()
             ->groupBy('user_type');
 
-        // Remove customer permissions tab as requested
-        if ($permissionsByUserType->has('customer')) {
-            $permissionsByUserType->forget('customer');
-        }
 
-        // Get roles with their permissions
-        $roles = Role::with('permissions')->get();
+        // Get roles with their permissions (exclude customer)
+        $roles = Role::where('name', '!=', 'customer')
+            ->with('permissions')
+            ->get();
 
         // Unify super_admin and admin (treat as the same role in the UI)
         $adminRole = $roles->firstWhere('name', 'admin');
@@ -50,10 +49,6 @@ class PermissionController extends Controller
             })->values();
         }
 
-        // Hide customer role from roles list if present
-        $roles = $roles->reject(function ($role) {
-            return $role->name === 'customer';
-        })->values();
 
         // Get current user type permissions from database
         $currentPermissions = $this->getCurrentPermissions();

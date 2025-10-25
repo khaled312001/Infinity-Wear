@@ -37,6 +37,7 @@
                     <!-- User Type Tabs Navigation -->
                     <ul class="nav nav-tabs" id="permissionsTabs" role="tablist">
                         @foreach($permissionsByUserType as $userType => $permissions)
+                            {{-- Debug: Skip customer if it somehow appears --}}
                             @if($userType === 'customer')
                                 @continue
                             @endif
