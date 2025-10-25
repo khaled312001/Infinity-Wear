@@ -150,6 +150,7 @@ class PermissionController extends Controller
             'name' => 'required|string|max:255|unique:roles',
             'display_name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'user_type' => 'required|string|in:admin,sales,marketing,importer',
             'permissions' => 'array'
         ]);
 
@@ -160,6 +161,7 @@ class PermissionController extends Controller
                 'name' => $request->name,
                 'display_name' => $request->display_name,
                 'description' => $request->description,
+                'user_type' => $request->user_type,
                 'is_active' => true
             ]);
 
@@ -187,6 +189,7 @@ class PermissionController extends Controller
         $request->validate([
             'display_name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'user_type' => 'required|string|in:admin,sales,marketing,importer',
             'permissions' => 'array'
         ]);
 
@@ -196,7 +199,8 @@ class PermissionController extends Controller
             $role = Role::findOrFail($id);
             $role->update([
                 'display_name' => $request->display_name,
-                'description' => $request->description
+                'description' => $request->description,
+                'user_type' => $request->user_type
             ]);
 
             if ($request->has('permissions')) {

@@ -65,6 +65,7 @@
                                                             data-role-id="{{ $role->id }}"
                                                             data-display-name="{{ e($role->display_name) }}"
                                                             data-description="{{ e($role->description) }}"
+                                                            data-user-type="{{ e($role->user_type) }}"
                                                             data-permissions='@json($role->permissions->pluck('id'))'>
                                                         <i class="fas fa-edit"></i>
                                                     </button>
@@ -100,16 +101,28 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="name" class="form-label">اسم الدور (إنجليزي)</label>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="display_name" class="form-label">الاسم المعروض</label>
                                 <input type="text" class="form-control" id="display_name" name="display_name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="user_type" class="form-label">نوع المستخدم</label>
+                                <select class="form-select" id="user_type" name="user_type" required onchange="filterPermissionsByUserType('create')">
+                                    <option value="">اختر نوع المستخدم</option>
+                                    <option value="admin">الأدمن</option>
+                                    <option value="sales">فريق المبيعات</option>
+                                    <option value="marketing">فريق التسويق</option>
+                                    <option value="importer">المستوردين</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -128,7 +141,7 @@
                                 @if($userType === 'customer')
                                     @continue
                                 @endif
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6 mb-3" data-user-type="{{ $userType }}">
                                     <div class="card">
                                         <div class="card-header">
                                             <h6 class="mb-0">
@@ -158,13 +171,13 @@
                                                     إلغاء الكل
                                                 </button>
                                             </div>
-                                            @foreach($permissions as $permission)
+                                    @foreach($permissions as $permission)
                                                 <div class="form-check mb-2">
                                                     <input class="form-check-input create-permission-{{ $userType }}" type="checkbox" 
-                                                           value="{{ $permission->id }}" 
-                                                           name="permissions[]" 
-                                                           id="create_permission_{{ $permission->id }}">
-                                                    <label class="form-check-label" for="create_permission_{{ $permission->id }}">
+                                                   value="{{ $permission->id }}" 
+                                                   name="permissions[]" 
+                                                   id="create_permission_{{ $permission->id }}">
+                                            <label class="form-check-label" for="create_permission_{{ $permission->id }}">
                                                         <div class="d-flex align-items-center">
                                                             @php
                                                                 $icon = match($permission->module) {
@@ -193,9 +206,9 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                                    </label>
-                                                </div>
-                                            @endforeach
+                                            </label>
+                                        </div>
+                                    @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -225,16 +238,28 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="edit_display_name" class="form-label">الاسم المعروض</label>
                                 <input type="text" class="form-control" id="edit_display_name" name="display_name" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="edit_description" class="form-label">الوصف</label>
                                 <input type="text" class="form-control" id="edit_description" name="description">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="edit_user_type" class="form-label">نوع المستخدم</label>
+                                <select class="form-select" id="edit_user_type" name="user_type" required onchange="filterPermissionsByUserType('edit')">
+                                    <option value="">اختر نوع المستخدم</option>
+                                    <option value="admin">الأدمن</option>
+                                    <option value="sales">فريق المبيعات</option>
+                                    <option value="marketing">فريق التسويق</option>
+                                    <option value="importer">المستوردين</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -249,7 +274,7 @@
                                 @if($userType === 'customer')
                                     @continue
                                 @endif
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6 mb-3" data-user-type="{{ $userType }}">
                                     <div class="card">
                                         <div class="card-header">
                                             <h6 class="mb-0">
@@ -279,13 +304,13 @@
                                                     إلغاء الكل
                                                 </button>
                                             </div>
-                                            @foreach($permissions as $permission)
+                                    @foreach($permissions as $permission)
                                                 <div class="form-check mb-2">
                                                     <input class="form-check-input edit-permission edit-permission-{{ $userType }}" type="checkbox" 
-                                                           value="{{ $permission->id }}" 
-                                                           name="permissions[]" 
-                                                           id="edit_permission_{{ $permission->id }}">
-                                                    <label class="form-check-label" for="edit_permission_{{ $permission->id }}">
+                                                   value="{{ $permission->id }}" 
+                                                   name="permissions[]" 
+                                                   id="edit_permission_{{ $permission->id }}">
+                                            <label class="form-check-label" for="edit_permission_{{ $permission->id }}">
                                                         <div class="d-flex align-items-center">
                                                             @php
                                                                 $icon = match($permission->module) {
@@ -314,9 +339,9 @@
                                                                 @endif
                                                             </div>
                                                         </div>
-                                                    </label>
-                                                </div>
-                                            @endforeach
+                                            </label>
+                                        </div>
+                                    @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -349,7 +374,8 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (e) {
                 permissions = [];
             }
-            editRole(roleId, displayName, description, permissions);
+            const userType = this.getAttribute('data-user-type');
+            editRole(roleId, displayName, description, userType, permissions);
         });
     });
 
@@ -362,10 +388,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function editRole(roleId, displayName, description, permissionIds) {
+function editRole(roleId, displayName, description, userType, permissionIds) {
     document.getElementById('editRoleForm').action = `/admin/permissions/roles/${roleId}`;
     document.getElementById('edit_display_name').value = displayName;
     document.getElementById('edit_description').value = description;
+    document.getElementById('edit_user_type').value = userType;
+    
+    // تصفية الصلاحيات حسب نوع المستخدم
+    filterPermissionsByUserType('edit');
     
     // Clear all checkboxes
     document.querySelectorAll('.edit-permission').forEach(checkbox => {
@@ -421,5 +451,26 @@ function deselectAllPermissions(modalType, userType) {
         checkbox.checked = false;
     });
 }
+
+// دالة تصفية الصلاحيات حسب نوع المستخدم
+function filterPermissionsByUserType(modalType) {
+    const userTypeSelect = document.getElementById(`${modalType}_user_type`);
+    const selectedUserType = userTypeSelect.value;
+    
+    // إخفاء جميع بطاقات الصلاحيات
+    const permissionCards = document.querySelectorAll(`#${modalType}RoleModal .col-md-6`);
+    permissionCards.forEach(card => {
+        card.style.display = 'none';
+    });
+    
+    // إظهار بطاقة الصلاحيات المحددة فقط
+    if (selectedUserType) {
+        const targetCard = document.querySelector(`#${modalType}RoleModal .col-md-6[data-user-type="${selectedUserType}"]`);
+        if (targetCard) {
+            targetCard.style.display = 'block';
+        }
+    }
+}
+
 </script>
 @endsection
