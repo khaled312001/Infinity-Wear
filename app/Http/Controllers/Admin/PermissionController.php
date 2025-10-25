@@ -209,11 +209,20 @@ class PermissionController extends Controller
 
             DB::commit();
 
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'تم تحديث الدور بنجاح']);
+            }
+
             return redirect()->route('admin.permissions.index')
                 ->with('success', 'تم تحديث الدور بنجاح');
 
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'حدث خطأ أثناء تحديث الدور: ' . $e->getMessage()]);
+            }
+            
             return redirect()->route('admin.permissions.index')
                 ->with('error', 'حدث خطأ أثناء تحديث الدور: ' . $e->getMessage());
         }

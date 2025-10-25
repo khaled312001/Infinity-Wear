@@ -389,7 +389,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function editRole(roleId, displayName, description, userType, permissionIds) {
-    document.getElementById('editRoleForm').action = `/admin/permissions/roles/${roleId}`;
+    const form = document.getElementById('editRoleForm');
+    form.action = `/admin/permissions/roles/${roleId}`;
+    
     document.getElementById('edit_display_name').value = displayName;
     document.getElementById('edit_description').value = description;
     document.getElementById('edit_user_type').value = userType;
@@ -409,6 +411,34 @@ function editRole(roleId, displayName, description, userType, permissionIds) {
             checkbox.checked = true;
         }
     });
+    
+    // إضافة event listener للـ form submit
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('حدث خطأ أثناء تحديث الدور');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('حدث خطأ أثناء تحديث الدور');
+        });
+    };
     
     new bootstrap.Modal(document.getElementById('editRoleModal')).show();
 }
