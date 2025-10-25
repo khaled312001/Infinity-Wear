@@ -448,17 +448,20 @@ function editRole(roleId, displayName, description, userType, permissionIds) {
         saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>جاري الحفظ...';
         saveBtn.disabled = true;
         
-        const formData = new FormData(form);
+        // Create form data manually to ensure only checked permissions are included
+        const formData = new FormData();
         
-        // Ensure unchecked permissions are not included
-        const uncheckedBoxes = document.querySelectorAll('.edit-permission:not(:checked)');
-        uncheckedBoxes.forEach(checkbox => {
-            // Remove any existing entries for this permission
-            const permissionId = checkbox.value;
-            const existingEntries = Array.from(formData.entries()).filter(([key, value]) => key === 'permissions[]' && value === permissionId);
-            existingEntries.forEach(([key, value]) => {
-                formData.delete(key);
-            });
+        // Add basic form fields
+        formData.append('display_name', document.getElementById('edit_display_name').value);
+        formData.append('description', document.getElementById('edit_description').value);
+        formData.append('user_type', document.getElementById('edit_user_type').value);
+        formData.append('_method', 'PUT');
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+        
+        // Add only checked permissions
+        const checkedBoxes = document.querySelectorAll('.edit-permission:checked');
+        checkedBoxes.forEach(checkbox => {
+            formData.append('permissions[]', checkbox.value);
         });
         
         fetch(form.action, {

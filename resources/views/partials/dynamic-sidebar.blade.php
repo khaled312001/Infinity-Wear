@@ -31,14 +31,14 @@
         لوحة التحكم
     </a>
     @endif
-    @if(in_array('admin.notifications.index', $userPermissions) || $showAllLinks)
+    @if(in_array('admin.notifications', $userPermissions) || $showAllLinks)
     <a href="{{ route('admin.notifications.index') }}" class="nav-link {{ request()->routeIs('admin.notifications.index') ? 'active' : '' }}" style="position: relative;">
         <i class="fas fa-bell me-2"></i>
         الإشعارات
         <span class="notification-badge" id="sidebarNotificationsBadge" style="display: none;">0</span>
     </a>
     @endif
-    @if(in_array('admin.contacts.index', $userPermissions) || $showAllLinks)
+    @if(in_array('admin.contacts', $userPermissions) || $showAllLinks)
     <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.contacts*') ? 'active' : '' }}">
         <i class="fas fa-address-book me-2"></i>
         رسائل التواصل
@@ -48,7 +48,7 @@
     @if(config('app.debug'))
     <!-- Debug: admin.contacts.index permission check: {{ in_array('admin.contacts.index', $userPermissions) ? 'YES' : 'NO' }} -->
     @endif
-    @if(in_array('admin.whatsapp.index', $userPermissions) || $showAllLinks)
+    @if(in_array('admin.whatsapp', $userPermissions) || $showAllLinks)
     <a href="{{ route('admin.whatsapp.index') }}" class="nav-link {{ request()->routeIs('admin.whatsapp*') ? 'active' : '' }}">
         <i class="fas fa-comments me-2"></i>
         رسائل الواتساب
