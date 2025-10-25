@@ -31,6 +31,9 @@ class PermissionController extends Controller
             ->with('permissions')
             ->get();
 
+        // Ensure all roles have appropriate permissions
+        $this->ensureRolePermissions($roles);
+
         // Unify super_admin and admin (treat as the same role in the UI)
         $adminRole = $roles->firstWhere('name', 'admin');
         $superAdminRole = $roles->firstWhere('name', 'super_admin');
@@ -257,6 +260,55 @@ class PermissionController extends Controller
                 'success' => false,
                 'message' => 'حدث خطأ أثناء حذف الدور: ' . $e->getMessage()
             ]);
+        }
+    }
+
+    /**
+     * Ensure all roles have appropriate permissions
+     */
+    private function ensureRolePermissions($roles)
+    {
+        foreach ($roles as $role) {
+            if ($role->permissions->count() == 0) {
+                $permissions = [];
+                
+                switch ($role->name) {
+                    case 'super_admin':
+                    case 'admin':
+                        // Get all active permissions
+                        $permissions = Permission::where('is_active', true)->pluck('id')->toArray();
+                        break;
+                        
+                    case 'sales':
+                        // Get sales-specific permissions
+                        $permissions = Permission::where('is_active', true)
+                            ->where('user_type', 'sales')
+                            ->pluck('id')
+                            ->toArray();
+                        break;
+                        
+                    case 'marketing':
+                        // Get marketing-specific permissions
+                        $permissions = Permission::where('is_active', true)
+                            ->where('user_type', 'marketing')
+                            ->pluck('id')
+                            ->toArray();
+                        break;
+                        
+                    case 'importer':
+                        // Get importer-specific permissions
+                        $permissions = Permission::where('is_active', true)
+                            ->where('user_type', 'importer')
+                            ->pluck('id')
+                            ->toArray();
+                        break;
+                }
+                
+                if (!empty($permissions)) {
+                    $role->permissions()->sync($permissions);
+                    $role->load('permissions');
+                }
+            }
         }
     }
 }
