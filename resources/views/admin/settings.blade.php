@@ -136,7 +136,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-12">
                                         <label class="form-label">
                                             <i class="fas fa-image me-2 text-primary"></i>
                                             شعار الموقع
@@ -215,60 +215,6 @@
                                         <div id="logoMessages" class="mt-3"></div>
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <label class="form-label">
-                                            <i class="fas fa-star me-2 text-primary"></i>
-                                            أيقونة الموقع (Favicon)
-                                        </label>
-                                        
-                                        <!-- معلومات الأيقونة التلقائية -->
-                                        <div class="alert alert-info">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-info-circle fa-2x text-info me-3"></i>
-                                                <div>
-                                                    <h6 class="mb-1">أيقونة تلقائية</h6>
-                                                    <p class="mb-0">أيقونة الموقع تُعيّن تلقائياً من شعار الموقع الرئيسي. عند تغيير الشعار، ستتغير الأيقونة تلقائياً.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- أيقونة الموقع الحالية -->
-                                        <div id="currentFavicon" class="mt-3">
-                                            <small class="text-muted">الأيقونة الحالية (مُعيّنة تلقائياً من الشعار):</small>
-                                            <div class="mt-1">
-                                                <img id="currentFaviconImage" src="{{ \App\Helpers\SiteSettingsHelper::getFaviconUrl() }}" 
-                                                     alt="الأيقونة الحالية" 
-                                                     class="img-thumbnail" 
-                                                     style="max-width: 32px; max-height: 32px;"
-                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                <div style="display: none; color: #dc3545; font-size: 0.875rem;">
-                                                    <i class="fas fa-exclamation-triangle me-1"></i>
-                                                    لا يوجد أيقونة محفوظة حالياً
-                                                </div>
-                                            </div>
-                                            <div class="mt-2">
-                                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="refreshFaviconFromLogo()">
-                                                    <i class="fas fa-sync-alt me-1"></i>
-                                                    تحديث من الشعار
-                                                </button>
-                                                <button type="button" class="btn btn-outline-info btn-sm ms-2" onclick="getFaviconInfo()">
-                                                    <i class="fas fa-info-circle me-1"></i>
-                                                    معلومات الأيقونة
-                                                </button>
-                                            </div>
-                                            <!-- معلومات Cloudinary -->
-                                            <div id="faviconCloudinaryInfo" class="mt-2" style="display: none;">
-                                                <div class="alert alert-info alert-sm">
-                                                    <i class="fas fa-cloud me-1"></i>
-                                                    <strong>مخزن في السحابة:</strong>
-                                                    <div id="faviconCloudinaryDetails"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- رسائل الحالة -->
-                                        <div id="faviconMessages" class="mt-3"></div>
-                                    </div>
 
                                     <div class="col-md-4">
                                         <label for="default_language" class="form-label">
@@ -847,27 +793,6 @@
             pointer-events: none;
         }
 
-        /* منطقة رفع أيقونة الموقع */
-        .favicon-upload-area {
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-align: center;
-            background: #f8f9fa;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .favicon-upload-area:hover {
-            border-color: var(--primary-color);
-            background: #e3f2fd;
-        }
-
-        .favicon-upload-area.dragover {
-            border-color: var(--primary-color);
-            background: #e3f2fd;
-            transform: scale(1.02);
-        }
     </style>
 @endpush
 
@@ -1061,7 +986,7 @@
             // إظهار حالة التحميل
             showLogoMessage('جاري رفع الشعار...', 'info');
 
-            fetch('{{ route("admin.logo.upload") }}', {
+            fetch('{{ route("logo.upload") }}', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -1091,7 +1016,7 @@
                 return;
             }
 
-            fetch('{{ route("admin.logo.delete") }}', {
+            fetch('{{ route("logo.delete") }}', {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -1434,60 +1359,6 @@
             });
         }
 
-        // تم حذف الكود القديم لأيقونة الموقع - الآن يستخدم النظام الجديد
-
-        // دوال أيقونة الموقع (تلقائية من الشعار)
-        function refreshFaviconFromLogo() {
-            showFaviconMessage('جاري تحديث الأيقونة من الشعار...', 'info');
-            
-            fetch('{{ route("admin.favicon.refresh-from-logo") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    showFaviconMessage(data.message, 'success');
-                    // تحديث صورة الأيقونة
-                    document.getElementById('currentFaviconImage').src = data.favicon_url + '?v=' + new Date().getTime();
-                } else {
-                    showFaviconMessage(data.message, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showFaviconMessage('حدث خطأ أثناء تحديث الأيقونة: ' + error.message, 'error');
-            });
-        }
-
-        function showFaviconMessage(message, type) {
-            const messagesDiv = document.getElementById('faviconMessages');
-            const alertClass = type === 'success' ? 'alert-success' : 
-                              type === 'error' ? 'alert-danger' : 
-                              type === 'info' ? 'alert-info' : 'alert-secondary';
-            
-            messagesDiv.innerHTML = `
-                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `;
-        }
-
-        function clearFaviconMessages() {
-            document.getElementById('faviconMessages').innerHTML = '';
-        }
-
-        // تم حذف كود رفع أيقونة الموقع - الآن الأيقونة تلقائية من الشعار
         
         // Force refresh logo images on page load to prevent 403 errors
         document.addEventListener('DOMContentLoaded', function() {
@@ -1505,24 +1376,11 @@
                 currentLogoImage.src = newSrc;
                 console.log('الشعار الجديد:', newSrc);
             }
-            
-            // Force refresh current favicon image
-            const currentFaviconImage = document.getElementById('currentFaviconImage');
-            if (currentFaviconImage) {
-                const currentSrc = currentFaviconImage.src;
-                console.log('الأيقونة الحالية:', currentSrc);
-                
-                // Add cache-busting parameter
-                const separator = currentSrc.includes('?') ? '&' : '?';
-                const newSrc = currentSrc + separator + 'force_refresh=' + Date.now();
-                currentFaviconImage.src = newSrc;
-                console.log('الأيقونة الجديدة:', newSrc);
-            }
         });
 
         // دوال معلومات Cloudinary
         function getLogoInfo() {
-            fetch('{{ route("admin.logo.info") }}', {
+            fetch('{{ route("logo.info") }}', {
                 method: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -1560,44 +1418,6 @@
             });
         }
 
-        function getFaviconInfo() {
-            fetch('{{ route("admin.favicon.info") }}', {
-                method: 'GET',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success && data.is_cloudinary) {
-                    const detailsDiv = document.getElementById('faviconCloudinaryDetails');
-                    detailsDiv.innerHTML = `
-                        <div class="row">
-                            <div class="col-6">
-                                <small><strong>الأبعاد:</strong> ${data.cloudinary_data.width}x${data.cloudinary_data.height}</small>
-                            </div>
-                            <div class="col-6">
-                                <small><strong>الحجم:</strong> ${formatFileSize(data.cloudinary_data.bytes)}</small>
-                            </div>
-                            <div class="col-6">
-                                <small><strong>الصيغة:</strong> ${data.cloudinary_data.format.toUpperCase()}</small>
-                            </div>
-                            <div class="col-6">
-                                <small><strong>تاريخ الرفع:</strong> ${new Date(data.uploaded_at).toLocaleDateString('ar-SA')}</small>
-                            </div>
-                        </div>
-                    `;
-                    document.getElementById('faviconCloudinaryInfo').style.display = 'block';
-                } else {
-                    showFaviconMessage('الأيقونة محفوظة محلياً فقط', 'info');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showFaviconMessage('حدث خطأ أثناء الحصول على معلومات الأيقونة', 'error');
-            });
-        }
 
         // دالة إظهار الرسائل
         function showMessage(message, type = 'info') {

@@ -63,33 +63,11 @@ class SiteSettingsHelper
     }
 
     /**
-     * Get site favicon URL
+     * Get site favicon URL - now automatically uses logo
      */
     public static function getFaviconUrl()
     {
-        // First check if there's favicon data (Cloudinary or auto-generated)
-        $faviconData = self::get('site_favicon_data');
-        if ($faviconData) {
-            $data = json_decode($faviconData, true);
-            if ($data && isset($data['cloudinary']['secure_url'])) {
-                // Add cache-busting parameter for Cloudinary URLs
-                $url = $data['cloudinary']['secure_url'];
-                return $url . (strpos($url, '?') !== false ? '&' : '?') . 'v=' . time() . '&cb=' . uniqid();
-            }
-            if ($data && isset($data['file_path']) && file_exists(storage_path('app/public/' . $data['file_path']))) {
-                $timestamp = filemtime(storage_path('app/public/' . $data['file_path']));
-                return asset('storage/' . $data['file_path']) . '?v=' . $timestamp;
-            }
-        }
-
-        // Fallback to legacy favicon
-        $favicon = self::get('site_favicon');
-        if ($favicon && file_exists(storage_path('app/public/' . $favicon))) {
-            $timestamp = filemtime(storage_path('app/public/' . $favicon));
-            return asset('storage/' . $favicon) . '?v=' . $timestamp;
-        }
-
-        // If no favicon, use logo as fallback
+        // Favicon is now automatically generated from logo
         return self::getLogoUrl();
     }
 
