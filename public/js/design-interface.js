@@ -161,15 +161,52 @@ class DesignInterface {
 
     setupViewControls() {
         const controls = {
-            'rotate-model': () => this.viewer.toggleAutoRotate(),
-            'zoom-in': () => this.viewer.controls && (this.viewer.controls.dollyOut(0.9)),
-            'zoom-out': () => this.viewer.controls && (this.viewer.controls.dollyIn(0.9)),
-            'reset-view': () => this.viewer.resetView(),
-            'view-front': () => this.viewer.setView('front'),
-            'view-back': () => this.viewer.setView('back'),
-            'view-left': () => this.viewer.setView('left'),
-            'view-right': () => this.viewer.setView('right'),
-            'toggle-grid': () => this.viewer.toggleGrid()
+            'cd-rotate-model': () => this.viewer && this.viewer.toggleAutoRotate(),
+            'cd-zoom-in': () => {
+                if (this.viewer && this.viewer.controls) {
+                    if (this.viewer.controls.dollyIn) {
+                        this.viewer.controls.dollyIn(0.9);
+                    } else if (this.viewer.controls.zoom) {
+                        this.viewer.controls.zoom(1.1);
+                    }
+                }
+            },
+            'cd-zoom-out': () => {
+                if (this.viewer && this.viewer.controls) {
+                    if (this.viewer.controls.dollyOut) {
+                        this.viewer.controls.dollyOut(0.9);
+                    } else if (this.viewer.controls.zoom) {
+                        this.viewer.controls.zoom(0.9);
+                    }
+                }
+            },
+            'cd-reset-view': () => this.viewer && this.viewer.resetView(),
+            'cd-view-front': () => this.viewer && this.viewer.setView('front'),
+            'cd-view-back': () => this.viewer && this.viewer.setView('back'),
+            'cd-view-left': () => this.viewer && this.viewer.setView('left'),
+            'cd-view-right': () => this.viewer && this.viewer.setView('right'),
+            'toggle-grid': () => this.viewer && this.viewer.toggleGrid(),
+            // Legacy IDs for backward compatibility
+            'rotate-model': () => this.viewer && this.viewer.toggleAutoRotate(),
+            'zoom-in': () => {
+                if (this.viewer && this.viewer.controls) {
+                    if (this.viewer.controls.dollyIn) {
+                        this.viewer.controls.dollyIn(0.9);
+                    } else if (this.viewer.controls.zoom) {
+                        this.viewer.controls.zoom(1.1);
+                    }
+                }
+            },
+            'zoom-out': () => {
+                if (this.viewer && this.viewer.controls) {
+                    if (this.viewer.controls.dollyOut) {
+                        this.viewer.controls.dollyOut(0.9);
+                    } else if (this.viewer.controls.zoom) {
+                        this.viewer.controls.zoom(0.9);
+                    }
+                }
+            },
+            'reset-view': () => this.viewer && this.viewer.resetView()
         };
 
         Object.entries(controls).forEach(([id, handler]) => {

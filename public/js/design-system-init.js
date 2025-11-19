@@ -73,9 +73,9 @@
         }
         
         // Update piece item active state
-        document.querySelectorAll('.eds-piece-checkbox').forEach(checkbox => {
+        document.querySelectorAll('.iw-cd-piece-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
-                const pieceItem = this.closest('.eds-piece-item');
+                const pieceItem = this.closest('.iw-cd-piece-item');
                 if (pieceItem) {
                     if (this.checked) {
                         pieceItem.classList.add('active');
@@ -87,9 +87,9 @@
         });
         
         // Update pattern item active state
-        document.querySelectorAll('.pattern-option').forEach(btn => {
+        document.querySelectorAll('.iw-cd-pattern-item').forEach(btn => {
             btn.addEventListener('click', function() {
-                document.querySelectorAll('.pattern-option').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.iw-cd-pattern-item').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
             });
         });
@@ -197,7 +197,7 @@
     }
     
     function setupPresetColors() {
-        const presetColors = document.querySelectorAll('.preset-color');
+        const presetColors = document.querySelectorAll('.iw-cd-preset-color');
         const mainColorPicker = document.getElementById('main-color-picker');
         
         presetColors.forEach(preset => {
@@ -228,11 +228,11 @@
                     return;
                 }
                 
-                const pieceType = document.getElementById('text_piece_type')?.value;
-                const position = document.getElementById('text_position')?.value;
-                const color = document.getElementById('text_color')?.value || '#000000';
-                const size = document.getElementById('text_size')?.value || '0.30';
-                const style = document.getElementById('text_style')?.value || 'normal';
+                const pieceType = (document.getElementById('text_piece_type') || document.getElementById('cd-text_piece_type'))?.value;
+                const position = (document.getElementById('cd-text_position') || document.getElementById('text_position'))?.value;
+                const color = (document.getElementById('cd-text_color') || document.getElementById('text_color'))?.value || '#000000';
+                const size = (document.getElementById('cd-text_size') || document.getElementById('text_size'))?.value || '0.30';
+                const style = (document.getElementById('cd-text_style') || document.getElementById('text_style'))?.value || 'normal';
                 
                 if (!pieceType || !position) {
                     alert('الرجاء اختيار القطعة والموضع');
@@ -259,10 +259,10 @@
     }
     
     function setupPositionOptions() {
-        const logoPieceType = document.getElementById('logo_piece_type');
-        const logoPosition = document.getElementById('logo_position');
-        const textPieceType = document.getElementById('text_piece_type');
-        const textPosition = document.getElementById('text_position');
+        const logoPieceType = document.getElementById('logo_piece_type') || document.getElementById('cd-logo_piece_type');
+        const logoPosition = document.getElementById('cd-logo_position') || document.getElementById('logo_position');
+        const textPieceType = document.getElementById('text_piece_type') || document.getElementById('cd-text_piece_type');
+        const textPosition = document.getElementById('cd-text_position') || document.getElementById('text_position');
         
         const positionOptions = {
             shirt: [
@@ -366,7 +366,7 @@
             if (!sizesContainer) return;
             
             // Remove empty state if exists
-            const emptyState = sizesContainer.querySelector('.eds-empty-state');
+            const emptyState = sizesContainer.querySelector('.iw-cd-empty-state');
             if (emptyState && isChecked) {
                 emptyState.remove();
             }
@@ -381,7 +381,7 @@
                 // Show empty state if no pieces selected
                 if (sizesContainer.children.length === 0) {
                     sizesContainer.innerHTML = `
-                        <div class="eds-empty-state">
+                        <div class="iw-cd-empty-state">
                             <i class="fas fa-info-circle" style="font-size: 2rem; color: #6c757d; margin-bottom: 0.5rem;"></i>
                             <p style="text-align: center; color: #6c757d; margin: 0;">اختر قطع الملابس أولاً</p>
                         </div>
@@ -452,7 +452,7 @@
     }
     
     function setupViewButtons() {
-        const viewButtons = document.querySelectorAll('.eds-view-btn');
+        const viewButtons = document.querySelectorAll('.iw-cd-view-btn');
         viewButtons.forEach(btn => {
             btn.addEventListener('click', function() {
                 viewButtons.forEach(b => b.classList.remove('active'));
@@ -460,7 +460,11 @@
                 
                 const view = this.dataset.view;
                 console.log('Switching to view:', view);
-                // This will be handled by the 3D viewer if available
+                
+                // Handle view change if viewer is available
+                if (window.designInterface && window.designInterface.viewer) {
+                    window.designInterface.viewer.setView(view);
+                }
             });
         });
     }
@@ -493,7 +497,7 @@
         if (summaryQuantity) summaryQuantity.textContent = total;
         
         // Update hidden field
-        const quantityField = document.getElementById('quantity');
+        const quantityField = document.getElementById('cd-quantity') || document.getElementById('quantity');
         if (quantityField) quantityField.value = total;
     }
     

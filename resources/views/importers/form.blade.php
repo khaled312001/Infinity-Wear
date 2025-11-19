@@ -4,8 +4,7 @@
 
 @push('styles')
 <link href="{{ asset('css/modern-multi-step-form.css') }}?v={{ time() }}" rel="stylesheet">
-<link href="{{ asset('css/design-system-modern.css') }}?v={{ time() }}" rel="stylesheet">
-<link href="{{ asset('css/design-system-override.css') }}?v={{ time() }}" rel="stylesheet">
+<link href="{{ asset('css/iw-custom-designer.css') }}?v={{ time() }}" rel="stylesheet">
 <link href="{{ asset('css/enhanced-form-animations.css') }}?v={{ time() }}" rel="stylesheet">
 @endpush
 

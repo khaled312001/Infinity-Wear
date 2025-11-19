@@ -1,0 +1,833 @@
+/**
+ * Infinity Wear Custom Designer - Unique CSS Classes
+ * No conflicts with existing styles
+ */
+
+/* ==================== Container ==================== */
+.iw-custom-designer {
+    --iw-cd-primary: #667eea;
+    --iw-cd-secondary: #764ba2;
+    --iw-cd-bg-light: #f8f9fa;
+    --iw-cd-border: #e9ecef;
+    --iw-cd-text: #2c3e50;
+    --iw-cd-radius: 12px;
+    --iw-cd-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.iw-custom-designer * {
+    box-sizing: border-box !important;
+}
+
+/* Ensure parent container takes full width */
+#design_custom_detail,
+.design-detail#design_custom_detail {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.iw-cd-main-grid {
+    display: grid !important;
+    grid-template-columns: 350px 1fr !important;
+    gap: 1.5rem !important;
+    min-height: 700px;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+@media (max-width: 1200px) {
+    .iw-cd-main-grid {
+        grid-template-columns: 320px 1fr !important;
+        gap: 1.25rem !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .iw-cd-main-grid {
+        grid-template-columns: 1fr !important;
+        padding: 0 !important;
+        gap: 1rem !important;
+    }
+    
+    .iw-cd-viewer-panel {
+        order: -1 !important;
+    }
+}
+
+/* ==================== Right Panel (Controls) ==================== */
+.iw-cd-controls-panel {
+    background: white !important;
+    border-radius: var(--iw-cd-radius) !important;
+    padding: 2rem !important;
+    box-shadow: var(--iw-cd-shadow) !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    width: 100% !important;
+}
+
+.iw-cd-controls-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.iw-cd-controls-panel::-webkit-scrollbar-track {
+    background: var(--iw-cd-bg-light);
+    border-radius: 4px;
+}
+
+.iw-cd-controls-panel::-webkit-scrollbar-thumb {
+    background: var(--iw-cd-primary);
+    border-radius: 4px;
+}
+
+/* ==================== Left Panel (3D Viewer) ==================== */
+.iw-cd-viewer-panel {
+    background: white !important;
+    border-radius: var(--iw-cd-radius) !important;
+    box-shadow: var(--iw-cd-shadow) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 600px !important;
+    max-height: 600px !important;
+    position: relative !important;
+    width: 100% !important;
+}
+
+.iw-cd-viewer-header {
+    background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
+    color: white !important;
+    padding: 0.875rem 1.25rem !important;
+    border-radius: var(--iw-cd-radius) var(--iw-cd-radius) 0 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+}
+
+.iw-cd-viewer-title {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.iw-cd-viewer-body {
+    flex: 1 !important;
+    position: relative !important;
+    background: linear-gradient(135deg, #f0f2f5 0%, #e3e8ed 100%) !important;
+    border-radius: 0 0 var(--iw-cd-radius) var(--iw-cd-radius) !important;
+    overflow: hidden !important;
+    min-height: 0 !important;
+}
+
+.iw-cd-3d-container {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 500px !important;
+    flex: 1 !important;
+}
+
+/* ==================== Section Styles ==================== */
+.iw-cd-section {
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    border-bottom: 2px solid var(--iw-cd-border) !important;
+}
+
+.iw-cd-section:last-child {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+}
+
+.iw-cd-section-title {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: var(--iw-cd-text) !important;
+    margin-bottom: 1.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+    border-bottom: 2px solid var(--iw-cd-primary) !important;
+    line-height: 1.4 !important;
+}
+
+.iw-cd-section-title i {
+    color: var(--iw-cd-primary) !important;
+    font-size: 1.2rem !important;
+}
+
+/* ==================== Form Controls ==================== */
+.iw-cd-form-control {
+    width: 100% !important;
+    padding: 0.875rem 1rem !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 8px !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    background: white !important;
+    color: var(--iw-cd-text) !important;
+    line-height: 1.5 !important;
+}
+
+.iw-cd-form-control:focus {
+    outline: none !important;
+    border-color: var(--iw-cd-primary) !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    background: #fafbff !important;
+}
+
+.iw-cd-form-control:hover {
+    border-color: #d0d7de !important;
+}
+
+.iw-cd-form-control::placeholder {
+    color: #9ca3af !important;
+    font-weight: 400 !important;
+}
+
+.iw-cd-form-control option {
+    padding: 0.5rem !important;
+    font-weight: 500 !important;
+}
+
+/* ==================== Piece Selector ==================== */
+.iw-cd-piece-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+}
+
+.iw-cd-piece-item {
+    position: relative !important;
+    padding: 1rem !important;
+    background: var(--iw-cd-bg-light) !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+}
+
+.iw-cd-piece-item:hover {
+    background: white !important;
+    border-color: var(--iw-cd-primary) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
+}
+
+.iw-cd-piece-item.active {
+    background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
+    border-color: var(--iw-cd-primary) !important;
+    color: white !important;
+}
+
+.iw-cd-piece-checkbox {
+    width: 20px !important;
+    height: 20px !important;
+    cursor: pointer !important;
+    accent-color: var(--iw-cd-primary) !important;
+}
+
+.iw-cd-piece-icon {
+    font-size: 1.5rem !important;
+    transition: transform 0.3s ease !important;
+}
+
+.iw-cd-piece-item:hover .iw-cd-piece-icon {
+    transform: scale(1.1) !important;
+}
+
+.iw-cd-piece-label {
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+}
+
+.iw-cd-piece-item.active .iw-cd-piece-label {
+    color: white !important;
+}
+
+/* ==================== Size Inputs ==================== */
+.iw-cd-sizes-container {
+    min-height: 100px !important;
+}
+
+.iw-cd-sizes-container .piece-sizes-group {
+    margin-top: 1rem !important;
+    padding: 1rem !important;
+    background: var(--iw-cd-bg-light) !important;
+    border-radius: 8px !important;
+    border: 2px solid var(--iw-cd-border) !important;
+}
+
+.iw-cd-sizes-container .piece-sizes-title {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: var(--iw-cd-text) !important;
+    margin-bottom: 1rem !important;
+    padding-bottom: 0.75rem !important;
+    border-bottom: 2px solid var(--iw-cd-primary) !important;
+    line-height: 1.4 !important;
+}
+
+.sizes-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)) !important;
+    gap: 0.75rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.size-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+}
+
+.size-label {
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    color: var(--iw-cd-text) !important;
+    text-transform: uppercase !important;
+    line-height: 1.4 !important;
+    margin-bottom: 0.25rem !important;
+}
+
+.size-quantity {
+    width: 100% !important;
+    padding: 0.625rem 0.5rem !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 6px !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    transition: all 0.3s ease !important;
+    background: white !important;
+    color: var(--iw-cd-text) !important;
+}
+
+.size-quantity:focus {
+    outline: none !important;
+    border-color: var(--iw-cd-primary) !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    background: #fafbff !important;
+}
+
+.size-quantity:hover {
+    border-color: #d0d7de !important;
+}
+
+.total-quantity {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0.875rem 1rem !important;
+    background: white !important;
+    border-radius: 8px !important;
+    border: 2px solid var(--iw-cd-primary) !important;
+    margin-top: 0.75rem !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1) !important;
+}
+
+.total-label {
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: var(--iw-cd-text) !important;
+    line-height: 1.5 !important;
+}
+
+.total-value {
+    font-weight: 700 !important;
+    font-size: 1.3rem !important;
+    color: var(--iw-cd-primary) !important;
+    line-height: 1.2 !important;
+}
+
+/* ==================== Color Controls ==================== */
+.iw-cd-color-section {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.iw-cd-color-parts {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.iw-cd-part-btn {
+    flex: 1 !important;
+    min-width: 75px !important;
+    padding: 0.75rem 0.5rem !important;
+    background: var(--iw-cd-bg-light) !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    color: var(--iw-cd-text) !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+}
+
+.iw-cd-part-btn:hover {
+    background: white !important;
+    border-color: var(--iw-cd-primary) !important;
+    color: var(--iw-cd-primary) !important;
+}
+
+.iw-cd-part-btn.active {
+    background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
+    border-color: var(--iw-cd-primary) !important;
+    color: white !important;
+}
+
+.iw-cd-part-btn i {
+    font-size: 1.1rem !important;
+}
+
+.iw-cd-part-btn span {
+    font-size: 0.8rem !important;
+}
+
+.iw-cd-color-picker-wrap {
+    position: relative !important;
+    padding: 1rem !important;
+    background: var(--iw-cd-bg-light) !important;
+    border-radius: 8px !important;
+    margin-bottom: 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+}
+
+.iw-cd-color-picker {
+    flex: 1 !important;
+    min-width: 80px !important;
+    height: 50px !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.iw-cd-color-picker:hover {
+    border-color: var(--iw-cd-primary) !important;
+    transform: scale(1.02) !important;
+}
+
+.iw-cd-color-value {
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: var(--iw-cd-text) !important;
+    padding: 0.5rem 0.75rem !important;
+    background: var(--iw-cd-bg-light) !important;
+    border-radius: 6px !important;
+    font-family: monospace !important;
+    min-width: 80px !important;
+    text-align: center !important;
+}
+
+.iw-cd-preset-colors {
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 0.5rem !important;
+}
+
+.iw-cd-preset-color {
+    width: 100% !important;
+    aspect-ratio: 1 !important;
+    border-radius: 50% !important;
+    border: 3px solid transparent !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
+.iw-cd-preset-color:hover {
+    transform: scale(1.2) !important;
+    border-color: white !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+}
+
+.iw-cd-preset-color.selected {
+    border-color: var(--iw-cd-primary) !important;
+    transform: scale(1.15) !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* ==================== Pattern Options ==================== */
+.iw-cd-pattern-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+}
+
+.iw-cd-pattern-item {
+    padding: 1.5rem 1rem !important;
+    background: var(--iw-cd-bg-light) !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 8px !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    min-height: 80px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.iw-cd-pattern-item:hover {
+    background: white !important;
+    border-color: var(--iw-cd-primary) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
+}
+
+.iw-cd-pattern-item.active {
+    background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
+    border-color: var(--iw-cd-primary) !important;
+    color: white !important;
+}
+
+.iw-cd-pattern-icon {
+    font-size: 2rem !important;
+    display: block !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.iw-cd-pattern-label {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+}
+
+/* ==================== Upload Area ==================== */
+.iw-cd-upload-area {
+    padding: 2rem !important;
+    background: var(--iw-cd-bg-light) !important;
+    border: 2px dashed var(--iw-cd-border) !important;
+    border-radius: 8px !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.iw-cd-upload-area:hover {
+    border-color: var(--iw-cd-primary) !important;
+    background: rgba(102, 126, 234, 0.05) !important;
+}
+
+.iw-cd-upload-area.dragover {
+    border-color: var(--iw-cd-primary) !important;
+    background: rgba(102, 126, 234, 0.1) !important;
+    transform: scale(1.02) !important;
+}
+
+.iw-cd-upload-icon {
+    font-size: 3rem !important;
+    color: var(--iw-cd-primary) !important;
+    margin-bottom: 1rem !important;
+}
+
+.iw-cd-upload-text {
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: var(--iw-cd-text) !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.5 !important;
+}
+
+.iw-cd-upload-hint {
+    font-size: 0.85rem !important;
+    color: #6c757d !important;
+    line-height: 1.4 !important;
+}
+
+/* ==================== Summary Card ==================== */
+.iw-cd-summary {
+    padding: 1.5rem !important;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)) !important;
+    border: 2px solid var(--iw-cd-primary) !important;
+    border-radius: 8px !important;
+}
+
+.iw-cd-summary-item {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0.75rem 0 !important;
+    border-bottom: 1px solid var(--iw-cd-border) !important;
+}
+
+.iw-cd-summary-item:last-child {
+    border-bottom: none !important;
+}
+
+.iw-cd-summary-label {
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: var(--iw-cd-text) !important;
+    line-height: 1.5 !important;
+}
+
+.iw-cd-summary-value {
+    font-weight: 700 !important;
+    font-size: 1.4rem !important;
+    color: var(--iw-cd-primary) !important;
+    line-height: 1.2 !important;
+}
+
+/* ==================== Viewer Controls ==================== */
+.iw-cd-viewer-controls {
+    position: absolute !important;
+    top: 0.75rem !important;
+    right: 0.75rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    z-index: 100 !important;
+}
+
+.iw-cd-control-btn {
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 8px !important;
+    color: var(--iw-cd-text) !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1rem !important;
+}
+
+.iw-cd-control-btn:hover {
+    background: white !important;
+    border-color: var(--iw-cd-primary) !important;
+    color: var(--iw-cd-primary) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+}
+
+.iw-cd-view-switcher {
+    position: absolute !important;
+    bottom: 0.75rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    gap: 0.5rem !important;
+    padding: 0.5rem !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    z-index: 100 !important;
+}
+
+.iw-cd-view-btn {
+    padding: 0.5rem 1rem !important;
+    background: transparent !important;
+    border: 2px solid transparent !important;
+    border-radius: 6px !important;
+    color: var(--iw-cd-text) !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.iw-cd-view-btn:hover {
+    background: var(--iw-cd-bg-light) !important;
+    border-color: var(--iw-cd-primary) !important;
+    color: var(--iw-cd-primary) !important;
+}
+
+.iw-cd-view-btn.active {
+    background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
+    border-color: var(--iw-cd-primary) !important;
+    color: white !important;
+}
+
+/* ==================== Buttons ==================== */
+.iw-cd-btn {
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+.iw-cd-btn-primary {
+    background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+}
+
+.iw-cd-btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3) !important;
+}
+
+.iw-cd-btn-primary:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2) !important;
+}
+
+/* ==================== Sub Labels ==================== */
+.iw-cd-sub-label {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    color: var(--iw-cd-text) !important;
+    display: block !important;
+    margin-bottom: 0.75rem !important;
+    opacity: 0.9 !important;
+    line-height: 1.5 !important;
+}
+
+/* ==================== Empty State ==================== */
+.iw-cd-empty-state {
+    padding: 2rem 1rem !important;
+    text-align: center !important;
+    background: var(--iw-cd-bg-light) !important;
+    border-radius: 8px !important;
+    border: 2px dashed var(--iw-cd-border) !important;
+}
+
+.iw-cd-empty-state i {
+    display: block !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* ==================== Logo & Text Lists ==================== */
+.iw-cd-logo-list,
+.iw-cd-text-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+}
+
+.iw-cd-logo-list .logo-item,
+.iw-cd-text-list .text-item {
+    padding: 0.75rem !important;
+    background: var(--iw-cd-bg-light) !important;
+    border-radius: 8px !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    transition: all 0.3s ease !important;
+}
+
+.iw-cd-logo-list .logo-item:hover,
+.iw-cd-text-list .text-item:hover {
+    border-color: var(--iw-cd-primary) !important;
+    background: white !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1) !important;
+}
+
+/* ==================== Text Input Improvements ==================== */
+#text_content {
+    font-size: 0.95rem !important;
+    padding: 0.875rem 1rem !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+}
+
+#text_content:focus {
+    background: #fafbff !important;
+    outline: none !important;
+    border-color: var(--iw-cd-primary) !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+/* ==================== Responsive ==================== */
+@media (max-width: 768px) {
+    .iw-cd-main-grid {
+        gap: 1rem !important;
+        padding: 0 !important;
+    }
+    
+    .iw-cd-piece-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .iw-cd-size-grid {
+        grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)) !important;
+    }
+    
+    .iw-cd-viewer-panel {
+        min-height: 500px !important;
+        max-height: 500px !important;
+    }
+    
+    .iw-cd-3d-container {
+        min-height: 400px !important;
+    }
+    
+    .iw-cd-viewer-controls {
+        top: 0.5rem !important;
+        right: 0.5rem !important;
+    }
+    
+    .iw-cd-control-btn {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .iw-cd-view-switcher {
+        flex-wrap: wrap !important;
+        padding: 0.25rem !important;
+    }
+    
+    .iw-cd-view-btn {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .iw-cd-color-parts {
+        flex-direction: column !important;
+    }
+    
+    .iw-cd-part-btn {
+        width: 100% !important;
+    }
+    
+    .iw-cd-text-options {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .iw-cd-preset-colors {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}
+
