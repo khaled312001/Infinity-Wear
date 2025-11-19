@@ -3,10 +3,10 @@
 @section('title', 'أطلب الآن - Infinity Wear')
 
 @push('styles')
-<link href="{{ asset('css/modern-multi-step-form.css') }}" rel="stylesheet">
-<link href="{{ asset('css/design-system-modern.css') }}" rel="stylesheet">
-<link href="{{ asset('css/design-system-override.css') }}" rel="stylesheet">
-<link href="{{ asset('css/enhanced-form-animations.css') }}" rel="stylesheet">
+<link href="{{ asset('css/modern-multi-step-form.css') }}?v={{ time() }}" rel="stylesheet">
+<link href="{{ asset('css/design-system-modern.css') }}?v={{ time() }}" rel="stylesheet">
+<link href="{{ asset('css/design-system-override.css') }}?v={{ time() }}" rel="stylesheet">
+<link href="{{ asset('css/enhanced-form-animations.css') }}?v={{ time() }}" rel="stylesheet">
 @endpush
 
 @push('scripts')
@@ -16,11 +16,11 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
 <!-- Enhanced 3D Viewer System -->
-<script src="{{ asset('js/enhanced-3d-viewer.js') }}"></script>
-<script src="{{ asset('js/design-interface.js') }}"></script>
-<script src="{{ asset('js/design-system-init.js') }}"></script>
-<script src="{{ asset('js/form-enhancements.js') }}"></script>
-<script src="{{ asset('js/modern-multi-step.js') }}"></script>
+<script src="{{ asset('js/enhanced-3d-viewer.js') }}?v={{ time() }}"></script>
+<script src="{{ asset('js/design-interface.js') }}?v={{ time() }}"></script>
+<script src="{{ asset('js/design-system-init.js') }}?v={{ time() }}"></script>
+<script src="{{ asset('js/form-enhancements.js') }}?v={{ time() }}"></script>
+<script src="{{ asset('js/modern-multi-step.js') }}?v={{ time() }}"></script>
 @endpush
 
 <style>
