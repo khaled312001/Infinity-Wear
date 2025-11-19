@@ -216,7 +216,7 @@ class ImporterController extends Controller
      */
     public function showImporterForm()
     {
-        return view('importers.form-redesigned');
+        return view('importers.form');
     }
 
     /**
