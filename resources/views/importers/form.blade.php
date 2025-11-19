@@ -4,11 +4,18 @@
 
 @push('styles')
 <link href="{{ asset('css/multi-step-form.css') }}" rel="stylesheet">
+<link href="{{ asset('css/enhanced-design-interface.css') }}" rel="stylesheet">
 @endpush
 
 @push('scripts')
+<!-- Three.js and OrbitControls -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="{{ asset('js/3d-design-viewer.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<!-- Enhanced 3D Viewer System -->
+<script src="{{ asset('js/enhanced-3d-viewer.js') }}"></script>
+<script src="{{ asset('js/design-interface.js') }}"></script>
+<script src="{{ asset('js/design-system-init.js') }}"></script>
 <script src="{{ asset('js/multi-step-form.js') }}"></script>
 @endpush
 
@@ -407,6 +414,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                             
                                             <!-- Custom Design Interface -->
                                             <div class="design-detail" id="design_custom_detail" style="display: none;">
+                                                @include('importers.partials.enhanced-design-tools')
+                                            </div>
+                                            
+                                            <!-- Legacy Design Interface (Hidden) -->
+                                            <div class="design-detail" id="design_legacy_detail" style="display: none;">
                                                 <div class="custom-design-interface">
                                                     <div class="row">
                                                         <!-- Design Controls Panel -->
@@ -420,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                                 <!-- Business Type Selection -->
                                                                 <div class="control-group mb-4">
                                                                     <label class="control-label fw-semibold">نوع النشاط</label>
-                                                                    <select class="form-select" id="design_business_type" name="design_business_type">
+                                                                    <select class="form-select" id="design_business_type_legacy" name="design_business_type_legacy">
                                                                         <option value="">اختر نوع النشاط</option>
                                                                         <option value="academy">أكاديمية رياضية</option>
                                                                         <option value="school">مدرسة</option>
