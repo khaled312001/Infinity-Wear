@@ -1,4 +1,4 @@
-@extends('layouts.importer-dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'طلباتي')
 

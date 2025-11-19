@@ -72,6 +72,7 @@ class WorkflowOrderController extends Controller
 
         $request->validate([
             'status' => 'required|in:pending,in_progress,completed,rejected',
+            'final_cost' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string|max:1000',
         ]);
 
@@ -82,6 +83,11 @@ class WorkflowOrderController extends Controller
 
         // تحديث حالة المرحلة
         $workflowOrder->updateStageStatus('sales', $request->status, $user->id);
+        
+        // تحديث التكلفة النهائية إذا تم إدخالها
+        if ($request->filled('final_cost')) {
+            $workflowOrder->update(['final_cost' => $request->final_cost]);
+        }
 
         // تحديث سجل المرحلة
         $stageRecord = WorkflowOrderStage::where('workflow_order_id', $workflowOrder->id)

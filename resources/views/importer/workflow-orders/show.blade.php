@@ -1,4 +1,4 @@
-@extends('layouts.importer-dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'تفاصيل الطلب - ' . $workflowOrder->order_number)
 
