@@ -18,6 +18,7 @@ class PortfolioItem extends Model
         'completion_date',
         'category',
         'is_featured',
+        'is_active',
         'sort_order'
     ];
 
@@ -25,6 +26,7 @@ class PortfolioItem extends Model
         'gallery' => 'array',
         'completion_date' => 'date',
         'is_featured' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     /**

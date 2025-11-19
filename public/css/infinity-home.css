@@ -5241,13 +5241,14 @@ textarea.form-control {
     }
     
     .cta-card h3 {
-        font-size: 26px;
-        margin-bottom: 12px;
+        font-size: 28px;
+        margin-bottom: 15px;
     }
     
     .cta-card p {
-        font-size: 15px;
+        font-size: 16px;
         margin-bottom: 30px;
+        line-height: 1.7;
     }
     
     .track-order-form {
