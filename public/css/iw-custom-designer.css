@@ -330,20 +330,49 @@
     font-size: 1.2rem !important;
 }
 
-/* Enhanced Form Controls - Scoped to .iw-custom-designer only */
-.iw-custom-designer .iw-cd-form-control-enhanced {
-    border: 1.5px solid #e0e4e8 !important;
-    border-radius: 8px !important;
-    padding: 0.75rem 1rem !important;
+/* ==================== Enhanced Form Controls - High Specificity ==================== */
+.iw-custom-designer .iw-cd-form-control-enhanced,
+.iw-custom-designer select.iw-cd-form-control-enhanced,
+#design_custom_detail .iw-cd-form-control-enhanced,
+#design_custom_detail select.iw-cd-form-control-enhanced {
+    width: 100% !important;
+    padding: 0.875rem 1rem !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 10px !important;
     font-size: 0.95rem !important;
-    transition: all 0.2s ease !important;
-    background: white !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: linear-gradient(to bottom, #ffffff, #fafbfc) !important;
+    color: var(--iw-cd-text) !important;
+    line-height: 1.5 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    font-family: inherit !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    cursor: pointer !important;
 }
 
-.iw-custom-designer .iw-cd-form-control-enhanced:focus {
-    border-color: var(--iw-cd-primary) !important;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+.iw-custom-designer .iw-cd-form-control-enhanced:focus,
+.iw-custom-designer select.iw-cd-form-control-enhanced:focus,
+#design_custom_detail .iw-cd-form-control-enhanced:focus,
+#design_custom_detail select.iw-cd-form-control-enhanced:focus {
     outline: none !important;
+    border-color: var(--iw-cd-primary) !important;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+    background: #ffffff !important;
+    transform: translateY(-1px) !important;
+}
+
+.iw-custom-designer .iw-cd-form-control-enhanced:hover,
+.iw-custom-designer select.iw-cd-form-control-enhanced:hover,
+#design_custom_detail .iw-cd-form-control-enhanced:hover,
+#design_custom_detail select.iw-cd-form-control-enhanced:hover {
+    border-color: var(--iw-cd-primary) !important;
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1) !important;
+    transform: translateY(-1px) !important;
 }
 
 /* Enhanced Piece Grid */
@@ -765,14 +794,18 @@
     background: white !important;
 }
 
-/* ==================== Piece Selector ==================== */
-.iw-cd-piece-grid {
+/* ==================== Piece Selector - High Specificity ==================== */
+.iw-custom-designer .iw-cd-piece-grid,
+.iw-custom-designer .iw-cd-piece-grid-enhanced,
+#design_custom_detail .iw-cd-piece-grid,
+#design_custom_detail .iw-cd-piece-grid-enhanced {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.75rem !important;
 }
 
-.iw-cd-piece-item {
+.iw-custom-designer .iw-cd-piece-item,
+#design_custom_detail .iw-cd-piece-item {
     position: relative !important;
     padding: 1rem 1.25rem !important;
     background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
@@ -785,6 +818,7 @@
     gap: 0.75rem !important;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
     overflow: hidden !important;
+    margin: 0 !important;
 }
 
 .iw-cd-piece-item::after {
@@ -817,11 +851,21 @@
     transform: translateY(-3px) scale(1.02) !important;
 }
 
-.iw-cd-piece-checkbox {
+.iw-custom-designer .iw-cd-piece-checkbox,
+.iw-custom-designer input.iw-cd-piece-checkbox,
+.iw-custom-designer input.clothing-piece-checkbox.iw-cd-piece-checkbox,
+#design_custom_detail .iw-cd-piece-checkbox,
+#design_custom_detail input.iw-cd-piece-checkbox,
+#design_custom_detail input.clothing-piece-checkbox.iw-cd-piece-checkbox {
     width: 20px !important;
     height: 20px !important;
     cursor: pointer !important;
     accent-color: var(--iw-cd-primary) !important;
+    margin: 0 !important;
+    flex-shrink: 0 !important;
+    appearance: auto !important;
+    -webkit-appearance: checkbox !important;
+    -moz-appearance: checkbox !important;
 }
 
 .iw-cd-piece-icon {
@@ -1674,5 +1718,71 @@
     .iw-cd-preset-colors {
         grid-template-columns: repeat(4, 1fr) !important;
     }
+}
+
+/* ==================== Final Override Rules - Maximum Specificity ==================== */
+/* These rules have maximum specificity to override any global CSS rules */
+.iw-custom-designer select.iw-cd-form-control.iw-cd-form-control-enhanced,
+#design_custom_detail select.iw-cd-form-control.iw-cd-form-control-enhanced,
+.iw-custom-designer #design_activity_type.iw-cd-form-control.iw-cd-form-control-enhanced,
+#design_custom_detail #design_activity_type.iw-cd-form-control.iw-cd-form-control-enhanced {
+    width: 100% !important;
+    padding: 0.875rem 1rem !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 10px !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: linear-gradient(to bottom, #ffffff, #fafbfc) !important;
+    color: var(--iw-cd-text) !important;
+    line-height: 1.5 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    font-family: inherit !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    cursor: pointer !important;
+}
+
+.iw-custom-designer label.iw-cd-piece-item,
+#design_custom_detail label.iw-cd-piece-item,
+.iw-custom-designer .iw-cd-piece-grid label.iw-cd-piece-item,
+#design_custom_detail .iw-cd-piece-grid label.iw-cd-piece-item {
+    position: relative !important;
+    padding: 1rem 1.25rem !important;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+}
+
+.iw-custom-designer label.iw-cd-piece-item:hover,
+#design_custom_detail label.iw-cd-piece-item:hover,
+.iw-custom-designer .iw-cd-piece-grid label.iw-cd-piece-item:hover,
+#design_custom_detail .iw-cd-piece-grid label.iw-cd-piece-item:hover {
+    background: linear-gradient(135deg, #ffffff, #f0f4ff) !important;
+    border-color: var(--iw-cd-primary) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25) !important;
+}
+
+.iw-custom-designer label.iw-cd-piece-item:has(input:checked),
+#design_custom_detail label.iw-cd-piece-item:has(input:checked),
+.iw-custom-designer .iw-cd-piece-grid label.iw-cd-piece-item:has(input:checked),
+#design_custom_detail .iw-cd-piece-grid label.iw-cd-piece-item:has(input:checked) {
+    background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
+    border-color: var(--iw-cd-primary) !important;
+    color: white !important;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-3px) scale(1.02) !important;
 }
 
