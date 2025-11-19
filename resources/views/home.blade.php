@@ -351,7 +351,10 @@ use Illuminate\Support\Facades\Storage;
         <div class="container">
             <div class="section-header" data-aos="fade-up">
                 <h2 class="section-title">مراحل تنفيذ طلبك</h2>
-                <p class="section-subtitle">نظام متكامل لتتبع طلبك من البداية حتى النهاية</p>
+                <p class="section-subtitle">اكتشف رحلة طلبك معنا من البداية حتى التسليم النهائي</p>
+                <div class="workflow-intro">
+                    <p>نوفر لك شفافية كاملة في كل خطوة من خطوات تنفيذ طلبك. تابع معنا رحلة منتجك عبر 10 مراحل احترافية مصممة لضمان جودة عالية ورضا تام.</p>
+                </div>
             </div>
 
             <div class="workflow-container">
@@ -362,6 +365,7 @@ use Illuminate\Support\Facades\Storage;
                                 'name' => 'التسويق',
                                 'icon' => 'fas fa-bullhorn',
                                 'description' => 'مرحلة التسويق والترويج لطلبك',
+                                'details' => 'نقوم بدراسة متطلباتك وتقديم أفضل الحلول المناسبة لمشروعك',
                                 'color' => '#667eea',
                                 'delay' => 0
                             ],
@@ -369,6 +373,7 @@ use Illuminate\Support\Facades\Storage;
                                 'name' => 'المبيعات',
                                 'icon' => 'fas fa-handshake',
                                 'description' => 'متابعة طلبك مع فريق المبيعات',
+                                'details' => 'فريق المبيعات يتواصل معك لتأكيد التفاصيل والمواصفات المطلوبة',
                                 'color' => '#f093fb',
                                 'delay' => 100
                             ],
@@ -376,6 +381,7 @@ use Illuminate\Support\Facades\Storage;
                                 'name' => 'التصميم',
                                 'icon' => 'fas fa-palette',
                                 'description' => 'تصميم مخصص لطلبك',
+                                'details' => 'فريق التصميم المحترف يقوم بإنشاء تصاميم فريدة تناسب رؤيتك',
                                 'color' => '#4facfe',
                                 'delay' => 200
                             ],
@@ -383,6 +389,7 @@ use Illuminate\Support\Facades\Storage;
                                 'name' => 'العينة الأولى',
                                 'icon' => 'fas fa-clipboard-check',
                                 'description' => 'إنتاج عينة أولية للموافقة',
+                                'details' => 'نقوم بإنتاج عينة أولية لمراجعتها والموافقة عليها قبل التصنيع',
                                 'color' => '#43e97b',
                                 'delay' => 300
                             ],
@@ -390,6 +397,7 @@ use Illuminate\Support\Facades\Storage;
                                 'name' => 'اعتماد الشغل',
                                 'icon' => 'fas fa-check-circle',
                                 'description' => 'الموافقة النهائية على التصميم',
+                                'details' => 'بعد موافقتك على العينة، نبدأ في عملية التصنيع الفعلية',
                                 'color' => '#fa709a',
                                 'delay' => 400
                             ],
@@ -397,6 +405,7 @@ use Illuminate\Support\Facades\Storage;
                                 'name' => 'التصنيع',
                                 'icon' => 'fas fa-industry',
                                 'description' => 'بدء عملية التصنيع',
+                                'details' => 'نستخدم أحدث المعدات والمواد عالية الجودة لضمان جودة المنتج النهائي',
                                 'color' => '#30cfd0',
                                 'delay' => 500
                             ],
@@ -404,6 +413,7 @@ use Illuminate\Support\Facades\Storage;
                                 'name' => 'الشحن',
                                 'icon' => 'fas fa-truck',
                                 'description' => 'تجهيز الطلب للشحن',
+                                'details' => 'نقوم بتغليف آمن واحترافي لضمان وصول منتجك بحالة ممتازة',
                                 'color' => '#a8edea',
                                 'delay' => 600
                             ],
@@ -411,6 +421,7 @@ use Illuminate\Support\Facades\Storage;
                                 'name' => 'استلام وتسليم',
                                 'icon' => 'fas fa-box-open',
                                 'description' => 'استلام وتسليم الطلب',
+                                'details' => 'تسليم الطلب في الوقت المحدد مع التأكد من رضاكم التام',
                                 'color' => '#ffecd2',
                                 'delay' => 700
                             ],
@@ -418,6 +429,7 @@ use Illuminate\Support\Facades\Storage;
                                 'name' => 'التحصيل',
                                 'icon' => 'fas fa-money-bill-wave',
                                 'description' => 'إتمام عملية الدفع',
+                                'details' => 'إتمام جميع المعاملات المالية بشكل آمن ومضمون',
                                 'color' => '#ff9a9e',
                                 'delay' => 800
                             ],
@@ -425,6 +437,7 @@ use Illuminate\Support\Facades\Storage;
                                 'name' => 'خدمة ما بعد البيع',
                                 'icon' => 'fas fa-headset',
                                 'description' => 'متابعة وخدمة ما بعد البيع',
+                                'details' => 'نواصل متابعتك بعد التسليم لضمان رضاكم وتقديم الدعم اللازم',
                                 'color' => '#a18cd1',
                                 'delay' => 900
                             ]
@@ -444,6 +457,9 @@ use Illuminate\Support\Facades\Storage;
                             <div class="step-content">
                                 <h3 class="step-title">{{ $stage['name'] }}</h3>
                                 <p class="step-description">{{ $stage['description'] }}</p>
+                                @if(isset($stage['details']))
+                                <p class="step-details">{{ $stage['details'] }}</p>
+                                @endif
                             </div>
                             <div class="step-arrow">
                                 <i class="fas fa-arrow-left"></i>
