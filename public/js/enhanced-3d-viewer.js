@@ -243,8 +243,14 @@ class Enhanced3DViewer {
                 },
                 (error) => {
                     clearTimeout(timeout);
-                    // Only log if it's not a network/CORS error (which are expected for CDN failures)
-                    if (error && error.type !== 'error') {
+                    // Suppress logging for expected network errors (403, CORS, etc.)
+                    // These are expected when CDN models fail, and we have a fallback
+                    const isNetworkError = error && (
+                        error.type === 'error' || 
+                        (error.target && error.target.status >= 400) ||
+                        !error.lengthComputable
+                    );
+                    if (!isNetworkError) {
                         console.error('Error loading GLTF model:', error);
                     }
                     reject(error);
@@ -297,10 +303,8 @@ class Enhanced3DViewer {
                     return model;
                 }
             } catch (error) {
-                // Silently fail and use fallback - don't log every failed attempt
-                if (error && error.type !== 'error') {
-                    console.log('Model not available, using fallback...');
-                }
+                // Silently fail and use fallback - don't log expected network errors
+                // The fallback model will be used automatically
             }
         }
 
