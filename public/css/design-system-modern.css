@@ -1,0 +1,580 @@
+/**
+ * Modern Design System - Isolated Styles
+ * No conflicts with existing CSS
+ */
+
+/* ==================== Container ==================== */
+.enhanced-design-system {
+    --eds-primary: #667eea;
+    --eds-secondary: #764ba2;
+    --eds-bg-light: #f8f9fa;
+    --eds-border: #e9ecef;
+    --eds-text: #2c3e50;
+    --eds-radius: 12px;
+    --eds-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.enhanced-design-system * {
+    box-sizing: border-box;
+}
+
+.eds-main-grid {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 2rem;
+    min-height: 700px;
+    background: var(--eds-bg-light);
+    padding: 2rem;
+    border-radius: var(--eds-radius);
+}
+
+@media (max-width: 1200px) {
+    .eds-main-grid {
+        grid-template-columns: 380px 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .eds-main-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+}
+
+/* ==================== Left Panel (Controls) ==================== */
+.eds-controls-panel {
+    background: white;
+    border-radius: var(--eds-radius);
+    padding: 1.5rem;
+    box-shadow: var(--eds-shadow);
+    max-height: 700px;
+    overflow-y: auto;
+}
+
+.eds-controls-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.eds-controls-panel::-webkit-scrollbar-track {
+    background: var(--eds-bg-light);
+    border-radius: 4px;
+}
+
+.eds-controls-panel::-webkit-scrollbar-thumb {
+    background: var(--eds-primary);
+    border-radius: 4px;
+}
+
+/* ==================== Right Panel (3D Viewer) ==================== */
+.eds-viewer-panel {
+    background: white;
+    border-radius: var(--eds-radius);
+    box-shadow: var(--eds-shadow);
+    display: flex;
+    flex-direction: column;
+    min-height: 700px;
+    position: relative;
+}
+
+.eds-viewer-header {
+    background: linear-gradient(135deg, var(--eds-primary), var(--eds-secondary));
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: var(--eds-radius) var(--eds-radius) 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.eds-viewer-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.eds-viewer-body {
+    flex: 1;
+    position: relative;
+    background: linear-gradient(135deg, #f0f2f5 0%, #e3e8ed 100%);
+    border-radius: 0 0 var(--eds-radius) var(--eds-radius);
+}
+
+.eds-3d-container {
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+}
+
+/* ==================== Section Styles ==================== */
+.eds-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--eds-border);
+}
+
+.eds-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.eds-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--eds-text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--eds-primary);
+}
+
+.eds-section-title i {
+    color: var(--eds-primary);
+    font-size: 1.2rem;
+}
+
+/* ==================== Form Controls ==================== */
+.eds-form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--eds-border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.eds-form-control:focus {
+    outline: none;
+    border-color: var(--eds-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* ==================== Piece Selector ==================== */
+.eds-piece-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.eds-piece-item {
+    position: relative;
+    padding: 1rem;
+    background: var(--eds-bg-light);
+    border: 2px solid var(--eds-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.eds-piece-item:hover {
+    background: white;
+    border-color: var(--eds-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.eds-piece-item.active {
+    background: linear-gradient(135deg, var(--eds-primary), var(--eds-secondary));
+    border-color: var(--eds-primary);
+    color: white;
+}
+
+.eds-piece-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--eds-primary);
+}
+
+.eds-piece-icon {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.eds-piece-item:hover .eds-piece-icon {
+    transform: scale(1.1);
+}
+
+.eds-piece-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.eds-piece-item.active .eds-piece-label {
+    color: white;
+}
+
+/* ==================== Size Inputs ==================== */
+.eds-size-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.eds-size-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.eds-size-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--eds-text);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+.eds-size-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid var(--eds-border);
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.eds-size-input:focus {
+    outline: none;
+    border-color: var(--eds-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: scale(1.05);
+}
+
+/* ==================== Color Controls ==================== */
+.eds-color-parts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.eds-part-btn {
+    flex: 1;
+    min-width: 75px;
+    padding: 0.5rem 1rem;
+    background: var(--eds-bg-light);
+    border: 2px solid var(--eds-border);
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--eds-text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.eds-part-btn:hover {
+    background: white;
+    border-color: var(--eds-primary);
+    color: var(--eds-primary);
+}
+
+.eds-part-btn.active {
+    background: linear-gradient(135deg, var(--eds-primary), var(--eds-secondary));
+    border-color: var(--eds-primary);
+    color: white;
+}
+
+.eds-color-picker-wrap {
+    position: relative;
+    padding: 1rem;
+    background: var(--eds-bg-light);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.eds-color-picker {
+    width: 100%;
+    height: 50px;
+    border: 2px solid var(--eds-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.eds-color-picker:hover {
+    border-color: var(--eds-primary);
+    transform: scale(1.02);
+}
+
+.eds-preset-colors {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem;
+}
+
+.eds-preset-color {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.eds-preset-color:hover {
+    transform: scale(1.2);
+    border-color: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* ==================== Pattern Options ==================== */
+.eds-pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.eds-pattern-item {
+    padding: 1.5rem 1rem;
+    background: var(--eds-bg-light);
+    border: 2px solid var(--eds-border);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.eds-pattern-item:hover {
+    background: white;
+    border-color: var(--eds-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.eds-pattern-item.active {
+    background: linear-gradient(135deg, var(--eds-primary), var(--eds-secondary));
+    border-color: var(--eds-primary);
+    color: white;
+}
+
+.eds-pattern-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.eds-pattern-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* ==================== Upload Area ==================== */
+.eds-upload-area {
+    padding: 2rem;
+    background: var(--eds-bg-light);
+    border: 2px dashed var(--eds-border);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.eds-upload-area:hover {
+    border-color: var(--eds-primary);
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.eds-upload-icon {
+    font-size: 3rem;
+    color: var(--eds-primary);
+    margin-bottom: 1rem;
+}
+
+.eds-upload-text {
+    font-weight: 600;
+    color: var(--eds-text);
+    margin-bottom: 0.5rem;
+}
+
+.eds-upload-hint {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* ==================== Summary Card ==================== */
+.eds-summary {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border: 2px solid var(--eds-primary);
+    border-radius: 8px;
+}
+
+.eds-summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--eds-border);
+}
+
+.eds-summary-item:last-child {
+    border-bottom: none;
+}
+
+.eds-summary-label {
+    font-weight: 600;
+    color: var(--eds-text);
+}
+
+.eds-summary-value {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--eds-primary);
+}
+
+/* ==================== Viewer Controls ==================== */
+.eds-viewer-controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 100;
+}
+
+.eds-control-btn {
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--eds-border);
+    border-radius: 8px;
+    color: var(--eds-text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.eds-control-btn:hover {
+    background: white;
+    border-color: var(--eds-primary);
+    color: var(--eds-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.eds-view-switcher {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.eds-view-btn {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    color: var(--eds-text);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.eds-view-btn:hover {
+    background: var(--eds-bg-light);
+    border-color: var(--eds-primary);
+    color: var(--eds-primary);
+}
+
+.eds-view-btn.active {
+    background: linear-gradient(135deg, var(--eds-primary), var(--eds-secondary));
+    border-color: var(--eds-primary);
+    color: white;
+}
+
+/* ==================== Buttons ==================== */
+.eds-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.eds-btn-primary {
+    background: linear-gradient(135deg, var(--eds-primary), var(--eds-secondary));
+    color: white;
+}
+
+.eds-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* ==================== Responsive ==================== */
+@media (max-width: 768px) {
+    .eds-main-grid {
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .eds-piece-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .eds-size-grid {
+        grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+    }
+    
+    .eds-viewer-panel {
+        min-height: 500px;
+    }
+    
+    .eds-3d-container {
+        min-height: 400px;
+    }
+    
+    .eds-viewer-controls {
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+    
+    .eds-control-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .eds-view-switcher {
+        flex-wrap: wrap;
+        padding: 0.25rem;
+    }
+    
+    .eds-view-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+}
+

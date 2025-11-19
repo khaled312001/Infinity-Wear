@@ -3,8 +3,9 @@
 @section('title', 'أطلب الآن - Infinity Wear')
 
 @push('styles')
-<link href="{{ asset('css/multi-step-form.css') }}" rel="stylesheet">
-<link href="{{ asset('css/enhanced-design-interface.css') }}" rel="stylesheet">
+<link href="{{ asset('css/modern-multi-step-form.css') }}" rel="stylesheet">
+<link href="{{ asset('css/design-system-modern.css') }}" rel="stylesheet">
+<link href="{{ asset('css/design-system-override.css') }}" rel="stylesheet">
 <link href="{{ asset('css/enhanced-form-animations.css') }}" rel="stylesheet">
 @endpush
 
@@ -19,7 +20,7 @@
 <script src="{{ asset('js/design-interface.js') }}"></script>
 <script src="{{ asset('js/design-system-init.js') }}"></script>
 <script src="{{ asset('js/form-enhancements.js') }}"></script>
-<script src="{{ asset('js/multi-step-form.js') }}"></script>
+<script src="{{ asset('js/modern-multi-step.js') }}"></script>
 @endpush
 
 <style>
@@ -417,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             
                                             <!-- Custom Design Interface -->
                                             <div class="design-detail" id="design_custom_detail" style="display: none;">
-                                                @include('importers.partials.enhanced-design-tools')
+                                                @include('importers.partials.enhanced-design-tools-v2')
                                             </div>
                                             
                                             <!-- Legacy Design Interface (Hidden) -->

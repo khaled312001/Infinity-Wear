@@ -1,14 +1,15 @@
 {{-- Enhanced Design Tools Partial --}}
-<div class="design-container">
-    <!-- Control Panel -->
-    <div class="design-controls">
-        <!-- Activity Type Section -->
-        <div class="control-section">
-            <h5 class="section-title">
-                <i class="fas fa-building"></i>
-                نوع النشاط
-            </h5>
-            <select class="form-control-modern" id="design_activity_type" name="design_activity_type">
+<div class="enhanced-design-system">
+    <div class="eds-main-grid">
+        <!-- Control Panel -->
+        <div class="eds-controls-panel">
+            <!-- Activity Type Section -->
+            <div class="eds-section">
+                <h5 class="eds-section-title">
+                    <i class="fas fa-building"></i>
+                    نوع النشاط
+                </h5>
+                <select class="eds-form-control" id="design_activity_type" name="design_activity_type">
                 <option value="">اختر نوع النشاط</option>
                 <option value="academy">أكاديمية رياضية</option>
                 <option value="school">مدرسة</option>
@@ -18,13 +19,13 @@
             </select>
         </div>
 
-        <!-- Clothing Pieces Section -->
-        <div class="control-section">
-            <h5 class="section-title">
-                <i class="fas fa-tshirt"></i>
-                قطع الملابس
-            </h5>
-            <div class="piece-selector">
+            <!-- Clothing Pieces Section -->
+            <div class="eds-section">
+                <h5 class="eds-section-title">
+                    <i class="fas fa-tshirt"></i>
+                    قطع الملابس
+                </h5>
+                <div class="eds-piece-grid">
                 <label class="piece-option">
                     <input type="checkbox" class="clothing-piece-checkbox" 
                            data-piece-type="shirt" id="piece_shirt" name="clothing_pieces[]" value="shirt">

@@ -771,15 +771,40 @@ class DesignInterface {
 
     // Export design data for form submission
     exportDesignData() {
+        // Update design data with latest info
+        this.designData.totalPieces = this.getTotalPieces();
+        this.designData.pieceCount = Object.keys(this.designData.pieces).length;
+        
         const designJSON = JSON.stringify(this.designData);
         
         // Set hidden form fields
         const designField = document.getElementById('design_3d_data');
         if (designField) {
             designField.value = designJSON;
+            console.log('✓ Design data exported:', designJSON);
+        }
+        
+        // Also set activity type
+        const activityTypeField = document.getElementById('design_activity_type');
+        if (activityTypeField) {
+            activityTypeField.value = this.designData.activityType || '';
+        }
+        
+        // Set quantity
+        const quantityField = document.getElementById('quantity');
+        if (quantityField && this.designData.totalPieces) {
+            quantityField.value = this.designData.totalPieces;
         }
         
         return this.designData;
+    }
+
+    getTotalPieces() {
+        let total = 0;
+        document.querySelectorAll('.size-input, .size-quantity').forEach(input => {
+            total += parseInt(input.value) || 0;
+        });
+        return total;
     }
 
     // Capture screenshot for preview
@@ -791,6 +816,7 @@ class DesignInterface {
             const previewField = document.getElementById('design_preview_image');
             if (previewField) {
                 previewField.value = screenshot;
+                console.log('✓ Preview image captured');
             }
             
             return screenshot;

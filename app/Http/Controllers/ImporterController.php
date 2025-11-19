@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ImporterController extends Controller
 {
@@ -235,13 +236,17 @@ class ImporterController extends Controller
             'country' => 'nullable|string|max:100',
             'requirements' => 'required|string',
             'quantity' => 'required|integer|min:1',
-            'design_option' => 'required|string|in:text,upload,template',
+            'design_option' => 'required|string|in:text,upload,custom',
             'design_details_text' => 'required_if:design_option,text|nullable|string',
             'design_file' => 'required_if:design_option,upload|nullable|file|mimes:jpeg,png,jpg,pdf,gif,bmp,tiff,webp,svg,ico,psd,ai,eps|max:5120',
             'design_upload_notes' => 'nullable|string',
-            'design_3d_tshirt' => 'required_if:design_option,template|nullable|array',
-            'design_3d_shorts' => 'nullable|array',
-            'design_3d_socks' => 'nullable|array',
+            
+            // Enhanced 3D Design Data
+            'design_3d_data' => 'nullable|string',
+            'design_preview_image' => 'nullable|string',
+            'design_activity_type' => 'nullable|string',
+            'clothing_pieces' => 'nullable|array',
+            
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -377,11 +382,31 @@ class ImporterController extends Controller
                 
                 $designDetails['notes'] = $validated['design_upload_notes'];
                 break;
-            case 'template':
+            case 'custom':
+                // Enhanced 3D Design System
+                $design3DData = null;
+                $previewImagePath = null;
+                
+                // Parse 3D design data
+                if (!empty($validated['design_3d_data'])) {
+                    $design3DData = json_decode($validated['design_3d_data'], true);
+                }
+                
+                // Save preview image
+                if (!empty($validated['design_preview_image'])) {
+                    $previewImagePath = $this->saveBase64Image($validated['design_preview_image'], 'designs/previews');
+                }
+                
                 $designDetails['3d_design'] = [
-                    'tshirt' => $validated['design_3d_tshirt'] ?? null,
-                    'shorts' => $validated['design_3d_shorts'] ?? null,
-                    'socks' => $validated['design_3d_socks'] ?? null,
+                    'activity_type' => $validated['design_activity_type'] ?? null,
+                    'pieces' => $design3DData['pieces'] ?? [],
+                    'colors' => $design3DData['colors'] ?? [],
+                    'patterns' => $design3DData['patterns'] ?? [],
+                    'logos' => $design3DData['logos'] ?? [],
+                    'texts' => $design3DData['texts'] ?? [],
+                    'total_pieces' => $design3DData['totalPieces'] ?? 0,
+                    'preview_image' => $previewImagePath,
+                    'clothing_pieces' => $validated['clothing_pieces'] ?? [],
                 ];
                 break;
         }
@@ -1381,6 +1406,44 @@ class ImporterController extends Controller
                 'success' => false,
                 'error' => 'حدث خطأ في إنشاء التصميم'
             ], 500);
+        }
+    }
+
+    /**
+     * Save base64 image to storage
+     */
+    private function saveBase64Image($base64String, $directory = 'designs')
+    {
+        try {
+            // Remove data:image/png;base64, prefix if exists
+            if (strpos($base64String, 'data:image') === 0) {
+                $base64String = preg_replace('/^data:image\/\w+;base64,/', '', $base64String);
+            }
+            
+            // Decode base64 string
+            $imageData = base64_decode($base64String);
+            
+            if ($imageData === false) {
+                throw new \Exception('Invalid base64 string');
+            }
+            
+            // Generate unique filename
+            $filename = 'design_' . time() . '_' . uniqid() . '.png';
+            
+            // Ensure directory exists
+            $fullPath = storage_path('app/public/' . $directory);
+            if (!file_exists($fullPath)) {
+                mkdir($fullPath, 0755, true);
+            }
+            
+            // Save file
+            $filePath = $directory . '/' . $filename;
+            Storage::disk('public')->put($filePath, $imageData);
+            
+            return $filePath;
+        } catch (\Exception $e) {
+            Log::error('Error saving base64 image: ' . $e->getMessage());
+            return null;
         }
     }
 }

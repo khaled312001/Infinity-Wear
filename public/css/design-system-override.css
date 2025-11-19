@@ -1,0 +1,271 @@
+/**
+ * Design System Override
+ * Ensures no conflicts with existing styles
+ */
+
+/* Reset for enhanced design system container */
+.enhanced-design-system {
+    all: initial;
+    * {
+        all: unset;
+    }
+}
+
+/* Re-apply needed styles */
+.enhanced-design-system {
+    display: block !important;
+    font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    direction: rtl !important;
+    text-align: right !important;
+    line-height: 1.6 !important;
+}
+
+.enhanced-design-system *,
+.enhanced-design-system *::before,
+.enhanced-design-system *::after {
+    box-sizing: border-box !important;
+}
+
+/* Ensure proper display for all elements */
+.enhanced-design-system div,
+.enhanced-design-system button,
+.enhanced-design-system input,
+.enhanced-design-system select,
+.enhanced-design-system label,
+.enhanced-design-system span,
+.enhanced-design-system h5 {
+    display: block !important;
+}
+
+.enhanced-design-system button,
+.enhanced-design-system input,
+.enhanced-design-system select {
+    font-family: inherit !important;
+    font-size: 100% !important;
+    line-height: 1.15 !important;
+    margin: 0 !important;
+}
+
+.enhanced-design-system button {
+    overflow: visible !important;
+    text-transform: none !important;
+    -webkit-appearance: button !important;
+}
+
+/* Fix for checkboxes */
+.enhanced-design-system input[type="checkbox"] {
+    display: inline-block !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Fix for color inputs */
+.enhanced-design-system input[type="color"] {
+    display: block !important;
+    cursor: pointer !important;
+}
+
+/* Fix for file inputs */
+.enhanced-design-system input[type="file"] {
+    display: none !important;
+}
+
+/* Ensure proper flex display */
+.eds-main-grid,
+.eds-piece-grid,
+.eds-size-grid,
+.eds-color-parts,
+.eds-preset-colors,
+.eds-pattern-grid,
+.eds-viewer-controls,
+.eds-view-switcher,
+.eds-viewer-header,
+.eds-viewer-title,
+.eds-summary-item {
+    display: flex !important;
+}
+
+.eds-main-grid {
+    display: grid !important;
+}
+
+.eds-piece-grid,
+.eds-size-grid,
+.eds-preset-colors,
+.eds-pattern-grid {
+    display: grid !important;
+}
+
+/* Ensure containers are properly displayed */
+.eds-controls-panel,
+.eds-viewer-panel,
+.eds-section,
+.eds-viewer-body,
+.eds-3d-container {
+    display: block !important;
+}
+
+.eds-viewer-panel {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Position fixes */
+.eds-viewer-controls,
+.eds-view-switcher {
+    position: absolute !important;
+}
+
+/* Isolation from parent styles */
+#design_custom_detail {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+#design_custom_detail > .enhanced-design-system {
+    margin: 2rem 0 !important;
+}
+
+/* Ensure 3D canvas is visible */
+.eds-3d-container canvas {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Fix button display */
+.eds-btn,
+.eds-control-btn,
+.eds-view-btn,
+.eds-part-btn,
+.eds-pattern-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Fix input display */
+.eds-form-control,
+.eds-size-input,
+.eds-color-picker {
+    display: block !important;
+    width: 100% !important;
+}
+
+/* Fix label display */
+.eds-piece-item {
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Fix icon display */
+.eds-piece-icon,
+.eds-pattern-icon,
+.eds-upload-icon {
+    display: inline-block !important;
+}
+
+/* Override any potential conflicts with Font Awesome */
+.enhanced-design-system i,
+.enhanced-design-system .fas,
+.enhanced-design-system .far,
+.enhanced-design-system .fab {
+    font-family: 'Font Awesome 5 Free' !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+    display: inline-block !important;
+}
+
+/* Scrollbar visibility */
+.eds-controls-panel::-webkit-scrollbar {
+    display: block !important;
+    width: 8px !important;
+}
+
+/* Ensure visibility */
+.enhanced-design-system,
+.enhanced-design-system * {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Fix for hidden elements that should be hidden */
+.enhanced-design-system input[type="file"],
+.enhanced-design-system input[type="hidden"] {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Responsive fixes */
+@media (max-width: 992px) {
+    .eds-main-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    #design_custom_detail > .enhanced-design-system {
+        margin: 1rem 0 !important;
+    }
+}
+
+/* Z-index hierarchy */
+.enhanced-design-system {
+    z-index: 1 !important;
+    position: relative !important;
+}
+
+.eds-viewer-controls {
+    z-index: 100 !important;
+}
+
+.eds-view-switcher {
+    z-index: 100 !important;
+}
+
+/* Text alignment fixes */
+.eds-section-title,
+.eds-summary-label,
+.eds-piece-label,
+.eds-pattern-label,
+.eds-upload-text {
+    text-align: right !important;
+}
+
+/* Pointer events */
+.eds-piece-item,
+.eds-part-btn,
+.eds-pattern-item,
+.eds-control-btn,
+.eds-view-btn,
+.eds-preset-color,
+.eds-upload-area {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+/* Border and background fixes */
+.eds-controls-panel,
+.eds-viewer-panel {
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+/* Animation support */
+.enhanced-design-system * {
+    transition-property: all !important;
+    transition-duration: 0.3s !important;
+    transition-timing-function: ease !important;
+}
+
+/* Disable transitions on initial load */
+.enhanced-design-system.no-transition * {
+    transition: none !important;
+}
+
