@@ -179,8 +179,8 @@
     }
     
     .iw-cd-mini-viewer .iw-cd-3d-container {
-        min-height: 300px !important;
-        max-height: 300px !important;
+        min-height: 150px !important;
+        max-height: 150px !important;
     }
 }
 
@@ -274,7 +274,7 @@
 .iw-cd-3d-container {
     width: 100% !important;
     height: 100% !important;
-    min-height: 400px !important;
+    min-height: 200px !important;
     flex: 1 !important;
 }
 
@@ -1110,7 +1110,7 @@
     }
     
     .iw-cd-3d-container {
-        min-height: 400px !important;
+        min-height: 200px !important;
     }
     
     .iw-cd-viewer-controls {

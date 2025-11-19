@@ -13,7 +13,7 @@
                             <i class="fas fa-cube"></i>
                         </div>
                         <div class="iw-cd-mini-viewer-body">
-                            <div id="3d-viewer" class="iw-cd-3d-container"></div>
+                            <div id="3d-viewer" class="iw-cd-3d-container" style="width: 120px; height: 120px; min-height: 120px; max-height: 120px;"></div>
                             
                             <!-- Mini Viewer Controls -->
                             <div class="iw-cd-mini-controls">
