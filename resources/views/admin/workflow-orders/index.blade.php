@@ -160,52 +160,71 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($orders as $order)
+                                    @foreach($orders as $orderItem)
                                     <tr>
                                         <td>
-                                            <strong class="text-primary">{{ $order->order_number }}</strong>
+                                            <strong class="text-primary">{{ $orderItem->order_number }}</strong>
+                                            @if(isset($orderItem->type) && $orderItem->type == 'importer')
+                                                <br><small class="badge bg-secondary">طلب قديم</small>
+                                            @else
+                                                <br><small class="badge bg-success">طلب جديد</small>
+                                            @endif
                                         </td>
                                         <td>
                                             <div>
-                                                <strong>{{ $order->customer_name }}</strong><br>
-                                                <small class="text-muted">{{ $order->customer_email }}</small>
+                                                <strong>{{ $orderItem->customer_name }}</strong><br>
+                                                <small class="text-muted">{{ $orderItem->customer_email }}</small>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info">{{ $order->current_stage }}</span>
+                                            @if(isset($orderItem->type) && $orderItem->type == 'importer')
+                                                <span class="badge bg-secondary">قديم</span>
+                                            @else
+                                                <span class="badge bg-info">{{ $orderItem->current_stage ?? 'غير محدد' }}</span>
+                                            @endif
                                         </td>
                                         <td>
                                             @php
                                                 $statusColors = [
                                                     'new' => 'secondary',
                                                     'in_progress' => 'warning',
+                                                    'processing' => 'warning',
                                                     'completed' => 'success',
                                                     'cancelled' => 'danger'
                                                 ];
-                                                $color = $statusColors[$order->overall_status] ?? 'secondary';
+                                                $color = $statusColors[$orderItem->overall_status] ?? 'secondary';
                                             @endphp
-                                            <span class="badge bg-{{ $color }}">{{ $order->overall_status_label }}</span>
+                                            <span class="badge bg-{{ $color }}">{{ $orderItem->overall_status_label ?? $orderItem->overall_status }}</span>
                                         </td>
                                         <td>
-                                            @if($order->final_cost)
-                                                <strong>{{ number_format($order->final_cost, 2) }} ريال</strong>
-                                            @elseif($order->estimated_cost)
-                                                <span class="text-muted">{{ number_format($order->estimated_cost, 2) }} ريال (مقدر)</span>
+                                            @if($orderItem->final_cost)
+                                                <strong>{{ number_format($orderItem->final_cost, 2) }} ريال</strong>
+                                            @elseif($orderItem->estimated_cost)
+                                                <span class="text-muted">{{ number_format($orderItem->estimated_cost, 2) }} ريال (مقدر)</span>
                                             @else
                                                 <span class="text-muted">-</span>
                                             @endif
                                         </td>
                                         <td>
-                                            <small>{{ $order->created_at->format('Y-m-d H:i') }}</small>
+                                            <small>{{ $orderItem->created_at->format('Y-m-d H:i') }}</small>
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a href="{{ route('admin.workflow-orders.show', $order) }}" class="btn btn-outline-primary" title="عرض التفاصيل">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="{{ route('order.show', $order->order_number) }}" class="btn btn-outline-info" title="تتبع الطلب" target="_blank">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
+                                                @if(isset($orderItem->type) && $orderItem->type == 'importer')
+                                                    <a href="{{ route('admin.orders.show', $orderItem->id) }}" class="btn btn-outline-primary" title="عرض التفاصيل">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('admin.importers.orders') }}" class="btn btn-outline-info" title="عرض في الطلبات القديمة">
+                                                        <i class="fas fa-list"></i>
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('admin.workflow-orders.show', $orderItem->order) }}" class="btn btn-outline-primary" title="عرض التفاصيل">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('order.show', $orderItem->order_number) }}" class="btn btn-outline-info" title="تتبع الطلب" target="_blank">
+                                                        <i class="fas fa-search"></i>
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

@@ -4788,6 +4788,8 @@ textarea.form-control {
     position: relative;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: block;
+    min-height: 400px;
 }
 
 .cta-card:hover {

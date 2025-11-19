@@ -36,6 +36,17 @@ class PortfolioItem extends Model
             $possiblePaths = [];
             
             // بناء قائمة بالمسارات المحتملة للصورة
+            $imageName = basename($this->image);
+            
+            // مسارات محتملة في public
+            $possiblePaths[] = public_path('images/portfolio/' . $imageName);
+            $possiblePaths[] = public_path($this->image);
+            
+            // مسارات محتملة في storage
+            $possiblePaths[] = storage_path('app/public/images/portfolio/' . $imageName);
+            $possiblePaths[] = storage_path('app/public/' . $this->image);
+            
+            // إذا كان المسار يحتوي على 'images/portfolio/' فهو في public أو storage
             if (strpos($this->image, 'images/portfolio/') === 0) {
                 $possiblePaths[] = public_path($this->image);
                 $possiblePaths[] = storage_path('app/public/' . $this->image);
@@ -51,28 +62,29 @@ class PortfolioItem extends Model
                 $possiblePaths[] = storage_path('app/public/images/portfolio/' . $this->image);
             }
             
+            // إزالة المسارات المكررة
+            $possiblePaths = array_unique($possiblePaths);
+            
             // التحقق من وجود الصورة في أي من المسارات
             foreach ($possiblePaths as $path) {
-                if (file_exists($path)) {
-                    // إرجاع URL بناءً على المسار الذي وجدت فيه الصورة
-                    $relativePath = str_replace(public_path(), '', $path);
-                    // إزالة الشرطة المائلة الأولى إذا كانت موجودة
-                    $relativePath = ltrim($relativePath, '/\\');
-                    return asset($relativePath);
+                if (file_exists($path) && is_file($path)) {
+                    // إذا كانت الصورة في storage/app/public
+                    if (strpos($path, storage_path('app/public')) !== false) {
+                        $relativePath = str_replace(storage_path('app/public'), '', $path);
+                        $relativePath = ltrim($relativePath, '/\\');
+                        return asset('storage/' . $relativePath);
+                    }
+                    // إذا كانت الصورة في public
+                    if (strpos($path, public_path()) !== false) {
+                        $relativePath = str_replace(public_path(), '', $path);
+                        $relativePath = ltrim($relativePath, '/\\');
+                        return asset($relativePath);
+                    }
                 }
             }
             
-            // إذا لم توجد الصورة، إرجاع URL بناءً على المسار الأصلي (للمحاولة)
-            if (strpos($this->image, 'images/portfolio/') === 0) {
-                return asset($this->image);
-            }
-            if (strpos($this->image, 'portfolio/') === 0) {
-                return asset('images/' . $this->image);
-            }
-            if (strpos($this->image, 'images/') === 0) {
-                return asset($this->image);
-            }
-            return asset('images/' . $this->image);
+            // إذا لم توجد الصورة، إرجاع صورة افتراضية
+            return asset('images/default-image.png');
         }
         return asset('images/default-image.png');
     }

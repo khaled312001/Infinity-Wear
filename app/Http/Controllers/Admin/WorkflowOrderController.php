@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\WorkflowOrder;
 use App\Models\WorkflowOrderStage;
+use App\Models\ImporterOrder;
 use App\Models\User;
 use App\Models\Importer;
 use Illuminate\Http\Request;
@@ -18,42 +19,138 @@ class WorkflowOrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = WorkflowOrder::with(['importer', 'customer']);
+        $workflowQuery = WorkflowOrder::with(['importer', 'customer']);
+        $importerQuery = ImporterOrder::with(['importer', 'importer.user']);
 
-        // البحث
+        // البحث في الطلبات الجديدة
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $workflowQuery->where(function($q) use ($search) {
                 $q->where('order_number', 'like', "%{$search}%")
                   ->orWhere('customer_name', 'like', "%{$search}%")
                   ->orWhere('customer_email', 'like', "%{$search}%")
                   ->orWhere('customer_phone', 'like', "%{$search}%");
             });
+            
+            // البحث في الطلبات القديمة
+            $importerQuery->where(function($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                  ->orWhereHas('importer', function($query) use ($search) {
+                      $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('company_name', 'like', "%{$search}%");
+                  });
+            });
         }
 
-        // فلترة حسب الحالة
+        // فلترة حسب الحالة للطلبات الجديدة
         if ($request->filled('status')) {
-            $query->where('overall_status', $request->status);
+            $workflowQuery->where('overall_status', $request->status);
+            
+            // تحويل الحالة للطلبات القديمة
+            $oldStatusMap = [
+                'new' => 'new',
+                'in_progress' => 'processing',
+                'completed' => 'completed',
+                'cancelled' => 'cancelled'
+            ];
+            if (isset($oldStatusMap[$request->status])) {
+                $importerQuery->where('status', $oldStatusMap[$request->status]);
+            }
         }
 
-        // فلترة حسب المرحلة
+        // فلترة حسب المرحلة (للطلبات الجديدة فقط)
         if ($request->filled('stage')) {
             $stageField = $request->stage . '_status';
-            $query->where($stageField, 'in_progress');
+            $workflowQuery->where($stageField, 'in_progress');
         }
 
-        $orders = $query->orderBy('created_at', 'desc')->paginate(20);
+        $workflowOrders = $workflowQuery->orderBy('created_at', 'desc')->get();
+        $importerOrders = $importerQuery->orderBy('created_at', 'desc')->get();
 
-        // إحصائيات
+        // دمج الطلبات مع إضافة نوع لكل طلب
+        $allOrders = collect();
+        
+        // إضافة الطلبات الجديدة
+        foreach ($workflowOrders as $order) {
+            $allOrders->push((object)[
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'type' => 'workflow',
+                'customer_name' => $order->customer_name,
+                'customer_email' => $order->customer_email,
+                'customer_phone' => $order->customer_phone,
+                'importer' => $order->importer,
+                'quantity' => $order->quantity,
+                'estimated_cost' => $order->estimated_cost,
+                'final_cost' => $order->final_cost,
+                'overall_status' => $order->overall_status,
+                'overall_status_label' => $order->overall_status_label,
+                'current_stage' => $order->current_stage,
+                'created_at' => $order->created_at,
+                'order' => $order
+            ]);
+        }
+        
+        // إضافة الطلبات القديمة
+        foreach ($importerOrders as $order) {
+            $allOrders->push((object)[
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'type' => 'importer',
+                'customer_name' => $order->importer->name ?? 'غير محدد',
+                'customer_email' => $order->importer->user->email ?? '',
+                'customer_phone' => $order->importer->phone ?? '',
+                'importer' => $order->importer,
+                'quantity' => $order->quantity,
+                'estimated_cost' => $order->estimated_cost,
+                'final_cost' => $order->final_cost,
+                'overall_status' => $order->status,
+                'overall_status_label' => $this->getStatusLabel($order->status),
+                'current_stage' => 'قديم',
+                'created_at' => \Carbon\Carbon::parse($order->created_at),
+                'order' => $order
+            ]);
+        }
+
+        // ترتيب حسب التاريخ
+        $allOrders = $allOrders->sortByDesc('created_at');
+        
+        // Pagination يدوي
+        $currentPage = $request->get('page', 1);
+        $perPage = 20;
+        $items = $allOrders->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        $orders = new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            $allOrders->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        // إحصائيات (شاملة للطلبات القديمة والجديدة)
         $stats = [
-            'total' => WorkflowOrder::count(),
-            'new' => WorkflowOrder::where('overall_status', 'new')->count(),
-            'in_progress' => WorkflowOrder::where('overall_status', 'in_progress')->count(),
-            'completed' => WorkflowOrder::where('overall_status', 'completed')->count(),
-            'cancelled' => WorkflowOrder::where('overall_status', 'cancelled')->count(),
+            'total' => WorkflowOrder::count() + ImporterOrder::count(),
+            'new' => WorkflowOrder::where('overall_status', 'new')->count() + ImporterOrder::where('status', 'new')->count(),
+            'in_progress' => WorkflowOrder::where('overall_status', 'in_progress')->count() + ImporterOrder::where('status', 'processing')->count(),
+            'completed' => WorkflowOrder::where('overall_status', 'completed')->count() + ImporterOrder::where('status', 'completed')->count(),
+            'cancelled' => WorkflowOrder::where('overall_status', 'cancelled')->count() + ImporterOrder::where('status', 'cancelled')->count(),
         ];
 
         return view('admin.workflow-orders.index', compact('orders', 'stats'));
+    }
+    
+    /**
+     * تحويل حالة الطلب القديم إلى نص
+     */
+    private function getStatusLabel($status)
+    {
+        $labels = [
+            'new' => 'جديد',
+            'processing' => 'قيد المعالجة',
+            'completed' => 'مكتمل',
+            'cancelled' => 'ملغي'
+        ];
+        return $labels[$status] ?? $status;
     }
 
     /**
