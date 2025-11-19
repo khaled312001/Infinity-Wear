@@ -306,7 +306,7 @@ class WorkflowOrder extends Model
         
         foreach ($allStages as $stage) {
             $statusField = $stage . '_status';
-            if ($this->$statusField === 'completed') {
+            if ($this->$statusField === 'completed' || $this->$statusField === 'approved') {
                 $completedCount++;
             } elseif ($this->$statusField === 'in_progress') {
                 $inProgressCount++;
@@ -320,5 +320,89 @@ class WorkflowOrder extends Model
         } else {
             $this->overall_status = 'new';
         }
+    }
+
+    /**
+     * حساب نسبة التقدم بناءً على المراحل المكتملة
+     */
+    public function getProgressPercentageAttribute(): int
+    {
+        $allStages = ['marketing', 'sales', 'design', 'first_sample', 'work_approval', 'manufacturing', 'shipping', 'receipt_delivery', 'collection', 'after_sales'];
+        $totalStages = count($allStages);
+        $completedCount = 0;
+        
+        foreach ($allStages as $stage) {
+            $statusField = $stage . '_status';
+            if ($this->$statusField === 'completed' || $this->$statusField === 'approved') {
+                $completedCount++;
+            }
+        }
+        
+        return round(($completedCount / $totalStages) * 100);
+    }
+
+    /**
+     * الحصول على جميع المراحل مع حالتها
+     */
+    public function getStagesWithStatusAttribute(): array
+    {
+        $stages = [
+            'marketing' => ['name' => 'التسويق', 'icon' => 'fas fa-bullhorn'],
+            'sales' => ['name' => 'المبيعات', 'icon' => 'fas fa-handshake'],
+            'design' => ['name' => 'التصميم', 'icon' => 'fas fa-palette'],
+            'first_sample' => ['name' => 'العينة الأولى', 'icon' => 'fas fa-clipboard-check'],
+            'work_approval' => ['name' => 'اعتماد الشغل', 'icon' => 'fas fa-check-circle'],
+            'manufacturing' => ['name' => 'التصنيع', 'icon' => 'fas fa-industry'],
+            'shipping' => ['name' => 'الشحن', 'icon' => 'fas fa-truck'],
+            'receipt_delivery' => ['name' => 'استلام وتسليم', 'icon' => 'fas fa-box-open'],
+            'collection' => ['name' => 'التحصيل', 'icon' => 'fas fa-money-bill-wave'],
+            'after_sales' => ['name' => 'خدمة ما بعد البيع', 'icon' => 'fas fa-headset'],
+        ];
+
+        $result = [];
+        foreach ($stages as $stageKey => $stageInfo) {
+            $statusField = $stageKey . '_status';
+            $status = $this->$statusField ?? 'pending';
+            
+            $result[] = [
+                'key' => $stageKey,
+                'name' => $stageInfo['name'],
+                'icon' => $stageInfo['icon'],
+                'status' => $status,
+                'is_completed' => $status === 'completed' || $status === 'approved',
+                'is_in_progress' => $status === 'in_progress',
+                'is_pending' => $status === 'pending',
+                'is_rejected' => $status === 'rejected',
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * الحصول على المرحلة الحالية (رقم المرحلة)
+     */
+    public function getCurrentStageIndexAttribute(): int
+    {
+        $stages = ['marketing', 'sales', 'design', 'first_sample', 'work_approval', 'manufacturing', 'shipping', 'receipt_delivery', 'collection', 'after_sales'];
+        
+        foreach ($stages as $index => $stage) {
+            $statusField = $stage . '_status';
+            if ($this->$statusField === 'in_progress' || ($this->$statusField === 'pending' && $this->getPreviousStageStatus($stage) === 'completed')) {
+                return $index;
+            }
+        }
+
+        // إذا كانت جميع المراحل مكتملة
+        $allCompleted = true;
+        foreach ($stages as $stage) {
+            $statusField = $stage . '_status';
+            if ($this->$statusField !== 'completed' && $this->$statusField !== 'approved') {
+                $allCompleted = false;
+                break;
+            }
+        }
+
+        return $allCompleted ? count($stages) : 0;
     }
 }
