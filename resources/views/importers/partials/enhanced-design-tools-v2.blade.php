@@ -77,8 +77,11 @@
                     <i class="fas fa-ruler"></i>
                     المقاسات والكميات
                 </h5>
-                <div id="sizes-container">
-                    <p style="text-align: center; color: #6c757d;">اختر قطع الملابس أولاً</p>
+                <div id="sizes-container" class="eds-sizes-container">
+                    <div class="eds-empty-state">
+                        <i class="fas fa-info-circle" style="font-size: 2rem; color: #6c757d; margin-bottom: 0.5rem;"></i>
+                        <p style="text-align: center; color: #6c757d; margin: 0;">اختر قطع الملابس أولاً</p>
+                    </div>
                 </div>
             </div>
 
@@ -89,35 +92,44 @@
                     تخصيص الألوان
                 </h5>
                 
-                <div class="eds-color-parts">
-                    <button type="button" class="eds-part-btn active part-selector-btn" data-part="body">
-                        الجسم
-                    </button>
-                    <button type="button" class="eds-part-btn part-selector-btn" data-part="sleeves">
-                        الأكمام
-                    </button>
-                    <button type="button" class="eds-part-btn part-selector-btn" data-part="collar">
-                        الياقة
-                    </button>
-                </div>
+                <div class="eds-color-section">
+                    <label class="eds-sub-label">اختر الجزء المراد تلوينه:</label>
+                    <div class="eds-color-parts">
+                        <button type="button" class="eds-part-btn active part-selector-btn" data-part="body">
+                            <i class="fas fa-tshirt"></i>
+                            <span>الجسم</span>
+                        </button>
+                        <button type="button" class="eds-part-btn part-selector-btn" data-part="sleeves">
+                            <i class="fas fa-hand-paper"></i>
+                            <span>الأكمام</span>
+                        </button>
+                        <button type="button" class="eds-part-btn part-selector-btn" data-part="collar">
+                            <i class="fas fa-circle"></i>
+                            <span>الياقة</span>
+                        </button>
+                    </div>
 
-                <div class="eds-color-picker-wrap">
-                    <input type="color" class="eds-color-picker color-picker" id="main-color-picker" value="#4A90E2">
-                </div>
+                    <label class="eds-sub-label" style="margin-top: 1rem; margin-bottom: 0.5rem;">اختر اللون:</label>
+                    <div class="eds-color-picker-wrap">
+                        <input type="color" class="eds-color-picker color-picker" id="main-color-picker" value="#4A90E2">
+                        <span class="eds-color-value" id="color-value-display">#4A90E2</span>
+                    </div>
 
-                <div class="eds-preset-colors">
-                    <button type="button" class="eds-preset-color preset-color" data-color="#FF6B6B" style="background-color: #FF6B6B;" title="أحمر"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#4ECDC4" style="background-color: #4ECDC4;" title="أزرق فاتح"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#45B7D1" style="background-color: #45B7D1;" title="أزرق"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#FFA07A" style="background-color: #FFA07A;" title="برتقالي"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#98D8C8" style="background-color: #98D8C8;" title="أخضر فاتح"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#F7DC6F" style="background-color: #F7DC6F;" title="أصفر"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#BB8FCE" style="background-color: #BB8FCE;" title="بنفسجي"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#85929E" style="background-color: #85929E;" title="رمادي"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#2C3E50" style="background-color: #2C3E50;" title="أسود"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#FFFFFF" style="background-color: #FFFFFF; border: 2px solid #ddd;" title="أبيض"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#E74C3C" style="background-color: #E74C3C;" title="أحمر داكن"></button>
-                    <button type="button" class="eds-preset-color preset-color" data-color="#3498DB" style="background-color: #3498DB;" title="أزرق ملكي"></button>
+                    <label class="eds-sub-label" style="margin-top: 1rem; margin-bottom: 0.5rem;">ألوان جاهزة:</label>
+                    <div class="eds-preset-colors">
+                        <button type="button" class="eds-preset-color preset-color" data-color="#FF6B6B" style="background-color: #FF6B6B;" title="أحمر"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#4ECDC4" style="background-color: #4ECDC4;" title="أزرق فاتح"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#45B7D1" style="background-color: #45B7D1;" title="أزرق"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#FFA07A" style="background-color: #FFA07A;" title="برتقالي"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#98D8C8" style="background-color: #98D8C8;" title="أخضر فاتح"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#F7DC6F" style="background-color: #F7DC6F;" title="أصفر"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#BB8FCE" style="background-color: #BB8FCE;" title="بنفسجي"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#85929E" style="background-color: #85929E;" title="رمادي"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#2C3E50" style="background-color: #2C3E50;" title="أسود"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#FFFFFF" style="background-color: #FFFFFF; border: 2px solid #ddd;" title="أبيض"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#E74C3C" style="background-color: #E74C3C;" title="أحمر داكن"></button>
+                        <button type="button" class="eds-preset-color preset-color" data-color="#3498DB" style="background-color: #3498DB;" title="أزرق ملكي"></button>
+                    </div>
                 </div>
             </div>
 
@@ -127,6 +139,7 @@
                     <i class="fas fa-border-style"></i>
                     الزخارف
                 </h5>
+                <label class="eds-sub-label" style="margin-bottom: 0.75rem;">اختر نوع الزخرفة:</label>
                 <div class="eds-pattern-grid">
                     <button type="button" class="eds-pattern-item active pattern-option" data-pattern="solid">
                         <span class="eds-pattern-icon">▬</span>
@@ -161,8 +174,9 @@
                     <input type="file" id="logo_file" name="logo_file" accept="image/*" style="display: none;">
                 </div>
                 
-                <div style="margin-top: 1rem;">
-                    <select class="eds-form-control" style="margin-bottom: 0.5rem;" id="logo_piece_type" name="logo_piece_type">
+                <div class="eds-logo-controls" style="margin-top: 1rem;">
+                    <label class="eds-sub-label">اختر القطعة:</label>
+                    <select class="eds-form-control" style="margin-bottom: 0.75rem;" id="logo_piece_type" name="logo_piece_type">
                         <option value="">اختر القطعة</option>
                         <option value="shirt">التيشرت</option>
                         <option value="pants">البنطلون</option>
@@ -171,10 +185,12 @@
                         <option value="socks">الشراب</option>
                     </select>
                     
-                    <select class="eds-form-control" style="margin-bottom: 0.5rem;" id="logo_position" name="logo_position">
+                    <label class="eds-sub-label">اختر الموضع:</label>
+                    <select class="eds-form-control" style="margin-bottom: 0.75rem;" id="logo_position" name="logo_position">
                         <option value="">اختر الموضع</option>
                     </select>
                     
+                    <label class="eds-sub-label">حجم الشعار:</label>
                     <select class="eds-form-control" id="logo_size" name="logo_size">
                         <option value="0.15">صغير</option>
                         <option value="0.20" selected>متوسط</option>
@@ -182,7 +198,7 @@
                     </select>
                 </div>
                 
-                <div id="logo-list" style="margin-top: 1rem;"></div>
+                <div id="logo-list" class="eds-logo-list" style="margin-top: 1rem;"></div>
             </div>
 
             <!-- Text -->
@@ -192,10 +208,12 @@
                     النصوص
                 </h5>
                 
-                <input type="text" class="eds-form-control" style="margin-bottom: 0.5rem;" id="text_content" 
+                <label class="eds-sub-label">أدخل النص:</label>
+                <input type="text" class="eds-form-control" style="margin-bottom: 0.75rem;" id="text_content" 
                        placeholder="مثال: اسم المؤسسة" maxlength="50">
                 
-                <select class="eds-form-control" style="margin-bottom: 0.5rem;" id="text_piece_type" name="text_piece_type">
+                <label class="eds-sub-label">اختر القطعة:</label>
+                <select class="eds-form-control" style="margin-bottom: 0.75rem;" id="text_piece_type" name="text_piece_type">
                     <option value="">اختر القطعة</option>
                     <option value="shirt">التيشرت</option>
                     <option value="pants">البنطلون</option>
@@ -203,17 +221,18 @@
                     <option value="jacket">الجاكيت</option>
                 </select>
                 
-                <select class="eds-form-control" style="margin-bottom: 0.5rem;" id="text_position" name="text_position">
+                <label class="eds-sub-label">اختر الموضع:</label>
+                <select class="eds-form-control" style="margin-bottom: 0.75rem;" id="text_position" name="text_position">
                     <option value="">اختر الموضع</option>
                 </select>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <div class="eds-text-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
                     <div>
-                        <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">لون النص</label>
+                        <label class="eds-sub-label" style="margin-bottom: 0.25rem;">لون النص</label>
                         <input type="color" class="eds-form-control" style="height: 45px; padding: 0.25rem;" id="text_color" value="#000000">
                     </div>
                     <div>
-                        <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">حجم النص</label>
+                        <label class="eds-sub-label" style="margin-bottom: 0.25rem;">حجم النص</label>
                         <select class="eds-form-control" id="text_size">
                             <option value="0.25">صغير</option>
                             <option value="0.30" selected>متوسط</option>
@@ -222,7 +241,8 @@
                     </div>
                 </div>
                 
-                <select class="eds-form-control" style="margin-bottom: 0.5rem;" id="text_style">
+                <label class="eds-sub-label">نمط النص:</label>
+                <select class="eds-form-control" style="margin-bottom: 0.75rem;" id="text_style">
                     <option value="normal">عادي</option>
                     <option value="bold" selected>عريض</option>
                     <option value="italic">مائل</option>
@@ -233,7 +253,7 @@
                     إضافة النص
                 </button>
                 
-                <div id="text-list" style="margin-top: 1rem;"></div>
+                <div id="text-list" class="eds-text-list" style="margin-top: 1rem;"></div>
             </div>
 
             <!-- Summary -->

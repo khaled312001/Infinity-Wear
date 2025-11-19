@@ -58,6 +58,49 @@
                 updateTotalQuantity();
             });
         });
+        
+        // Update color value display
+        const mainColorPicker = document.getElementById('main-color-picker');
+        const colorValueDisplay = document.getElementById('color-value-display');
+        if (mainColorPicker && colorValueDisplay) {
+            mainColorPicker.addEventListener('input', function() {
+                colorValueDisplay.textContent = this.value.toUpperCase();
+            });
+            // Set initial value
+            if (colorValueDisplay) {
+                colorValueDisplay.textContent = mainColorPicker.value.toUpperCase();
+            }
+        }
+        
+        // Update piece item active state
+        document.querySelectorAll('.eds-piece-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const pieceItem = this.closest('.eds-piece-item');
+                if (pieceItem) {
+                    if (this.checked) {
+                        pieceItem.classList.add('active');
+                    } else {
+                        pieceItem.classList.remove('active');
+                    }
+                }
+            });
+        });
+        
+        // Update pattern item active state
+        document.querySelectorAll('.pattern-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.pattern-option').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Update part button active state
+        document.querySelectorAll('.part-selector-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.part-selector-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
     };
     
     function updateTotalQuantity() {

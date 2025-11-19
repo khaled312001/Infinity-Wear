@@ -291,10 +291,14 @@
     background: var(--eds-bg-light);
     border-radius: 8px;
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .eds-color-picker {
-    width: 100%;
+    flex: 1;
+    min-width: 80px;
     height: 50px;
     border: 2px solid var(--eds-border);
     border-radius: 6px;
@@ -575,6 +579,204 @@
     .eds-view-btn {
         padding: 0.4rem 0.8rem;
         font-size: 0.8rem;
+    }
+}
+
+/* ==================== Additional Styles for Improved Organization ==================== */
+
+/* Sub Labels */
+.eds-sub-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--eds-text);
+    display: block;
+    margin-bottom: 0.5rem;
+    opacity: 0.85;
+}
+
+/* Empty State */
+.eds-empty-state {
+    padding: 2rem 1rem;
+    text-align: center;
+    background: var(--eds-bg-light);
+    border-radius: 8px;
+    border: 2px dashed var(--eds-border);
+}
+
+.eds-empty-state i {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* Color Section */
+.eds-color-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.eds-color-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--eds-text);
+    padding: 0.5rem 0.75rem;
+    background: var(--eds-bg-light);
+    border-radius: 6px;
+    font-family: monospace;
+    min-width: 80px;
+    text-align: center;
+}
+
+.eds-part-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.75rem 0.5rem;
+}
+
+.eds-part-btn i {
+    font-size: 1.1rem;
+}
+
+.eds-part-btn span {
+    font-size: 0.8rem;
+}
+
+/* Logo Controls */
+.eds-logo-controls {
+    display: flex;
+    flex-direction: column;
+}
+
+.eds-logo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.eds-logo-list .logo-item {
+    padding: 0.75rem;
+    background: var(--eds-bg-light);
+    border-radius: 8px;
+    border: 2px solid var(--eds-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Text List */
+.eds-text-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.eds-text-list .text-item {
+    padding: 0.75rem;
+    background: var(--eds-bg-light);
+    border-radius: 8px;
+    border: 2px solid var(--eds-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Sizes Container */
+.eds-sizes-container {
+    min-height: 100px;
+}
+
+.eds-sizes-container .piece-sizes-group {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--eds-bg-light);
+    border-radius: 8px;
+    border: 2px solid var(--eds-border);
+}
+
+.eds-sizes-container .piece-sizes-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--eds-text);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--eds-primary);
+}
+
+/* Improved spacing for sections */
+.eds-section {
+    scroll-margin-top: 1rem;
+}
+
+/* Better visual hierarchy */
+.eds-section-title {
+    position: relative;
+    padding-right: 0.5rem;
+}
+
+.eds-section-title::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 20px;
+    background: var(--eds-primary);
+    border-radius: 2px;
+}
+
+/* Enhanced form controls */
+.eds-form-control:not(:last-child) {
+    margin-bottom: 0.75rem;
+}
+
+/* Better button styling */
+.eds-btn-primary {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.eds-btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2);
+}
+
+/* Improved upload area */
+.eds-upload-area {
+    transition: all 0.3s ease;
+}
+
+.eds-upload-area.dragover {
+    border-color: var(--eds-primary);
+    background: rgba(102, 126, 234, 0.1);
+    transform: scale(1.02);
+}
+
+/* Pattern items with better spacing */
+.eds-pattern-item {
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .eds-color-parts {
+        flex-direction: column;
+    }
+    
+    .eds-part-btn {
+        width: 100%;
+    }
+    
+    .eds-text-options {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .eds-preset-colors {
+        grid-template-columns: repeat(4, 1fr) !important;
     }
 }
 
