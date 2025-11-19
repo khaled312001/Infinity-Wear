@@ -5,15 +5,16 @@
         <div class="iw-cd-controls-panel">
             
             <!-- Activity Type with 3D Viewer -->
-            <div class="iw-cd-section">
+            <div class="iw-cd-section iw-cd-section-enhanced">
                 <div class="iw-cd-activity-with-viewer">
                     <!-- Small 3D Viewer on the left -->
                     <div class="iw-cd-mini-viewer">
                         <div class="iw-cd-mini-viewer-header">
                             <i class="fas fa-cube"></i>
+                            <span>معاينة</span>
                         </div>
                         <div class="iw-cd-mini-viewer-body">
-                            <div id="3d-viewer" class="iw-cd-3d-container" style="width: 120px; height: 120px; min-height: 120px; max-height: 120px;"></div>
+                            <div id="3d-viewer" class="iw-cd-3d-container"></div>
                             
                             <!-- Mini Viewer Controls -->
                             <div class="iw-cd-mini-controls">
@@ -55,7 +56,7 @@
                             <i class="fas fa-building"></i>
                             نوع النشاط
                         </h5>
-                        <select class="iw-cd-form-control" id="design_activity_type" name="design_activity_type">
+                        <select class="iw-cd-form-control iw-cd-form-control-enhanced" id="design_activity_type" name="design_activity_type">
                             <option value="">اختر نوع النشاط</option>
                             <option value="academy">أكاديمية رياضية</option>
                             <option value="school">مدرسة</option>
@@ -68,12 +69,12 @@
             </div>
 
             <!-- Clothing Pieces -->
-            <div class="iw-cd-section">
+            <div class="iw-cd-section iw-cd-section-enhanced">
                 <h5 class="iw-cd-section-title">
                     <i class="fas fa-tshirt"></i>
                     قطع الملابس
                 </h5>
-                <div class="iw-cd-piece-grid">
+                <div class="iw-cd-piece-grid iw-cd-piece-grid-enhanced">
                     <label class="iw-cd-piece-item">
                         <input type="checkbox" class="iw-cd-piece-checkbox clothing-piece-checkbox" 
                                data-piece-type="shirt" id="cd-piece_shirt" name="clothing_pieces[]" value="shirt">
@@ -119,21 +120,21 @@
             </div>
 
             <!-- Sizes & Quantities -->
-            <div class="iw-cd-section">
+            <div class="iw-cd-section iw-cd-section-enhanced">
                 <h5 class="iw-cd-section-title">
                     <i class="fas fa-ruler"></i>
                     المقاسات والكميات
                 </h5>
                 <div id="sizes-container" class="iw-cd-sizes-container">
                     <div class="iw-cd-empty-state">
-                        <i class="fas fa-info-circle" style="font-size: 2rem; color: #6c757d; margin-bottom: 0.5rem;"></i>
-                        <p style="text-align: center; color: #6c757d; margin: 0;">اختر قطع الملابس أولاً</p>
+                        <i class="fas fa-info-circle"></i>
+                        <p>اختر قطع الملابس أولاً</p>
                     </div>
                 </div>
             </div>
 
             <!-- Color Customization -->
-            <div class="iw-cd-section">
+            <div class="iw-cd-section iw-cd-section-enhanced">
                 <h5 class="iw-cd-section-title">
                     <i class="fas fa-palette"></i>
                     تخصيص الألوان
@@ -141,29 +142,29 @@
                 
                 <div class="iw-cd-color-section">
                     <label class="iw-cd-sub-label">اختر الجزء المراد تلوينه:</label>
-                    <div class="iw-cd-color-parts">
-                        <button type="button" class="iw-cd-part-btn active part-selector-btn" data-part="body">
+                    <div class="iw-cd-color-parts iw-cd-color-parts-enhanced">
+                        <button type="button" class="iw-cd-part-btn iw-cd-part-btn-enhanced active part-selector-btn" data-part="body">
                             <i class="fas fa-tshirt"></i>
                             <span>الجسم</span>
                         </button>
-                        <button type="button" class="iw-cd-part-btn part-selector-btn" data-part="sleeves">
+                        <button type="button" class="iw-cd-part-btn iw-cd-part-btn-enhanced part-selector-btn" data-part="sleeves">
                             <i class="fas fa-hand-paper"></i>
                             <span>الأكمام</span>
                         </button>
-                        <button type="button" class="iw-cd-part-btn part-selector-btn" data-part="collar">
+                        <button type="button" class="iw-cd-part-btn iw-cd-part-btn-enhanced part-selector-btn" data-part="collar">
                             <i class="fas fa-circle"></i>
                             <span>الياقة</span>
                         </button>
                     </div>
 
-                    <label class="iw-cd-sub-label" style="margin-top: 1rem; margin-bottom: 0.5rem;">اختر اللون:</label>
-                    <div class="iw-cd-color-picker-wrap">
+                    <label class="iw-cd-sub-label iw-cd-label-spaced">اختر اللون:</label>
+                    <div class="iw-cd-color-picker-wrap iw-cd-color-picker-wrap-enhanced">
                         <input type="color" class="iw-cd-color-picker color-picker" id="main-color-picker" value="#4A90E2">
                         <span class="iw-cd-color-value" id="color-value-display">#4A90E2</span>
                     </div>
 
-                    <label class="iw-cd-sub-label" style="margin-top: 1rem; margin-bottom: 0.5rem;">ألوان جاهزة:</label>
-                    <div class="iw-cd-preset-colors">
+                    <label class="iw-cd-sub-label iw-cd-label-spaced">ألوان جاهزة:</label>
+                    <div class="iw-cd-preset-colors iw-cd-preset-colors-enhanced">
                         <button type="button" class="iw-cd-preset-color preset-color" data-color="#FF6B6B" style="background-color: #FF6B6B;" title="أحمر"></button>
                         <button type="button" class="iw-cd-preset-color preset-color" data-color="#4ECDC4" style="background-color: #4ECDC4;" title="أزرق فاتح"></button>
                         <button type="button" class="iw-cd-preset-color preset-color" data-color="#45B7D1" style="background-color: #45B7D1;" title="أزرق"></button>
@@ -181,13 +182,13 @@
             </div>
 
             <!-- Patterns -->
-            <div class="iw-cd-section">
+            <div class="iw-cd-section iw-cd-section-enhanced">
                 <h5 class="iw-cd-section-title">
                     <i class="fas fa-border-style"></i>
                     الزخارف
                 </h5>
-                <label class="iw-cd-sub-label" style="margin-bottom: 0.75rem;">اختر نوع الزخرفة:</label>
-                <div class="iw-cd-pattern-grid">
+                <label class="iw-cd-sub-label iw-cd-label-spaced">اختر نوع الزخرفة:</label>
+                <div class="iw-cd-pattern-grid iw-cd-pattern-grid-enhanced">
                     <button type="button" class="iw-cd-pattern-item active pattern-option" data-pattern="solid">
                         <span class="iw-cd-pattern-icon">▬</span>
                         <span class="iw-cd-pattern-label">لون موحد</span>
@@ -208,22 +209,22 @@
             </div>
 
             <!-- Logo Upload -->
-            <div class="iw-cd-section">
+            <div class="iw-cd-section iw-cd-section-enhanced">
                 <h5 class="iw-cd-section-title">
                     <i class="fas fa-image"></i>
                     الشعار
                 </h5>
                 
-                <div class="iw-cd-upload-area" id="logo-upload-area">
+                <div class="iw-cd-upload-area iw-cd-upload-area-enhanced" id="logo-upload-area">
                     <i class="fas fa-cloud-upload-alt iw-cd-upload-icon"></i>
                     <p class="iw-cd-upload-text">اسحب الشعار هنا أو انقر للاختيار</p>
                     <p class="iw-cd-upload-hint">JPG, PNG, SVG حتى 5MB</p>
                     <input type="file" id="logo_file" name="logo_file" accept="image/*" style="display: none;">
                 </div>
                 
-                <div class="iw-cd-logo-controls" style="margin-top: 1rem;">
+                <div class="iw-cd-logo-controls">
                     <label class="iw-cd-sub-label">اختر القطعة:</label>
-                    <select class="iw-cd-form-control" style="margin-bottom: 0.75rem;" id="logo_piece_type" name="logo_piece_type">
+                    <select class="iw-cd-form-control iw-cd-form-control-enhanced" id="logo_piece_type" name="logo_piece_type">
                         <option value="">اختر القطعة</option>
                         <option value="shirt">التيشرت</option>
                         <option value="pants">البنطلون</option>
@@ -233,34 +234,34 @@
                     </select>
                     
                     <label class="iw-cd-sub-label">اختر الموضع:</label>
-                    <select class="iw-cd-form-control" style="margin-bottom: 0.75rem;" id="cd-logo_position" name="logo_position">
+                    <select class="iw-cd-form-control iw-cd-form-control-enhanced" id="cd-logo_position" name="logo_position">
                         <option value="">اختر الموضع</option>
                     </select>
                     
                     <label class="iw-cd-sub-label">حجم الشعار:</label>
-                    <select class="iw-cd-form-control" id="cd-logo_size" name="logo_size">
+                    <select class="iw-cd-form-control iw-cd-form-control-enhanced" id="cd-logo_size" name="logo_size">
                         <option value="0.15">صغير</option>
                         <option value="0.20" selected>متوسط</option>
                         <option value="0.30">كبير</option>
                     </select>
                 </div>
                 
-                <div id="logo-list" class="iw-cd-logo-list" style="margin-top: 1rem;"></div>
+                <div id="logo-list" class="iw-cd-logo-list"></div>
             </div>
 
             <!-- Text -->
-            <div class="iw-cd-section">
+            <div class="iw-cd-section iw-cd-section-enhanced">
                 <h5 class="iw-cd-section-title">
                     <i class="fas fa-font"></i>
                     النصوص
                 </h5>
                 
                 <label class="iw-cd-sub-label">أدخل النص:</label>
-                <input type="text" class="iw-cd-form-control" style="margin-bottom: 0.75rem;" id="text_content" 
+                <input type="text" class="iw-cd-form-control iw-cd-form-control-enhanced" id="text_content" 
                        placeholder="مثال: اسم المؤسسة" maxlength="50">
                 
                 <label class="iw-cd-sub-label">اختر القطعة:</label>
-                <select class="iw-cd-form-control" style="margin-bottom: 0.75rem;" id="text_piece_type" name="text_piece_type">
+                <select class="iw-cd-form-control iw-cd-form-control-enhanced" id="text_piece_type" name="text_piece_type">
                     <option value="">اختر القطعة</option>
                     <option value="shirt">التيشرت</option>
                     <option value="pants">البنطلون</option>
@@ -269,18 +270,18 @@
                 </select>
                 
                 <label class="iw-cd-sub-label">اختر الموضع:</label>
-                <select class="iw-cd-form-control" style="margin-bottom: 0.75rem;" id="cd-text_position" name="text_position">
+                <select class="iw-cd-form-control iw-cd-form-control-enhanced" id="cd-text_position" name="text_position">
                     <option value="">اختر الموضع</option>
                 </select>
                 
-                <div class="iw-cd-text-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <div class="iw-cd-text-options">
                     <div>
-                        <label class="iw-cd-sub-label" style="margin-bottom: 0.25rem;">لون النص</label>
-                        <input type="color" class="iw-cd-form-control" style="height: 45px; padding: 0.25rem;" id="cd-text_color" value="#000000">
+                        <label class="iw-cd-sub-label">لون النص</label>
+                        <input type="color" class="iw-cd-form-control iw-cd-color-input" id="cd-text_color" value="#000000">
                     </div>
                     <div>
-                        <label class="iw-cd-sub-label" style="margin-bottom: 0.25rem;">حجم النص</label>
-                        <select class="iw-cd-form-control" id="cd-text_size">
+                        <label class="iw-cd-sub-label">حجم النص</label>
+                        <select class="iw-cd-form-control iw-cd-form-control-enhanced" id="cd-text_size">
                             <option value="0.25">صغير</option>
                             <option value="0.30" selected>متوسط</option>
                             <option value="0.40">كبير</option>
@@ -289,27 +290,27 @@
                 </div>
                 
                 <label class="iw-cd-sub-label">نمط النص:</label>
-                <select class="iw-cd-form-control" style="margin-bottom: 0.75rem;" id="cd-text_style">
+                <select class="iw-cd-form-control iw-cd-form-control-enhanced" id="cd-text_style">
                     <option value="normal">عادي</option>
                     <option value="bold" selected>عريض</option>
                     <option value="italic">مائل</option>
                 </select>
                 
-                <button type="button" class="iw-cd-btn iw-cd-btn-primary" style="width: 100%;" id="add-text-btn">
+                <button type="button" class="iw-cd-btn iw-cd-btn-primary iw-cd-btn-enhanced" id="add-text-btn">
                     <i class="fas fa-plus"></i>
                     إضافة النص
                 </button>
                 
-                <div id="text-list" class="iw-cd-text-list" style="margin-top: 1rem;"></div>
+                <div id="text-list" class="iw-cd-text-list"></div>
             </div>
 
             <!-- Summary -->
-            <div class="iw-cd-section">
+            <div class="iw-cd-section iw-cd-section-enhanced iw-cd-summary-section">
                 <h5 class="iw-cd-section-title">
                     <i class="fas fa-list-check"></i>
                     ملخص الطلب
                 </h5>
-                <div class="iw-cd-summary">
+                <div class="iw-cd-summary iw-cd-summary-enhanced">
                     <div class="iw-cd-summary-item">
                         <span class="iw-cd-summary-label">إجمالي القطع:</span>
                         <span class="iw-cd-summary-value" id="total-pieces">0</span>
