@@ -20,6 +20,11 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Check if admin is authenticated
+        if (!Auth::guard('admin')->check()) {
+            return redirect()->route('admin.login')->with('error', 'يجب تسجيل الدخول أولاً.');
+        }
+
         $admin = Auth::guard('admin')->user();
         
         // إحصائيات عامة

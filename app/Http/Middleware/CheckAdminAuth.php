@@ -33,8 +33,14 @@ class CheckAdminAuth
 
         $admin = Auth::guard('admin')->user();
         
+        // Check if admin exists
+        if (!$admin) {
+            Auth::guard('admin')->logout();
+            return redirect()->route('admin.login')->with('error', 'حسابك غير موجود.');
+        }
+        
         // Check if admin is active
-        if (!$admin->is_active) {
+        if (isset($admin->is_active) && !$admin->is_active) {
             Auth::guard('admin')->logout();
             
             // Handle AJAX requests with JSON response
@@ -49,6 +55,7 @@ class CheckAdminAuth
             return redirect()->route('admin.login')->with('error', 'حسابك غير نشط. يرجى التواصل مع الإدارة.');
         }
 
+        // Allow access to admin dashboard - no permission check needed
         return $next($request);
     }
 }
