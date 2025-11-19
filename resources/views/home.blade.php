@@ -512,11 +512,11 @@ use Illuminate\Support\Facades\Storage;
                                         transition: background 0.2s, color 0.2s;
                                     }
                                     .feature-item.custom-blue i {
-                                        color: #3267db;
+                                        color:rgb(255, 255, 255);
                                         transition: color 0.2s;
                                     }
                                     .feature-item.custom-blue span {
-                                        color: #3267db;
+                                        color:rgb(255, 255, 255);
                                         transition: color 0.2s;
                                     }
                                     .feature-item.custom-blue:hover, .feature-item.custom-blue:focus {
