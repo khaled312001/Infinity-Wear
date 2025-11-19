@@ -15,6 +15,7 @@ use App\Http\Controllers\FaviconController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MailTestController;
+use App\Http\Controllers\WorkflowOrderController;
 use Illuminate\Support\Facades\Log;
 
 // Health check routes
@@ -119,6 +120,10 @@ Route::get('/about', function () {
 Route::get('/products', function () {
     return view('products.index');
 })->name('products.index');
+
+// تتبع الطلبات (عام)
+Route::get('/track-order', [WorkflowOrderController::class, 'track'])->name('track-order');
+Route::get('/order/{orderNumber}', [WorkflowOrderController::class, 'show'])->name('order.show');
 
 
 // API Routes للصفحة الرئيسية
@@ -540,6 +545,12 @@ Route::middleware(['auth', 'user.type:importer'])->prefix('importers')->name('im
     Route::post('/contact/send', [ImporterController::class, 'sendContactMessage'])->name('contact.send')->middleware('user.permission:contact');
     Route::get('/profile', [ImporterController::class, 'profile'])->name('profile')->middleware('user.permission:profile');
     Route::put('/profile', [ImporterController::class, 'updateProfile'])->name('profile.update')->middleware('user.permission:profile');
+    
+    // إدارة الطلبات
+    Route::prefix('workflow-orders')->name('workflow-orders.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Importer\WorkflowOrderController::class, 'index'])->name('index');
+        Route::get('/{workflowOrder}', [App\Http\Controllers\Importer\WorkflowOrderController::class, 'show'])->name('show');
+    });
 });
 
 // لوحة تحكم فريق التسويق
@@ -565,6 +576,13 @@ Route::middleware(['auth', 'user.type:marketing'])->prefix('marketing')->name('m
     Route::patch('/contacts/{contact}/mark-closed', [App\Http\Controllers\Marketing\DashboardController::class, 'markContactAsClosed'])->name('contacts.mark-closed');
     Route::get('/profile', [App\Http\Controllers\Marketing\DashboardController::class, 'profile'])->name('profile');
     Route::put('/profile', [App\Http\Controllers\Marketing\DashboardController::class, 'updateProfile'])->name('profile.update');
+    
+    // إدارة الطلبات
+    Route::prefix('workflow-orders')->name('workflow-orders.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Marketing\WorkflowOrderController::class, 'index'])->name('index');
+        Route::get('/{workflowOrder}', [App\Http\Controllers\Marketing\WorkflowOrderController::class, 'show'])->name('show');
+        Route::post('/{workflowOrder}/update-stage', [App\Http\Controllers\Marketing\WorkflowOrderController::class, 'updateStage'])->name('update-stage');
+    });
     
     // إدارة المهام لفريق التسويق
     Route::prefix('tasks')->name('tasks.')->group(function () {
@@ -618,6 +636,13 @@ Route::middleware(['auth', 'user.type:sales'])->prefix('sales')->name('sales.')-
     
     Route::get('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'profile'])->name('profile');
     Route::put('/profile', [App\Http\Controllers\Sales\DashboardController::class, 'updateProfile'])->name('profile.update');
+    
+    // إدارة الطلبات
+    Route::prefix('workflow-orders')->name('workflow-orders.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Sales\WorkflowOrderController::class, 'index'])->name('index');
+        Route::get('/{workflowOrder}', [App\Http\Controllers\Sales\WorkflowOrderController::class, 'show'])->name('show');
+        Route::post('/{workflowOrder}/update-stage', [App\Http\Controllers\Sales\WorkflowOrderController::class, 'updateStage'])->name('update-stage');
+    });
     
     // إدارة المهام لفريق المبيعات
     Route::get('/tasks', [App\Http\Controllers\Sales\TaskController::class, 'index'])->name('tasks');
@@ -702,6 +727,17 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     Route::get('/orders', [AdminController::class, 'ordersIndex'])->name('orders.index');
     Route::get('/orders/{id}', [AdminController::class, 'showOrder'])->name('orders.show');
     Route::put('/orders/{id}/status', [AdminController::class, 'ordersUpdateStatus'])->name('orders.updateStatus');
+    
+    // إدارة الطلبات (Workflow Orders)
+    Route::prefix('workflow-orders')->name('workflow-orders.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\WorkflowOrderController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Admin\WorkflowOrderController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Admin\WorkflowOrderController::class, 'store'])->name('store');
+        Route::get('/{workflowOrder}', [App\Http\Controllers\Admin\WorkflowOrderController::class, 'show'])->name('show');
+        Route::put('/{workflowOrder}', [App\Http\Controllers\Admin\WorkflowOrderController::class, 'update'])->name('update');
+        Route::delete('/{workflowOrder}', [App\Http\Controllers\Admin\WorkflowOrderController::class, 'destroy'])->name('destroy');
+        Route::post('/{workflowOrder}/update-stage', [App\Http\Controllers\Admin\WorkflowOrderController::class, 'updateStage'])->name('update-stage');
+    });
     
     // النظام المالي
     Route::prefix('finance')->name('finance.')->group(function () {
