@@ -10,26 +10,26 @@
     const init = () => {
         console.log('🎨 Initializing Enhanced 3D Design System...');
         
-        // Check if design option custom is selected
-        const designOptionCustom = document.getElementById('design_option_custom');
-        if (designOptionCustom) {
-            designOptionCustom.addEventListener('change', function() {
-                if (this.checked) {
-                    // Hide other design details
-                    document.querySelectorAll('.design-detail').forEach(el => {
-                        el.style.display = 'none';
-                    });
-                    
-                    // Show enhanced design tools
-                    const customDetail = document.getElementById('design_custom_detail');
-                    if (customDetail) {
-                        customDetail.style.display = 'block';
-                    }
-                    
-                    console.log('✓ Enhanced design tools activated');
+        // Check if design option custom is selected - use event delegation to avoid conflicts
+        // Only handle the custom option specifically, let other handlers manage visibility
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.id === 'design_option_custom' && e.target.checked) {
+                // Ensure custom detail is shown (other handlers should handle this, but ensure it)
+                const customDetail = document.getElementById('design_custom_detail');
+                if (customDetail && customDetail.style.display === 'none') {
+                    customDetail.style.display = 'block';
                 }
-            });
-        }
+                
+                // Initialize 3D viewer if not already initialized
+                if (window.designInterface && !window.designInterface.viewer) {
+                    setTimeout(() => {
+                        window.designInterface.initialize3DViewer();
+                    }, 100);
+                }
+                
+                console.log('✓ Enhanced design tools activated');
+            }
+        });
         
         // Auto-update quantity from size inputs
         document.addEventListener('input', function(e) {
@@ -39,24 +39,28 @@
             }
         });
         
-        // Bind clothing piece checkboxes
-        document.querySelectorAll('.clothing-piece-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const pieceType = this.dataset.pieceType || this.value;
+        // Bind clothing piece checkboxes - use event delegation to avoid duplicate listeners
+        // The design-interface.js also handles these, so we coordinate instead of conflicting
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.classList.contains('clothing-piece-checkbox')) {
+                const pieceType = e.target.dataset.pieceType || e.target.value;
                 const sizeContainer = document.getElementById(`size-${pieceType}`);
                 
-                if (this.checked && sizeContainer) {
-                    sizeContainer.style.display = 'block';
-                } else if (sizeContainer) {
-                    sizeContainer.style.display = 'none';
-                    // Reset quantities
-                    sizeContainer.querySelectorAll('input[type="number"]').forEach(input => {
-                        input.value = 0;
-                    });
+                // Only handle size container display if design-interface isn't handling it
+                if (sizeContainer && !window.designInterface) {
+                    if (e.target.checked) {
+                        sizeContainer.style.display = 'block';
+                    } else {
+                        sizeContainer.style.display = 'none';
+                        // Reset quantities
+                        sizeContainer.querySelectorAll('input[type="number"]').forEach(input => {
+                            input.value = 0;
+                        });
+                    }
                 }
                 
                 updateTotalQuantity();
-            });
+            }
         });
         
         // Update color value display

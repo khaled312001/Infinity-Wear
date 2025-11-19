@@ -106,25 +106,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Design option change handler
-    const designOptions = document.querySelectorAll('.design-option');
-    const designDetails = document.querySelectorAll('.design-detail');
-    
-    designOptions.forEach(option => {
-        option.addEventListener('change', function() {
-            const selectedOption = this.value;
+    // Design option change handler - using event delegation to avoid conflicts
+    // This will work with other scripts that handle design options
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.name === 'design_option') {
+            const selectedOption = e.target.value;
+            const designDetails = document.querySelectorAll('.design-detail');
             
-            // Hide all design details
+            // Hide all design details with smooth transition
             designDetails.forEach(detail => {
-                detail.style.display = 'none';
+                if (detail.style.display !== 'none') {
+                    detail.style.opacity = '0';
+                    setTimeout(() => {
+                        detail.style.display = 'none';
+                    }, 200);
+                }
             });
             
             // Show selected design detail
             const selectedDetail = document.getElementById(`design_${selectedOption}_detail`);
             if (selectedDetail) {
                 selectedDetail.style.display = 'block';
+                selectedDetail.style.opacity = '0';
+                setTimeout(() => {
+                    selectedDetail.style.transition = 'opacity 0.3s ease';
+                    selectedDetail.style.opacity = '1';
+                }, 50);
             }
-        });
+        }
     });
     
     // Password toggle
@@ -187,6 +196,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize
     showStep(currentStep);
+    
+    // Initialize design option display on page load
+    const initialDesignOption = document.querySelector('input[name="design_option"]:checked');
+    if (initialDesignOption) {
+        const selectedOption = initialDesignOption.value;
+        const designDetails = document.querySelectorAll('.design-detail');
+        designDetails.forEach(detail => {
+            detail.style.display = 'none';
+        });
+        const selectedDetail = document.getElementById(`design_${selectedOption}_detail`);
+        if (selectedDetail) {
+            selectedDetail.style.display = 'block';
+        }
+    }
 });
 </script>
 

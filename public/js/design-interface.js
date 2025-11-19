@@ -92,21 +92,30 @@ class DesignInterface {
         // Activity type selection
         const activityType = document.getElementById('design_activity_type');
         if (activityType) {
-            activityType.addEventListener('change', (e) => this.onActivityTypeChange(e.target.value));
+            // Remove existing listener if any to avoid duplicates
+            activityType.removeEventListener('change', this._activityTypeHandler);
+            this._activityTypeHandler = (e) => this.onActivityTypeChange(e.target.value);
+            activityType.addEventListener('change', this._activityTypeHandler);
         }
 
-        // Clothing piece checkboxes
-        const pieceCheckboxes = document.querySelectorAll('.clothing-piece-checkbox');
-        pieceCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                const pieceType = e.target.dataset.pieceType;
+        // Clothing piece checkboxes - use event delegation to avoid duplicate listeners
+        // Remove old listener if exists
+        if (this._pieceCheckboxHandler) {
+            document.removeEventListener('change', this._pieceCheckboxHandler);
+        }
+        this._pieceCheckboxHandler = (e) => {
+            if (e.target && e.target.classList.contains('clothing-piece-checkbox')) {
+                const pieceType = e.target.dataset.pieceType || e.target.value;
+                if (!pieceType) return;
+                
                 if (e.target.checked) {
                     this.addPiece(pieceType);
                 } else {
                     this.removePiece(pieceType);
                 }
-            });
-        });
+            }
+        };
+        document.addEventListener('change', this._pieceCheckboxHandler);
 
         // Size inputs
         const sizeInputs = document.querySelectorAll('.size-input');
@@ -124,14 +133,19 @@ class DesignInterface {
             });
         });
 
-        // Pattern selection
-        const patternOptions = document.querySelectorAll('.pattern-option');
-        patternOptions.forEach(option => {
-            option.addEventListener('click', (e) => {
-                const pattern = e.target.dataset.pattern;
-                this.applyPattern(pattern);
-            });
-        });
+        // Pattern selection - use event delegation
+        if (this._patternHandler) {
+            document.removeEventListener('click', this._patternHandler);
+        }
+        this._patternHandler = (e) => {
+            if (e.target && e.target.classList.contains('pattern-option')) {
+                const pattern = e.target.dataset.pattern || e.target.closest('.pattern-option')?.dataset.pattern;
+                if (pattern) {
+                    this.applyPattern(pattern);
+                }
+            }
+        };
+        document.addEventListener('click', this._patternHandler);
 
         // Logo position selection
         const logoPosition = document.getElementById('logo_position');
