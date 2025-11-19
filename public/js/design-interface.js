@@ -472,9 +472,15 @@ class DesignInterface {
     }
 
     applyPattern(pattern) {
+        // If no piece is selected, try to apply to the first available piece
         if (!this.selectedPiece) {
-            console.warn('No piece selected for pattern application');
-            return;
+            const availablePieces = Object.keys(this.designData.pieces);
+            if (availablePieces.length === 0) {
+                console.warn('No piece selected for pattern application');
+                return;
+            }
+            // Use the first available piece
+            this.selectedPiece = availablePieces[0];
         }
 
         const options = this.getPatternOptions(pattern);

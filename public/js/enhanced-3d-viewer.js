@@ -221,16 +221,32 @@ class Enhanced3DViewer {
 
         return new Promise((resolve, reject) => {
             const loader = new THREE.GLTFLoader();
+            
+            // Set timeout to avoid hanging on failed requests
+            const timeout = setTimeout(() => {
+                reject(new Error('Model load timeout'));
+            }, 10000); // 10 second timeout
+            
             loader.load(
                 url,
                 (gltf) => {
+                    clearTimeout(timeout);
                     resolve(gltf.scene);
                 },
                 (progress) => {
-                    console.log('Loading model:', (progress.loaded / progress.total * 100) + '%');
+                    if (progress.total > 0) {
+                        const percent = Math.round((progress.loaded / progress.total) * 100);
+                        if (percent < 100) {
+                            console.log('Loading model:', percent + '%');
+                        }
+                    }
                 },
                 (error) => {
-                    console.error('Error loading GLTF model:', error);
+                    clearTimeout(timeout);
+                    // Only log if it's not a network/CORS error (which are expected for CDN failures)
+                    if (error && error.type !== 'error') {
+                        console.error('Error loading GLTF model:', error);
+                    }
                     reject(error);
                 }
             );
@@ -281,7 +297,10 @@ class Enhanced3DViewer {
                     return model;
                 }
             } catch (error) {
-                console.log('Model not available, trying next...');
+                // Silently fail and use fallback - don't log every failed attempt
+                if (error && error.type !== 'error') {
+                    console.log('Model not available, using fallback...');
+                }
             }
         }
 
