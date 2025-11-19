@@ -87,6 +87,27 @@
 
 .eds-main-grid {
     display: grid !important;
+    grid-template-columns: 350px 1fr !important;
+    gap: 1.5rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+}
+
+@media (max-width: 1200px) {
+    .eds-main-grid {
+        grid-template-columns: 320px 1fr !important;
+        gap: 1.25rem !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .eds-main-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
 }
 
 .eds-piece-grid,
@@ -108,6 +129,9 @@
 .eds-viewer-panel {
     display: flex !important;
     flex-direction: column !important;
+    min-height: 600px !important;
+    max-height: 600px !important;
+    width: 100% !important;
 }
 
 /* Position fixes */
@@ -122,10 +146,21 @@
     margin: 0 !important;
     background: transparent !important;
     border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
 }
 
 #design_custom_detail > .enhanced-design-system {
-    margin: 2rem 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.enhanced-design-system {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Ensure 3D canvas is visible */
@@ -208,10 +243,15 @@
 @media (max-width: 992px) {
     .eds-main-grid {
         grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .eds-viewer-panel {
+        order: -1 !important;
     }
     
     #design_custom_detail > .enhanced-design-system {
-        margin: 1rem 0 !important;
+        margin: 0 !important;
     }
 }
 
@@ -251,10 +291,19 @@
 }
 
 /* Border and background fixes */
-.eds-controls-panel,
+.eds-controls-panel {
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    padding: 2rem !important;
+}
+
 .eds-viewer-panel {
     border: none !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    width: 100% !important;
 }
 
 /* Animation support */
