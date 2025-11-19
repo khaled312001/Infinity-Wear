@@ -499,7 +499,7 @@ use Illuminate\Support\Facades\Storage;
                                 <style>
                                     .feature-item.custom-blue {
                                         background: #3267db;
-                                        color: #3267db;
+                                        color:rgb(255, 255, 255);
                                         border-radius: 10px;
                                         padding: 12px 18px;
                                         display: inline-flex;
