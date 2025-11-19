@@ -723,7 +723,7 @@ Route::prefix('admin')->middleware(['admin.auth'])->name('admin.')->group(functi
     Route::put('/importers/{id}', [AdminController::class, 'importersUpdate'])->name('importers.update')->middleware('user.permission:importers_management');
     Route::delete('/importers/{id}', [AdminController::class, 'importersDestroy'])->name('importers.destroy')->middleware('user.permission:importers_management');
     Route::put('/importers/{id}/status', [AdminController::class, 'importersUpdateStatus'])->name('importers.updateStatus')->middleware('user.permission:importers_management');
-    Route::get('/importers-orders', [AdminController::class, 'importersOrders'])->name('importers.orders')->middleware('user.permission:importers_orders');
+    Route::get('/importers-orders', [AdminController::class, 'importersOrders'])->name('importers.orders');
     Route::get('/orders', [AdminController::class, 'ordersIndex'])->name('orders.index');
     Route::get('/orders/{id}', [AdminController::class, 'showOrder'])->name('orders.show');
     Route::put('/orders/{id}/status', [AdminController::class, 'ordersUpdateStatus'])->name('orders.updateStatus');

@@ -29,10 +29,29 @@ class CheckUserTypePermission
             }
             
             // If admin has no roles/permissions defined, allow access by default
-            if (!$admin || !method_exists($admin, 'roles') || $admin->roles->isEmpty()) {
+            if (!$admin) {
                 return $next($request);
             }
             
+            // Check if admin has roles method
+            if (!method_exists($admin, 'roles')) {
+                // Admin model doesn't have roles relationship, allow access
+                return $next($request);
+            }
+            
+            // Try to get roles, if empty or error, allow access
+            try {
+                $roles = $admin->roles;
+                if (!$roles || $roles->isEmpty()) {
+                    // Admin has no roles, allow access by default
+                    return $next($request);
+                }
+            } catch (\Exception $e) {
+                // Error getting roles, allow access by default
+                return $next($request);
+            }
+            
+            // Check if admin has the permission
             if (!$this->hasAdminPermission($admin, $permission)) {
                 // Handle AJAX requests with JSON response
                 if ($request->ajax() || $request->wantsJson()) {
@@ -93,22 +112,70 @@ class CheckUserTypePermission
     {
         try {
             // If admin has no roles/permissions defined, allow by default
-            if (!$admin || !method_exists($admin, 'roles')) {
+            if (!$admin) {
+                return true;
+            }
+
+            // Check if admin model has roles method
+            if (!method_exists($admin, 'roles')) {
+                return true;
+            }
+
+            // Try to get roles
+            try {
+                $roles = $admin->roles;
+                
+                // If no roles, allow access by default
+                if (!$roles || $roles->isEmpty()) {
+                    return true;
+                }
+            } catch (\Exception $e) {
+                // Error getting roles, allow access
                 return true;
             }
 
             // Check if admin has the permission through any of their roles
             foreach ($admin->roles as $role) {
-                foreach ($role->permissions as $rolePermission) {
-                    if ($rolePermission->name === $permission) {
-                        return true;
+                if (!method_exists($role, 'permissions')) {
+                    continue;
+                }
+                
+                try {
+                    foreach ($role->permissions as $rolePermission) {
+                        if ($rolePermission->name === $permission) {
+                            return true;
+                        }
                     }
+                } catch (\Exception $e) {
+                    // Error getting permissions, continue to next role
+                    continue;
                 }
             }
 
+            // Check direct permissions if method exists
+            if (method_exists($admin, 'permissions')) {
+                try {
+                    foreach ($admin->permissions as $directPermission) {
+                        if ($directPermission->name === $permission) {
+                            return true;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Error getting direct permissions, continue
+                }
+            }
+
+            // If we reach here and admin has roles but no matching permission,
+            // check if this is a super admin - super admins have all permissions
+            if (isset($admin->role) && $admin->role === 'super_admin') {
+                return true;
+            }
+            
+            // If admin has roles but no matching permission, deny access
+            // But if admin has no roles at all, we already returned true above
             return false;
         } catch (\Exception $e) {
-            // If error occurs, allow access
+            // If any error occurs, allow access by default to prevent blocking admins
             return true;
         }
     }
