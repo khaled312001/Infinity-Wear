@@ -112,6 +112,12 @@
         طلبات المستوردين
     </a>
     @endif
+    @if(\Illuminate\Support\Facades\Route::has('admin.workflow-orders.index'))
+    <a href="{{ route('admin.workflow-orders.index') }}" class="nav-link {{ request()->routeIs('admin.workflow-orders*') ? 'active' : '' }}">
+        <i class="fas fa-tasks me-2"></i>
+        إدارة الطلبات (مراحل)
+    </a>
+    @endif
 </div>
 
 

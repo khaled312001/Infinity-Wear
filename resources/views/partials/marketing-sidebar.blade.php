@@ -20,6 +20,17 @@
     </a>
 </div>
 
+<!-- إدارة الطلبات -->
+@if(\Illuminate\Support\Facades\Route::has('marketing.workflow-orders.index'))
+<div class="nav-group">
+    <div class="nav-group-title">إدارة الطلبات</div>
+    <a href="{{ route('marketing.workflow-orders.index') }}" class="nav-link {{ request()->routeIs('marketing.workflow-orders*') ? 'active' : '' }}">
+        <i class="fas fa-bullhorn me-2"></i>
+        طلبات التسويق
+    </a>
+</div>
+@endif
+
 <!-- إدارة المهام -->
 <div class="nav-group">
     <div class="nav-group-title">إدارة المهام</div>

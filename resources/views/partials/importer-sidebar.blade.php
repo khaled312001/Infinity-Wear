@@ -14,6 +14,12 @@
         <i class="fas fa-shopping-cart me-2"></i>
         طلباتي
     </a>
+    @if(\Illuminate\Support\Facades\Route::has('importers.workflow-orders.index'))
+    <a href="{{ route('importers.workflow-orders.index') }}" class="nav-link {{ request()->routeIs('importers.workflow-orders*') ? 'active' : '' }}">
+        <i class="fas fa-tasks me-2"></i>
+        طلباتي (مراحل)
+    </a>
+    @endif
     <a href="{{ route('importers.tracking') }}" class="nav-link {{ request()->routeIs('importers.tracking*') ? 'active' : '' }}">
         <i class="fas fa-truck me-2"></i>
         تتبع الشحنات

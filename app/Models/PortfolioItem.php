@@ -33,20 +33,45 @@ class PortfolioItem extends Model
     public function getImageUrlAttribute()
     {
         if ($this->image) {
-            // إذا كان المسار يحتوي على 'images/portfolio/' فهو في storage/app/public/
+            $possiblePaths = [];
+            
+            // بناء قائمة بالمسارات المحتملة للصورة
             if (strpos($this->image, 'images/portfolio/') === 0) {
-                // استخدم النسخة في public مباشرة
+                $possiblePaths[] = public_path($this->image);
+                $possiblePaths[] = storage_path('app/public/' . $this->image);
+            } elseif (strpos($this->image, 'portfolio/') === 0) {
+                $possiblePaths[] = public_path('images/' . $this->image);
+                $possiblePaths[] = storage_path('app/public/images/' . $this->image);
+            } elseif (strpos($this->image, 'images/') === 0) {
+                $possiblePaths[] = public_path($this->image);
+                $possiblePaths[] = storage_path('app/public/' . $this->image);
+            } else {
+                $possiblePaths[] = public_path('images/' . $this->image);
+                $possiblePaths[] = public_path('images/portfolio/' . $this->image);
+                $possiblePaths[] = storage_path('app/public/images/portfolio/' . $this->image);
+            }
+            
+            // التحقق من وجود الصورة في أي من المسارات
+            foreach ($possiblePaths as $path) {
+                if (file_exists($path)) {
+                    // إرجاع URL بناءً على المسار الذي وجدت فيه الصورة
+                    $relativePath = str_replace(public_path(), '', $path);
+                    // إزالة الشرطة المائلة الأولى إذا كانت موجودة
+                    $relativePath = ltrim($relativePath, '/\\');
+                    return asset($relativePath);
+                }
+            }
+            
+            // إذا لم توجد الصورة، إرجاع URL بناءً على المسار الأصلي (للمحاولة)
+            if (strpos($this->image, 'images/portfolio/') === 0) {
                 return asset($this->image);
             }
-            // إذا كان المسار يحتوي على 'portfolio/' فهو في public/images/portfolio/
             if (strpos($this->image, 'portfolio/') === 0) {
                 return asset('images/' . $this->image);
             }
-            // إذا كان المسار يحتوي على 'images/' فهو في public/images/
             if (strpos($this->image, 'images/') === 0) {
                 return asset($this->image);
             }
-            // إذا كان المسار لا يحتوي على 'images/' أضف 'images/' إليه
             return asset('images/' . $this->image);
         }
         return asset('images/default-image.png');
@@ -58,23 +83,43 @@ class PortfolioItem extends Model
     public function getGalleryUrlsAttribute()
     {
         if ($this->gallery && is_array($this->gallery)) {
-            return array_map(function($image) {
-                // إذا كان المسار يحتوي على 'images/portfolio/' فهو في storage/app/public/
+            return array_filter(array_map(function($image) {
+                if (empty($image)) {
+                    return null;
+                }
+                
+                $possiblePaths = [];
+                
+                // بناء قائمة بالمسارات المحتملة للصورة
                 if (strpos($image, 'images/portfolio/') === 0) {
-                    // استخدم النسخة في public مباشرة
-                    return asset($image);
+                    $possiblePaths[] = public_path($image);
+                    $possiblePaths[] = storage_path('app/public/' . $image);
+                } elseif (strpos($image, 'portfolio/') === 0) {
+                    $possiblePaths[] = public_path('images/' . $image);
+                    $possiblePaths[] = storage_path('app/public/images/' . $image);
+                } elseif (strpos($image, 'images/') === 0) {
+                    $possiblePaths[] = public_path($image);
+                    $possiblePaths[] = storage_path('app/public/' . $image);
+                } else {
+                    $possiblePaths[] = public_path('images/' . $image);
+                    $possiblePaths[] = public_path('images/portfolio/' . $image);
+                    $possiblePaths[] = storage_path('app/public/images/portfolio/' . $image);
                 }
-                // إذا كان المسار يحتوي على 'portfolio/' فهو في public/images/portfolio/
-                if (strpos($image, 'portfolio/') === 0) {
-                    return asset('images/' . $image);
+                
+                // التحقق من وجود الصورة في أي من المسارات
+                foreach ($possiblePaths as $path) {
+                    if (file_exists($path)) {
+                        // إرجاع URL بناءً على المسار الذي وجدت فيه الصورة
+                        $relativePath = str_replace(public_path(), '', $path);
+                        // إزالة الشرطة المائلة الأولى إذا كانت موجودة
+                        $relativePath = ltrim($relativePath, '/\\');
+                        return asset($relativePath);
+                    }
                 }
-                // إذا كان المسار يحتوي على 'images/' فهو في public/images/
-                if (strpos($image, 'images/') === 0) {
-                    return asset($image);
-                }
-                // إذا كان المسار لا يحتوي على 'images/' أضف 'images/' إليه
-                return asset('images/' . $image);
-            }, $this->gallery);
+                
+                // إذا لم توجد الصورة، إرجاع null (سيتم تصفيتها لاحقاً)
+                return null;
+            }, $this->gallery));
         }
         return [];
     }

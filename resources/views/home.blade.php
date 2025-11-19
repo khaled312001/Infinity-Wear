@@ -472,20 +472,44 @@ use Illuminate\Support\Facades\Storage;
                 <!-- Call to Action -->
                 <div class="workflow-cta" data-aos="fade-up" data-aos-delay="1000">
                     <div class="cta-card">
-                        <div class="cta-icon">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <h3>تتبع طلبك الآن</h3>
-                        <p>أدخل رقم الطلب لمتابعة حالة طلبك في الوقت الفعلي</p>
-                        <form class="track-order-form" action="{{ route('track-order') }}" method="GET">
-                            <div class="form-group">
-                                <input type="text" name="order_number" placeholder="أدخل رقم الطلب" required>
-                                <button type="submit" class="btn btn-primary">
+                        <div class="cta-background-pattern"></div>
+                        <div class="cta-content">
+                            <div class="cta-icon-wrapper">
+                                <div class="cta-icon">
                                     <i class="fas fa-search"></i>
-                                    تتبع
-                                </button>
+                                </div>
+                                <div class="cta-icon-glow"></div>
                             </div>
-                        </form>
+                            <h3>تتبع طلبك الآن</h3>
+                            <p>أدخل رقم الطلب لمتابعة حالة طلبك في الوقت الفعلي</p>
+                            <form class="track-order-form" action="{{ route('track-order') }}" method="GET">
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-hashtag input-icon"></i>
+                                        <input type="text" name="order_number" placeholder="أدخل رقم الطلب" required>
+                                    </div>
+                                    <button type="submit" class="btn-track">
+                                        <span class="btn-text">تتبع</span>
+                                        <i class="fas fa-arrow-left btn-icon"></i>
+                                        <div class="btn-ripple"></div>
+                                    </button>
+                                </div>
+                            </form>
+                            <div class="cta-features">
+                                <div class="feature-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>متابعة فورية</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>آمن ومضمون</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-bell"></i>
+                                    <span>إشعارات تلقائية</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -508,7 +532,8 @@ use Illuminate\Support\Facades\Storage;
                     <div class="portfolio-image">
                         @if($item->image)
                             <img src="{{ $item->image_url }}" alt="{{ $item->title }}" 
-                                 class="portfolio-dynamic-image">
+                                 class="portfolio-dynamic-image"
+                                 onerror="this.onerror=null; this.src='{{ asset('images/default-image.png') }}';">
                         @else
                             <img src="{{ asset('images/default-image.png') }}" alt="{{ $item->title }}">
                         @endif

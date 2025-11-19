@@ -14,6 +14,12 @@
         <i class="fas fa-industry me-2"></i>
         طلبات المستوردين
     </a>
+    @if(\Illuminate\Support\Facades\Route::has('sales.workflow-orders.index'))
+    <a href="{{ route('sales.workflow-orders.index') }}" class="nav-link {{ request()->routeIs('sales.workflow-orders*') ? 'active' : '' }}">
+        <i class="fas fa-handshake me-2"></i>
+        طلبات المبيعات (مراحل)
+    </a>
+    @endif
 </div>
 
 <!-- إدارة المستوردين -->
