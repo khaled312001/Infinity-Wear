@@ -496,15 +496,49 @@ use Illuminate\Support\Facades\Storage;
                                 </div>
                             </form>
                             <div class="cta-features">
-                                <div class="feature-item">
+                                <style>
+                                    .feature-item.custom-blue {
+                                        background: #3267db;
+                                        color: #3267db;
+                                        border-radius: 10px;
+                                        padding: 12px 18px;
+                                        display: inline-flex;
+                                        align-items: center;
+                                        gap: 8px;
+                                        font-weight: 600;
+                                        font-size: 1rem;
+                                        margin-left: 8px;
+                                        margin-bottom: 6px;
+                                        transition: background 0.2s, color 0.2s;
+                                    }
+                                    .feature-item.custom-blue i {
+                                        color: #3267db;
+                                        transition: color 0.2s;
+                                    }
+                                    .feature-item.custom-blue span {
+                                        color: #3267db;
+                                        transition: color 0.2s;
+                                    }
+                                    .feature-item.custom-blue:hover, .feature-item.custom-blue:focus {
+                                        background: #3267db;
+                                        color: #fff;
+                                    }
+                                    .feature-item.custom-blue:hover i,
+                                    .feature-item.custom-blue:hover span,
+                                    .feature-item.custom-blue:focus i,
+                                    .feature-item.custom-blue:focus span {
+                                        color: #fff !important;
+                                    }
+                                </style>
+                                <div class="feature-item custom-blue">
                                     <i class="fas fa-clock"></i>
                                     <span>متابعة فورية</span>
                                 </div>
-                                <div class="feature-item">
+                                <div class="feature-item custom-blue">
                                     <i class="fas fa-shield-alt"></i>
                                     <span>آمن ومضمون</span>
                                 </div>
-                                <div class="feature-item">
+                                <div class="feature-item custom-blue">
                                     <i class="fas fa-bell"></i>
                                     <span>إشعارات تلقائية</span>
                                 </div>
