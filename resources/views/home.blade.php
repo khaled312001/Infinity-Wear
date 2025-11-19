@@ -346,6 +346,136 @@ use Illuminate\Support\Facades\Storage;
         </div>
     </section>
 
+    <!-- Order Workflow Section -->
+    <section id="workflow" class="infinity-workflow">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">مراحل تنفيذ طلبك</h2>
+                <p class="section-subtitle">نظام متكامل لتتبع طلبك من البداية حتى النهاية</p>
+            </div>
+
+            <div class="workflow-container">
+                <div class="workflow-timeline">
+                    @php
+                        $stages = [
+                            [
+                                'name' => 'التسويق',
+                                'icon' => 'fas fa-bullhorn',
+                                'description' => 'مرحلة التسويق والترويج لطلبك',
+                                'color' => '#667eea',
+                                'delay' => 0
+                            ],
+                            [
+                                'name' => 'المبيعات',
+                                'icon' => 'fas fa-handshake',
+                                'description' => 'متابعة طلبك مع فريق المبيعات',
+                                'color' => '#f093fb',
+                                'delay' => 100
+                            ],
+                            [
+                                'name' => 'التصميم',
+                                'icon' => 'fas fa-palette',
+                                'description' => 'تصميم مخصص لطلبك',
+                                'color' => '#4facfe',
+                                'delay' => 200
+                            ],
+                            [
+                                'name' => 'العينة الأولى',
+                                'icon' => 'fas fa-clipboard-check',
+                                'description' => 'إنتاج عينة أولية للموافقة',
+                                'color' => '#43e97b',
+                                'delay' => 300
+                            ],
+                            [
+                                'name' => 'اعتماد الشغل',
+                                'icon' => 'fas fa-check-circle',
+                                'description' => 'الموافقة النهائية على التصميم',
+                                'color' => '#fa709a',
+                                'delay' => 400
+                            ],
+                            [
+                                'name' => 'التصنيع',
+                                'icon' => 'fas fa-industry',
+                                'description' => 'بدء عملية التصنيع',
+                                'color' => '#30cfd0',
+                                'delay' => 500
+                            ],
+                            [
+                                'name' => 'الشحن',
+                                'icon' => 'fas fa-truck',
+                                'description' => 'تجهيز الطلب للشحن',
+                                'color' => '#a8edea',
+                                'delay' => 600
+                            ],
+                            [
+                                'name' => 'استلام وتسليم',
+                                'icon' => 'fas fa-box-open',
+                                'description' => 'استلام وتسليم الطلب',
+                                'color' => '#ffecd2',
+                                'delay' => 700
+                            ],
+                            [
+                                'name' => 'التحصيل',
+                                'icon' => 'fas fa-money-bill-wave',
+                                'description' => 'إتمام عملية الدفع',
+                                'color' => '#ff9a9e',
+                                'delay' => 800
+                            ],
+                            [
+                                'name' => 'خدمة ما بعد البيع',
+                                'icon' => 'fas fa-headset',
+                                'description' => 'متابعة وخدمة ما بعد البيع',
+                                'color' => '#a18cd1',
+                                'delay' => 900
+                            ]
+                        ];
+                    @endphp
+
+                    @foreach($stages as $index => $stage)
+                    <div class="workflow-step" data-aos="fade-up" data-aos-delay="{{ $stage['delay'] }}">
+                        <div class="step-connector"></div>
+                        <div class="step-card" style="--step-color: {{ $stage['color'] }}">
+                            <div class="step-icon-wrapper">
+                                <div class="step-icon" style="background: linear-gradient(135deg, {{ $stage['color'] }} 0%, {{ $stage['color'] }}dd 100%);">
+                                    <i class="{{ $stage['icon'] }}"></i>
+                                </div>
+                                <div class="step-number">{{ $index + 1 }}</div>
+                            </div>
+                            <div class="step-content">
+                                <h3 class="step-title">{{ $stage['name'] }}</h3>
+                                <p class="step-description">{{ $stage['description'] }}</p>
+                            </div>
+                            <div class="step-arrow">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+                <!-- Call to Action -->
+                <div class="workflow-cta" data-aos="fade-up" data-aos-delay="1000">
+                    <div class="cta-card">
+                        <div class="cta-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>تتبع طلبك الآن</h3>
+                        <p>أدخل رقم الطلب لمتابعة حالة طلبك في الوقت الفعلي</p>
+                        <form class="track-order-form" action="{{ route('track-order') }}" method="GET">
+                            <div class="form-group">
+                                <input type="text" name="order_number" placeholder="أدخل رقم الطلب" required>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i>
+                                    تتبع
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
    
     <!-- Portfolio Section -->
     <section id="portfolio" class="infinity-portfolio">
@@ -706,8 +836,19 @@ use Illuminate\Support\Facades\Storage;
     <script src="{{ asset('js/home-responsive.js') }}?v={{ time() }}"></script>
     
     <script>
-    // Handle image loading errors for portfolio images
+    // Initialize AOS
     document.addEventListener('DOMContentLoaded', function() {
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true,
+                offset: 100,
+                delay: 0
+            });
+        }
+        
+    // Handle image loading errors for portfolio images
         document.querySelectorAll('.portfolio-dynamic-image').forEach(function(img) {
             img.addEventListener('error', function() {
                 this.src = '{{ asset("images/default-image.png") }}';
@@ -845,6 +986,45 @@ use Illuminate\Support\Facades\Storage;
                 }
             });
         }
+
+        // Workflow steps animation on scroll
+        const workflowSteps = document.querySelectorAll('.workflow-step');
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const stepObserver = new IntersectionObserver(function(entries) {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('animated');
+                        const stepCard = entry.target.querySelector('.step-card');
+                        if (stepCard) {
+                            stepCard.style.animationDelay = `${index * 0.1}s`;
+                        }
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        workflowSteps.forEach(step => {
+            stepObserver.observe(step);
+        });
+
+        // Add hover effect to workflow steps
+        workflowSteps.forEach(step => {
+            const stepCard = step.querySelector('.step-card');
+            if (stepCard) {
+                stepCard.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(-10px) translateY(-5px)';
+                });
+                
+                stepCard.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0) translateY(0)';
+                });
+            }
+        });
     });
     </script>
 @endsection

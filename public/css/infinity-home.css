@@ -4510,3 +4510,471 @@ textarea.form-control {
         font-size: 0.8rem;
     }
 }
+
+/* ===== Order Workflow Section ===== */
+.infinity-workflow {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.infinity-workflow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(240, 147, 251, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.workflow-container {
+    position: relative;
+    z-index: 1;
+}
+
+.workflow-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 60px;
+    position: relative;
+}
+
+.workflow-step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+.workflow-step[data-aos] {
+    opacity: 1;
+}
+
+.step-connector {
+    position: absolute;
+    right: 60px;
+    top: 100%;
+    width: 3px;
+    height: 30px;
+    background: linear-gradient(180deg, var(--step-color, #667eea) 0%, transparent 100%);
+    z-index: 0;
+    animation: drawLine 0.8s ease-out forwards;
+}
+
+.workflow-step:last-child .step-connector {
+    display: none;
+}
+
+.step-card {
+    flex: 1;
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.step-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    background: var(--step-color, #667eea);
+    transition: width 0.4s ease;
+}
+
+.step-card:hover {
+    transform: translateX(-10px) translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--step-color, #667eea);
+}
+
+.step-card:hover::before {
+    width: 100%;
+    opacity: 0.05;
+}
+
+.step-icon-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.step-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 32px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s ease;
+    animation: pulse 2s infinite;
+}
+
+.step-card:hover .step-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.step-number {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--step-color, #667eea);
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+    border: 2px solid var(--step-color, #667eea);
+}
+
+.step-content {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.step-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d3436;
+    margin-bottom: 8px;
+    transition: color 0.3s ease;
+}
+
+.step-card:hover .step-title {
+    color: var(--step-color, #667eea);
+}
+
+.step-description {
+    font-size: 16px;
+    color: #636e72;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.step-arrow {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--step-color, #667eea);
+    font-size: 20px;
+    transition: all 0.4s ease;
+    flex-shrink: 0;
+}
+
+.step-card:hover .step-arrow {
+    background: var(--step-color, #667eea);
+    color: white;
+    transform: translateX(-5px);
+}
+
+/* Step card active state */
+.step-card.active {
+    border-color: var(--step-color, #667eea);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+}
+
+.step-card.active .step-icon {
+    animation: pulseActive 1.5s infinite;
+}
+
+@keyframes pulseActive {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+    }
+}
+
+/* Workflow CTA */
+.workflow-cta {
+    margin-top: 60px;
+}
+
+.cta-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 25px;
+    padding: 50px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+.cta-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 30px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 1;
+    animation: float 3s ease-in-out infinite;
+}
+
+.cta-card h3 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+.cta-card p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+.track-order-form {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.track-order-form .form-group {
+    display: flex;
+    gap: 15px;
+    background: white;
+    border-radius: 50px;
+    padding: 5px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.track-order-form input {
+    flex: 1;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 16px;
+    outline: none;
+    background: transparent;
+}
+
+.track-order-form button {
+    padding: 15px 35px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.track-order-form button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes drawLine {
+    from {
+        height: 0;
+        opacity: 0;
+    }
+    to {
+        height: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .workflow-timeline {
+        gap: 25px;
+    }
+    
+    .step-card {
+        padding: 20px;
+        gap: 15px;
+    }
+    
+    .step-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+    
+    .step-title {
+        font-size: 20px;
+    }
+    
+    .step-description {
+        font-size: 14px;
+    }
+    
+    .cta-card {
+        padding: 40px 30px;
+    }
+    
+    .cta-card h3 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .infinity-workflow {
+        padding: 60px 0;
+    }
+    
+    .workflow-timeline {
+        gap: 20px;
+    }
+    
+    .step-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px;
+    }
+    
+    .step-arrow {
+        display: none;
+    }
+    
+    .step-connector {
+        display: none;
+    }
+    
+    .step-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+    
+    .step-title {
+        font-size: 18px;
+    }
+    
+    .step-description {
+        font-size: 14px;
+    }
+    
+    .cta-card {
+        padding: 30px 20px;
+    }
+    
+    .cta-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+    }
+    
+    .cta-card h3 {
+        font-size: 24px;
+    }
+    
+    .cta-card p {
+        font-size: 16px;
+    }
+    
+    .track-order-form .form-group {
+        flex-direction: column;
+        border-radius: 15px;
+        padding: 15px;
+    }
+    
+    .track-order-form input,
+    .track-order-form button {
+        border-radius: 10px;
+        width: 100%;
+    }
+}
