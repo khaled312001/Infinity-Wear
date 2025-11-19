@@ -1,81 +1,70 @@
 {{-- Enhanced Design Tools V2 - Modern & Isolated --}}
 <div class="iw-custom-designer">
     <div class="iw-cd-main-grid">
-        <!-- Left Panel: 3D Viewer -->
-        <div class="iw-cd-viewer-panel">
-            <div class="iw-cd-viewer-header">
-                <div class="iw-cd-viewer-title">
-                    <i class="fas fa-cube"></i>
-                    معاينة ثلاثية الأبعاد
-                </div>
-                <div>
-                    <button type="button" class="iw-cd-btn" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); color: white; border: none;" id="toggle-auto-rotate" title="دوران تلقائي">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                    <button type="button" class="iw-cd-btn" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); color: white; border: none;" id="capture-screenshot" title="التقاط صورة">
-                        <i class="fas fa-camera"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="iw-cd-viewer-body" style="display: flex; flex-direction: row; align-items: flex-start; gap: 1rem;">
-                <!-- 3D Viewer (on the left, small box) -->
-                <div id="3d-viewer" class="iw-cd-3d-container" style="min-width: 160px; min-height: 160px; width: 160px; height: 160px; max-width: 200px; max-height: 200px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-radius: 12px; background: #f7f7fb; margin-left: 0;"></div>
-                
-                <!-- Controls stacked to the right of the viewer -->
-                <div style="display: flex; flex-direction: column; flex: 1; gap: 0.8rem;">
-                    <!-- Viewer Controls -->
-                    <div class="iw-cd-viewer-controls" style="display: flex; flex-direction: row; gap: 0.4rem;">
-                        <button type="button" class="iw-cd-control-btn" id="cd-rotate-model" title="تدوير">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                        <button type="button" class="iw-cd-control-btn" id="cd-zoom-in" title="تكبير">
-                            <i class="fas fa-search-plus"></i>
-                        </button>
-                        <button type="button" class="iw-cd-control-btn" id="cd-zoom-out" title="تصغير">
-                            <i class="fas fa-search-minus"></i>
-                        </button>
-                        <button type="button" class="iw-cd-control-btn" id="cd-reset-view" title="إعادة تعيين">
-                            <i class="fas fa-home"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- View Switcher -->
-                    <div class="iw-cd-view-switcher" style="display: flex; flex-direction: row; gap: 0.4rem;">
-                        <button type="button" class="iw-cd-view-btn active" id="cd-view-front" data-view="front">
-                            <i class="fas fa-user"></i>
-                        </button>
-                        <button type="button" class="iw-cd-view-btn" id="cd-view-back" data-view="back">
-                            <i class="fas fa-user-slash"></i>
-                        </button>
-                        <button type="button" class="iw-cd-view-btn" id="cd-view-left" data-view="left">
-                            <i class="fas fa-arrow-left"></i>
-                        </button>
-                        <button type="button" class="iw-cd-view-btn" id="cd-view-right" data-view="right">
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Panel: Controls -->
+        <!-- Controls Panel -->
         <div class="iw-cd-controls-panel">
             
-            <!-- Activity Type -->
+            <!-- Activity Type with 3D Viewer -->
             <div class="iw-cd-section">
-                <h5 class="iw-cd-section-title">
-                    <i class="fas fa-building"></i>
-                    نوع النشاط
-                </h5>
-                <select class="iw-cd-form-control" id="design_activity_type" name="design_activity_type">
-                    <option value="">اختر نوع النشاط</option>
-                    <option value="academy">أكاديمية رياضية</option>
-                    <option value="school">مدرسة</option>
-                    <option value="hospital">مستشفى</option>
-                    <option value="company">شركة</option>
-                    <option value="other">أخرى</option>
-                </select>
+                <div class="iw-cd-activity-with-viewer">
+                    <!-- Small 3D Viewer on the left -->
+                    <div class="iw-cd-mini-viewer">
+                        <div class="iw-cd-mini-viewer-header">
+                            <i class="fas fa-cube"></i>
+                        </div>
+                        <div class="iw-cd-mini-viewer-body">
+                            <div id="3d-viewer" class="iw-cd-3d-container"></div>
+                            
+                            <!-- Mini Viewer Controls -->
+                            <div class="iw-cd-mini-controls">
+                                <button type="button" class="iw-cd-mini-control-btn" id="cd-rotate-model" title="تدوير">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button type="button" class="iw-cd-mini-control-btn" id="cd-zoom-in" title="تكبير">
+                                    <i class="fas fa-search-plus"></i>
+                                </button>
+                                <button type="button" class="iw-cd-mini-control-btn" id="cd-zoom-out" title="تصغير">
+                                    <i class="fas fa-search-minus"></i>
+                                </button>
+                                <button type="button" class="iw-cd-mini-control-btn" id="cd-reset-view" title="إعادة تعيين">
+                                    <i class="fas fa-home"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Mini View Switcher -->
+                            <div class="iw-cd-mini-view-switcher">
+                                <button type="button" class="iw-cd-mini-view-btn active" id="cd-view-front" data-view="front" title="أمامي">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                                <button type="button" class="iw-cd-mini-view-btn" id="cd-view-back" data-view="back" title="خلفي">
+                                    <i class="fas fa-user-slash"></i>
+                                </button>
+                                <button type="button" class="iw-cd-mini-view-btn" id="cd-view-left" data-view="left" title="يسار">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                <button type="button" class="iw-cd-mini-view-btn" id="cd-view-right" data-view="right" title="يمين">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Type Select on the right -->
+                    <div class="iw-cd-activity-select">
+                        <h5 class="iw-cd-section-title">
+                            <i class="fas fa-building"></i>
+                            نوع النشاط
+                        </h5>
+                        <select class="iw-cd-form-control" id="design_activity_type" name="design_activity_type">
+                            <option value="">اختر نوع النشاط</option>
+                            <option value="academy">أكاديمية رياضية</option>
+                            <option value="school">مدرسة</option>
+                            <option value="hospital">مستشفى</option>
+                            <option value="company">شركة</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <!-- Clothing Pieces -->
