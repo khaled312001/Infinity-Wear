@@ -32,8 +32,9 @@
 }
 
 .iw-cd-main-grid {
-    display: grid !important;
-    grid-template-columns: 350px 1fr !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
     gap: 1.5rem !important;
     min-height: 700px;
     background: transparent !important;
@@ -45,20 +46,20 @@
 
 @media (max-width: 1200px) {
     .iw-cd-main-grid {
-        grid-template-columns: 320px 1fr !important;
         gap: 1.25rem !important;
     }
 }
 
 @media (max-width: 992px) {
     .iw-cd-main-grid {
-        grid-template-columns: 1fr !important;
+        flex-direction: column !important;
         padding: 0 !important;
         gap: 1rem !important;
     }
     
     .iw-cd-viewer-panel {
         order: -1 !important;
+        width: 100% !important;
     }
 }
 
@@ -70,7 +71,8 @@
     box-shadow: var(--iw-cd-shadow) !important;
     max-height: none !important;
     overflow-y: visible !important;
-    width: 100% !important;
+    flex: 1 !important;
+    min-width: 0 !important;
 }
 
 .iw-cd-controls-panel::-webkit-scrollbar {
@@ -94,10 +96,11 @@
     box-shadow: var(--iw-cd-shadow) !important;
     display: flex !important;
     flex-direction: column !important;
-    min-height: 600px !important;
-    max-height: 600px !important;
+    min-height: 500px !important;
+    max-height: 500px !important;
     position: relative !important;
-    width: 100% !important;
+    width: 300px !important;
+    flex-shrink: 0 !important;
 }
 
 .iw-cd-viewer-header {
@@ -131,7 +134,7 @@
 .iw-cd-3d-container {
     width: 100% !important;
     height: 100% !important;
-    min-height: 500px !important;
+    min-height: 400px !important;
     flex: 1 !important;
 }
 
@@ -170,24 +173,28 @@
     width: 100% !important;
     padding: 0.875rem 1rem !important;
     border: 2px solid var(--iw-cd-border) !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     font-size: 0.95rem !important;
     font-weight: 500 !important;
-    transition: all 0.3s ease !important;
-    background: white !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: linear-gradient(to bottom, #ffffff, #fafbfc) !important;
     color: var(--iw-cd-text) !important;
     line-height: 1.5 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
 }
 
 .iw-cd-form-control:focus {
     outline: none !important;
     border-color: var(--iw-cd-primary) !important;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
-    background: #fafbff !important;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+    background: #ffffff !important;
+    transform: translateY(-1px) !important;
 }
 
 .iw-cd-form-control:hover {
-    border-color: #d0d7de !important;
+    border-color: var(--iw-cd-primary) !important;
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1) !important;
+    transform: translateY(-1px) !important;
 }
 
 .iw-cd-form-control::placeholder {
@@ -196,8 +203,9 @@
 }
 
 .iw-cd-form-control option {
-    padding: 0.5rem !important;
+    padding: 0.75rem !important;
     font-weight: 500 !important;
+    background: white !important;
 }
 
 /* ==================== Piece Selector ==================== */
@@ -209,28 +217,47 @@
 
 .iw-cd-piece-item {
     position: relative !important;
-    padding: 1rem !important;
-    background: var(--iw-cd-bg-light) !important;
+    padding: 1rem 1.25rem !important;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
     border: 2px solid var(--iw-cd-border) !important;
-    border-radius: 8px !important;
+    border-radius: 12px !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     display: flex !important;
     align-items: center !important;
     gap: 0.75rem !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden !important;
+}
+
+.iw-cd-piece-item::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent) !important;
+    transition: left 0.5s ease !important;
 }
 
 .iw-cd-piece-item:hover {
-    background: white !important;
+    background: linear-gradient(135deg, #ffffff, #f0f4ff) !important;
     border-color: var(--iw-cd-primary) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25) !important;
+}
+
+.iw-cd-piece-item:hover::after {
+    left: 100% !important;
 }
 
 .iw-cd-piece-item.active {
     background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
     border-color: var(--iw-cd-primary) !important;
     color: white !important;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-3px) scale(1.02) !important;
 }
 
 .iw-cd-piece-checkbox {
@@ -371,31 +398,53 @@
 .iw-cd-part-btn {
     flex: 1 !important;
     min-width: 75px !important;
-    padding: 0.75rem 0.5rem !important;
-    background: var(--iw-cd-bg-light) !important;
+    padding: 0.875rem 0.75rem !important;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
     border: 2px solid var(--iw-cd-border) !important;
-    border-radius: 6px !important;
+    border-radius: 10px !important;
     font-weight: 600 !important;
     font-size: 0.85rem !important;
     color: var(--iw-cd-text) !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 0.25rem !important;
+    gap: 0.35rem !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.iw-cd-part-btn::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+    transition: left 0.5s ease !important;
 }
 
 .iw-cd-part-btn:hover {
-    background: white !important;
+    background: linear-gradient(135deg, #ffffff, #f0f4ff) !important;
     border-color: var(--iw-cd-primary) !important;
     color: var(--iw-cd-primary) !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+    transform: translateY(-2px) !important;
+}
+
+.iw-cd-part-btn:hover::before {
+    left: 100% !important;
 }
 
 .iw-cd-part-btn.active {
     background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
     border-color: var(--iw-cd-primary) !important;
     color: white !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-2px) scale(1.02) !important;
 }
 
 .iw-cd-part-btn i {
@@ -454,22 +503,45 @@
     width: 100% !important;
     aspect-ratio: 1 !important;
     border-radius: 50% !important;
-    border: 3px solid transparent !important;
+    border: 3px solid rgba(255, 255, 255, 0.8) !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.iw-cd-preset-color::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.4) !important;
+    transform: translate(-50%, -50%) !important;
+    transition: width 0.4s ease, height 0.4s ease !important;
 }
 
 .iw-cd-preset-color:hover {
-    transform: scale(1.2) !important;
+    transform: scale(1.25) translateY(-2px) !important;
     border-color: white !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 0 4px rgba(102, 126, 234, 0.2) !important;
+    z-index: 10 !important;
+}
+
+.iw-cd-preset-color:hover::after {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .iw-cd-preset-color.selected {
     border-color: var(--iw-cd-primary) !important;
-    transform: scale(1.15) !important;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3) !important;
+    border-width: 4px !important;
+    transform: scale(1.2) translateY(-3px) !important;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4), 0 0 0 4px rgba(102, 126, 234, 0.3) !important;
+    z-index: 10 !important;
 }
 
 /* ==================== Pattern Options ==================== */
@@ -481,30 +553,51 @@
 
 .iw-cd-pattern-item {
     padding: 1.5rem 1rem !important;
-    background: var(--iw-cd-bg-light) !important;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
     border: 2px solid var(--iw-cd-border) !important;
-    border-radius: 8px !important;
+    border-radius: 12px !important;
     text-align: center !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    min-height: 80px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    min-height: 90px !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
     align-items: center !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.iw-cd-pattern-item::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05)) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
 }
 
 .iw-cd-pattern-item:hover {
-    background: white !important;
+    background: linear-gradient(135deg, #ffffff, #f0f4ff) !important;
     border-color: var(--iw-cd-primary) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25) !important;
+}
+
+.iw-cd-pattern-item:hover::before {
+    opacity: 1 !important;
 }
 
 .iw-cd-pattern-item.active {
     background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
     border-color: var(--iw-cd-primary) !important;
     color: white !important;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-3px) scale(1.03) !important;
 }
 
 .iw-cd-pattern-icon {
@@ -521,24 +614,46 @@
 
 /* ==================== Upload Area ==================== */
 .iw-cd-upload-area {
-    padding: 2rem !important;
-    background: var(--iw-cd-bg-light) !important;
-    border: 2px dashed var(--iw-cd-border) !important;
-    border-radius: 8px !important;
+    padding: 2.5rem 2rem !important;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff) !important;
+    border: 3px dashed var(--iw-cd-border) !important;
+    border-radius: 12px !important;
     text-align: center !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.iw-cd-upload-area::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent) !important;
+    transition: left 0.6s ease !important;
 }
 
 .iw-cd-upload-area:hover {
     border-color: var(--iw-cd-primary) !important;
-    background: rgba(102, 126, 234, 0.05) !important;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.05)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2) !important;
+}
+
+.iw-cd-upload-area:hover::before {
+    left: 100% !important;
 }
 
 .iw-cd-upload-area.dragover {
     border-color: var(--iw-cd-primary) !important;
-    background: rgba(102, 126, 234, 0.1) !important;
-    transform: scale(1.02) !important;
+    border-style: solid !important;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1)) !important;
+    transform: scale(1.03) !important;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3) !important;
 }
 
 .iw-cd-upload-icon {
@@ -607,27 +722,48 @@
 }
 
 .iw-cd-control-btn {
-    width: 40px !important;
-    height: 40px !important;
-    background: rgba(255, 255, 255, 0.95) !important;
+    width: 42px !important;
+    height: 42px !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95)) !important;
     backdrop-filter: blur(10px) !important;
     border: 2px solid var(--iw-cd-border) !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     color: var(--iw-cd-text) !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     font-size: 1rem !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.iw-cd-control-btn::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(102, 126, 234, 0.1) !important;
+    transform: translate(-50%, -50%) !important;
+    transition: width 0.4s ease, height 0.4s ease !important;
 }
 
 .iw-cd-control-btn:hover {
-    background: white !important;
+    background: linear-gradient(135deg, #ffffff, #f0f4ff) !important;
     border-color: var(--iw-cd-primary) !important;
     color: var(--iw-cd-primary) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+    transform: translateY(-3px) scale(1.1) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3) !important;
+}
+
+.iw-cd-control-btn:hover::before {
+    width: 100px !important;
+    height: 100px !important;
 }
 
 .iw-cd-view-switcher {
@@ -646,58 +782,102 @@
 }
 
 .iw-cd-view-btn {
-    padding: 0.5rem 1rem !important;
-    background: transparent !important;
-    border: 2px solid transparent !important;
-    border-radius: 6px !important;
+    padding: 0.625rem 1rem !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9)) !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 8px !important;
     color: var(--iw-cd-text) !important;
     font-weight: 600 !important;
     font-size: 0.85rem !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.iw-cd-view-btn::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent) !important;
+    transition: left 0.4s ease !important;
 }
 
 .iw-cd-view-btn:hover {
-    background: var(--iw-cd-bg-light) !important;
+    background: linear-gradient(135deg, #ffffff, #f0f4ff) !important;
     border-color: var(--iw-cd-primary) !important;
     color: var(--iw-cd-primary) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+}
+
+.iw-cd-view-btn:hover::before {
+    left: 100% !important;
 }
 
 .iw-cd-view-btn.active {
     background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
     border-color: var(--iw-cd-primary) !important;
     color: white !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-2px) scale(1.05) !important;
 }
 
 /* ==================== Buttons ==================== */
 .iw-cd-btn {
-    padding: 0.75rem 1.5rem !important;
-    border-radius: 8px !important;
+    padding: 0.875rem 1.75rem !important;
+    border-radius: 10px !important;
     font-weight: 600 !important;
     font-size: 0.95rem !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     border: none !important;
     cursor: pointer !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 0.5rem !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.iw-cd-btn::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: translate(-50%, -50%) !important;
+    transition: width 0.6s ease, height 0.6s ease !important;
+}
+
+.iw-cd-btn:hover::before {
+    width: 300px !important;
+    height: 300px !important;
 }
 
 .iw-cd-btn-primary {
     background: linear-gradient(135deg, var(--iw-cd-primary), var(--iw-cd-secondary)) !important;
     color: white !important;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3) !important;
+    position: relative !important;
+    z-index: 1 !important;
 }
 
 .iw-cd-btn-primary:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3) !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4) !important;
 }
 
 .iw-cd-btn-primary:active {
-    transform: translateY(0) !important;
-    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2) !important;
+    transform: translateY(-1px) scale(1) !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
 }
 
 /* ==================== Sub Labels ==================== */
