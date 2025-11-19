@@ -1,7 +1,61 @@
 {{-- Enhanced Design Tools V2 - Modern & Isolated --}}
 <div class="enhanced-design-system">
     <div class="eds-main-grid">
-        <!-- Left Panel: Controls -->
+        <!-- Left Panel: 3D Viewer -->
+        <div class="eds-viewer-panel">
+            <div class="eds-viewer-header">
+                <div class="eds-viewer-title">
+                    <i class="fas fa-cube"></i>
+                    معاينة ثلاثية الأبعاد
+                </div>
+                <div>
+                    <button type="button" class="eds-btn" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); color: white; border: none;" id="toggle-auto-rotate" title="دوران تلقائي">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button type="button" class="eds-btn" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); color: white; border: none;" id="capture-screenshot" title="التقاط صورة">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="eds-viewer-body">
+                <div id="3d-viewer" class="eds-3d-container"></div>
+                
+                <!-- Viewer Controls -->
+                <div class="eds-viewer-controls">
+                    <button type="button" class="eds-control-btn" id="rotate-model" title="تدوير">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button type="button" class="eds-control-btn" id="zoom-in" title="تكبير">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button type="button" class="eds-control-btn" id="zoom-out" title="تصغير">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <button type="button" class="eds-control-btn" id="reset-view" title="إعادة تعيين">
+                        <i class="fas fa-home"></i>
+                    </button>
+                </div>
+                
+                <!-- View Switcher -->
+                <div class="eds-view-switcher">
+                    <button type="button" class="eds-view-btn active" id="view-front" data-view="front">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <button type="button" class="eds-view-btn" id="view-back" data-view="back">
+                        <i class="fas fa-user-slash"></i>
+                    </button>
+                    <button type="button" class="eds-view-btn" id="view-left" data-view="left">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button type="button" class="eds-view-btn" id="view-right" data-view="right">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Controls -->
         <div class="eds-controls-panel">
             
             <!-- Activity Type -->
@@ -271,60 +325,6 @@
                         <span class="eds-summary-label">عدد الأصناف:</span>
                         <span class="eds-summary-value" id="piece-count">0</span>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Panel: 3D Viewer -->
-        <div class="eds-viewer-panel">
-            <div class="eds-viewer-header">
-                <div class="eds-viewer-title">
-                    <i class="fas fa-cube"></i>
-                    معاينة ثلاثية الأبعاد
-                </div>
-                <div>
-                    <button type="button" class="eds-btn" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); color: white; border: none;" id="toggle-auto-rotate" title="دوران تلقائي">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                    <button type="button" class="eds-btn" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); color: white; border: none;" id="capture-screenshot" title="التقاط صورة">
-                        <i class="fas fa-camera"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="eds-viewer-body">
-                <div id="3d-viewer" class="eds-3d-container"></div>
-                
-                <!-- Viewer Controls -->
-                <div class="eds-viewer-controls">
-                    <button type="button" class="eds-control-btn" id="rotate-model" title="تدوير">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                    <button type="button" class="eds-control-btn" id="zoom-in" title="تكبير">
-                        <i class="fas fa-search-plus"></i>
-                    </button>
-                    <button type="button" class="eds-control-btn" id="zoom-out" title="تصغير">
-                        <i class="fas fa-search-minus"></i>
-                    </button>
-                    <button type="button" class="eds-control-btn" id="reset-view" title="إعادة تعيين">
-                        <i class="fas fa-home"></i>
-                    </button>
-                </div>
-                
-                <!-- View Switcher -->
-                <div class="eds-view-switcher">
-                    <button type="button" class="eds-view-btn active" id="view-front" data-view="front">
-                        <i class="fas fa-user"></i>
-                    </button>
-                    <button type="button" class="eds-view-btn" id="view-back" data-view="back">
-                        <i class="fas fa-user-slash"></i>
-                    </button>
-                    <button type="button" class="eds-view-btn" id="view-left" data-view="left">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <button type="button" class="eds-view-btn" id="view-right" data-view="right">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
                 </div>
             </div>
         </div>
