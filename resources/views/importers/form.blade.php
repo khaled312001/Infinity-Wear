@@ -5,17 +5,20 @@
 @push('styles')
 <link href="{{ asset('css/multi-step-form.css') }}" rel="stylesheet">
 <link href="{{ asset('css/enhanced-design-interface.css') }}" rel="stylesheet">
+<link href="{{ asset('css/enhanced-form-animations.css') }}" rel="stylesheet">
 @endpush
 
 @push('scripts')
-<!-- Three.js and OrbitControls -->
+<!-- Three.js and Extensions -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
 <!-- Enhanced 3D Viewer System -->
 <script src="{{ asset('js/enhanced-3d-viewer.js') }}"></script>
 <script src="{{ asset('js/design-interface.js') }}"></script>
 <script src="{{ asset('js/design-system-init.js') }}"></script>
+<script src="{{ asset('js/form-enhancements.js') }}"></script>
 <script src="{{ asset('js/multi-step-form.js') }}"></script>
 @endpush
 

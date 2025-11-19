@@ -212,28 +212,176 @@ class Enhanced3DViewer {
         });
     }
 
-    loadHumanModel() {
-        // Create a realistic human mannequin
+    async loadGLTFModel(url) {
+        // Check if GLTFLoader is available
+        if (typeof THREE.GLTFLoader === 'undefined') {
+            console.warn('GLTFLoader not available, using fallback model');
+            return null;
+        }
+
+        return new Promise((resolve, reject) => {
+            const loader = new THREE.GLTFLoader();
+            loader.load(
+                url,
+                (gltf) => {
+                    resolve(gltf.scene);
+                },
+                (progress) => {
+                    console.log('Loading model:', (progress.loaded / progress.total * 100) + '%');
+                },
+                (error) => {
+                    console.error('Error loading GLTF model:', error);
+                    reject(error);
+                }
+            );
+        });
+    }
+
+    async loadHumanModel() {
+        // Try to load realistic GLTF model first
+        try {
+            const gltfModel = await this.loadRealisticHumanModel();
+            if (gltfModel) {
+                return;
+            }
+        } catch (error) {
+            console.log('Using fallback model');
+        }
+
+        // Fallback: Create enhanced realistic mannequin
+        this.createEnhancedMannequin();
+    }
+
+    async loadRealisticHumanModel() {
+        // URLs for free human models
+        const modelUrls = [
+            'https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/RobotExpressive/glTF-Binary/RobotExpressive.glb',
+            // You can add your own model URL here
+        ];
+
+        for (const url of modelUrls) {
+            try {
+                const model = await this.loadGLTFModel(url);
+                if (model) {
+                    model.scale.set(0.8, 0.8, 0.8);
+                    model.position.set(0, -1, 0);
+                    model.rotation.y = 0.1;
+                    
+                    // Enable shadows
+                    model.traverse((child) => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                    });
+
+                    this.humanModel = model;
+                    this.scene.add(this.humanModel);
+                    console.log('✓ Realistic human model loaded');
+                    return model;
+                }
+            } catch (error) {
+                console.log('Model not available, trying next...');
+            }
+        }
+
+        return null;
+    }
+
+    createEnhancedMannequin() {
+        // Create a highly detailed realistic human mannequin
         const humanGroup = new THREE.Group();
         humanGroup.name = 'humanModel';
 
-        // Skin material
+        // Enhanced realistic skin material with subsurface
         const skinMaterial = new THREE.MeshStandardMaterial({ 
-            color: 0xffdbac,
-            roughness: 0.8,
+            color: 0xffd5b4,
+            roughness: 0.6,
+            metalness: 0.05,
+            envMapIntensity: 0.5,
+            flatShading: false
+        });
+
+        const hairMaterial = new THREE.MeshStandardMaterial({
+            color: 0x3d2817,
+            roughness: 0.9,
             metalness: 0.1
         });
 
-        // Head with better proportions
-        const headGeometry = new THREE.SphereGeometry(0.28, 32, 32);
+        // Head Group with detailed features
+        const headGroup = new THREE.Group();
+        
+        // Main head with better shape
+        const headGeometry = new THREE.SphereGeometry(0.25, 64, 64);
         const head = new THREE.Mesh(headGeometry, skinMaterial);
-        head.position.y = 1.5;
+        head.scale.set(1, 1.15, 0.95);
+        head.position.y = 1.55;
         head.castShadow = true;
         head.receiveShadow = true;
+        headGroup.add(head);
+
+        // Face features
+        // Eyes
+        const eyeGeo = new THREE.SphereGeometry(0.03, 16, 16);
+        const eyeMaterial = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            roughness: 0.2,
+            metalness: 0.1
+        });
         
-        // Slightly elongate head
-        head.scale.set(0.95, 1.1, 0.95);
-        humanGroup.add(head);
+        const leftEye = new THREE.Mesh(eyeGeo, eyeMaterial);
+        leftEye.position.set(-0.08, 1.58, 0.2);
+        headGroup.add(leftEye);
+        
+        const rightEye = new THREE.Mesh(eyeGeo, eyeMaterial);
+        rightEye.position.set(0.08, 1.58, 0.2);
+        headGroup.add(rightEye);
+
+        // Pupils
+        const pupilGeo = new THREE.SphereGeometry(0.015, 16, 16);
+        const pupilMaterial = new THREE.MeshStandardMaterial({
+            color: 0x1a1a1a,
+            roughness: 0.1
+        });
+        
+        const leftPupil = new THREE.Mesh(pupilGeo, pupilMaterial);
+        leftPupil.position.set(-0.08, 1.58, 0.22);
+        headGroup.add(leftPupil);
+        
+        const rightPupil = new THREE.Mesh(pupilGeo, pupilMaterial);
+        rightPupil.position.set(0.08, 1.58, 0.22);
+        headGroup.add(rightPupil);
+
+        // Nose
+        const noseGeo = new THREE.ConeGeometry(0.025, 0.08, 8);
+        const nose = new THREE.Mesh(noseGeo, skinMaterial);
+        nose.position.set(0, 1.52, 0.23);
+        nose.rotation.x = Math.PI / 2;
+        headGroup.add(nose);
+
+        // Ears
+        const earGeo = new THREE.SphereGeometry(0.05, 16, 16);
+        earGeo.scale(0.5, 1, 0.3);
+        
+        const leftEar = new THREE.Mesh(earGeo, skinMaterial);
+        leftEar.position.set(-0.24, 1.55, 0);
+        leftEar.castShadow = true;
+        headGroup.add(leftEar);
+        
+        const rightEar = new THREE.Mesh(earGeo, skinMaterial);
+        rightEar.position.set(0.24, 1.55, 0);
+        rightEar.castShadow = true;
+        headGroup.add(rightEar);
+
+        // Hair
+        const hairGeo = new THREE.SphereGeometry(0.27, 32, 32);
+        const hair = new THREE.Mesh(hairGeo, hairMaterial);
+        hair.scale.set(1, 0.9, 1);
+        hair.position.y = 1.65;
+        hair.castShadow = true;
+        headGroup.add(hair);
+
+        humanGroup.add(headGroup);
 
         // Neck
         const neckGeometry = new THREE.CylinderGeometry(0.1, 0.12, 0.2, 16);
@@ -296,74 +444,109 @@ class Enhanced3DViewer {
         const isLeft = xOffset < 0;
         const sign = isLeft ? -1 : 1;
 
-        // Upper arm
-        const upperArmGeometry = new THREE.CylinderGeometry(0.09, 0.11, 0.5, 16);
-        const upperArm = new THREE.Mesh(upperArmGeometry, material);
-        upperArm.position.set(xOffset, 0.5, 0);
-        upperArm.rotation.z = sign * Math.PI / 12;
+        // Upper arm with muscle definition
+        const upperArmGeo = new THREE.CylinderGeometry(0.08, 0.1, 0.45, 16);
+        const upperArm = new THREE.Mesh(upperArmGeo, material);
+        upperArm.position.set(xOffset, 0.6, 0);
+        upperArm.rotation.z = sign * Math.PI / 15;
         upperArm.castShadow = true;
         parentGroup.add(upperArm);
 
-        // Elbow
-        const elbowGeometry = new THREE.SphereGeometry(0.09, 12, 12);
-        const elbow = new THREE.Mesh(elbowGeometry, material);
-        elbow.position.set(xOffset + (sign * 0.08), 0.2, 0);
+        // Elbow joint
+        const elbowGeo = new THREE.SphereGeometry(0.085, 12, 12);
+        const elbow = new THREE.Mesh(elbowGeo, material);
+        elbow.position.set(xOffset + (sign * 0.05), 0.35, 0);
         elbow.castShadow = true;
         parentGroup.add(elbow);
 
-        // Lower arm
-        const lowerArmGeometry = new THREE.CylinderGeometry(0.07, 0.09, 0.45, 16);
-        const lowerArm = new THREE.Mesh(lowerArmGeometry, material);
-        lowerArm.position.set(xOffset + (sign * 0.16), -0.05, 0.05);
-        lowerArm.rotation.z = sign * Math.PI / 8;
+        // Lower arm (forearm)
+        const lowerArmGeo = new THREE.CylinderGeometry(0.07, 0.08, 0.4, 16);
+        const lowerArm = new THREE.Mesh(lowerArmGeo, material);
+        lowerArm.position.set(xOffset + (sign * 0.1), 0.1, 0.05);
+        lowerArm.rotation.z = sign * Math.PI / 12;
         lowerArm.castShadow = true;
         parentGroup.add(lowerArm);
 
-        // Hand
-        const handGeometry = new THREE.SphereGeometry(0.08, 12, 12);
-        handGeometry.scale(1, 1.2, 0.6);
-        const hand = new THREE.Mesh(handGeometry, material);
-        hand.position.set(xOffset + (sign * 0.24), -0.28, 0.08);
+        // Wrist
+        const wristGeo = new THREE.SphereGeometry(0.07, 12, 12);
+        const wrist = new THREE.Mesh(wristGeo, material);
+        wrist.position.set(xOffset + (sign * 0.15), -0.1, 0.08);
+        wrist.castShadow = true;
+        parentGroup.add(wrist);
+
+        // Hand - more detailed
+        const handGeo = new THREE.BoxGeometry(0.1, 0.15, 0.05);
+        const hand = new THREE.Mesh(handGeo, material);
+        hand.position.set(xOffset + (sign * 0.15), -0.18, 0.08);
         hand.castShadow = true;
         parentGroup.add(hand);
+
+        // Fingers
+        for (let i = 0; i < 5; i++) {
+            const fingerGeo = new THREE.CylinderGeometry(0.008, 0.006, 0.05, 8);
+            const finger = new THREE.Mesh(fingerGeo, material);
+            finger.position.set(
+                xOffset + (sign * 0.15) + (i - 2) * 0.015 * sign,
+                -0.255,
+                0.1
+            );
+            finger.rotation.x = Math.PI / 6;
+            finger.castShadow = true;
+            parentGroup.add(finger);
+        }
     }
 
     createLeg(parentGroup, xOffset, material) {
-        // Upper leg (thigh)
-        const upperLegGeometry = new THREE.CylinderGeometry(0.12, 0.14, 0.6, 16);
-        const upperLeg = new THREE.Mesh(upperLegGeometry, material);
-        upperLeg.position.set(xOffset, -0.55, 0);
+        // Upper leg (thigh) with muscle definition
+        const upperLegGeo = new THREE.CylinderGeometry(0.11, 0.13, 0.55, 16);
+        const upperLeg = new THREE.Mesh(upperLegGeo, material);
+        upperLeg.position.set(xOffset, -0.35, 0);
         upperLeg.castShadow = true;
         parentGroup.add(upperLeg);
 
-        // Knee
-        const kneeGeometry = new THREE.SphereGeometry(0.11, 12, 12);
-        const knee = new THREE.Mesh(kneeGeometry, material);
-        knee.position.set(xOffset, -0.85, 0);
+        // Knee cap
+        const kneeGeo = new THREE.SphereGeometry(0.11, 16, 16);
+        const knee = new THREE.Mesh(kneeGeo, material);
+        knee.position.set(xOffset, -0.65, 0.05);
+        knee.scale.set(1, 0.9, 0.8);
         knee.castShadow = true;
         parentGroup.add(knee);
 
-        // Lower leg (calf)
-        const lowerLegGeometry = new THREE.CylinderGeometry(0.1, 0.11, 0.6, 16);
-        const lowerLeg = new THREE.Mesh(lowerLegGeometry, material);
-        lowerLeg.position.set(xOffset, -1.2, 0);
+        // Lower leg (calf) with natural taper
+        const lowerLegGeo = new THREE.CylinderGeometry(0.09, 0.1, 0.55, 16);
+        const lowerLeg = new THREE.Mesh(lowerLegGeo, material);
+        lowerLeg.position.set(xOffset, -0.95, 0);
         lowerLeg.castShadow = true;
         parentGroup.add(lowerLeg);
 
         // Ankle
-        const ankleGeometry = new THREE.SphereGeometry(0.09, 12, 12);
-        const ankle = new THREE.Mesh(ankleGeometry, material);
-        ankle.position.set(xOffset, -1.5, 0);
+        const ankleGeo = new THREE.SphereGeometry(0.08, 12, 12);
+        const ankle = new THREE.Mesh(ankleGeo, material);
+        ankle.position.set(xOffset, -1.225, 0);
         ankle.castShadow = true;
         parentGroup.add(ankle);
 
-        // Foot
-        const footGeometry = new THREE.BoxGeometry(0.18, 0.12, 0.35);
-        const foot = new THREE.Mesh(footGeometry, material);
-        foot.position.set(xOffset, -1.6, 0.08);
+        // Foot - more anatomical
+        const footGeo = new THREE.BoxGeometry(0.15, 0.1, 0.3);
+        const foot = new THREE.Mesh(footGeo, material);
+        foot.position.set(xOffset, -1.28, 0.07);
         foot.castShadow = true;
         foot.receiveShadow = true;
         parentGroup.add(foot);
+
+        // Toes
+        for (let i = 0; i < 5; i++) {
+            const toeGeo = new THREE.SphereGeometry(0.015, 8, 8);
+            toeGeo.scale(1, 0.7, 1.2);
+            const toe = new THREE.Mesh(toeGeo, material);
+            toe.position.set(
+                xOffset + (i - 2) * 0.025,
+                -1.32,
+                0.2
+            );
+            toe.castShadow = true;
+            parentGroup.add(toe);
+        }
     }
 
     setupInteraction() {
