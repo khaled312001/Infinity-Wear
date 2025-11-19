@@ -32,6 +32,91 @@
     contain: layout style paint !important;
 }
 
+/* Override any global form-control styles that might affect .iw-custom-designer */
+/* Only target elements that don't have custom classes */
+.iw-custom-designer input[type="text"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-color-input),
+.iw-custom-designer input[type="number"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.iw-custom-designer input[type="email"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.iw-custom-designer input[type="tel"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.iw-custom-designer input[type="url"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.iw-custom-designer input[type="search"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.iw-custom-designer input[type="password"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.iw-custom-designer textarea:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.iw-custom-designer select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-form-control),
+#design_custom_detail input[type="text"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-color-input),
+#design_custom_detail input[type="number"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+#design_custom_detail input[type="email"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+#design_custom_detail input[type="tel"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+#design_custom_detail input[type="url"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+#design_custom_detail input[type="search"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+#design_custom_detail input[type="password"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+#design_custom_detail textarea:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+#design_custom_detail select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-form-control) {
+    /* Override global styles with custom designer styles */
+    width: 100% !important;
+    padding: 0.875rem 1rem !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 10px !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: linear-gradient(to bottom, #ffffff, #fafbfc) !important;
+    color: var(--iw-cd-text) !important;
+    line-height: 1.5 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    font-family: inherit !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.iw-custom-designer input[type="text"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-color-input):focus,
+.iw-custom-designer input[type="number"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+.iw-custom-designer input[type="email"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+.iw-custom-designer input[type="tel"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+.iw-custom-designer input[type="url"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+.iw-custom-designer input[type="search"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+.iw-custom-designer input[type="password"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+.iw-custom-designer textarea:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+.iw-custom-designer select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-form-control):focus,
+#design_custom_detail input[type="text"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-color-input):focus,
+#design_custom_detail input[type="number"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+#design_custom_detail input[type="email"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+#design_custom_detail input[type="tel"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+#design_custom_detail input[type="url"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+#design_custom_detail input[type="search"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+#design_custom_detail input[type="password"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+#design_custom_detail textarea:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+#design_custom_detail select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-form-control):focus {
+    outline: none !important;
+    border-color: var(--iw-cd-primary) !important;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+    background: #ffffff !important;
+    transform: translateY(-1px) !important;
+}
+
+.iw-custom-designer input[type="text"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-color-input):hover,
+.iw-custom-designer input[type="number"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+.iw-custom-designer input[type="email"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+.iw-custom-designer input[type="tel"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+.iw-custom-designer input[type="url"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+.iw-custom-designer input[type="search"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+.iw-custom-designer input[type="password"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+.iw-custom-designer textarea:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+.iw-custom-designer select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-form-control):hover,
+#design_custom_detail input[type="text"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-color-input):hover,
+#design_custom_detail input[type="number"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+#design_custom_detail input[type="email"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+#design_custom_detail input[type="tel"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+#design_custom_detail input[type="url"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+#design_custom_detail input[type="search"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+#design_custom_detail input[type="password"]:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+#design_custom_detail textarea:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+#design_custom_detail select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):not(.iw-cd-form-control):hover {
+    border-color: var(--iw-cd-primary) !important;
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1) !important;
+    transform: translateY(-1px) !important;
+}
+
 /* Ensure parent container takes full width and isolates styles */
 #design_custom_detail,
 .design-detail#design_custom_detail {
@@ -1421,12 +1506,77 @@
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
 }
 
+/* ==================== Override Global CSS Rules ==================== */
+/* Protect .iw-custom-designer from global form-control styles */
+.iw-custom-designer .form-control:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.iw-custom-designer .form-select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+#design_custom_detail .form-control:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+#design_custom_detail .form-select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced) {
+    /* Reset global styles that might interfere */
+    all: unset !important;
+    display: revert !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    padding: 0.875rem 1rem !important;
+    border: 2px solid var(--iw-cd-border) !important;
+    border-radius: 10px !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: linear-gradient(to bottom, #ffffff, #fafbfc) !important;
+    color: var(--iw-cd-text) !important;
+    line-height: 1.5 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    font-family: inherit !important;
+    margin: 0 !important;
+}
+
+.iw-custom-designer .form-control:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+.iw-custom-designer .form-select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+#design_custom_detail .form-control:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus,
+#design_custom_detail .form-select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):focus {
+    outline: none !important;
+    border-color: var(--iw-cd-primary) !important;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+    background: #ffffff !important;
+    transform: translateY(-1px) !important;
+}
+
+.iw-custom-designer .form-control:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+.iw-custom-designer .form-select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+#design_custom_detail .form-control:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover,
+#design_custom_detail .form-select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced):hover {
+    border-color: var(--iw-cd-primary) !important;
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Protect buttons inside .iw-custom-designer */
+.iw-custom-designer .btn:not(.iw-cd-btn):not(.iw-cd-btn-enhanced):not(.iw-cd-mini-control-btn):not(.iw-cd-mini-view-btn),
+#design_custom_detail .btn:not(.iw-cd-btn):not(.iw-cd-btn-enhanced):not(.iw-cd-mini-control-btn):not(.iw-cd-mini-view-btn) {
+    all: unset !important;
+    display: inline-block !important;
+    box-sizing: border-box !important;
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    border: none !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-family: inherit !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+}
+
 /* ==================== Protection for other form sections ==================== */
 /* Ensure form controls outside .iw-custom-designer are not affected */
-.form-step .form-control:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
-.form-step .form-select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
-.step-content .form-control:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
-.step-content .form-select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced) {
+.form-step:not(.iw-custom-designer) .form-control:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.form-step:not(.iw-custom-designer) .form-select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.step-content:not(.iw-custom-designer) .form-control:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced),
+.step-content:not(.iw-custom-designer) .form-select:not(.iw-cd-form-control):not(.iw-cd-form-control-enhanced) {
     /* Reset any potential interference */
     all: revert;
     box-sizing: border-box;
