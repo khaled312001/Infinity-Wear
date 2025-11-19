@@ -18,39 +18,43 @@
                 </div>
             </div>
             
-            <div class="iw-cd-viewer-body">
-                <div id="3d-viewer" class="iw-cd-3d-container"></div>
+            <div class="iw-cd-viewer-body" style="display: flex; flex-direction: row; align-items: flex-start; gap: 1rem;">
+                <!-- 3D Viewer (on the left, small box) -->
+                <div id="3d-viewer" class="iw-cd-3d-container" style="min-width: 160px; min-height: 160px; width: 160px; height: 160px; max-width: 200px; max-height: 200px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-radius: 12px; background: #f7f7fb; margin-left: 0;"></div>
                 
-                <!-- Viewer Controls -->
-                <div class="iw-cd-viewer-controls">
-                    <button type="button" class="iw-cd-control-btn" id="cd-rotate-model" title="تدوير">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                    <button type="button" class="iw-cd-control-btn" id="cd-zoom-in" title="تكبير">
-                        <i class="fas fa-search-plus"></i>
-                    </button>
-                    <button type="button" class="iw-cd-control-btn" id="cd-zoom-out" title="تصغير">
-                        <i class="fas fa-search-minus"></i>
-                    </button>
-                    <button type="button" class="iw-cd-control-btn" id="cd-reset-view" title="إعادة تعيين">
-                        <i class="fas fa-home"></i>
-                    </button>
-                </div>
-                
-                <!-- View Switcher -->
-                <div class="iw-cd-view-switcher">
-                    <button type="button" class="iw-cd-view-btn active" id="cd-view-front" data-view="front">
-                        <i class="fas fa-user"></i>
-                    </button>
-                    <button type="button" class="iw-cd-view-btn" id="cd-view-back" data-view="back">
-                        <i class="fas fa-user-slash"></i>
-                    </button>
-                    <button type="button" class="iw-cd-view-btn" id="cd-view-left" data-view="left">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <button type="button" class="iw-cd-view-btn" id="cd-view-right" data-view="right">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
+                <!-- Controls stacked to the right of the viewer -->
+                <div style="display: flex; flex-direction: column; flex: 1; gap: 0.8rem;">
+                    <!-- Viewer Controls -->
+                    <div class="iw-cd-viewer-controls" style="display: flex; flex-direction: row; gap: 0.4rem;">
+                        <button type="button" class="iw-cd-control-btn" id="cd-rotate-model" title="تدوير">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" class="iw-cd-control-btn" id="cd-zoom-in" title="تكبير">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button type="button" class="iw-cd-control-btn" id="cd-zoom-out" title="تصغير">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <button type="button" class="iw-cd-control-btn" id="cd-reset-view" title="إعادة تعيين">
+                            <i class="fas fa-home"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- View Switcher -->
+                    <div class="iw-cd-view-switcher" style="display: flex; flex-direction: row; gap: 0.4rem;">
+                        <button type="button" class="iw-cd-view-btn active" id="cd-view-front" data-view="front">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <button type="button" class="iw-cd-view-btn" id="cd-view-back" data-view="back">
+                            <i class="fas fa-user-slash"></i>
+                        </button>
+                        <button type="button" class="iw-cd-view-btn" id="cd-view-left" data-view="left">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <button type="button" class="iw-cd-view-btn" id="cd-view-right" data-view="right">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
