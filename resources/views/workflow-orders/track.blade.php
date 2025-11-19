@@ -84,7 +84,7 @@
                         <i class="fas fa-search text-primary me-2"></i>
                         تتبع الطلب
                     </h1>
-                    <form method="GET" action="{{ route('order.track') }}" class="d-flex gap-2">
+                    <form method="GET" action="{{ route('track-order') }}" class="d-flex gap-2">
                         <input type="text" name="order_number" class="form-control form-control-lg" placeholder="أدخل رقم الطلب" value="{{ request('order_number') }}" required>
                         <button type="submit" class="btn btn-primary btn-lg">
                             <i class="fas fa-search me-2"></i>بحث
