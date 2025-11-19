@@ -1,0 +1,179 @@
+/* إصلاحات التصميم */
+
+/* إعادة ضبط الأنماط المتعارضة */
+.importer-form-wrapper * {
+    box-sizing: border-box;
+}
+
+/* إصلاح Container */
+.importer-form-wrapper .form-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* إصلاح Card */
+.importer-form-wrapper .main-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+/* إصلاح Grid/Flex */
+.importer-form-wrapper .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -0.75rem;
+    margin-left: -0.75rem;
+}
+
+.importer-form-wrapper .row > * {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+}
+
+.importer-form-wrapper .col-md-6 {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .importer-form-wrapper .col-md-6 {
+        width: 50%;
+    }
+}
+
+/* إصلاح Form Content */
+.importer-form-wrapper .form-content {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: stretch;
+}
+
+/* المجسم على اليسار */
+.importer-form-wrapper .viewer-sidebar {
+    order: 1;
+    background: linear-gradient(180deg, #f8fafc 0%, #e5e7eb 100%);
+    border-right: 1px solid #e5e7eb;
+    padding: 2rem;
+    width: 400px;
+    flex-shrink: 0;
+}
+
+/* الفورم على اليمين */
+.importer-form-wrapper .steps-container {
+    order: 2;
+    flex: 1;
+    padding: 2rem 3rem;
+}
+
+/* إصلاح الأزرار */
+.importer-form-wrapper .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+/* إصلاح المجسم */
+.importer-form-wrapper .viewer-container {
+    background: #f3f4f6;
+    border-radius: 12px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #e5e7eb;
+}
+
+/* إصلاح Design Options */
+.importer-form-wrapper .design-options-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* إصلاح Pieces Grid */
+.importer-form-wrapper .pieces-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+/* إصلاح Color Palette */
+.importer-form-wrapper .color-palette {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 0.75rem;
+}
+
+/* إصلاح Sizes Grid */
+.importer-form-wrapper .sizes-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+/* Responsive Fixes */
+@media (max-width: 1024px) {
+    .importer-form-wrapper .form-content {
+        flex-direction: column;
+    }
+    
+    .importer-form-wrapper .viewer-sidebar {
+        order: 2;
+        width: 100%;
+    }
+    
+    .importer-form-wrapper .steps-container {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .importer-form-wrapper .steps-container {
+        padding: 1.5rem;
+    }
+    
+    .importer-form-wrapper .viewer-sidebar {
+        padding: 1rem;
+    }
+    
+    .importer-form-wrapper .design-options-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .importer-form-wrapper .pieces-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .importer-form-wrapper .color-palette {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .importer-form-wrapper .sizes-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* إزالة الخلفية من Body */
+body.has-importer-form {
+    background: transparent !important;
+}
+

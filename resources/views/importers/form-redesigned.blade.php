@@ -5,6 +5,17 @@
 @push('styles')
 <link href="{{ asset('css/importer-form-new.css') }}" rel="stylesheet">
 <link href="{{ asset('css/model-viewer-enhancements.css') }}" rel="stylesheet">
+<link href="{{ asset('css/importer-form-fixes.css') }}" rel="stylesheet">
+<style>
+/* Inline critical styles */
+body {
+    background: transparent !important;
+}
+.importer-form-wrapper {
+    direction: rtl;
+    text-align: right;
+}
+</style>
 @endpush
 
 @push('scripts')
@@ -12,11 +23,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="{{ asset('js/form-init-fix.js') }}"></script>
 <script src="{{ asset('js/model-viewer-enhanced.js') }}"></script>
 <script src="{{ asset('js/importer-form-new.js') }}"></script>
 @endpush
 
 @section('content')
+<div class="importer-form-wrapper">
 <div class="form-container">
     <div class="main-card">
         <!-- Header -->
@@ -615,5 +628,6 @@
     alert('يوجد أخطاء في النموذج. يرجى مراجعة البيانات المدخلة.');
 </script>
 @endif
+</div>
 @endsection
 

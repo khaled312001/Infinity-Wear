@@ -14,17 +14,12 @@
     --transition: all 0.3s ease;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* إضافة تصميم للصفحة دون تغيير body الرئيسي */
+.importer-form-wrapper {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     padding: 2rem 0;
+    font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Container */
@@ -150,19 +145,26 @@ body {
 
 /* Main Content - Two Columns */
 .form-content {
-    display: grid;
-    grid-template-columns: 400px 1fr;
+    display: flex;
+    flex-direction: row-reverse;
     min-height: 600px;
+}
+
+.form-content > * {
+    flex: 1;
 }
 
 /* 3D Viewer على اليسار */
 .viewer-sidebar {
     background: linear-gradient(180deg, #f8fafc 0%, #e5e7eb 100%);
-    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
     padding: 2rem;
     position: sticky;
     top: 0;
-    height: calc(100vh - 200px);
+    max-width: 450px;
+    flex: 0 0 450px;
+    height: fit-content;
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
 }
 
@@ -264,6 +266,8 @@ body {
 /* Form Steps على اليمين */
 .steps-container {
     padding: 2rem 3rem;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .form-step {
@@ -624,13 +628,16 @@ body {
 /* Responsive */
 @media (max-width: 1024px) {
     .form-content {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
     
     .viewer-sidebar {
+        max-width: 100%;
+        flex: 1;
         height: auto;
         position: relative;
         order: 2;
+        max-height: none;
     }
     
     .steps-container {
@@ -639,7 +646,7 @@ body {
 }
 
 @media (max-width: 768px) {
-    body {
+    .importer-form-wrapper {
         padding: 1rem 0;
     }
     
@@ -647,12 +654,16 @@ body {
         padding: 1.5rem;
     }
     
+    .viewer-sidebar {
+        padding: 1rem;
+    }
+    
     .form-navigation {
         padding: 1.5rem;
         flex-direction: column;
         gap: 1rem;
     }
-    
+     
     .btn {
         width: 100%;
         justify-content: center;
