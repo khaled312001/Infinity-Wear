@@ -180,7 +180,26 @@
                                             @if(isset($orderItem->type) && $orderItem->type == 'importer')
                                                 <span class="badge bg-secondary">قديم</span>
                                             @else
-                                                <span class="badge bg-info">{{ $orderItem->current_stage ?? 'غير محدد' }}</span>
+                                                <div>
+                                                    <span class="badge bg-info mb-2 d-block">{{ $orderItem->current_stage ?? 'غير محدد' }}</span>
+                                                    @if(isset($orderItem->progress_percentage))
+                                                        <div class="progress" style="height: 8px;">
+                                                            <div class="progress-bar 
+                                                                @if($orderItem->progress_percentage == 100) bg-success
+                                                                @elseif($orderItem->progress_percentage >= 50) bg-info
+                                                                @elseif($orderItem->progress_percentage >= 25) bg-warning
+                                                                @else bg-secondary
+                                                                @endif" 
+                                                                role="progressbar" 
+                                                                style="width: {{ $orderItem->progress_percentage }}%"
+                                                                aria-valuenow="{{ $orderItem->progress_percentage }}" 
+                                                                aria-valuemin="0" 
+                                                                aria-valuemax="100">
+                                                            </div>
+                                                        </div>
+                                                        <small class="text-muted">{{ $orderItem->progress_percentage }}%</small>
+                                                    @endif
+                                                </div>
                                             @endif
                                         </td>
                                         <td>

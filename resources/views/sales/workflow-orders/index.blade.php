@@ -127,6 +127,7 @@
                                         <th>رقم الطلب</th>
                                         <th>العميل</th>
                                         <th>حالة المبيعات</th>
+                                        <th>تقدم الطلب</th>
                                         <th>التكلفة</th>
                                         <th>تاريخ الإنشاء</th>
                                         <th>الإجراءات</th>
@@ -162,6 +163,27 @@
                                                 $label = $labels[$order->sales_status] ?? $order->sales_status;
                                             @endphp
                                             <span class="badge bg-{{ $color }}">{{ $label }}</span>
+                                        </td>
+                                        <td>
+                                            @if(isset($order->progress_percentage))
+                                                <div class="progress mb-1" style="height: 10px;">
+                                                    <div class="progress-bar 
+                                                        @if($order->progress_percentage == 100) bg-success
+                                                        @elseif($order->progress_percentage >= 50) bg-info
+                                                        @elseif($order->progress_percentage >= 25) bg-warning
+                                                        @else bg-secondary
+                                                        @endif" 
+                                                        role="progressbar" 
+                                                        style="width: {{ $order->progress_percentage }}%"
+                                                        aria-valuenow="{{ $order->progress_percentage }}" 
+                                                        aria-valuemin="0" 
+                                                        aria-valuemax="100">
+                                                    </div>
+                                                </div>
+                                                <small class="text-muted">{{ $order->progress_percentage }}% - {{ $order->current_stage ?? 'غير محدد' }}</small>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
                                         </td>
                                         <td>
                                             @if($order->final_cost)

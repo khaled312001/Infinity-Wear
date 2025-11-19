@@ -115,7 +115,26 @@
                                             <strong class="text-primary">{{ $order->order_number }}</strong>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info">{{ $order->current_stage }}</span>
+                                            <div>
+                                                <span class="badge bg-info mb-2 d-block">{{ $order->current_stage }}</span>
+                                                @if(isset($order->progress_percentage))
+                                                    <div class="progress mb-1" style="height: 10px;">
+                                                        <div class="progress-bar 
+                                                            @if($order->progress_percentage == 100) bg-success
+                                                            @elseif($order->progress_percentage >= 50) bg-info
+                                                            @elseif($order->progress_percentage >= 25) bg-warning
+                                                            @else bg-secondary
+                                                            @endif" 
+                                                            role="progressbar" 
+                                                            style="width: {{ $order->progress_percentage }}%"
+                                                            aria-valuenow="{{ $order->progress_percentage }}" 
+                                                            aria-valuemin="0" 
+                                                            aria-valuemax="100">
+                                                        </div>
+                                                    </div>
+                                                    <small class="text-muted">{{ $order->progress_percentage }}%</small>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td>
                                             @php

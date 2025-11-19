@@ -86,6 +86,9 @@ class WorkflowOrderController extends Controller
                 'overall_status' => $order->overall_status,
                 'overall_status_label' => $order->overall_status_label,
                 'current_stage' => $order->current_stage,
+                'progress_percentage' => $order->progress_percentage,
+                'stages_with_status' => $order->stages_with_status,
+                'current_stage_index' => $order->current_stage_index,
                 'created_at' => $order->created_at,
                 'order' => $order
             ]);
