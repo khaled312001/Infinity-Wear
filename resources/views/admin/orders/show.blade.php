@@ -16,7 +16,7 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">لوحة التحكم</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('admin.importers.orders') }}">طلبات المستوردين</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.importers.orders') }}">طلبات العملاء</a></li>
                             <li class="breadcrumb-item active" aria-current="page">تفاصيل الطلب</li>
                         </ol>
                     </nav>
@@ -360,7 +360,7 @@
                         <div class="card-header">
                             <h5 class="card-title mb-0">
                                 <i class="fas fa-user me-2 text-primary"></i>
-                                معلومات المستورد
+                                معلومات العميل
                             </h5>
                         </div>
                         <div class="card-body">
@@ -394,7 +394,7 @@
                             
                             <div class="d-grid gap-2">
                                 <a href="{{ route('admin.importers.show', $order->importer->id) }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-eye me-2"></i>عرض ملف المستورد
+                                    <i class="fas fa-eye me-2"></i>عرض ملف العميل
                                 </a>
                             </div>
                         </div>

@@ -1,9 +1,5 @@
 @extends('layouts.app')
 
-@php
-use Illuminate\Support\Facades\Storage;
-@endphp
-
 @section('title', $portfolioItem->title . ' - Infinity Wear')
 
 @section('content')
@@ -68,7 +64,7 @@ use Illuminate\Support\Facades\Storage;
                 @foreach($relatedItems as $item)
                 <div class="col-md-4">
                     <div class="card portfolio-card h-100">
-                        <img src="{{ Storage::url($item->image) }}" class="card-img-top" alt="{{ $item->title }}">
+                        <img src="{{ $item->image_url }}" class="card-img-top" alt="{{ $item->title }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $item->title }}</h5>
                             <p class="card-text text-muted">{{ $item->category }}</p>

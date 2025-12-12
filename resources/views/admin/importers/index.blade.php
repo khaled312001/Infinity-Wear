@@ -1,9 +1,9 @@
 @extends('layouts.dashboard')
 
-@section('title', 'إدارة المستوردين')
+@section('title', 'إدارة العملاء')
 @section('dashboard-title', 'لوحة الإدارة')
-@section('page-title', 'إدارة المستوردين')
-@section('page-subtitle', 'عرض وإدارة جميع المستوردين في النظام')
+@section('page-title', 'إدارة العملاء')
+@section('page-subtitle', 'عرض وإدارة جميع العملاء في النظام')
 @section('profile-route', '#')
 @section('settings-route', '#')
 
@@ -14,7 +14,7 @@
 @section('page-actions')
     <a href="{{ route('admin.importers.create') }}" class="btn btn-primary">
         <i class="fas fa-plus me-2"></i>
-        إضافة مستورد جديد
+        إضافة عميل جديد
     </a>
 @endsection
 
@@ -32,10 +32,10 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
                     <i class="fas fa-users me-2 text-primary"></i>
-                    جميع المستوردين
+                    جميع العملاء
                 </h5>
                 <div class="d-flex gap-2">
-                    <input type="text" class="form-control form-control-sm" placeholder="البحث في المستوردين..." id="searchInput">
+                    <input type="text" class="form-control form-control-sm" placeholder="البحث في العملاء..." id="searchInput">
                 </div>
             </div>
         </div>
@@ -103,7 +103,7 @@
                                         <form action="{{ route('admin.importers.destroy', $importer->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('هل أنت متأكد من حذف هذا المستورد؟')">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('هل أنت متأكد من حذف هذا العميل؟')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -122,11 +122,11 @@
             @else
                 <div class="text-center py-5">
                     <i class="fas fa-users fa-4x text-muted mb-3"></i>
-                    <h4 class="text-muted">لا يوجد مستوردين حتى الآن</h4>
-                    <p class="text-muted mb-4">ابدأ بإضافة مستورد جديد للنظام</p>
+                    <h4 class="text-muted">لا يوجد عميلين حتى الآن</h4>
+                    <p class="text-muted mb-4">ابدأ بإضافة عميل جديد للنظام</p>
                     <a href="{{ route('admin.importers.create') }}" class="btn btn-primary btn-lg">
                         <i class="fas fa-plus me-2"></i>
-                        إضافة مستورد جديد
+                        إضافة عميل جديد
                     </a>
                 </div>
             @endif
@@ -136,7 +136,7 @@
 
 @push('scripts')
 <script>
-    // البحث في المستوردين
+    // البحث في العملاء
     document.getElementById('searchInput').addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
         const rows = document.querySelectorAll('tbody tr');

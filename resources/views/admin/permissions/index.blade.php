@@ -121,7 +121,7 @@
                                     <option value="admin">الأدمن</option>
                                     <option value="sales">فريق المبيعات</option>
                                     <option value="marketing">فريق التسويق</option>
-                                    <option value="importer">المستوردين</option>
+                                    <option value="importer">العملاء</option>
                                 </select>
                             </div>
                         </div>
@@ -153,7 +153,7 @@
                                                 @elseif($userType === 'marketing')
                                                     <i class="fas fa-bullhorn me-1"></i>فريق التسويق
                                                 @elseif($userType === 'importer')
-                                                    <i class="fas fa-industry me-1"></i>المستوردين
+                                                    <i class="fas fa-industry me-1"></i>العملاء
                                                 @else
                                                     {{ ucfirst($userType) }}
                                                 @endif
@@ -270,7 +270,7 @@
                                     <option value="admin">الأدمن</option>
                                     <option value="sales">فريق المبيعات</option>
                                     <option value="marketing">فريق التسويق</option>
-                                    <option value="importer">المستوردين</option>
+                                    <option value="importer">العملاء</option>
                                 </select>
                             </div>
                         </div>
@@ -298,7 +298,7 @@
                                                 @elseif($userType === 'marketing')
                                                     <i class="fas fa-bullhorn me-1"></i>فريق التسويق
                                                 @elseif($userType === 'importer')
-                                                    <i class="fas fa-industry me-1"></i>المستوردين
+                                                    <i class="fas fa-industry me-1"></i>العملاء
                                                 @else
                                                     {{ ucfirst($userType) }}
                                                 @endif

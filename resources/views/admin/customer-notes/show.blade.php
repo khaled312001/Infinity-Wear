@@ -149,7 +149,7 @@
                     @endif
 
                     <div class="mt-3">
-                        <a href="{{ route('admin.customer-notes.customer-notes', $customerNote->customer) }}" class="btn btn-outline-primary btn-sm w-100">
+                        <a href="{{ route('admin.customers.notes', $customerNote->customer) }}" class="btn btn-outline-primary btn-sm w-100">
                             <i class="fas fa-sticky-note me-1"></i>
                             جميع ملاحظات هذا العميل
                         </a>

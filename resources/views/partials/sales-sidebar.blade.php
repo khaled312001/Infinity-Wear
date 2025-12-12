@@ -12,7 +12,7 @@
     <div class="nav-group-title">إدارة الطلبات</div>
     <a href="{{ route('sales.importer-orders') }}" class="nav-link {{ request()->routeIs('sales.importer-orders*') ? 'active' : '' }}">
         <i class="fas fa-industry me-2"></i>
-        طلبات المستوردين
+        طلبات العملاء
     </a>
     @if(\Illuminate\Support\Facades\Route::has('sales.workflow-orders.index'))
     <a href="{{ route('sales.workflow-orders.index') }}" class="nav-link {{ request()->routeIs('sales.workflow-orders*') ? 'active' : '' }}">
@@ -22,12 +22,12 @@
     @endif
 </div>
 
-<!-- إدارة المستوردين -->
+<!-- إدارة العملاء -->
 <div class="nav-group">
-    <div class="nav-group-title">إدارة المستوردين</div>
+    <div class="nav-group-title">إدارة العملاء</div>
     <a href="{{ route('sales.importers') }}" class="nav-link {{ request()->routeIs('sales.importers*') ? 'active' : '' }}">
         <i class="fas fa-users me-2"></i>
-        المستوردين
+        العملاء
     </a>
 </div>
 

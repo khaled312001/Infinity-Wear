@@ -62,10 +62,10 @@
                     </div>
                     <div>
                         <h3 class="mb-0">{{ array_sum($importersByStatus ?? []) }}</h3>
-                        <p class="text-muted mb-0">إجمالي المستوردين</p>
+                        <p class="text-muted mb-0">إجمالي العملاء</p>
                         <small class="text-info">
                             <i class="fas fa-info-circle me-1"></i>
-                            {{ $importersByStatus['approved'] ?? 0 }} مستورد نشط
+                            {{ $importersByStatus['approved'] ?? 0 }} عميل نشط
                         </small>
                     </div>
                 </div>
@@ -136,13 +136,13 @@
             </div>
         </div>
 
-        <!-- توزيع المستوردين حسب الحالة -->
+        <!-- توزيع العملاء حسب الحالة -->
         <div class="col-lg-4">
             <div class="dashboard-card">
                 <div class="card-header bg-white border-bottom">
                     <h5 class="mb-0">
                         <i class="fas fa-chart-pie me-2 text-success"></i>
-                        توزيع المستوردين
+                        توزيع العملاء
                     </h5>
                 </div>
                 <div class="card-body">
@@ -495,7 +495,7 @@
             }
         });
 
-        // رسم بياني دائري للمستوردين
+        // رسم بياني دائري للعميلين
         const importersCtx = document.getElementById('importersChart').getContext('2d');
         const importersChart = new Chart(importersCtx, {
             type: 'doughnut',

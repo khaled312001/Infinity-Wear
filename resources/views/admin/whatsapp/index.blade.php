@@ -3,7 +3,7 @@
 @section('title', 'الواتساب')
 @section('dashboard-title', 'لوحة الإدارة')
 @section('page-title', 'الواتساب')
-@section('page-subtitle', 'التواصل مع المستوردين وفريق التسويق والمبيعات')
+@section('page-subtitle', 'التواصل مع العملاء وفريق التسويق والمبيعات')
 @section('profile-route', '#')
 @section('settings-route', '#')
 
@@ -110,7 +110,7 @@
                             <div class="col-6">
                                 <select class="form-select form-select-sm" id="contactTypeFilter">
                                     <option value="">جميع الأنواع</option>
-                                    <option value="importer">مستوردين</option>
+                                    <option value="importer">عميلين</option>
                                     <option value="marketing">تسويق</option>
                                     <option value="sales">مبيعات</option>
                                     <option value="external">خارجي</option>
@@ -235,7 +235,7 @@
                             <label class="form-label">نوع جهة الاتصال</label>
                             <select name="contact_type" class="form-select" required>
                                 <option value="">اختر النوع</option>
-                                <option value="importer">مستورد</option>
+                                <option value="importer">عميل</option>
                                 <option value="marketing">تسويق</option>
                                 <option value="sales">مبيعات</option>
                                 <option value="external">خارجي</option>

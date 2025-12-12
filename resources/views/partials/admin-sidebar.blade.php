@@ -45,16 +45,16 @@
   
 </div>
 
-<!-- إدارة المستوردين -->
+<!-- إدارة العملاء -->
 <div class="nav-group">
-    <div class="nav-group-title">إدارة المستوردين</div>
+    <div class="nav-group-title">إدارة العملاء</div>
     <a href="{{ route('admin.importers.index') }}" class="nav-link {{ request()->routeIs('admin.importers*') ? 'active' : '' }}">
         <i class="fas fa-industry me-2"></i>
-        المستوردين
+        العملاء
     </a>
     <a href="{{ route('admin.importers.orders') }}" class="nav-link {{ request()->routeIs('admin.importers.orders*') ? 'active' : '' }}">
         <i class="fas fa-shopping-bag me-2"></i>
-        طلبات المستوردين
+        طلبات العملاء
     </a>
 </div>
 

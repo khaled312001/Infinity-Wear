@@ -592,13 +592,13 @@
             <div class="d-flex align-items-center flex-grow-1 justify-content-center mx-4">
                 <!-- Quick Actions -->
                 <div class="quick-actions d-none d-lg-flex">
-                    <a href="{{ route('sales.importer-orders') }}" class="btn btn-outline-primary btn-sm me-2" title="عرض طلبات المستوردين الجديدة">
+                    <a href="{{ route('sales.importer-orders') }}" class="btn btn-outline-primary btn-sm me-2" title="عرض طلبات العملاء الجديدة">
                         <i class="fas fa-industry me-1"></i>
-                        طلبات المستوردين
+                        طلبات العملاء
                     </a>
-                    <a href="{{ route('sales.importers') }}" class="btn btn-outline-success btn-sm me-2" title="عرض المستوردين الجدد">
+                    <a href="{{ route('sales.importers') }}" class="btn btn-outline-success btn-sm me-2" title="عرض العملاء الجدد">
                         <i class="fas fa-users me-1"></i>
-                        مستوردين جدد
+                        عملاء جدد
                     </a>
                     <a href="{{ route('sales.contacts') }}" class="btn btn-outline-info btn-sm me-2" title="عرض جهات الاتصال الجديدة">
                         <i class="fas fa-envelope me-1"></i>

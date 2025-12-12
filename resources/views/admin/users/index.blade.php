@@ -67,7 +67,7 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <h4 class="mb-0">{{ $stats['by_type']['importer'] ?? 0 }}</h4>
-                                    <p class="mb-0">المستوردين</p>
+                                    <p class="mb-0">العملاء</p>
                                 </div>
                                 <div class="align-self-center">
                                     <i class="fas fa-truck fa-2x"></i>
@@ -89,7 +89,7 @@
                                     <option value="">جميع الأنواع</option>
                                     <option value="admin" {{ request('user_type') == 'admin' ? 'selected' : '' }}>مدير</option>
                                     <option value="employee" {{ request('user_type') == 'employee' ? 'selected' : '' }}>موظف</option>
-                                    <option value="importer" {{ request('user_type') == 'importer' ? 'selected' : '' }}>مستورد</option>
+                                    <option value="importer" {{ request('user_type') == 'importer' ? 'selected' : '' }}>عميل</option>
                                     
                                     <option value="sales" {{ request('user_type') == 'sales' ? 'selected' : '' }}>مندوب مبيعات</option>
                                     <option value="marketing" {{ request('user_type') == 'marketing' ? 'selected' : '' }}>موظف تسويق</option>

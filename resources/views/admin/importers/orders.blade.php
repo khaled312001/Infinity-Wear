@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'طلبات المستوردين')
+@section('title', 'طلبات العملاء')
 
 @section('content')
 <div class="container-fluid">
@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="h3 mb-0">
                     <i class="fas fa-shopping-cart me-2 text-primary"></i>
-                    طلبات المستوردين
+                    طلبات العملاء
                 </h2>
                 <div class="d-flex gap-2">
                     <select class="form-select form-select-sm" id="statusFilter">
@@ -44,7 +44,7 @@
                                 <thead>
                                     <tr>
                                         <th>رقم الطلب</th>
-                                        <th>المستورد</th>
+                                        <th>العميل</th>
                                         <th>نوع التصميم</th>
                                         <th>الكمية</th>
                                         <th>الحالة</th>
@@ -112,7 +112,7 @@
                                                 <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-outline-primary" title="عرض تفاصيل الطلب">
                                                     <i class="fas fa-eye me-1"></i>عرض
                                                 </a>
-                                                <a href="{{ route('admin.importers.show', $order->importer->id) }}" class="btn btn-outline-info" title="عرض المستورد">
+                                                <a href="{{ route('admin.importers.show', $order->importer->id) }}" class="btn btn-outline-info" title="عرض العميل">
                                                     <i class="fas fa-user"></i>
                                                 </a>
                                             </div>
@@ -131,7 +131,7 @@
                         <div class="text-center py-5">
                             <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
                             <h5 class="text-muted">لا توجد طلبات</h5>
-                            <p class="text-muted">لم يتم تقديم أي طلبات من المستوردين بعد</p>
+                            <p class="text-muted">لم يتم تقديم أي طلبات من العملاء بعد</p>
                         </div>
                     @endif
                 </div>
