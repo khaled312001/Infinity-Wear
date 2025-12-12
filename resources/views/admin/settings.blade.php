@@ -362,7 +362,7 @@
                                                   id="address" 
                                                   name="address" 
                                                   rows="3" 
-                                                  required>{{ old('address', $settings['address'] ?? 'المملكة العربية السعودية، الرياض، حي النخيل، شارع الملك فهد') }}</textarea>
+                                                  required>{{ old('address', $settings['address'] ?? 'المملكة العربية السعودية، مكة') }}</textarea>
                                         @error('address')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
