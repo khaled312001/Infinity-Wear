@@ -215,8 +215,10 @@
                 </div>
                 
                 <!-- Pagination -->
-                <div class="card-footer">
-                    {{ $users->appends(request()->query())->links() }}
+                <div class="card-footer d-flex justify-content-center">
+                    <div class="pagination-wrapper">
+                        {{ $users->appends(request()->query())->links() }}
+                    </div>
                 </div>
             @else
                 <div class="text-center py-5">
@@ -250,9 +252,63 @@
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
+    
+    /* Pagination Styles */
+    .pagination-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .pagination-wrapper .pagination {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .pagination-wrapper .page-link {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        border-radius: 0.25rem;
+        margin: 0 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 38px;
+        height: 38px;
+    }
+    .pagination-wrapper .page-item {
+        margin: 0;
+    }
+    .pagination-wrapper .page-item.active .page-link {
+        z-index: 3;
+        color: #fff;
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    .pagination-wrapper .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        background-color: #fff;
+        border-color: #dee2e6;
+    }
+    .pagination-wrapper svg {
+        width: 16px;
+        height: 16px;
+    }
+    
     @media (max-width: 1400px) {
         .table {
             font-size: 0.75rem !important;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .pagination-wrapper .page-link {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            min-width: 32px;
+            height: 32px;
         }
     }
 </style>
