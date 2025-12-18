@@ -254,6 +254,16 @@ class UserManagementController extends Controller
                 ]);
                 break;
                 
+            case 'employee':
+                \App\Models\Employee::create([
+                    'user_id' => $user->id,
+                    'department' => $request->department ?? 'عام',
+                    'position' => $request->position ?? 'موظف',
+                    'hire_date' => now(),
+                    'is_active' => true
+                ]);
+                break;
+                
             case 'marketing':
                 MarketingTeam::create([
                     'user_id' => $user->id,
@@ -293,6 +303,16 @@ class UserManagementController extends Controller
                 }
                 break;
                 
+            case 'employee':
+                $employee = $user->employee;
+                if ($employee) {
+                    $employee->update([
+                        'department' => $request->department ?? $employee->department,
+                        'position' => $request->position ?? $employee->position,
+                    ]);
+                }
+                break;
+                
             case 'marketing':
                 $marketing = $user->marketingTeam;
                 if ($marketing) {
@@ -323,6 +343,9 @@ class UserManagementController extends Controller
         switch ($user->user_type) {
             case 'importer':
                 $user->importer?->delete();
+                break;
+            case 'employee':
+                $user->employee?->delete();
                 break;
             case 'marketing':
                 $user->marketingTeam?->delete();

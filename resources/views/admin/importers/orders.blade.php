@@ -64,8 +64,13 @@
                                                     <i class="fas fa-user text-primary"></i>
                                                 </div>
                                                 <div>
-                                                    <h6 class="mb-0">{{ $order->importer->name }}</h6>
-                                                    <small class="text-muted">{{ $order->importer->company_name }}</small>
+                                                    @if($order->importer)
+                                                        <h6 class="mb-0">{{ $order->importer->name }}</h6>
+                                                        <small class="text-muted">{{ $order->importer->company_name }}</small>
+                                                    @else
+                                                        <h6 class="mb-0 text-muted">عميل محذوف</h6>
+                                                        <small class="text-muted">غير متوفر</small>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </td>
@@ -112,9 +117,15 @@
                                                 <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-outline-primary" title="عرض تفاصيل الطلب">
                                                     <i class="fas fa-eye me-1"></i>عرض
                                                 </a>
-                                                <a href="{{ route('admin.importers.show', $order->importer->id) }}" class="btn btn-outline-info" title="عرض العميل">
-                                                    <i class="fas fa-user"></i>
-                                                </a>
+                                                @if($order->importer)
+                                                    <a href="{{ route('admin.importers.show', $order->importer->id) }}" class="btn btn-outline-info" title="عرض العميل">
+                                                        <i class="fas fa-user"></i>
+                                                    </a>
+                                                @else
+                                                    <button class="btn btn-outline-secondary" disabled title="العميل غير متوفر">
+                                                        <i class="fas fa-user-slash"></i>
+                                                    </button>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
