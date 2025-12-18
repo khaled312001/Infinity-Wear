@@ -215,9 +215,16 @@
                 </div>
                 
                 <!-- Pagination -->
-                <div class="card-footer d-flex justify-content-center">
-                    <div class="pagination-wrapper">
-                        {{ $users->appends(request()->query())->links() }}
+                <div class="card-footer">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                        <div class="text-muted small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            عرض <strong>{{ $users->firstItem() ?? 0 }}</strong> إلى <strong>{{ $users->lastItem() ?? 0 }}</strong> 
+                            من أصل <strong>{{ $users->total() }}</strong> مستخدم
+                        </div>
+                        <div class="pagination-wrapper">
+                            {{ $users->appends(request()->query())->links() }}
+                        </div>
                     </div>
                 </div>
             @else
@@ -236,67 +243,204 @@
 
 @push('styles')
 <style>
+    /* Statistics Cards */
+    .row .card {
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .row .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+    
+    .row .card-body {
+        padding: 1.25rem;
+    }
+    
+    .row .card h4 {
+        font-size: 2rem;
+        font-weight: 700;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .row .card p {
+        font-size: 0.9rem;
+        opacity: 0.95;
+        font-weight: 500;
+    }
+    
+    .row .card i {
+        opacity: 0.8;
+    }
+    
+    /* Table Styles */
     .table-sm td, .table-sm th {
-        padding: 0.4rem;
+        padding: 0.6rem 0.5rem;
         vertical-align: middle;
     }
-    .btn-group-sm .btn {
-        padding: 0.15rem 0.4rem;
-        font-size: 0.75rem;
+    
+    .table-sm thead th {
+        background-color: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
     }
+    
+    .table-hover tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transform: scale(1.001);
+    }
+    
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 0.25rem;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-group-sm .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+    
     .badge-sm {
         font-size: 0.7rem;
-        padding: 0.25rem 0.5rem;
+        padding: 0.35rem 0.65rem;
+        font-weight: 500;
+        border-radius: 0.25rem;
     }
+    
     .table-responsive {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        border-radius: 0.5rem;
+    }
+    
+    /* Avatar Styles */
+    .rounded-circle {
+        border: 2px solid #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Card Styles */
+    .card {
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 1px solid #e3e6ea;
+    }
+    
+    .card-header {
+        background-color: #fff;
+        border-bottom: 2px solid #e3e6ea;
+        padding: 1rem 1.25rem;
+    }
+    
+    .card-header h5 {
+        color: #495057;
+        font-weight: 600;
+        font-size: 1.1rem;
     }
     
     /* Pagination Styles */
+    .card-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        padding: 1rem;
+    }
+    
     .pagination-wrapper {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 0.5rem;
     }
+    
     .pagination-wrapper .pagination {
         margin: 0;
         display: flex;
         align-items: center;
-        gap: 5px;
-    }
-    .pagination-wrapper .page-link {
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-        line-height: 1.5;
-        border-radius: 0.25rem;
-        margin: 0 2px;
-        display: flex;
-        align-items: center;
+        gap: 0.25rem;
+        flex-wrap: wrap;
         justify-content: center;
-        min-width: 38px;
-        height: 38px;
     }
+    
     .pagination-wrapper .page-item {
         margin: 0;
     }
+    
+    .pagination-wrapper .page-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1;
+        border-radius: 0.375rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        color: #495057;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        transition: all 0.2s ease-in-out;
+    }
+    
+    .pagination-wrapper .page-link:hover:not(.active) {
+        color: #0d6efd;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
     .pagination-wrapper .page-item.active .page-link {
         z-index: 3;
         color: #fff;
         background-color: #0d6efd;
         border-color: #0d6efd;
-    }
-    .pagination-wrapper .page-item.disabled .page-link {
-        color: #6c757d;
-        pointer-events: none;
-        background-color: #fff;
-        border-color: #dee2e6;
-    }
-    .pagination-wrapper svg {
-        width: 16px;
-        height: 16px;
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+        font-weight: 600;
     }
     
+    .pagination-wrapper .page-item.disabled .page-link {
+        color: #adb5bd;
+        pointer-events: none;
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        opacity: 0.6;
+    }
+    
+    .pagination-wrapper svg {
+        width: 14px;
+        height: 14px;
+        stroke-width: 2.5;
+    }
+    
+    /* Showing Text Styles */
+    .card-footer .text-muted {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .card-footer .text-muted strong {
+        color: #495057;
+    }
+    
+    .card-footer .text-muted i {
+        color: #0d6efd;
+    }
+    
+    /* Responsive Design */
     @media (max-width: 1400px) {
         .table {
             font-size: 0.75rem !important;
@@ -305,10 +449,45 @@
     
     @media (max-width: 768px) {
         .pagination-wrapper .page-link {
-            padding: 0.25rem 0.5rem;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            min-width: 36px;
+            height: 36px;
+        }
+        
+        .card-footer .text-muted {
             font-size: 0.75rem;
+        }
+        
+        .table-sm td, .table-sm th {
+            padding: 0.4rem 0.3rem;
+            font-size: 0.75rem;
+        }
+        
+        .btn-group-sm .btn {
+            padding: 0.2rem 0.4rem;
+            font-size: 0.7rem;
+        }
+        
+        .row .card h4 {
+            font-size: 1.5rem;
+        }
+        
+        .row .card p {
+            font-size: 0.8rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .pagination-wrapper .page-link {
             min-width: 32px;
             height: 32px;
+            padding: 0.3rem 0.5rem;
+        }
+        
+        .card-footer > div {
+            flex-direction: column;
+            gap: 1rem;
         }
     }
 </style>
