@@ -130,68 +130,63 @@
                 <div class="card-body p-0">
                     @if($users->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-hover mb-0 table-sm" style="font-size: 0.875rem;">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>المستخدم</th>
-                                        <th>نوع المستخدم</th>
-                                        <th>البريد الإلكتروني</th>
-                                        <th>رقم الهاتف</th>
-                                        <th>المدينة</th>
-                                        <th>الحالة</th>
-                                        <th>تاريخ الإنشاء</th>
-                                        <th>الإجراءات</th>
+                                        <th style="white-space: nowrap;">المستخدم</th>
+                                        <th style="white-space: nowrap;">نوع المستخدم</th>
+                                        <th style="white-space: nowrap;">البريد الإلكتروني</th>
+                                        <th style="white-space: nowrap;">رقم الهاتف</th>
+                                        <th style="white-space: nowrap;">المدينة</th>
+                                        <th style="white-space: nowrap;">الحالة</th>
+                                        <th style="white-space: nowrap;">الإجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($users as $user)
                                         <tr>
-                                            <td>
+                                            <td style="white-space: nowrap;">
                                                 <div class="d-flex align-items-center">
                                                     @if($user->avatar)
                                                         <img src="{{ asset('storage/' . $user->avatar) }}" 
                                                              alt="{{ $user->name }}" 
                                                              class="rounded-circle me-2" 
-                                                             width="40" height="40">
+                                                             width="32" height="32">
                                                     @else
                                                         <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
-                                                             style="width: 40px; height: 40px;">
+                                                             style="width: 32px; height: 32px; font-size: 0.75rem;">
                                                             {{ substr($user->name, 0, 1) }}
                                                         </div>
                                                     @endif
                                                     <div>
-                                                        <h6 class="mb-0">{{ $user->name }}</h6>
-                                                        @if($user->bio)
-                                                            <small class="text-muted">{{ Str::limit($user->bio, 30) }}</small>
-                                                        @endif
+                                                        <div class="fw-bold">{{ $user->name }}</div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td style="white-space: nowrap;">
                                                 <span class="badge bg-{{ $user->user_type == 'admin' ? 'danger' : ($user->user_type == 'importer' ? 'info' : 'secondary') }}">
                                                     {{ $user->getUserTypeLabelAttribute() }}
                                                 </span>
                                             </td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>{{ $user->phone ?? '-' }}</td>
-                                            <td>{{ $user->city ?? '-' }}</td>
-                                            <td>
+                                            <td style="white-space: nowrap;">{{ $user->email }}</td>
+                                            <td style="white-space: nowrap;">{{ $user->phone ?? '-' }}</td>
+                                            <td style="white-space: nowrap;">{{ $user->city ?? '-' }}</td>
+                                            <td style="white-space: nowrap;">
                                                 @if($user->is_active)
                                                     <span class="badge bg-success">نشط</span>
                                                 @else
                                                     <span class="badge bg-danger">غير نشط</span>
                                                 @endif
                                             </td>
-                                            <td>{{ $user->created_at->format('Y-m-d') }}</td>
-                                            <td>
-                                                <div class="btn-group" role="group">
+                                            <td style="white-space: nowrap;">
+                                                <div class="btn-group btn-group-sm" role="group">
                                                     <a href="{{ route('admin.users.show', $user) }}" 
-                                                       class="btn btn-sm btn-outline-info" 
+                                                       class="btn btn-outline-info" 
                                                        title="عرض">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     <a href="{{ route('admin.users.edit', $user) }}" 
-                                                       class="btn btn-sm btn-outline-primary" 
+                                                       class="btn btn-outline-primary" 
                                                        title="تعديل">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
@@ -199,7 +194,7 @@
                                                           class="d-inline">
                                                         @csrf
                                                         <button type="submit" 
-                                                                class="btn btn-sm btn-outline-{{ $user->is_active ? 'warning' : 'success' }}"
+                                                                class="btn btn-outline-{{ $user->is_active ? 'warning' : 'success' }}"
                                                                 title="{{ $user->is_active ? 'إلغاء تفعيل' : 'تفعيل' }}"
                                                                 onclick="return confirm('هل أنت متأكد من تغيير حالة المستخدم؟')">
                                                             <i class="fas fa-{{ $user->is_active ? 'ban' : 'check' }}"></i>
@@ -210,7 +205,7 @@
                                                           onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟')">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
+                                                        <button type="submit" class="btn btn-outline-danger" title="حذف">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
