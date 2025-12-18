@@ -129,63 +129,61 @@
         <div class="card-body p-0">
             @if($users->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0 table-sm" style="font-size: 0.875rem;">
+                    <table class="table table-hover mb-0 table-sm" style="font-size: 0.8rem;">
                         <thead class="table-light">
                             <tr>
-                                <th style="white-space: nowrap;">المستخدم</th>
-                                <th style="white-space: nowrap;">نوع المستخدم</th>
-                                <th style="white-space: nowrap;">البريد الإلكتروني</th>
-                                <th style="white-space: nowrap;">رقم الهاتف</th>
-                                <th style="white-space: nowrap;">المدينة</th>
-                                <th style="white-space: nowrap;">الحالة</th>
-                                <th style="white-space: nowrap;">الإجراءات</th>
+                                <th>المستخدم</th>
+                                <th>النوع</th>
+                                <th>البريد</th>
+                                <th>الهاتف</th>
+                                <th>المدينة</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($users as $user)
                                 <tr>
-                                    <td style="white-space: nowrap;">
+                                    <td>
                                         <div class="d-flex align-items-center">
                                             @if($user->avatar)
                                                 <img src="{{ asset('storage/' . $user->avatar) }}" 
                                                      alt="{{ $user->name }}" 
-                                                     class="rounded-circle me-2" 
-                                                     width="32" height="32">
+                                                     class="rounded-circle me-1" 
+                                                     width="28" height="28">
                                             @else
-                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
-                                                     style="width: 32px; height: 32px; font-size: 0.75rem;">
+                                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-1" 
+                                                     style="width: 28px; height: 28px; font-size: 0.7rem;">
                                                     {{ substr($user->name, 0, 1) }}
                                                 </div>
                                             @endif
-                                            <div>
-                                                <div class="fw-bold">{{ $user->name }}</div>
-                                            </div>
+                                            <span class="text-truncate" style="max-width: 100px;">{{ $user->name }}</span>
                                         </div>
                                     </td>
-                                    <td style="white-space: nowrap;">
-                                        <span class="badge bg-{{ $user->user_type == 'admin' ? 'danger' : ($user->user_type == 'importer' ? 'info' : 'secondary') }}">
+                                    <td>
+                                        <span class="badge badge-sm bg-{{ $user->user_type == 'admin' ? 'danger' : ($user->user_type == 'importer' ? 'info' : 'secondary') }}">
                                             {{ $user->getUserTypeLabelAttribute() }}
                                         </span>
                                     </td>
-                                    <td style="white-space: nowrap;">{{ $user->email }}</td>
-                                    <td style="white-space: nowrap;">{{ $user->phone ?? '-' }}</td>
-                                    <td style="white-space: nowrap;">{{ $user->city ?? '-' }}</td>
-                                    <td style="white-space: nowrap;">
+                                    <td><small>{{ $user->email }}</small></td>
+                                    <td><small>{{ $user->phone ?? '-' }}</small></td>
+                                    <td><small>{{ $user->city ?? '-' }}</small></td>
+                                    <td>
                                         @if($user->is_active)
-                                            <span class="badge bg-success">نشط</span>
+                                            <span class="badge badge-sm bg-success">نشط</span>
                                         @else
-                                            <span class="badge bg-danger">غير نشط</span>
+                                            <span class="badge badge-sm bg-danger">غير نشط</span>
                                         @endif
                                     </td>
-                                    <td style="white-space: nowrap;">
+                                    <td>
                                         <div class="btn-group btn-group-sm" role="group">
                                             <a href="{{ route('admin.users.show', $user) }}" 
-                                               class="btn btn-outline-info" 
+                                               class="btn btn-outline-info btn-sm" 
                                                title="عرض">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('admin.users.edit', $user) }}" 
-                                               class="btn btn-outline-primary" 
+                                               class="btn btn-outline-primary btn-sm" 
                                                title="تعديل">
                                                 <i class="fas fa-edit"></i>
                                             </a>
@@ -193,7 +191,7 @@
                                                   class="d-inline">
                                                 @csrf
                                                 <button type="submit" 
-                                                        class="btn btn-outline-{{ $user->is_active ? 'warning' : 'success' }}"
+                                                        class="btn btn-sm btn-outline-{{ $user->is_active ? 'warning' : 'success' }}"
                                                         title="{{ $user->is_active ? 'إلغاء تفعيل' : 'تفعيل' }}"
                                                         onclick="return confirm('هل أنت متأكد من تغيير حالة المستخدم؟')">
                                                     <i class="fas fa-{{ $user->is_active ? 'ban' : 'check' }}"></i>
@@ -204,7 +202,7 @@
                                                   onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger" title="حذف">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -233,6 +231,32 @@
         </div>
     </div>
 @endsection
+
+@push('styles')
+<style>
+    .table-sm td, .table-sm th {
+        padding: 0.4rem;
+        vertical-align: middle;
+    }
+    .btn-group-sm .btn {
+        padding: 0.15rem 0.4rem;
+        font-size: 0.75rem;
+    }
+    .badge-sm {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    @media (max-width: 1400px) {
+        .table {
+            font-size: 0.75rem !important;
+        }
+    }
+</style>
+@endpush
 
 @section('scripts')
 <script>
