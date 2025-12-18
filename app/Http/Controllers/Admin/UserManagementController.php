@@ -247,8 +247,14 @@ class UserManagementController extends Controller
             case 'importer':
                 Importer::create([
                     'user_id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone ?? '',
                     'company_name' => $request->company_name ?? '',
-                    'company_type' => $request->company_type ?? '',
+                    'business_type' => $request->company_type ?? $request->business_type ?? '',
+                    'business_type_other' => $request->business_type_other ?? null,
+                    'address' => $user->address ?? '',
+                    'city' => $user->city ?? '',
                     'business_license' => $request->business_license ?? '',
                     'is_verified' => false
                 ]);
@@ -296,9 +302,30 @@ class UserManagementController extends Controller
                 $importer = $user->importer;
                 if ($importer) {
                     $importer->update([
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'phone' => $user->phone ?? $importer->phone,
+                        'address' => $user->address ?? $importer->address,
+                        'city' => $user->city ?? $importer->city,
                         'company_name' => $request->company_name ?? $importer->company_name,
-                        'company_type' => $request->company_type ?? $importer->company_type,
+                        'business_type' => $request->company_type ?? $request->business_type ?? $importer->business_type,
+                        'business_type_other' => $request->business_type_other ?? $importer->business_type_other,
                         'business_license' => $request->business_license ?? $importer->business_license,
+                    ]);
+                } else {
+                    // إنشاء سجل importer إذا لم يكن موجود
+                    Importer::create([
+                        'user_id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'phone' => $user->phone ?? '',
+                        'address' => $user->address ?? '',
+                        'city' => $user->city ?? '',
+                        'company_name' => $request->company_name ?? '',
+                        'business_type' => $request->company_type ?? $request->business_type ?? '',
+                        'business_type_other' => $request->business_type_other ?? null,
+                        'business_license' => $request->business_license ?? '',
+                        'is_verified' => false
                     ]);
                 }
                 break;
